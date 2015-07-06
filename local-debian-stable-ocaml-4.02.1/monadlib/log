@@ -4,19 +4,19 @@
 #  - m4
 #  - pkg-config
 Not running as root, system installation will be done through "sudo"
+Hit http://security.debian.org stable/updates Release.gpg
 Hit http://download.opensuse.org  Release.gpg
-Hit http://download.opensuse.org  Release
-Hit http://download.opensuse.org  Packages
 Hit http://http.debian.net stable Release.gpg
+Hit http://security.debian.org stable/updates Release
 Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
+Hit http://download.opensuse.org  Release
 Hit http://http.debian.net stable Release
-Get:2 http://security.debian.org stable/updates Release.gpg [836 B]
-Get:3 http://http.debian.net stable-updates Release [124 kB]
+Get:2 http://http.debian.net stable-updates Release [124 kB]
+Hit http://security.debian.org stable/updates/main amd64 Packages
+Hit http://download.opensuse.org  Packages
 Hit http://http.debian.net stable/main amd64 Packages
-Get:4 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
-Get:5 http://security.debian.org stable/updates Release [102 kB]
-Get:6 http://security.debian.org stable/updates/main amd64 Packages [370 kB]
-Fetched 602 kB in 2s (211 kB/s)
+Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
+Fetched 129 kB in 15s (8497 B/s)
 Reading package lists...
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
@@ -52,20 +52,20 @@ The following actions will be performed:
 [camlp4: from default] Command started
 [default] http://opam-archive:8080/archives/batteries.2.3.1+opam.tar.gz downloaded
 [ocaml-data-notation: from default] Command started
-[oasis: from default] Command started
 [default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
+[oasis: from default] Command started
 [default] http://opam-archive:8080/archives/oasis.0.4.5+opam.tar.gz downloaded
 [ocamlify: from default] Command started
 [ocaml-data-notation: from default] Command started
+[ocamlify: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocaml-data-notation.0.0.11+opam.tar.gz downloaded
 [ocamlmod: from default] Command started
-[ocamlfind: from default] Command started
-[ocamlify: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[type_conv: from default] Command started
-[ocamlmod: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlify.0.0.1+opam.tar.gz downloaded
+[type_conv: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[ocamlmod: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlmod.0.0.7+opam.tar.gz downloaded
 [type_conv: from default] Command started
 [default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
@@ -153,6 +153,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -198,13 +199,19 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 		cp topfind.ml.in topfind.ml;                             \
+- 	else                                                             \
+- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 			> topfind.ml ;                                   \
+- 	fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -213,13 +220,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 		cp topfind.ml.in topfind.ml;                             \
-- 	else                                                             \
-- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 			> topfind.ml ;                                   \
-- 	fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -265,6 +265,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -309,7 +310,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -1806,8 +1806,8 @@ The following actions will be performed:
 - ocamlc: ........................................ /home/opam/.opam/4.02.1/bin/ocamlc.opt
 - ocamlfind: ..................................... /home/opam/.opam/4.02.1/bin/ocamlfind
 - 
-- I: Running command '/home/opam/.opam/4.02.1/bin/ocamlc.opt -config > /tmp/oasis-e50992.txt'
-- I: Running command '/home/opam/.opam/4.02.1/bin/ocamlfind query -format %v findlib > /tmp/oasis-450cf4.txt'
+- I: Running command '/home/opam/.opam/4.02.1/bin/ocamlc.opt -config > /tmp/oasis-3c73f4.txt'
+- I: Running command '/home/opam/.opam/4.02.1/bin/ocamlfind query -format %v findlib > /tmp/oasis-08076d.txt'
 [ocamlify: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-build" (CWD=/home/opam/.opam/4.02.1/build/ocamlify.0.0.1)
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt unix.cmxa -I /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
@@ -2043,7 +2043,6 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4/Struct -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Struct/CommentFilter.cmo camlp4/Camlp4/Struct/CommentFilter.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4/Struct -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Struct/DynLoader.cmo camlp4/Camlp4/Struct/DynLoader.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4/Struct -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Struct/EmptyError.cmo camlp4/Camlp4/Struct/EmptyError.ml
-- + echo camlp4/Camlp4.cmo camlp4/Camlp4Top.cmo camlp4/camlp4prof.byte camlp4/mkcamlp4.byte camlp4/camlp4.byte camlp4/camlp4fulllib.cma camlp4/camlp4boot.byte camlp4/camlp4boot.cma camlp4/camlp4r.byte camlp4/camlp4r.cma camlp4/camlp4rf.byte camlp4/camlp4rf.cma camlp4/camlp4o.byte camlp4/camlp4o.cma camlp4/camlp4of.byte camlp4/camlp4of.cma camlp4/camlp4oof.byte camlp4/camlp4oof.cma camlp4/camlp4orf.byte camlp4/camlp4orf.cma camlp4/Camlp4Parsers/Camlp4AstLoader.cmo camlp4/Camlp4Parsers/Camlp4DebugParser.cmo camlp4/Camlp4Parsers/Camlp4GrammarParser.cmo camlp4/Camlp4Parsers/Camlp4ListComprehension.cmo camlp4/Camlp4Parsers/Camlp4MacroParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4OCamlParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmo camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmo camlp4/Camlp4Printers/Camlp4AstDumper.cmo camlp4/Camlp4Printers/Camlp4AutoPrinter.cmo camlp4/Camlp4Printers/Camlp4NullDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlPrinter.cmo camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.cmo camlp4/Camlp4Filters/Camlp4AstLifter.cmo camlp4/Camlp4Filters/Camlp4ExceptionTracer.cmo camlp4/Camlp4Filters/Camlp4FoldGenerator.cmo camlp4/Camlp4Filters/Camlp4LocationStripper.cmo camlp4/Camlp4Filters/Camlp4MapGenerator.cmo camlp4/Camlp4Filters/Camlp4MetaGenerator.cmo camlp4/Camlp4Filters/Camlp4Profiler.cmo camlp4/Camlp4Filters/Camlp4TrashRemover.cmo
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4/Struct -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Struct/EmptyPrinter.cmo camlp4/Camlp4/Struct/EmptyPrinter.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4/Struct -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Struct/FreeVars.cmo camlp4/Camlp4/Struct/FreeVars.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w a -I camlp4/import -warn-error A-3 -I camlp4/Camlp4/Struct -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Struct/Lexer.cmo camlp4/Camlp4/Struct/Lexer.ml
@@ -2071,6 +2070,7 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4/Printers -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Printers/DumpOCamlAst.cmo camlp4/Camlp4/Printers/DumpOCamlAst.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4/Printers -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Printers/Null.cmo camlp4/Camlp4/Printers/Null.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4/Printers -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Printers/OCaml.cmo camlp4/Camlp4/Printers/OCaml.ml
+- + echo camlp4/Camlp4.cmo camlp4/Camlp4Top.cmo camlp4/camlp4prof.byte camlp4/mkcamlp4.byte camlp4/camlp4.byte camlp4/camlp4fulllib.cma camlp4/camlp4boot.byte camlp4/camlp4boot.cma camlp4/camlp4r.byte camlp4/camlp4r.cma camlp4/camlp4rf.byte camlp4/camlp4rf.cma camlp4/camlp4o.byte camlp4/camlp4o.cma camlp4/camlp4of.byte camlp4/camlp4of.cma camlp4/camlp4oof.byte camlp4/camlp4oof.cma camlp4/camlp4orf.byte camlp4/camlp4orf.cma camlp4/Camlp4Parsers/Camlp4AstLoader.cmo camlp4/Camlp4Parsers/Camlp4DebugParser.cmo camlp4/Camlp4Parsers/Camlp4GrammarParser.cmo camlp4/Camlp4Parsers/Camlp4ListComprehension.cmo camlp4/Camlp4Parsers/Camlp4MacroParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4OCamlParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmo camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmo camlp4/Camlp4Printers/Camlp4AstDumper.cmo camlp4/Camlp4Printers/Camlp4AutoPrinter.cmo camlp4/Camlp4Printers/Camlp4NullDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlPrinter.cmo camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.cmo camlp4/Camlp4Filters/Camlp4AstLifter.cmo camlp4/Camlp4Filters/Camlp4ExceptionTracer.cmo camlp4/Camlp4Filters/Camlp4FoldGenerator.cmo camlp4/Camlp4Filters/Camlp4LocationStripper.cmo camlp4/Camlp4Filters/Camlp4MapGenerator.cmo camlp4/Camlp4Filters/Camlp4MetaGenerator.cmo camlp4/Camlp4Filters/Camlp4Profiler.cmo camlp4/Camlp4Filters/Camlp4TrashRemover.cmo
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4/Printers -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Printers/OCamlr.cmo camlp4/Camlp4/Printers/OCamlr.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -pack -g camlp4/Camlp4/Printers/DumpCamlp4Ast.cmo camlp4/Camlp4/Printers/DumpOCamlAst.cmo camlp4/Camlp4/Printers/Null.cmo camlp4/Camlp4/Printers/OCaml.cmo camlp4/Camlp4/Printers/OCamlr.cmo -o camlp4/Camlp4/Printers.cmo
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4/Register.mli > camlp4/Camlp4/Register.mli.depends
