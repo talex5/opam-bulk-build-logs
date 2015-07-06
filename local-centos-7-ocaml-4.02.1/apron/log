@@ -4,12 +4,11 @@ CentOS 7 depexts: gmp gmp-devel
 + echo CentOS 7 depexts: gmp gmp-devel
 + '[' 'gmp gmp-devel' '!=' '' ']'
 + sudo yum install -y gmp gmp-devel
-Repodata is over 2 weeks old. Install yum-cron? Or run: yum makecache fast
 Loaded plugins: fastestmirror
-Determining fastest mirrors
- * base: anorien.csc.warwick.ac.uk
- * extras: mirror.sov.uk.goscomb.net
- * updates: anorien.csc.warwick.ac.uk
+Loading mirror speeds from cached hostfile
+ * base: mirror.net.cen.ct.gov
+ * extras: mirror.trouble-free.net
+ * updates: mirror.trouble-free.net
 Package 1:gmp-5.1.1-5.el7.x86_64 already installed and latest version
 Resolving Dependencies
 --> Running transaction check
@@ -44,9 +43,9 @@ Installed:
 Complete!
 + opam install apron
 The following actions will be performed:
+  - install ocamlfind 1.5.5                                     [required by apron]
   - install camlidl   1.05                                      [required by apron]
   - install conf-gmp  1                                         [required by apron]
-  - install ocamlfind 1.5.5                                     [required by apron]
   - install conf-mpfr 1                                         [required by apron]
   - install apron     0.9.10
 ===== 5 to install =====
@@ -70,6 +69,7 @@ The following actions will be performed:
 + mkdir "-p" "/home/opam/.opam/system/bin" "/home/opam/.opam/system/lib/camlidl" "/home/opam/.opam/system/lib/camlidl/caml" (CWD=/home/opam/.opam/system/build/camlidl.1.05)
 [camlidl: make all] Command started
 + sh "-c" "cc -c $CFLAGS test.c" (CWD=/home/opam/.opam/system/build/conf-gmp.1)
+[ERROR] The compilation of conf-mpfr failed at "cc test.c -lgmp -lmpfr".
 -> installed conf-gmp.1
 [conf-mpfr: cc test.c] Command started
 + cc "test.c" "-lgmp" "-lmpfr" (CWD=/home/opam/.opam/system/build/conf-mpfr.1)
@@ -77,7 +77,6 @@ The following actions will be performed:
 -  #include <mpfr.h>
 -                   ^
 - compilation terminated.
-[ERROR] The compilation of conf-mpfr failed at "cc test.c -lgmp -lmpfr".
 [ocamlfind: ./configure] Command started
 + ./configure "-bindir" "/home/opam/.opam/system/bin" "-sitelib" "/home/opam/.opam/system/lib" "-mandir" "/home/opam/.opam/system/man" "-config" "/home/opam/.opam/system/lib/findlib.conf" "-no-topfind" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
 - Welcome to findlib version 1.5.5
@@ -94,7 +93,7 @@ The following actions will be performed:
 - camlp4: using camlp4, style 310
 - compiler-libs: found
 - dbm: not present (normal since OCaml-4.00)
-- bytes: not found, installing compat library
+- bytes: found, installing fake library
 - Configuration for dynlink written to site-lib-src/dynlink/META
 - Configuration for graphics written to site-lib-src/graphics/META
 - Configuration for num written to site-lib-src/num/META
@@ -107,6 +106,7 @@ The following actions will be performed:
 - Configuration for camlp4 written to site-lib-src/camlp4/META
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
+- Configuration for bytes written to site-lib-src/bytes/META
 - Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
@@ -123,19 +123,17 @@ The following actions will be performed:
 -     Binaries:              /home/opam/.opam/system/bin
 -     Manual pages:          /home/opam/.opam/system/man
 -     topfind script:        omitted
-- Topfind ppxopt support:    no
+- Topfind ppxopt support:    yes
 - Toolbox:                   no
 - Link custom runtime:       yes
-- Need bytes compatibility:  yes
+- Need bytes compatibility:  no
 - 
 - Configuration has been written to Makefile.config
 - 
 - You can now do 'make all', and optionally 'make opt', to build ocamlfind.
-- File "itest-aux/ppx.ml", line 1, characters 0-25:
-- Error: Unbound value Toploop.preprocess_phrase
 [ocamlfind: make all] Command started
 + make "all" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
-- for p in findlib bytes; do ( cd src/$p; make all ) || exit; done
+- for p in findlib; do ( cd src/$p; make all ) || exit; done
 - make[1]: Entering directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
 - ocamllex fl_meta.mll
 - 22 states, 392 transitions, table size 1700 bytes
@@ -168,7 +166,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
-- if [ "false" = "true" ]; then                 \
+- if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
 - 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
@@ -188,12 +186,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c num_top.ml
 - ocamlc -I +compiler-libs -a -o num_top.cma num_top_printers.cmo num_top.cmo
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
-- make[1]: Entering directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/bytes'
-- ocamlbuild -classic-display -no-links bytes.cmi bytes.cma
-- /usr/bin/ocamldep.opt -modules bytes.ml > bytes.ml.depends
-- /usr/bin/ocamlc.opt -c -o bytes.cmo bytes.ml
-- /usr/bin/ocamlc.opt -a bytes.cmo -o bytes.cma
-- make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/bytes'
 - make all-config
 - make[1]: Entering directory `/home/opam/.opam/system/build/ocamlfind.1.5.5'
 - USE_CYGPATH="0"; \
@@ -214,6 +206,58 @@ The following actions will be performed:
 - fi
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5'
 - Makefile:160: depend: No such file or directory
+- File "fl_split.ml", line 114, characters 10-21:
+- Warning 3: deprecated: String.copy
+- File "fl_split.ml", line 118, characters 43-62:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "fl_split.ml", line 119, characters 37-56:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "fl_split.ml", line 123, characters 34-47:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "fl_split.ml", line 124, characters 34-47:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "fl_split.ml", line 126, characters 26-39:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "fl_split.ml", line 127, characters 45-64:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "fl_split.ml", line 128, characters 38-57:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "fl_split.ml", line 136, characters 13-26:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "fl_split.ml", line 140, characters 1-19:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "fl_meta.mll", line 57, characters 13-26:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "fl_meta.mll", line 61, characters 11-29:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "fl_meta.mll", line 62, characters 11-22:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "fl_metascanner.ml", line 111, characters 23-32:
+- Warning 3: deprecated: Sort.list
+- Use List.sort instead.
+- File "fl_metascanner.ml", line 372, characters 20-29:
+- Warning 3: deprecated: Sort.list
+- Use List.sort instead.
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 [ocamlfind: make opt] Command started
 + make "all" (CWD=/home/opam/.opam/system/build/camlidl.1.05)
 - cd compiler; make all
@@ -307,6 +351,9 @@ The following actions will be performed:
 - make[1]: Entering directory `/home/opam/.opam/system/build/camlidl.1.05/tools'
 - make[1]: Nothing to be done for `all'.
 - make[1]: Leaving directory `/home/opam/.opam/system/build/camlidl.1.05/tools'
+- File "utils.ml", line 51, characters 15-28:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - File "lexpr.ml", line 268, characters 10-16:
 - Warning 26: unused variable trail'.
 - File "constdecl.ml", line 36, characters 4-24:
@@ -335,9 +382,9 @@ The following actions will be performed:
 - comerror.c:171:3: warning: implicit declaration of function 'caml_format_exception' [-Wimplicit-function-declaration]
 -    char * msg = format_caml_exception(exn_bucket);
 -    ^
-- In file included from /usr/lib64/ocaml/caml/mlvalues.h:20:0,
+- In file included from /usr/lib64/ocaml/caml/mlvalues.h:18:0,
 -                  from comerror.c:20:
-- /usr/lib64/ocaml/caml/compatibility.h:252:31: warning: initialization makes pointer from integer without a cast [enabled by default]
+- /usr/lib64/ocaml/caml/compatibility.h:249:31: warning: initialization makes pointer from integer without a cast [enabled by default]
 -  #define format_caml_exception caml_format_exception /*SP*/
 -                                ^
 - comerror.c:171:16: note: in expansion of macro 'format_caml_exception'
@@ -366,7 +413,7 @@ The following actions will be performed:
 - make[1]: Leaving directory `/home/opam/.opam/system/build/camlidl.1.05/tools'
 -> installed camlidl.1.05
 + make "opt" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
-- for p in findlib bytes; do ( cd src/$p; make opt ) || exit; done
+- for p in findlib; do ( cd src/$p; make opt ) || exit; done
 - make[1]: Entering directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
 - ocamldep *.ml *.mli >depend
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
@@ -385,20 +432,62 @@ The following actions will be performed:
 -     ocamlopt -I +compiler-libs -shared -o findlib.cmxs findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx; \
 - fi
 - ocamlopt -I +compiler-libs -c ocaml_args.ml
+- File "fl_split.ml", line 114, characters 10-21:
+- Warning 3: deprecated: String.copy
+- File "fl_split.ml", line 118, characters 43-62:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "fl_split.ml", line 119, characters 37-56:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "fl_split.ml", line 123, characters 34-47:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "fl_split.ml", line 124, characters 34-47:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "fl_split.ml", line 126, characters 26-39:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "fl_split.ml", line 127, characters 45-64:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "fl_split.ml", line 128, characters 38-57:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "fl_split.ml", line 136, characters 13-26:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "fl_split.ml", line 140, characters 1-19:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "fl_meta.mll", line 57, characters 13-26:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "fl_meta.mll", line 61, characters 11-29:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "fl_meta.mll", line 62, characters 11-22:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "fl_metascanner.ml", line 111, characters 23-32:
+- Warning 3: deprecated: Sort.list
+- Use List.sort instead.
+- File "fl_metascanner.ml", line 372, characters 20-29:
+- Warning 3: deprecated: Sort.list
+- Use List.sort instead.
 - ocamlopt -I +compiler-libs -c frontend.ml
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlopt -I +compiler-libs -o ocamlfind_opt findlib.cmxa unix.cmxa \
 - 	   ocaml_args.cmx frontend.cmx
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
-- make[1]: Entering directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/bytes'
-- files="bytes.cmx bytes.a bytes.cmxa"; \
-- if [ 1 = 1 ]; then \
--     files="$files bytes.cmxs"; \
-- fi; \
-- ocamlbuild -classic-display -no-links $files
-- /usr/bin/ocamlopt.opt -c -o bytes.cmx bytes.ml
-- /usr/bin/ocamlopt.opt -a bytes.cmx -o bytes.cmxa
-- /usr/bin/ocamlopt.opt -shared bytes.cmx -o bytes.cmxs
-- make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/bytes'
 [ocamlfind: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
 - mkdir -p "/home/opam/.opam/system/bin"
@@ -408,7 +497,7 @@ The following actions will be performed:
 - mkdir -p "`dirname \"/home/opam/.opam/system/lib/findlib.conf\"`"
 - test -f "/home/opam/.opam/system/lib/findlib.conf" || cp findlib.conf "/home/opam/.opam/system/lib/findlib.conf"
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5'
-- for p in findlib bytes; do ( cd src/$p; make install ); done
+- for p in findlib; do ( cd src/$p; make install ); done
 - make[1]: Entering directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
 - mkdir -p "/home/opam/.opam/system/lib/findlib"
 - mkdir -p "/home/opam/.opam/system/bin"
@@ -423,12 +512,6 @@ The following actions will be performed:
 -     cp topdirs.cmi toploop.cmi "/home/opam/.opam/system/lib/findlib/"; \
 - fi
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
-- make[1]: Entering directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/bytes'
-- ocamlbuild -classic-display -no-links bytes.cmi bytes.cma
-- mkdir -p "/home/opam/.opam/system/lib/bytes"
-- cd _build/ && cp ../META bytes.cmi bytes.cma "/home/opam/.opam/system/lib/bytes"
-- cd _build/ && for f in bytes.cmx bytes.a bytes.cmxa bytes.cmxs; do if [ -f "$f" ]; then cp $f "/home/opam/.opam/system/lib/bytes"; fi; done
-- make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/bytes'
 - make install-meta
 - make[1]: Entering directory `/home/opam/.opam/system/build/ocamlfind.1.5.5'
 - for x in `ls site-lib-src`; do if [ "$x" != "CVS" -a -f "site-lib-src/$x/META" ]; then mkdir -p "/home/opam/.opam/system/lib/$x"; cp site-lib-src/$x/META "/home/opam/.opam/system/lib/$x"; fi; done
@@ -455,11 +538,11 @@ The following actions will be performed:
 # os                   linux
 # command              cc test.c -lgmp -lmpfr
 # path                 /home/opam/.opam/system/build/conf-mpfr.1
-# compiler             system (4.00.1)
+# compiler             system (4.02.1)
 # exit-code            1
-# env-file             /home/opam/.opam/system/build/conf-mpfr.1/conf-mpfr-50-60459a.env
-# stdout-file          /home/opam/.opam/system/build/conf-mpfr.1/conf-mpfr-50-60459a.out
-# stderr-file          /home/opam/.opam/system/build/conf-mpfr.1/conf-mpfr-50-60459a.err
+# env-file             /home/opam/.opam/system/build/conf-mpfr.1/conf-mpfr-21-60459a.env
+# stdout-file          /home/opam/.opam/system/build/conf-mpfr.1/conf-mpfr-21-60459a.out
+# stderr-file          /home/opam/.opam/system/build/conf-mpfr.1/conf-mpfr-21-60459a.err
 ### stderr ###
 # test.c:2:18: fatal error: mpfr.h: No such file or directory
 #  #include <mpfr.h>
@@ -479,5 +562,5 @@ The following changes have been performed
   - install ocamlfind 1.5.5
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150215103742.export"
+    opam switch import "~/.opam/system/backup/state-20150218180021.export"
 'opam install apron' failed.
