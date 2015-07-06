@@ -1,19 +1,19 @@
 ++ opam install dockerfile -e debian
+Debian depexts: m4
 + depext=m4
 + echo Debian depexts: m4
 + '[' m4 '!=' '' ']'
 + sudo apt-get update -y
-Debian depexts: m4
-Get:1 http://security.debian.org stable/updates Release.gpg [836 B]
-Get:2 http://http.debian.net stable Release.gpg [1655 B]
-Get:3 http://http.debian.net stable-updates Release.gpg [836 B]
-Get:4 http://security.debian.org stable/updates Release [102 kB]
-Get:5 http://http.debian.net stable Release [168 kB]
-Get:6 http://http.debian.net stable-updates Release [124 kB]
-Get:7 http://http.debian.net stable/main amd64 Packages [7625 kB]
-Get:8 http://security.debian.org stable/updates/main amd64 Packages [297 kB]
-Get:9 http://http.debian.net stable-updates/main amd64 Packages [3329 B]
-Fetched 8323 kB in 2s (3940 kB/s)
+Get:1 http://http.debian.net stable Release.gpg [1655 B]
+Get:2 http://http.debian.net stable-updates Release.gpg [836 B]
+Get:3 http://http.debian.net stable-updates Release [124 kB]
+Get:4 http://http.debian.net stable Release [168 kB]
+Get:5 http://http.debian.net stable-updates/main amd64 Packages [3329 B]
+Get:6 http://http.debian.net stable/main amd64 Packages [7625 kB]
+Get:7 http://security.debian.org stable/updates Release.gpg [836 B]
+Get:8 http://security.debian.org stable/updates Release [102 kB]
+Get:9 http://security.debian.org stable/updates/main amd64 Packages [298 kB]
+Fetched 8324 kB in 5s (1654 kB/s)
 Reading package lists...
 + sudo apt-get install -qq -y build-essential m4
 + sudo apt-get install -qq -y m4
@@ -25,19 +25,25 @@ Reading package lists...
 Debian srcexts:
 The following actions will be performed:
  - install   ocamlfind.1.5.5                       [required by dockerfile]
- - install   dockerfile.1.0.0
-=== 2 to install ===
+ - install   cmdliner.0.9.6                        [required by dockerfile]
+ - install   dockerfile.1.1.0
+=== 3 to install ===
 
 =-=- Synchronizing package archives -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-[default] Downloading http://opam-archive:8080/archives/dockerfile.1.0.0+opam.tar.gz
+[default] Downloading http://opam-archive:8080/archives/cmdliner.0.9.6+opam.tar.gz
+[default] Downloading http://opam-archive:8080/archives/dockerfile.1.1.0+opam.tar.gz
 [default] Downloading http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  234k  100  234k    0     0  41.3M      0 --:--:-- --:--:-- --:--:-- 57.3M
-200
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  % Total    % R  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100 53818  100 53818    0     0  18.9M      0 --:--:-- --:--:-- --:--:-- 51.3M
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0eceived % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100 57580  100 57580    0     0  10.2M      0 --:--:-- --:--:-- --:--:-- 13.7M
+200
+100 66114  100 66114    0     0  5208k      0 --:--:-- --:--:-- --:--:-- 5869k
+100  234k  100  234k    0     0  14.8M      0 --:--:-- --:--:-- --:--:-- 16.3M
+200
 200
 
 =-=- Installing packages =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -101,8 +107,8 @@ Configuration has been written to Makefile.config
 You can now do 'make all', and optionally 'make opt', to build ocamlfind.
 for p in findlib bytes; do ( cd src/$p; make all ) || exit; done
 make[1]: Entering directory `/home/opam/.opam/4.01.0/build/ocamlfind.1.5.5/src/findlib'
-ocamllex fl_meta.mll
 Makefile:160: depend: No such file or directory
+ocamllex fl_meta.mll
 22 states, 392 transitions, table size 1700 bytes
 ocamldep *.ml *.mli >depend
 make[1]: Leaving directory `/home/opam/.opam/4.01.0/build/ocamlfind.1.5.5/src/findlib'
@@ -259,7 +265,19 @@ cp doc/ref-man/ocamlfind.1 /home/opam/.opam/4.01.0/man/man1
 cp doc/ref-man/META.5 doc/ref-man/site-lib.5 doc/ref-man/findlib.conf.5 /home/opam/.opam/4.01.0/man/man5
 make[1]: Leaving directory `/home/opam/.opam/4.01.0/build/ocamlfind.1.5.5'
 Installing ocamlfind.1.5.5.
-Building dockerfile.1.0.0:
+Building cmdliner.0.9.6:
+  ocaml pkg/git.ml
+  ocaml pkg/build.ml native=true native-dynlink=true
+ocamlfind ocamldep -modules src/cmdliner.ml > src/cmdliner.ml.depends
+ocamlfind ocamldep -modules src/cmdliner.mli > src/cmdliner.mli.depends
+ocamlfind ocamlc -c -I src -I test -o src/cmdliner.cmi src/cmdliner.mli
+ocamlfind ocamlopt -c -annot -bin-annot -I src -I test -o src/cmdliner.cmx src/cmdliner.ml
+ocamlfind ocamlopt -a src/cmdliner.cmx -o src/cmdliner.cmxa
+ocamlfind ocamlc -c -annot -bin-annot -I src -I test -o src/cmdliner.cmo src/cmdliner.ml
+ocamlfind ocamlc -a src/cmdliner.cmo -o src/cmdliner.cma
+ocamlfind ocamlopt -shared src/cmdliner.cmx -o src/cmdliner.cmxs
+Installing cmdliner.0.9.6.
+Building dockerfile.1.1.0:
   ./configure --prefix=/home/opam/.opam/4.01.0
   make
   make install
@@ -270,7 +288,7 @@ ocamlc: .............................................. /home/opam/.opam/4.01.0/b
 ocamlopt: ............................................ /home/opam/.opam/4.01.0/bin/ocamlopt.opt
 ocamlbuild: .......................................... /home/opam/.opam/4.01.0/bin/ocamlbuild
 Package name: ........................................ dockerfile
-Package version: ..................................... 1.0.0
+Package version: ..................................... 1.1.0
 os_type: ............................................. Unix
 system: .............................................. linux
 architecture: ........................................ amd64
@@ -318,18 +336,35 @@ Compiler support generation of .cmxs.: ............... true
 OCamlbuild additional flags: ......................... 
 Create documentations: ............................... true
 Compile tests executable and library and run them: ... false
+pkg_cmdliner: ........................................ /home/opam/.opam/4.01.0/lib/cmdliner
 ocamldoc: ............................................ /home/opam/.opam/4.01.0/bin/ocamldoc
 
 ocaml setup.ml -build 
 /home/opam/.opam/4.01.0/bin/ocamlopt.opt unix.cmxa -I /home/opam/.opam/4.01.0/lib/ocaml/ocamlbuild /home/opam/.opam/4.01.0/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /home/opam/.opam/4.01.0/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
-/home/opam/.opam/4.01.0/bin/ocamlfind ocamldep -modules lib/dockerfile.mli > lib/dockerfile.mli.depends
-/home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -c -g -annot -bin-annot -short-paths -principal -I lib -o lib/dockerfile.cmi lib/dockerfile.mli
-/home/opam/.opam/4.01.0/bin/ocamlfind ocamldep -modules lib/dockerfile.ml > lib/dockerfile.ml.depends
-/home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -c -g -annot -bin-annot -short-paths -principal -I lib -o lib/dockerfile.cmo lib/dockerfile.ml
+/home/opam/.opam/4.01.0/bin/ocamlfind ocamldep -package cmdliner -modules lib/dockerfile.mli > lib/dockerfile.mli.depends
+/home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -c -g -annot -bin-annot -short-paths -principal -I lib -I lib -package cmdliner -I lib -o lib/dockerfile.cmi lib/dockerfile.mli
+/home/opam/.opam/4.01.0/bin/ocamlfind ocamldep -package cmdliner -modules lib/dockerfile.ml > lib/dockerfile.ml.depends
+/home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -c -g -annot -bin-annot -short-paths -principal -I lib -I lib -package cmdliner -I lib -o lib/dockerfile.cmo lib/dockerfile.ml
 /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -a lib/dockerfile.cmo -o lib/dockerfile.cma
-/home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -short-paths -principal -I lib -o lib/dockerfile.cmx lib/dockerfile.ml
+/home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -short-paths -principal -I lib -I lib -package cmdliner -I lib -o lib/dockerfile.cmx lib/dockerfile.ml
 /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -a lib/dockerfile.cmx -o lib/dockerfile.cmxa
 /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -shared lib/dockerfile.cmxa lib/dockerfile.cmx -o lib/dockerfile.cmxs
+/home/opam/.opam/4.01.0/bin/ocamlfind ocamldep -package cmdliner -modules lib/dockerfile_opam.mli > lib/dockerfile_opam.mli.depends
+/home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -c -g -annot -bin-annot -short-paths -principal -I lib -I lib -package cmdliner -I lib -o lib/dockerfile_opam.cmi lib/dockerfile_opam.mli
+/home/opam/.opam/4.01.0/bin/ocamlfind ocamldep -package cmdliner -modules lib/dockerfile_opam.ml > lib/dockerfile_opam.ml.depends
+/home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -c -g -annot -bin-annot -short-paths -principal -I lib -I lib -package cmdliner -I lib -o lib/dockerfile_opam.cmo lib/dockerfile_opam.ml
+/home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -a lib/dockerfile_opam.cmo -o lib/opam.cma
+/home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -short-paths -principal -I lib -I lib -package cmdliner -I lib -o lib/dockerfile_opam.cmx lib/dockerfile_opam.ml
+/home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -a lib/dockerfile_opam.cmx -o lib/opam.cmxa
+/home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -shared lib/opam.cmxa lib/dockerfile_opam.cmx -o lib/opam.cmxs
+/home/opam/.opam/4.01.0/bin/ocamlfind ocamldep -package cmdliner -modules lib/dockerfile_opam_cmdliner.mli > lib/dockerfile_opam_cmdliner.mli.depends
+/home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -c -g -annot -bin-annot -short-paths -principal -I lib -I lib -package cmdliner -I lib -o lib/dockerfile_opam_cmdliner.cmi lib/dockerfile_opam_cmdliner.mli
+/home/opam/.opam/4.01.0/bin/ocamlfind ocamldep -package cmdliner -modules lib/dockerfile_opam_cmdliner.ml > lib/dockerfile_opam_cmdliner.ml.depends
+/home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -c -g -annot -bin-annot -short-paths -principal -I lib -I lib -package cmdliner -I lib -o lib/dockerfile_opam_cmdliner.cmo lib/dockerfile_opam_cmdliner.ml
+/home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -a lib/dockerfile_opam_cmdliner.cmo -o lib/opam-cmdliner.cma
+/home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -short-paths -principal -I lib -I lib -package cmdliner -I lib -o lib/dockerfile_opam_cmdliner.cmx lib/dockerfile_opam_cmdliner.ml
+/home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -a lib/dockerfile_opam_cmdliner.cmx -o lib/opam-cmdliner.cmxa
+/home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -shared lib/opam-cmdliner.cmxa lib/dockerfile_opam_cmdliner.cmx -o lib/opam-cmdliner.cmxs
 ocaml setup.ml -install 
 Installed /home/opam/.opam/4.01.0/lib/dockerfile/dockerfile.mli
 Installed /home/opam/.opam/4.01.0/lib/dockerfile/dockerfile.cma
@@ -341,5 +376,25 @@ Installed /home/opam/.opam/4.01.0/lib/dockerfile/dockerfile.cmti
 Installed /home/opam/.opam/4.01.0/lib/dockerfile/dockerfile.cmt
 Installed /home/opam/.opam/4.01.0/lib/dockerfile/dockerfile.annot
 Installed /home/opam/.opam/4.01.0/lib/dockerfile/dockerfile.cmx
+Installed /home/opam/.opam/4.01.0/lib/dockerfile/dockerfile_opam_cmdliner.mli
+Installed /home/opam/.opam/4.01.0/lib/dockerfile/opam-cmdliner.cma
+Installed /home/opam/.opam/4.01.0/lib/dockerfile/opam-cmdliner.cmxa
+Installed /home/opam/.opam/4.01.0/lib/dockerfile/opam-cmdliner.a
+Installed /home/opam/.opam/4.01.0/lib/dockerfile/opam-cmdliner.cmxs
+Installed /home/opam/.opam/4.01.0/lib/dockerfile/dockerfile_opam_cmdliner.cmi
+Installed /home/opam/.opam/4.01.0/lib/dockerfile/dockerfile_opam_cmdliner.cmti
+Installed /home/opam/.opam/4.01.0/lib/dockerfile/dockerfile_opam_cmdliner.cmt
+Installed /home/opam/.opam/4.01.0/lib/dockerfile/dockerfile_opam_cmdliner.annot
+Installed /home/opam/.opam/4.01.0/lib/dockerfile/dockerfile_opam_cmdliner.cmx
+Installed /home/opam/.opam/4.01.0/lib/dockerfile/dockerfile_opam.mli
+Installed /home/opam/.opam/4.01.0/lib/dockerfile/opam.cma
+Installed /home/opam/.opam/4.01.0/lib/dockerfile/opam.cmxa
+Installed /home/opam/.opam/4.01.0/lib/dockerfile/opam.a
+Installed /home/opam/.opam/4.01.0/lib/dockerfile/opam.cmxs
+Installed /home/opam/.opam/4.01.0/lib/dockerfile/dockerfile_opam.cmi
+Installed /home/opam/.opam/4.01.0/lib/dockerfile/dockerfile_opam.cmti
+Installed /home/opam/.opam/4.01.0/lib/dockerfile/dockerfile_opam.cmt
+Installed /home/opam/.opam/4.01.0/lib/dockerfile/dockerfile_opam.annot
+Installed /home/opam/.opam/4.01.0/lib/dockerfile/dockerfile_opam.cmx
 Installed /home/opam/.opam/4.01.0/lib/dockerfile/META
-Installing dockerfile.1.0.0.
+Installing dockerfile.1.1.0.
