@@ -3,19 +3,19 @@
 #  - libsqlite3-dev
 #  - m4
 Not running as root, system installation will be done through "sudo"
+Hit http://security.debian.org stable/updates Release.gpg
 Hit http://download.opensuse.org  Release.gpg
 Hit http://http.debian.net stable Release.gpg
-Hit http://download.opensuse.org  Release
+Hit http://security.debian.org stable/updates Release
 Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
 Hit http://http.debian.net stable Release
-Hit http://download.opensuse.org  Packages
+Hit http://download.opensuse.org  Release
 Get:2 http://http.debian.net stable-updates Release [124 kB]
-Hit http://http.debian.net stable/main amd64 Packages
-Hit http://security.debian.org stable/updates Release.gpg
-Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
-Hit http://security.debian.org stable/updates Release
 Hit http://security.debian.org stable/updates/main amd64 Packages
-Fetched 129 kB in 1s (114 kB/s)
+Hit http://download.opensuse.org  Packages
+Hit http://http.debian.net stable/main amd64 Packages
+Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
+Fetched 129 kB in 1s (121 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
@@ -38,20 +38,20 @@ The following actions will be performed:
 [camlp4: from default] Command started
 [dyntype: from default] Command started
 [ocamlfind: from default] Command started
-[ocamlfind: from default] Command started
 [dyntype: from default] Command started
+[ocamlfind: from default] Command started
 [camlp4: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[orm: from default] Command started
 [default] http://opam-archive:8080/archives/dyntype.0.9.0+opam.tar.gz downloaded
+[orm: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [sqlite3: from default] Command started
 [default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
 [type_conv: from default] Command started
 [orm: from default] Command started
 [sqlite3: from default] Command started
 [default] http://opam-archive:8080/archives/orm.0.7.0+opam.tar.gz downloaded
-[type_conv: from default] Command started
 [default] http://opam-archive:8080/archives/sqlite3.2.0.9+opam.tar.gz downloaded
+[type_conv: from default] Command started
 [default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -137,6 +137,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -182,11 +183,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -195,8 +197,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -727,8 +727,8 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.ml > camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4Parsers -I camlp4 -I camlp4/config -o camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.ml
 - ocamlbuild -classic-display -no-ocamlfind  `./build/camlp4-native-only.sh`
-- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -for-pack Camlp4 -g -w Z -I camlp4/import -warn-error A-3 -pp 'camlp4/boot/camlp4boot.native -D OPT' -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Sig.cmx camlp4/Camlp4/Sig.ml
 - + echo camlp4/Camlp4.cmx camlp4/Camlp4Top.cmx camlp4/camlp4prof.native camlp4/mkcamlp4.native camlp4/camlp4.native camlp4/camlp4fulllib.cmxa camlp4/camlp4boot.native camlp4/camlp4r.native camlp4/camlp4rf.native camlp4/camlp4o.native camlp4/camlp4of.native camlp4/camlp4oof.native camlp4/camlp4orf.native camlp4/Camlp4Parsers/Camlp4AstLoader.cmx camlp4/Camlp4Parsers/Camlp4AstLoader.o camlp4/Camlp4Parsers/Camlp4DebugParser.cmx camlp4/Camlp4Parsers/Camlp4DebugParser.o camlp4/Camlp4Parsers/Camlp4GrammarParser.cmx camlp4/Camlp4Parsers/Camlp4GrammarParser.o camlp4/Camlp4Parsers/Camlp4ListComprehension.cmx camlp4/Camlp4Parsers/Camlp4ListComprehension.o camlp4/Camlp4Parsers/Camlp4MacroParser.cmx camlp4/Camlp4Parsers/Camlp4MacroParser.o camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmx camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.o camlp4/Camlp4Parsers/Camlp4OCamlParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlParser.o camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlParserParser.o camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.o camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.o camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.o camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmx camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.o camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmx camlp4/Camlp4Parsers/Camlp4QuotationCommon.o camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmx camlp4/Camlp4Parsers/Camlp4QuotationExpander.o camlp4/Camlp4Printers/Camlp4AstDumper.cmx camlp4/Camlp4Printers/Camlp4AstDumper.o camlp4/Camlp4Printers/Camlp4AutoPrinter.cmx camlp4/Camlp4Printers/Camlp4AutoPrinter.o camlp4/Camlp4Printers/Camlp4NullDumper.cmx camlp4/Camlp4Printers/Camlp4NullDumper.o camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmx camlp4/Camlp4Printers/Camlp4OCamlAstDumper.o camlp4/Camlp4Printers/Camlp4OCamlPrinter.cmx camlp4/Camlp4Printers/Camlp4OCamlPrinter.o camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.cmx camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.o camlp4/Camlp4Filters/Camlp4AstLifter.cmx camlp4/Camlp4Filters/Camlp4AstLifter.o camlp4/Camlp4Filters/Camlp4ExceptionTracer.cmx camlp4/Camlp4Filters/Camlp4ExceptionTracer.o camlp4/Camlp4Filters/Camlp4FoldGenerator.cmx camlp4/Camlp4Filters/Camlp4FoldGenerator.o camlp4/Camlp4Filters/Camlp4LocationStripper.cmx camlp4/Camlp4Filters/Camlp4LocationStripper.o camlp4/Camlp4Filters/Camlp4MapGenerator.cmx camlp4/Camlp4Filters/Camlp4MapGenerator.o camlp4/Camlp4Filters/Camlp4MetaGenerator.cmx camlp4/Camlp4Filters/Camlp4MetaGenerator.o camlp4/Camlp4Filters/Camlp4Profiler.cmx camlp4/Camlp4Filters/Camlp4Profiler.o camlp4/Camlp4Filters/Camlp4TrashRemover.cmx camlp4/Camlp4Filters/Camlp4TrashRemover.o
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -for-pack Camlp4 -g -w Z -I camlp4/import -warn-error A-3 -pp 'camlp4/boot/camlp4boot.native -D OPT' -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Sig.cmx camlp4/Camlp4/Sig.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -for-pack Camlp4 -g -w Z -I camlp4/import -warn-error A-3 -pp 'camlp4/boot/camlp4boot.native -D OPT' -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Utils.cmx camlp4/Camlp4/Utils.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -for-pack Camlp4 -g -w Z -I camlp4/import -warn-error A-3 -pp 'camlp4/boot/camlp4boot.native -D OPT' -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/OCamlInitSyntax.cmx camlp4/Camlp4/OCamlInitSyntax.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -for-pack Camlp4 -g -w Z -I camlp4/import -warn-error A-3 -pp 'camlp4/boot/camlp4boot.native -D OPT' -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/ErrorHandler.cmx camlp4/Camlp4/ErrorHandler.ml
@@ -1214,18 +1214,15 @@ The following actions will be performed:
 - ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot weakid.mli
 - ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm weakid.ml
 - ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm sql_backend.ml
+- ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm sql_init.ml
+- ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm sql_save.ml
+- ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm sql_get.ml
 - File "weakid.ml", line 71, characters 11-23:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
 - File "weakid.ml", line 239, characters 16-22:
 - Warning 3: deprecated: create
 - Use Array.make instead.
-- ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm sql_init.ml
-- ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm sql_save.ml
-- ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm sql_get.ml
-- ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm sql_delete.ml
-- ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm sql_cache.ml
-- ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot db.mli
 - File "sql_backend.ml", line 263, characters 66-86:
 - Warning 43: the label field is not optional.
 - File "sql_backend.ml", line 264, characters 78-97:
@@ -1235,6 +1232,9 @@ The following actions will be performed:
 - File "sql_save.ml", line 138, characters 12-24:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
+- ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm sql_delete.ml
+- ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm sql_cache.ml
+- ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot db.mli
 - ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm db.ml
 - ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm sig.ml
 - ocamlfind ocamlopt -pack -o orm.cmx   weakid.cmx sql_backend.cmx sql_init.cmx sql_save.cmx sql_get.cmx sql_delete.cmx sql_cache.cmx db.cmx sig.cmx
@@ -1245,6 +1245,16 @@ The following actions will be performed:
 - ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm weakid.ml
 - ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm sql_backend.ml
 - ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm sql_init.ml
+- ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm sql_save.ml
+- ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm sql_get.ml
+- ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm sql_delete.ml
+- ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm sql_cache.ml
+- ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm db.ml
+- ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm sig.ml
+- ocamlfind ocamlc -pack -o orm.cmo -g  weakid.cmo sql_backend.cmo sql_init.cmo sql_save.cmo sql_get.cmo sql_delete.cmo sql_cache.cmo db.cmo sig.cmo
+- ocamlmklib         \
+- 				-o orm_stubs  custom_unix_stubs.o   \
+- 				
 - File "weakid.ml", line 71, characters 11-23:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
@@ -1257,20 +1267,10 @@ The following actions will be performed:
 - Warning 43: the label field is not optional.
 - File "sql_backend.ml", line 267, characters 73-93:
 - Warning 43: the label field is not optional.
-- ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm sql_save.ml
-- ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm sql_get.ml
-- ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm sql_delete.ml
-- ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm sql_cache.ml
-- ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm db.ml
-- ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm sig.ml
-- ocamlfind ocamlc -pack -o orm.cmo -g  weakid.cmo sql_backend.cmo sql_init.cmo sql_save.cmo sql_get.cmo sql_delete.cmo sql_cache.cmo db.cmo sig.cmo
-- ocamlmklib         \
-- 				-o orm_stubs  custom_unix_stubs.o   \
-- 				
-- ocamlfind ocamlc -a -dllib dllorm_stubs.so -custom     -g         -cclib -lorm_stubs    -o orm.cma orm.cmo
 - File "sql_save.ml", line 138, characters 12-24:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
+- ocamlfind ocamlc -a -dllib dllorm_stubs.so -custom     -g         -cclib -lorm_stubs    -o orm.cma orm.cmo
 - make[3]: Leaving directory `/home/opam/.opam/4.02.1/build/orm.0.7.0/lib'
 - make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/orm.0.7.0/lib'
 - make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/orm.0.7.0/lib'
