@@ -1,24 +1,24 @@
 ++ opam install theora -e debian
 + depext='libogg-dev libtheora-dev m4'
-Debian depexts: libogg-dev libtheora-dev m4
 + echo Debian depexts: libogg-dev libtheora-dev m4
 + '[' 'libogg-dev libtheora-dev m4' '!=' '' ']'
 + sudo apt-get update -y
-Hit http://download.opensuse.org  Release.gpg
-Hit http://download.opensuse.org  Release
-Hit http://download.opensuse.org  Packages
+Debian depexts: libogg-dev libtheora-dev m4
+Get:1 http://download.opensuse.org  Release.gpg [481 B]
+Get:2 http://download.opensuse.org  Release [989 B]
 Hit http://http.debian.net stable Release.gpg
-Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
+Get:3 http://http.debian.net stable-updates Release.gpg [836 B]
 Hit http://http.debian.net stable Release
-Get:2 http://security.debian.org stable/updates Release.gpg [836 B]
-Get:3 http://http.debian.net stable-updates Release [124 kB]
+Get:4 http://download.opensuse.org  Packages [5902 B]
+Get:5 http://http.debian.net stable-updates Release [124 kB]
 Hit http://http.debian.net stable/main amd64 Packages
-Get:4 http://security.debian.org stable/updates Release [102 kB]
-Get:5 http://http.debian.net stable-updates/main amd64 Packages [4374 B]
-Get:6 http://security.debian.org stable/updates/main amd64 Packages [340 kB]
-Fetched 572 kB in 1s (328 kB/s)
+Get:6 http://security.debian.org stable/updates Release.gpg [836 B]
+Get:7 http://http.debian.net stable-updates/main amd64 Packages [4374 B]
+Get:8 http://security.debian.org stable/updates Release [102 kB]
+Get:9 http://security.debian.org stable/updates/main amd64 Packages [340 kB]
+Fetched 580 kB in 3s (187 kB/s)
 Reading package lists...
-W: Size of file /var/lib/apt/lists/security.debian.org_dists_stable_updates_main_binary-amd64_Packages.gz is not what the server reported 340423 340445
+W: Size of file /var/lib/apt/lists/security.debian.org_dists_stable_updates_main_binary-amd64_Packages.gz is not what the server reported 340393 340445
 + sudo apt-get install -qq -y build-essential m4
 + sudo apt-get install -qq -y libogg-dev libtheora-dev m4
 debconf: delaying package configuration, since apt-utils is not installed
@@ -51,12 +51,12 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [ogg: from default] Command started
 [theora: from default] Command started
-[ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[ogg: from default] Command started
 [theora: from default] Command started
-[default] http://opam-archive:8080/archives/ogg.0.4.3+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
+[ogg: from default] Command started
 [default] http://opam-archive:8080/archives/theora.0.3.0+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ogg.0.4.3+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -196,6 +196,9 @@ The following actions will be performed:
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
@@ -224,9 +227,6 @@ The following actions will be performed:
 - 	export USE_CYGPATH; \
 - 	cat findlib.conf.in | \
 - 		tools/patch '@SITELIB@' '/home/opam/.opam/4.02.1/lib' >findlib.conf
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - if ocamlc.opt >/dev/null 2>&1; then \
 - 		echo 'ocamlc="ocamlc.opt"' >>findlib.conf; \
 - 	fi
@@ -252,6 +252,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -296,7 +297,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -373,8 +373,7 @@ The following actions will be performed:
 - checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
 - checking for gcc option to accept ISO C89... none needed
-- checking build system type... 
-- x86_64-unknown-linux-gnu
+- checking build system type... x86_64-unknown-linux-gnu
 - checking host system type... x86_64-unknown-linux-gnu
 - checking for a BSD-compatible install... /usr/bin/install -c
 - checking that calling user is not root... ok
@@ -438,12 +437,6 @@ The following actions will be performed:
 - ocamlc.opt -c ogg.ml
 - ocamlc.opt -c ogg_demuxer.mli
 - ocamlc.opt -c ogg_demuxer.ml
-- File "ogg.ml", line 164, characters 24-37:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "ogg_demuxer.ml", line 310, characters 18-31:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlmklib      -L/home/opam/.opam/4.02.1/lib/lib   \
 - 				-o ogg_stubs  ogg_stubs.o -logg  \
 - 				
@@ -460,6 +453,12 @@ The following actions will be performed:
 - ocamlopt.opt -a        -ccopt -L/home/opam/.opam/4.02.1/lib/lib  -ccopt -L/home/opam/.opam/4.02.1/lib/lib   -cclib -logg_stubs -cclib -logg   -o ogg.cmxa ogg.cmx ogg_demuxer.cmx
 - make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ogg.0.4.3/src'
 - make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ogg.0.4.3/src'
+- File "ogg.ml", line 164, characters 24-37:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "ogg_demuxer.ml", line 310, characters 18-31:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - File "ogg.ml", line 164, characters 24-37:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
