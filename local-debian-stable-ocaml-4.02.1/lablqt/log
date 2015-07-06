@@ -1,35 +1,35 @@
 ++ opam install lablqt -e debian
 + depext=m4
-Debian depexts: m4
 + echo Debian depexts: m4
 + '[' m4 '!=' '' ']'
 + sudo apt-get update -y
-Hit http://download.opensuse.org  Release.gpg
+Debian depexts: m4
+Get:1 http://security.debian.org stable/updates Release.gpg [836 B]
+Get:2 http://download.opensuse.org  Release.gpg [481 B]
+Get:3 http://security.debian.org stable/updates Release [102 kB]
 Hit http://http.debian.net stable Release.gpg
-Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
-Hit http://download.opensuse.org  Release
+Get:4 http://download.opensuse.org  Release [989 B]
+Get:5 http://http.debian.net stable-updates Release.gpg [836 B]
 Hit http://http.debian.net stable Release
-Get:2 http://http.debian.net stable-updates Release [124 kB]
-Get:3 http://security.debian.org stable/updates Release.gpg [836 B]
-Hit http://download.opensuse.org  Packages
+Get:6 http://download.opensuse.org  Packages [5902 B]
+Get:7 http://http.debian.net stable-updates Release [124 kB]
 Hit http://http.debian.net stable/main amd64 Packages
-Get:4 http://http.debian.net stable-updates/main amd64 Packages [4374 B]
-Get:5 http://security.debian.org stable/updates Release [102 kB]
-Get:6 http://security.debian.org stable/updates/main amd64 Packages [340 kB]
-Fetched 572 kB in 2s (249 kB/s)
+Get:8 http://http.debian.net stable-updates/main amd64 Packages [4374 B]
+Get:9 http://security.debian.org stable/updates/main amd64 Packages [340 kB]
+Fetched 580 kB in 1s (521 kB/s)
 Reading package lists...
-W: Size of file /var/lib/apt/lists/security.debian.org_dists_stable_updates_main_binary-amd64_Packages.gz is not what the server reported 340423 340445
+W: Size of file /var/lib/apt/lists/security.debian.org_dists_stable_updates_main_binary-amd64_Packages.gz is not what the server reported 340393 340445
 + sudo apt-get install -qq -y build-essential m4
 + sudo apt-get install -qq -y m4
 ++ opam install lablqt -e source,linux
 + srcext=https://gist.githubusercontent.com/Kakadu/7dc6f7c9f8760f7fbace/raw/295dd3528cf9cf2be7a67a9752e530353bb6211b/get_qt.sh
-Debian srcexts: https://gist.githubusercontent.com/Kakadu/7dc6f7c9f8760f7fbace/raw/295dd3528cf9cf2be7a67a9752e530353bb6211b/get_qt.sh
 + echo Debian srcexts: https://gist.githubusercontent.com/Kakadu/7dc6f7c9f8760f7fbace/raw/295dd3528cf9cf2be7a67a9752e530353bb6211b/get_qt.sh
 + '[' https://gist.githubusercontent.com/Kakadu/7dc6f7c9f8760f7fbace/raw/295dd3528cf9cf2be7a67a9752e530353bb6211b/get_qt.sh '!=' '' ']'
+Debian srcexts: https://gist.githubusercontent.com/Kakadu/7dc6f7c9f8760f7fbace/raw/295dd3528cf9cf2be7a67a9752e530353bb6211b/get_qt.sh
 ++ mktemp
-+ t=/tmp/tmp.5OlhFKAc2i
++ t=/tmp/tmp.6CZy30F6hV
 + curl -sL https://gist.githubusercontent.com/Kakadu/7dc6f7c9f8760f7fbace/raw/295dd3528cf9cf2be7a67a9752e530353bb6211b/get_qt.sh
-+ bash -ex /tmp/tmp.5OlhFKAc2i
++ bash -ex /tmp/tmp.6CZy30F6hV
 + sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu trusty universe'
 sudo: add-apt-repository: command not found
 + opam install lablqt
@@ -139,6 +139,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -184,12 +186,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -198,8 +200,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -251,7 +251,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -296,6 +295,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -361,20 +361,6 @@ The following actions will be performed:
 - make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlfind.1.5.5'
 -> installed ocamlfind.1.5.5
 
-#=== ERROR while installing conf-qt.5.2.1 =====================================#
-# opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
-# os                   linux
-# command              bash -c min="5.2.1"; cur=`qmake -query QT_VERSION`; res=`echo -e "$min\n$cur" | sort | head -n 1`; [ "$res" = "$min" ]
-# path                 /home/opam/.opam/4.02.1/build/conf-qt.5.2.1
-# compiler             4.02.1
-# exit-code            1
-# env-file             /home/opam/.opam/4.02.1/build/conf-qt.5.2.1/conf-qt-52-c61e7b.env
-# stdout-file          /home/opam/.opam/4.02.1/build/conf-qt.5.2.1/conf-qt-52-c61e7b.out
-# stderr-file          /home/opam/.opam/4.02.1/build/conf-qt.5.2.1/conf-qt-52-c61e7b.err
-### stderr ###
-# bash: qmake: command not found
-
-
 
 =-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 The following actions were aborted
@@ -384,6 +370,20 @@ The following actions failed
 The following changes have been performed
   - install ocamlfind 1.5.5
 
+#=== ERROR while installing conf-qt.5.2.1 =====================================#
+# opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
+# os                   linux
+# command              bash -c min="5.2.1"; cur=`qmake -query QT_VERSION`; res=`echo -e "$min\n$cur" | sort | head -n 1`; [ "$res" = "$min" ]
+# path                 /home/opam/.opam/4.02.1/build/conf-qt.5.2.1
+# compiler             4.02.1
+# exit-code            1
+# env-file             /home/opam/.opam/4.02.1/build/conf-qt.5.2.1/conf-qt-53-c61e7b.env
+# stdout-file          /home/opam/.opam/4.02.1/build/conf-qt.5.2.1/conf-qt-53-c61e7b.out
+# stderr-file          /home/opam/.opam/4.02.1/build/conf-qt.5.2.1/conf-qt-53-c61e7b.err
+### stderr ###
+# bash: qmake: command not found
+
+
 The former state can be restored with:
-    opam switch import "~/.opam/4.02.1/backup/state-20150218132933.export"
+    opam switch import "~/.opam/4.02.1/backup/state-20150219023958.export"
 'opam install lablqt' failed.
