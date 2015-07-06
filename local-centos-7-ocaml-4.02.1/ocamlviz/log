@@ -12,14 +12,14 @@ The following actions will be performed:
 [cairo2: from default] Command started
 [lablgtk: from default] Command started
 [ocamlfind: from default] Command started
-[ocamlfind: from default] Command started
 [cairo2: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/cairo2.0.4.6+opam.tar.gz downloaded
 [ocamlviz: from default] Command started
 [lablgtk: from default] Command started
-[default] http://opam-archive:8080/archives/cairo2.0.4.6+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/lablgtk.2.18.3+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [ocamlviz: from default] Command started
+[default] http://opam-archive:8080/archives/lablgtk.2.18.3+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlviz.1.01+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -111,6 +111,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -156,19 +158,9 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
-- if [ "true" = "true" ]; then                 \
-- 	cp topfind.ml.in topfind.ml;                             \
-- else                                                             \
-- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 		> topfind.ml ;                                   \
-- fi
-- ocamlc -I +compiler-libs -c topfind.mli
-- ocamlc -I +compiler-libs -g -c topfind.ml
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -177,6 +169,14 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- if [ "true" = "true" ]; then                 \
+- 	cp topfind.ml.in topfind.ml;                             \
+- else                                                             \
+- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 		> topfind.ml ;                                   \
+- fi
+- ocamlc -I +compiler-libs -c topfind.mli
+- ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
 - export USE_CYGPATH; \
@@ -364,18 +364,21 @@ The following actions will be performed:
 - checking whether we are cross compiling... no
 - checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
-- checking whether gcc accepts -g... 
-[ERROR] The compilation of lablgtk failed at "./configure --prefix
-        /home/opam/.opam/system LABLGLDIR=/home/opam/.opam/system/lib/lablgl".
-- yes
+- checking whether gcc accepts -g... yes
 - checking for gcc option to accept ISO C89... none needed
 - checking platform... Unix
-- checking native dynlink... checking for pkg-config... /usr/bin/pkg-config
+- checking native dynlink... 
+- checking for pkg-config... /usr/bin/pkg-config
 - checking for GTK+ - version >= 2.0.0... no
 - *** Could not run GTK+ test program, checking why...
 - *** The test program failed to compile or link. See the file config.log for the
 - *** exact error that occured. This usually means GTK+ is incorrectly installed.
 - configure: error: GTK+ is required
+[ERROR] The compilation of lablgtk failed at "./configure --prefix
+        /home/opam/.opam/system LABLGLDIR=/home/opam/.opam/system/lib/lablgl".
+[lablgtk: ocamlfind remove] Command started
++ ocamlfind "remove" "lablgtk2" (CWD=/home/opam/.opam/system/build/lablgtk.2.18.3)
+- ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/lablgtk2
 
 #=== ERROR while installing lablgtk.2.18.3 ====================================#
 # opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
@@ -402,9 +405,6 @@ The following actions will be performed:
 ### stderr ###
 # configure: error: GTK+ is required
 
-[lablgtk: ocamlfind remove] Command started
-+ ocamlfind "remove" "lablgtk2" (CWD=/home/opam/.opam/system/build/lablgtk.2.18.3)
-- ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/lablgtk2
 
 
 =-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -421,5 +421,5 @@ The following changes have been performed
 => This package requires gtk+ 2.0 development packages installed on your system
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150231015918.export"
+    opam switch import "~/.opam/system/backup/state-20150301063103.export"
 'opam install ocamlviz' failed.
