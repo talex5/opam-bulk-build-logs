@@ -1,15 +1,15 @@
 ++ opam install typerep_extended -e centos,centos-7
 + depext=
-CentOS 7 depexts:
 + echo CentOS 7 depexts:
 + '[' '' '!=' '' ']'
 + opam install typerep_extended
+CentOS 7 depexts:
 The following actions will be performed:
   - install ocamlfind        1.5.5                              [required by typerep_extended]
   - install camlp4           4.02.1+system                      [required by typerep_extended]
   - install type_conv        112.01.01                          [required by typerep_extended]
-  - install sexplib          112.17.00                          [required by typerep_extended]
-  - install bin_prot         112.17.00                          [required by typerep_extended]
+  - install sexplib          112.24.00                          [required by typerep_extended]
+  - install bin_prot         112.24.00                          [required by typerep_extended]
   - install typerep_extended 112.17.00    
 ===== 6 to install =====
 
@@ -17,18 +17,18 @@ The following actions will be performed:
 [bin_prot: from default] Command started
 [ocamlfind: from default] Command started
 [sexplib: from default] Command started
-[ocamlfind: from default] Command started
-[sexplib: from default] Command started
 [bin_prot: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [type_conv: from default] Command started
-[default] http://opam-archive:8080/archives/sexplib.112.17.00+opam.tar.gz downloaded
-[typerep_extended: from default] Command started
-[default] http://opam-archive:8080/archives/bin_prot.112.17.00+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/bin_prot.112.24.00+opam.tar.gz downloaded
+[typerep_extended: http] Command started
 [type_conv: from default] Command started
 [default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
-[typerep_extended: from default] Command started
-[default] http://opam-archive:8080/archives/typerep_extended.112.17.00+opam.tar.gz downloaded
+[sexplib: from default] Command started
+[default] http://opam-archive:8080/archives/sexplib.112.24.00+opam.tar.gz downloaded
+[typerep_extended: http] Command started
+[typerep_extended.112.17.00] https://ocaml.janestreet.com/ocaml-core/112.17/files/typerep_extended-112.17.00.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlp4: sh] Command started
@@ -65,8 +65,7 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) 
-- ok
+- Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib64/ocaml
@@ -119,6 +118,9 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -164,20 +166,9 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c fl_args.ml
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -186,6 +177,14 @@ The following actions will be performed:
 - fi
 - ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
 - export USE_CYGPATH; \
@@ -226,10 +225,6 @@ The following actions will be performed:
 - make[1]: Entering directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
 - ocamlopt -I +compiler-libs -c findlib_config.ml
 - ocamlopt -I +compiler-libs -c fl_split.ml
-- ocamlopt -I +compiler-libs -c fl_metatoken.ml
-- ocamlopt -I +compiler-libs -c fl_meta.ml
-- ocamlopt -I +compiler-libs -c fl_metascanner.ml
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -259,6 +254,11 @@ The following actions will be performed:
 - File "fl_split.ml", line 140, characters 1-19:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlopt -I +compiler-libs -c fl_metatoken.ml
+- ocamlopt -I +compiler-libs -c fl_meta.ml
+- ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_meta.mll", line 57, characters 13-26:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -274,7 +274,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -435,7 +434,7 @@ The following actions will be performed:
 -> installed type_conv.112.01.01
 [bin_prot: make] Command started
 [sexplib: ./configure] Command started
-+ ./configure "--enable-syntax" (CWD=/home/opam/.opam/system/build/sexplib.112.17.00)
++ ./configure "--enable-syntax" (CWD=/home/opam/.opam/system/build/sexplib.112.24.00)
 - 
 - Configuration: 
 - ocamlfind: ........................................... /home/opam/.opam/system/bin/ocamlfind
@@ -443,7 +442,7 @@ The following actions will be performed:
 - ocamlopt: ............................................ /usr/bin/ocamlopt.opt
 - ocamlbuild: .......................................... /usr/bin/ocamlbuild
 - Package name: ........................................ sexplib
-- Package version: ..................................... 112.17.00
+- Package version: ..................................... 112.24.00
 - os_type: ............................................. Unix
 - system: .............................................. linux
 - architecture: ........................................ amd64
@@ -501,7 +500,7 @@ The following actions will be performed:
 - pkg_type_conv: ....................................... /home/opam/.opam/system/lib/type_conv
 - 
 [sexplib: make] Command started
-+ make  (CWD=/home/opam/.opam/system/build/bin_prot.112.17.00)
++ make  (CWD=/home/opam/.opam/system/build/bin_prot.112.24.00)
 - ocamlopt.opt -o setup.exe setup.ml || ocamlopt -o setup.exe setup.ml || ocamlc -o setup.exe setup.ml
 - rm -f setup.cmx setup.cmi setup.o setup.obj setup.cmo
 - ./setup.exe -configure 
@@ -512,7 +511,7 @@ The following actions will be performed:
 - ocamlopt: ............................................ /usr/bin/ocamlopt.opt
 - ocamlbuild: .......................................... /usr/bin/ocamlbuild
 - Package name: ........................................ bin_prot
-- Package version: ..................................... 112.17.00
+- Package version: ..................................... 112.24.00
 - os_type: ............................................. Unix
 - system: .............................................. linux
 - architecture: ........................................ amd64
@@ -658,7 +657,7 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared syntax/pa_bin_prot.cmxa syntax/pa_bin_prot.cmx -o syntax/pa_bin_prot.cmxs
 - W: Cannot find source file matching module 'bin_prot' in library bin_prot
 [bin_prot: make install] Command started
-+ make "install" (CWD=/home/opam/.opam/system/build/bin_prot.112.17.00)
++ make "install" (CWD=/home/opam/.opam/system/build/bin_prot.112.24.00)
 - ./setup.exe -install 
 - Installed /home/opam/.opam/system/lib/bin_prot/binable.ml
 - Installed /home/opam/.opam/system/lib/bin_prot/nat0.mli
@@ -716,8 +715,8 @@ The following actions will be performed:
 - Installed /home/opam/.opam/system/lib/stublibs/dllbin_prot_stubs.so
 - Installed /home/opam/.opam/system/lib/stublibs/dllbin_prot_stubs.so.owner
 - ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/system/lib/stublibs is not mentioned in ld.conf
--> installed bin_prot.112.17.00
-+ make  (CWD=/home/opam/.opam/system/build/sexplib.112.17.00)
+-> installed bin_prot.112.24.00
++ make  (CWD=/home/opam/.opam/system/build/sexplib.112.24.00)
 - ocamlopt.opt -o setup.exe setup.ml || ocamlopt -o setup.exe setup.ml || ocamlc -o setup.exe setup.ml
 - rm -f setup.cmx setup.cmi setup.o setup.obj setup.cmo
 - ./setup.exe -configure 
@@ -728,7 +727,7 @@ The following actions will be performed:
 - ocamlopt: ............................................ /usr/bin/ocamlopt.opt
 - ocamlbuild: .......................................... /usr/bin/ocamlbuild
 - Package name: ........................................ sexplib
-- Package version: ..................................... 112.17.00
+- Package version: ..................................... 112.24.00
 - os_type: ............................................. Unix
 - system: .............................................. linux
 - architecture: ........................................ amd64
@@ -1005,13 +1004,13 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -package bigarray -package unix -for-pack Sexplib_unix -I unix/lib -I lib -o unix/lib/sexplib_unix_conv.cmx unix/lib/sexplib_unix_conv.ml
 - touch unix/lib/sexplib_unix.mli  ; if  /home/opam/.opam/system/bin/ocamlfind ocamlopt -pack -g -annot -bin-annot -I unix/lib unix/lib/sexplib_unix_conv.cmx -o unix/lib/sexplib_unix.cmx  ; then  rm -f unix/lib/sexplib_unix.mli  ; else  rm -f unix/lib/sexplib_unix.mli  ; exit 1; fi
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -a unix/lib/sexplib_unix.cmx -o unix/lib/sexplib_unix.cmxa
+- W: Cannot find source file matching module 'sexplib_unix' in library sexplib_unix
+- W: Cannot find source file matching module 'sexplib_num' in library sexplib_num
+- W: Cannot find source file matching module 'sexplib' in library sexplib
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared unix/lib/sexplib_unix.cmxa unix/lib/sexplib_unix.cmx -o unix/lib/sexplib_unix.cmxs
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -package type_conv -package camlp4.quotations -package camlp4.extend -modules syntax/pa_sexp_conv.mli > syntax/pa_sexp_conv.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -package type_conv -package camlp4.quotations -package camlp4.extend -I syntax -o syntax/pa_sexp_conv.cmi syntax/pa_sexp_conv.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -syntax camlp4o -package type_conv -package camlp4.quotations -package camlp4.extend -modules syntax/pa_sexp_conv.ml > syntax/pa_sexp_conv.ml.depends
-- W: Cannot find source file matching module 'sexplib_unix' in library sexplib_unix
-- W: Cannot find source file matching module 'sexplib_num' in library sexplib_num
-- W: Cannot find source file matching module 'sexplib' in library sexplib
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package type_conv -package camlp4.quotations -package camlp4.extend -I syntax -o syntax/pa_sexp_conv.cmo syntax/pa_sexp_conv.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -a syntax/pa_sexp_conv.cmo -o syntax/pa_sexp_conv.cma
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package type_conv -package camlp4.quotations -package camlp4.extend -I syntax -o syntax/pa_sexp_conv.cmx syntax/pa_sexp_conv.ml
@@ -1028,7 +1027,7 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -a top/sexplib_install_printers.cmx -o top/sexplib_top.cmxa
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared top/sexplib_top.cmxa top/sexplib_install_printers.cmx -o top/sexplib_top.cmxs
 [sexplib: make install] Command started
-+ make "install" (CWD=/home/opam/.opam/system/build/sexplib.112.17.00)
++ make "install" (CWD=/home/opam/.opam/system/build/sexplib.112.24.00)
 - ./setup.exe -install 
 - Installed /home/opam/.opam/system/lib/sexplib_unix/sexplib_unix_conv.ml
 - Installed /home/opam/.opam/system/lib/sexplib_unix/sexplib_unix.cmt
@@ -1141,15 +1140,15 @@ The following actions will be performed:
 - Installed /home/opam/.opam/system/lib/sexplib/pa_sexp_conv.annot
 - Installed /home/opam/.opam/system/lib/sexplib/pa_sexp_conv.cmx
 - Installed /home/opam/.opam/system/lib/sexplib/META
--> installed sexplib.112.17.00
+-> installed sexplib.112.24.00
 [typerep_extended: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/typerep_extended.112.17.00)
 - ocamlfind: Package `core_kernel' not found
-- W: Field 'pkg_core_kernel' is not set: Command ''/home/opam/.opam/system/bin/ocamlfind' query -format %d core_kernel > '/tmp/oasis-0ead39.txt'' terminated with error code 2
+- W: Field 'pkg_core_kernel' is not set: Command ''/home/opam/.opam/system/bin/ocamlfind' query -format %d core_kernel > '/tmp/oasis-58c41d.txt'' terminated with error code 2
 - ocamlfind: Package `typerep_lib' not found
-- W: Field 'pkg_typerep_lib' is not set: Command ''/home/opam/.opam/system/bin/ocamlfind' query -format %d typerep_lib > '/tmp/oasis-fa32fe.txt'' terminated with error code 2
+- W: Field 'pkg_typerep_lib' is not set: Command ''/home/opam/.opam/system/bin/ocamlfind' query -format %d typerep_lib > '/tmp/oasis-2ced39.txt'' terminated with error code 2
 - ocamlfind: Package `typerep_lib.syntax' not found
-- W: Field 'pkg_typerep_lib_syntax' is not set: Command ''/home/opam/.opam/system/bin/ocamlfind' query -format %d typerep_lib.syntax > '/tmp/oasis-ba208a.txt'' terminated with error code 2
+- W: Field 'pkg_typerep_lib_syntax' is not set: Command ''/home/opam/.opam/system/bin/ocamlfind' query -format %d typerep_lib.syntax > '/tmp/oasis-8f2f70.txt'' terminated with error code 2
 - E: Cannot find findlib package core_kernel
 - E: Cannot find findlib package typerep_lib
 - E: Cannot find findlib package typerep_lib.syntax
@@ -1157,30 +1156,6 @@ The following actions will be performed:
 [ERROR] The compilation of typerep_extended failed at "ocaml setup.ml
         -configure --prefix /home/opam/.opam/system".
 [typerep_extended: ocamlfind remove] Command started
-
-#=== ERROR while installing typerep_extended.112.17.00 ========================#
-# opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
-# os                   linux
-# command              ocaml setup.ml -configure --prefix /home/opam/.opam/system
-# path                 /home/opam/.opam/system/build/typerep_extended.112.17.00
-# compiler             system (4.02.1)
-# exit-code            1
-# env-file             /home/opam/.opam/system/build/typerep_extended.112.17.00/typerep_extended-15-a4abd5.env
-# stdout-file          /home/opam/.opam/system/build/typerep_extended.112.17.00/typerep_extended-15-a4abd5.out
-# stderr-file          /home/opam/.opam/system/build/typerep_extended.112.17.00/typerep_extended-15-a4abd5.err
-### stderr ###
-# [...]
-# ocamlfind: Package `core_kernel' not found
-# W: Field 'pkg_core_kernel' is not set: Command ''/home/opam/.opam/system/bin/ocamlfind' query -format %d core_kernel > '/tmp/oasis-0ead39.txt'' terminated with error code 2
-# ocamlfind: Package `typerep_lib' not found
-# W: Field 'pkg_typerep_lib' is not set: Command ''/home/opam/.opam/system/bin/ocamlfind' query -format %d typerep_lib > '/tmp/oasis-fa32fe.txt'' terminated with error code 2
-# ocamlfind: Package `typerep_lib.syntax' not found
-# W: Field 'pkg_typerep_lib_syntax' is not set: Command ''/home/opam/.opam/system/bin/ocamlfind' query -format %d typerep_lib.syntax > '/tmp/oasis-ba208a.txt'' terminated with error code 2
-# E: Cannot find findlib package core_kernel
-# E: Cannot find findlib package typerep_lib
-# E: Cannot find findlib package typerep_lib.syntax
-# E: Failure("3 configuration errors")
-
 + ocamlfind "remove" "typerep_extended" (CWD=/home/opam/.opam/system/build/typerep_extended.112.17.00)
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/typerep_extended
 
@@ -1189,12 +1164,36 @@ The following actions will be performed:
 The following actions failed
   - install typerep_extended 112.17.00
 The following changes have been performed
-  - install bin_prot  112.17.00    
+  - install bin_prot  112.24.00    
   - install camlp4    4.02.1+system
   - install ocamlfind 1.5.5        
-  - install sexplib   112.17.00    
+  - install sexplib   112.24.00    
   - install type_conv 112.01.01    
 
+#=== ERROR while installing typerep_extended.112.17.00 ========================#
+# opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
+# os                   linux
+# command              ocaml setup.ml -configure --prefix /home/opam/.opam/system
+# path                 /home/opam/.opam/system/build/typerep_extended.112.17.00
+# compiler             system (4.02.1)
+# exit-code            1
+# env-file             /home/opam/.opam/system/build/typerep_extended.112.17.00/typerep_extended-15-562576.env
+# stdout-file          /home/opam/.opam/system/build/typerep_extended.112.17.00/typerep_extended-15-562576.out
+# stderr-file          /home/opam/.opam/system/build/typerep_extended.112.17.00/typerep_extended-15-562576.err
+### stderr ###
+# [...]
+# ocamlfind: Package `core_kernel' not found
+# W: Field 'pkg_core_kernel' is not set: Command ''/home/opam/.opam/system/bin/ocamlfind' query -format %d core_kernel > '/tmp/oasis-58c41d.txt'' terminated with error code 2
+# ocamlfind: Package `typerep_lib' not found
+# W: Field 'pkg_typerep_lib' is not set: Command ''/home/opam/.opam/system/bin/ocamlfind' query -format %d typerep_lib > '/tmp/oasis-2ced39.txt'' terminated with error code 2
+# ocamlfind: Package `typerep_lib.syntax' not found
+# W: Field 'pkg_typerep_lib_syntax' is not set: Command ''/home/opam/.opam/system/bin/ocamlfind' query -format %d typerep_lib.syntax > '/tmp/oasis-8f2f70.txt'' terminated with error code 2
+# E: Cannot find findlib package core_kernel
+# E: Cannot find findlib package typerep_lib
+# E: Cannot find findlib package typerep_lib.syntax
+# E: Failure("3 configuration errors")
+
+
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150218190643.export"
+    opam switch import "~/.opam/system/backup/state-20150219081245.export"
 'opam install typerep_extended' failed.
