@@ -1,16 +1,16 @@
 ++ opam install sha -e debian
 + depext=m4
 + echo Debian depexts: m4
-Debian depexts: m4
 + '[' m4 '!=' '' ']'
 + sudo apt-get update -y
+Debian depexts: m4
 Ign http://download.opensuse.org  InRelease
 Get:1 http://download.opensuse.org  Release.gpg [481 B]
 Get:2 http://download.opensuse.org  Release [987 B]
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
-Get:3 http://download.opensuse.org  Packages [5895 B]
+Get:3 http://download.opensuse.org  Packages [5894 B]
 Hit http://archive.ubuntu.com trusty Release.gpg
 Get:4 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Get:5 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
@@ -35,16 +35,17 @@ Get:16 http://archive.ubuntu.com trusty-security/universe Sources [19.6 kB]
 Get:17 http://archive.ubuntu.com trusty-security/main amd64 Packages [280 kB]
 Get:18 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:19 http://archive.ubuntu.com trusty-security/universe amd64 Packages [114 kB]
-Fetched 1950 kB in 5s (381 kB/s)
+Fetched 1950 kB in 6s (321 kB/s)
 Reading package lists...
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 574388 574391
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 574386 574391
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages.gz is not what the server reported 337679 337692
 W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_main_source_Sources.gz is not what the server reported 89648 89650
 + sudo apt-get install -qq -y build-essential m4
 + sudo apt-get install -qq -y m4
 ++ opam install sha -e source,linux
 + srcext=
-Debian srcexts:
 + echo Debian srcexts:
+Debian srcexts:
 + '[' '' '!=' '' ']'
 + opam install sha
 The following actions will be performed:
@@ -254,6 +255,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -298,7 +300,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -374,6 +375,7 @@ The following actions will be performed:
 - ocamlopt  -c -o sha1.cmx sha1.ml
 - ocamlmklib -o sha1 sha1.lib.o sha1_stubs.o sha1.cmx
 - ocamlc -c -o sha256.cmi sha256.mli
+- ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha256.o sha256.c
 - sha1_stubs.c: In function 'stub_sha1_file':
 - sha1_stubs.c:118:2: warning: implicit declaration of function 'strcpy' [-Wimplicit-function-declaration]
 -   char *name_dup = strdupa(String_val(name));
@@ -407,7 +409,6 @@ The following actions will be performed:
 - File "sha1.ml", line 61, characters 11-24:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha256.o sha256.c
 - mv sha256.o sha256.lib.o
 - ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha256_stubs.o sha256_stubs.c
 - ocamlc -c -o sha256.cmo sha256.ml
@@ -457,6 +458,7 @@ The following actions will be performed:
 - ocamlmklib -o sha512 sha512.lib.o sha512_stubs.o sha512.cmx
 - ocamlmklib -o sha  sha1.lib.o sha1_stubs.o sha1.cmo  sha256.lib.o sha256_stubs.o sha256.cmo  sha512.lib.o sha512_stubs.o sha512.cmo
 - ocamlmklib -o sha  sha1.lib.o sha1_stubs.o sha1.cmx  sha256.lib.o sha256_stubs.o sha256.cmx  sha512.lib.o sha512_stubs.o sha512.cmx
+- rm sha1.o sha256.o sha512.o
 - sha512_stubs.c: In function 'stub_sha512_file':
 - sha512_stubs.c:116:2: warning: implicit declaration of function 'strcpy' [-Wimplicit-function-declaration]
 -   char *name_dup = strdupa(String_val(name));
@@ -490,7 +492,6 @@ The following actions will be performed:
 - File "sha512.ml", line 60, characters 11-24:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- rm sha1.o sha256.o sha512.o
 [sha: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/sha.1.9)
 - ocamlfind install sha META *.cmx sha1.cmi sha1.cma sha1.cmxa sha256.cmi sha256.cma sha256.cmxa sha512.cmi sha512.cma sha512.cmxa sha.cma sha.cmxa *.a *.so
