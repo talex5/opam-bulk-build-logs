@@ -1,24 +1,24 @@
 ++ opam install freetds -e debian
 + depext='freetds-dev m4'
+Debian depexts: freetds-dev m4
 + echo Debian depexts: freetds-dev m4
 + '[' 'freetds-dev m4' '!=' '' ']'
 + sudo apt-get update -y
-Debian depexts: freetds-dev m4
-Hit http://download.opensuse.org  Release.gpg
+Get:1 http://download.opensuse.org  Release.gpg [481 B]
+Get:2 http://security.debian.org stable/updates Release.gpg [836 B]
 Hit http://http.debian.net stable Release.gpg
-Hit http://download.opensuse.org  Release
-Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
-Hit http://http.debian.net stable Release
-Hit http://download.opensuse.org  Packages
-Get:2 http://http.debian.net stable-updates Release [124 kB]
-Hit http://http.debian.net stable/main amd64 Packages
-Get:3 http://http.debian.net stable-updates/main amd64 Packages [4374 B]
-Get:4 http://security.debian.org stable/updates Release.gpg [836 B]
+Get:3 http://http.debian.net stable-updates Release.gpg [836 B]
+Get:4 http://download.opensuse.org  Release [989 B]
 Get:5 http://security.debian.org stable/updates Release [102 kB]
-Get:6 http://security.debian.org stable/updates/main amd64 Packages [340 kB]
-Fetched 572 kB in 1s (338 kB/s)
+Hit http://http.debian.net stable Release
+Get:6 http://http.debian.net stable-updates Release [124 kB]
+Get:7 http://download.opensuse.org  Packages [5902 B]
+Hit http://http.debian.net stable/main amd64 Packages
+Get:8 http://http.debian.net stable-updates/main amd64 Packages [4374 B]
+Get:9 http://security.debian.org stable/updates/main amd64 Packages [340 kB]
+Fetched 580 kB in 1s (502 kB/s)
 Reading package lists...
-W: Size of file /var/lib/apt/lists/security.debian.org_dists_stable_updates_main_binary-amd64_Packages.gz is not what the server reported 340423 340445
+W: Size of file /var/lib/apt/lists/security.debian.org_dists_stable_updates_main_binary-amd64_Packages.gz is not what the server reported 340393 340445
 + sudo apt-get install -qq -y build-essential m4
 + sudo apt-get install -qq -y freetds-dev m4
 debconf: delaying package configuration, since apt-utils is not installed
@@ -49,10 +49,10 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [freetds: from default] Command started
 [ocamlfind: from default] Command started
-[ocamlfind: from default] Command started
 [freetds: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/freetds.0.5.1+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -134,6 +134,10 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_metascanner.ml
 - ocamlc -I +compiler-libs -c fl_topo.mli
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
+- ocamlc -I +compiler-libs -c fl_package_base.mli
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -179,21 +183,20 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -212,9 +215,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
 - ocamlc -I +compiler-libs -c num_top.mli
 - ocamlc -I +compiler-libs -g -c num_top.ml
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -a -o num_top.cma num_top_printers.cmo num_top.cmo
 - make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlfind.1.5.5/src/findlib'
 - make all-config
@@ -378,13 +378,13 @@ The following actions will be performed:
 - checking whether the C compiler works... yes
 - checking for C compiler default output file name... a.out
 - checking for suffix of executables... 
-- checking whether we are cross compiling... 
-- no
+- checking whether we are cross compiling... no
 - checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
 - checking for gcc option to accept ISO C89... none needed
-- checking for dbopen in -lsybdb... yes
+- checking for dbopen in -lsybdb... 
+- yes
 - checking for ct_init in -lct... yes
 - configure: creating ./config.status
 - config.status: creating Makefile.ocaml
@@ -411,6 +411,11 @@ The following actions will be performed:
 - make -C src native
 - make[1]: Entering directory `/home/opam/.opam/4.02.1/build/freetds.0.5.1/src'
 - ocamlopt.opt  -dtypes -inline 3 -w DEFPSVYZX  -for-pack Freetds  -c ct.ml
+- ocamlopt.opt  -dtypes -inline 3 -w DEFPSVYZX  -for-pack Freetds  -c dblib.ml
+- ocamlopt.opt -pack -o freetds.cmx ct.cmx dblib.cmx
+- ocamlmklib -ocamlopt ocamlopt.opt -o freetds -oc freetds_stubs \
+- 	freetds.cmx ct_c.o dblib_stubs.o -lct -lsybdb 
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/freetds.0.5.1/src'
 - ../Makefile.ocaml:52: .depend.ocaml: No such file or directory
 - File "dblib.ml", line 61, characters 10-14:
 - Warning 43: the label user is not optional.
@@ -429,11 +434,6 @@ The following actions will be performed:
 - dblib_stubs.c:499:1: warning: control reaches end of non-void function [-Wreturn-type]
 - dblib_stubs.c: In function 'ocaml_freetds_dbcoltype':
 - dblib_stubs.c:302:1: warning: control reaches end of non-void function [-Wreturn-type]
-- ocamlopt.opt  -dtypes -inline 3 -w DEFPSVYZX  -for-pack Freetds  -c dblib.ml
-- ocamlopt.opt -pack -o freetds.cmx ct.cmx dblib.cmx
-- ocamlmklib -ocamlopt ocamlopt.opt -o freetds -oc freetds_stubs \
-- 	freetds.cmx ct_c.o dblib_stubs.o -lct -lsybdb 
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/freetds.0.5.1/src'
 - File "dblib.ml", line 61, characters 10-14:
 - Warning 43: the label user is not optional.
 - File "dblib.ml", line 61, characters 16-24:
