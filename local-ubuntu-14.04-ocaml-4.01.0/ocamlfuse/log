@@ -1,7 +1,7 @@
 ++ opam install ocamlfuse -e debian
 + depext='libfuse-dev m4'
-Debian depexts: libfuse-dev m4
 + echo Debian depexts: libfuse-dev m4
+Debian depexts: libfuse-dev m4
 + '[' 'libfuse-dev m4' '!=' '' ']'
 + sudo apt-get update -y
 Ign http://archive.ubuntu.com trusty InRelease
@@ -19,7 +19,7 @@ Hit http://archive.ubuntu.com trusty/universe Sources
 Hit http://archive.ubuntu.com trusty/main amd64 Packages
 Hit http://archive.ubuntu.com trusty/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty/universe amd64 Packages
-Get:5 http://archive.ubuntu.com trusty-updates/main Sources [206 kB]
+Get:5 http://archive.ubuntu.com trusty-updates/main Sources [207 kB]
 Get:6 http://archive.ubuntu.com trusty-updates/restricted Sources [1874 B]
 Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [124 kB]
 Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [519 kB]
@@ -31,7 +31,7 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [19.1 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [251 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [110 kB]
-Fetched 1785 kB in 4s (395 kB/s)
+Fetched 1785 kB in 3s (486 kB/s)
 Reading package lists...
 W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_universe_source_Sources.gz is not what the server reported 19093 19096
 + sudo apt-get install -qq -y build-essential m4
@@ -71,10 +71,10 @@ Setting up libfuse-dev (2.9.2-4ubuntu4) ...
 Processing triggers for libc-bin (2.19-0ubuntu6.4) ...
 ++ opam install ocamlfuse -e source,linux
 + srcext=
+Debian srcexts:
 + echo Debian srcexts:
 + '[' '' '!=' '' ']'
 + opam install ocamlfuse
-Debian srcexts:
 The following actions will be performed:
  - install   ocamlfind.1.5.5                       [required by ocamlfuse]
  - install   camlidl.1.05                          [required by ocamlfuse]
@@ -91,12 +91,12 @@ The following actions will be performed:
                                  Dload  Upload   Total   Spent    Left  Speed
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100 67267  100 67267    0     0  8011k      0 --:--:-- --:--:-- --:--:-- 8211k
-10200
-0   98k  100   98k    0     0  15.6M      0 --:--:-- --:--:-- --:--:-- 16.0M
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   98k  100   98k    0     0  13.7M      0 --:--:-- --:--:-- --:--:-- 16.0M
 200
-100  234k  100  234k    0     0  22.2M      0 --:--:-- --:--:-- --:--:-- 22.9M
+100 67267  100 67267    0     0  8131k      0 --:--:-- --:--:-- --:--:-- 9384k
 200
+200
+100  234k  100  234k    0     0  17.1M      0 --:--:-- --:--:-- --:--:-- 17.6M
 
 =-=- Installing packages =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 Applying cpp-location.diff.
@@ -105,18 +105,28 @@ Building ocamlfind.1.5.5:
   make all
   make opt
   make install
+patching file config/Makefile.unix
 Welcome to findlib version 1.5.5
 Configuring core...
-patching file config/Makefile.unix
 Building camlidl.1.05:
   mv config/Makefile.unix config/Makefile
   mkdir -p /home/opam/.opam/system/bin /home/opam/.opam/system/lib/camlidl /home/opam/.opam/system/lib/camlidl/caml
   make all
   make install BINDIR=/home/opam/.opam/system/bin OCAMLLIB=/home/opam/.opam/system/lib/camlidl
 Checking for #remove_directory...
+cd compiler; make all
+make[1]: Entering directory `/home/opam/.opam/system/build/camlidl.1.05/compiler'
+rm -f config.ml
+sed -e 's|%%CPP%%|cpp|' \
+          config.mlp > config.ml
+chmod -w config.ml
 Testing threading model...
+ocamlc -g -c config.mli
+ocamlc -g -c config.ml
 systhread_supported: true
 Testing DLLs...
+ocamlc -g -c utils.mli
+ocamlc -g -c utils.ml
 Testing whether ppxopt can be supported...
 File "itest-aux/ppx.ml", line 1, characters 0-25:
 Error: Unbound value Toploop.preprocess_phrase
@@ -124,40 +134,30 @@ Configuring libraries...
 native dynlink: found
 labltk: found
 ocamlbuild: found
-cd compiler; make all
-make[1]: Entering directory `/home/opam/.opam/system/build/camlidl.1.05/compiler'
-rm -f config.ml
-sed -e 's|%%CPP%%|cpp|' \
-          config.mlp > config.ml
-chmod -w config.ml
-ocamlc -g -c config.mli
-ocamlc -g -c config.ml
-ocamlc -g -c utils.mli
-ocamlc -g -c utils.ml
+ocamlc -g -c clflags.ml
+ocamlc -g -c idltypes.mli
+ocamlc -g -c prefix.mli
 camlp4: using camlp4, style 310
 compiler-libs: found
 dbm: not present (normal since OCaml-4.00)
 bytes: not found, installing compat library
+ocamlc -g -c prefix.ml
 Configuration for dynlink written to site-lib-src/dynlink/META
 Configuration for graphics written to site-lib-src/graphics/META
 Configuration for num written to site-lib-src/num/META
+ocamlc -g -c lexpr.mli
 Configuration for num-top written to site-lib-src/num-top/META
-ocamlc -g -c clflags.ml
 Configuration for str written to site-lib-src/str/META
 Configuration for threads written to site-lib-src/threads/META
 Configuration for unix written to site-lib-src/unix/META
 Configuration for stdlib written to site-lib-src/stdlib/META
+ocamlc -g -c lexpr.ml
 Configuration for bigarray written to site-lib-src/bigarray/META
-ocamlc -g -c idltypes.mli
 Configuration for labltk written to site-lib-src/labltk/META
 Configuration for camlp4 written to site-lib-src/camlp4/META
 Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 Configuration for compiler-libs written to site-lib-src/compiler-libs/META
-Detecting compiler arguments: ocamlc -g -c prefix.mli
-ocamlc -g -c prefix.ml
-ocamlc -g -c lexpr.mli
-(extractor built) ocamlc -g -c lexpr.ml
-File "lexpr.ml", line 268, characters 10-16:
+Detecting compiler arguments: (extractor built) File "lexpr.ml", line 268, characters 10-16:
 Warning 26: unused variable trail'.
 ocamlc -g -c cvttyp.mli
 ocamlc -g -c cvttyp.ml
@@ -185,16 +185,18 @@ Need bytes compatibility:  yes
 Configuration has been written to Makefile.config
 
 You can now do 'make all', and optionally 'make opt', to build ocamlfind.
+ocamlc -g -c variables.mli
 for p in findlib bytes; do ( cd src/$p; make all ) || exit; done
-make[1]: Entering directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
-Makefile:160: depend: No such file or directory
+Makefile:160: depend: No such file or directorymake[1]: Entering directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
+
 ocamllex fl_meta.mll
+ocamlc -g -c variables.ml
 22 states, 392 transitions, table size 1700 bytes
 ocamldep *.ml *.mli >depend
-ocamlc -g -c variables.mli
-ocamlc -g -c variables.ml
 ocamlc -g -c array.mli
 ocamlc -g -c array.ml
+ocamlc -g -c struct.mli
+ocamlc -g -c struct.ml
 make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
 make[1]: Entering directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
 USE_CYGPATH="0"; \
@@ -206,40 +208,38 @@ USE_CYGPATH="0"; \
 		    -e 's;@SYSTEM@;linux;g' \
 		     >findlib_config.ml
 ocamlc -I +compiler-libs -g -c findlib_config.ml
-ocamlc -g -c struct.mli
-ocamlc -I +compiler-libs -g -c fl_split.ml
-ocamlc -g -c struct.ml
-ocamlc -I +compiler-libs -g -c fl_metatoken.ml
 ocamlc -g -c enum.mli
-ocamlc -I +compiler-libs -g -c fl_meta.ml
+ocamlc -I +compiler-libs -g -c fl_split.ml
 ocamlc -g -c enum.ml
 ocamlc -g -c union.mli
-ocamlc -I +compiler-libs -c fl_metascanner.mli
+ocamlc -I +compiler-libs -g -c fl_metatoken.ml
 ocamlc -g -c union.ml
-ocamlc -I +compiler-libs -g -c fl_metascanner.ml
+ocamlc -I +compiler-libs -g -c fl_meta.ml
+ocamlc -I +compiler-libs -c fl_metascanner.mli
 ocamlc -g -c cvtval.mli
+ocamlc -I +compiler-libs -g -c fl_metascanner.ml
 ocamlc -g -c cvtval.ml
 ocamlc -g -c structdecl.mli
-ocamlc -I +compiler-libs -c fl_topo.mli
 ocamlc -g -c structdecl.ml
-ocamlc -I +compiler-libs -g -c fl_topo.ml
+ocamlc -I +compiler-libs -c fl_topo.mli
 ocamlc -g -c enumdecl.mli
+ocamlc -I +compiler-libs -g -c fl_topo.ml
 ocamlc -g -c enumdecl.ml
-ocamlc -I +compiler-libs -c fl_package_base.mli
-ocamlc -I +compiler-libs -g -c fl_package_base.ml
 ocamlc -g -c uniondecl.mli
+ocamlc -I +compiler-libs -c fl_package_base.mli
 ocamlc -g -c uniondecl.ml
+ocamlc -I +compiler-libs -g -c fl_package_base.ml
 ocamlc -g -c typedef.mli
 ocamlc -g -c typedef.ml
 ocamlc -I +compiler-libs -c findlib.mli
-ocamlc -I +compiler-libs -g -c findlib.ml
 ocamlc -g -c funct.mli
+ocamlc -I +compiler-libs -g -c findlib.ml
 ocamlc -g -c funct.ml
 ocamlc -I +compiler-libs -g -c fl_args.ml
-ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 ocamlc -g -c constdecl.mli
-ocamlc -I +compiler-libs -g -c ocaml_args.ml
 ocamlc -g -c constdecl.ml
+ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+ocamlc -I +compiler-libs -g -c ocaml_args.ml
 File "constdecl.ml", line 36, characters 4-24:
 Warning 26: unused variable ty.
 ocamlc -g -c intf.mli
@@ -268,12 +268,12 @@ the 'with' clause is useless.
 File "parse_aux.ml", line 171, characters 22-47:
 Warning 23: all the fields are explicitly listed in this record:
 the 'with' clause is useless.
-ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-	           ocaml_args.cmo frontend.cmo
 ocamlyacc -v parser_midl.mly
 12 shift/reduce conflicts.
 ocamlc -g -c parser_midl.mli
 ocamlc -g -c parser_midl.ml
+ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+	           ocaml_args.cmo frontend.cmo
 ocamllex lexer_midl.mll
 if [ "false" = "true" ]; then                 \
 		cp topfind.ml.in topfind.ml;                             \
@@ -301,14 +301,13 @@ ocamlc -I +compiler-libs -c num_top.mli
 ocamlc -g -c fixlabels.ml
 ocamlc -I +compiler-libs -g -c num_top.ml
 ocamlc -I +compiler-libs -a -o num_top.cma num_top_printers.cmo num_top.cmo
-make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
 ocamlc -g -c normalize.mli
+make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
 make[1]: Entering directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/bytes'
 ocamlbuild -classic-display -no-links bytes.cmi bytes.cma
 ocamlc -g -c normalize.ml
 /usr/bin/ocamldep.opt -modules bytes.ml > bytes.ml.depends
 /usr/bin/ocamlc.opt -c -o bytes.cmo bytes.ml
-ocamlc -g -c main.ml
 /usr/bin/ocamlc.opt -a bytes.cmo -o bytes.cma
 make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/bytes'
 make all-config
@@ -323,20 +322,21 @@ if ocamlc.opt >/dev/null 2>&1; then \
 if ocamlopt.opt >/dev/null 2>&1; then \
 		echo 'ocamlopt="ocamlopt.opt"' >>findlib.conf; \
 	fi
-ocamlc -g -o camlidl config.cmo utils.cmo clflags.cmo prefix.cmo lexpr.cmo cvttyp.cmo variables.cmo array.cmo struct.cmo enum.cmo union.cmo cvtval.cmo structdecl.cmo enumdecl.cmo uniondecl.cmo typedef.cmo funct.cmo constdecl.cmo intf.cmo file.cmo predef.cmo linenum.cmo parse_aux.cmo parser_midl.cmo lexer_midl.cmo parse.cmo fixlabels.cmo normalize.cmo main.cmo
+ocamlc -g -c main.ml
 if ocamldep.opt >/dev/null 2>&1; then \
 		echo 'ocamldep="ocamldep.opt"' >>findlib.conf; \
 	fi
 if ocamldoc.opt >/dev/null 2>&1; then \
 		echo 'ocamldoc="ocamldoc.opt"' >>findlib.conf; \
 	fi
+ocamlc -g -o camlidl config.cmo utils.cmo clflags.cmo prefix.cmo lexpr.cmo cvttyp.cmo variables.cmo array.cmo struct.cmo enum.cmo union.cmo cvtval.cmo structdecl.cmo enumdecl.cmo uniondecl.cmo typedef.cmo funct.cmo constdecl.cmo intf.cmo file.cmo predef.cmo linenum.cmo parse_aux.cmo parser_midl.cmo lexer_midl.cmo parse.cmo fixlabels.cmo normalize.cmo main.cmo
 File "array.cmo", line 1:
 Warning 31: files array.cmo and /usr/lib/ocaml/stdlib.cma(Array) both define a module named Array
+make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5'
 make[1]: Leaving directory `/home/opam/.opam/system/build/camlidl.1.05/compiler'
 cd runtime; make all
 make[1]: Entering directory `/home/opam/.opam/system/build/camlidl.1.05/runtime'
 ocamlc -g -ccopt "-Wall -g" idlalloc.c
-make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5'
 for p in findlib bytes; do ( cd src/$p; make opt ) || exit; done
 make[1]: Entering directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
 ocamldep *.ml *.mli >depend
@@ -344,8 +344,8 @@ ocamlc -g -ccopt "-Wall -g" comintf.c
 make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
 make[1]: Entering directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
 ocamlopt -I +compiler-libs -c findlib_config.ml
-ocamlopt -I +compiler-libs -c fl_split.ml
 ocamlc -g -ccopt "-Wall -g" comerror.c
+ocamlopt -I +compiler-libs -c fl_split.ml
 comerror.c: In function 'camlidl_error':
 comerror.c:52:8: warning: unused variable 'msg' [-Wunused-variable]
    char msg[1024];
@@ -362,19 +362,19 @@ In file included from /usr/lib/ocaml/caml/mlvalues.h:18:0,
 comerror.c:171:16: note: in expansion of macro 'format_caml_exception'
    char * msg = format_caml_exception(exn_bucket);
                 ^
-ocamlopt -I +compiler-libs -c fl_metatoken.ml
 rm -f libcamlidl.a
 ar rc libcamlidl.a idlalloc.o comintf.o comerror.o
+ocamlopt -I +compiler-libs -c fl_metatoken.ml
 ranlib libcamlidl.a
+ocamlopt -I +compiler-libs -c fl_meta.ml
+ocamlopt -I +compiler-libs -c fl_metascanner.ml
 make[1]: Leaving directory `/home/opam/.opam/system/build/camlidl.1.05/runtime'
 cd lib; make all
 make[1]: Entering directory `/home/opam/.opam/system/build/camlidl.1.05/lib'
 ocamlc -g -c com.mli
-ocamlopt -I +compiler-libs -c fl_meta.ml
 ocamlc -g -c com.ml
 ocamlc -g -a -o com.cma com.cmo
 ocamlopt -c com.ml
-ocamlopt -I +compiler-libs -c fl_metascanner.ml
 ocamlopt -a -o com.cmxa com.cmx
 make[1]: Leaving directory `/home/opam/.opam/system/build/camlidl.1.05/lib'
 cd tools; make all
