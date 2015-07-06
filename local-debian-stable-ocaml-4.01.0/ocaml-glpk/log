@@ -1,6 +1,20 @@
-/bin/sh: 1: lsb_release: not found
-# Detecting depexts using flags: x86_64 linux
-# No extra OS packages requirements found.
+# Detecting depexts using flags: x86_64 linux debian
+# The following system packages are needed:
+#  - libglpk-dev
+#  - m4
+Not running as root, system installation will be done through "sudo"
+debconf: delaying package configuration, since apt-utils is not installed
+Selecting previously unselected package libltdl7:amd64.
+(Reading database ... 20153 files and directories currently installed.)
+Unpacking libltdl7:amd64 (from .../libltdl7_2.4.2-1.1_amd64.deb) ...
+Selecting previously unselected package libglpk0.
+Unpacking libglpk0 (from .../libglpk0_4.45-1_amd64.deb) ...
+Selecting previously unselected package libglpk-dev.
+Unpacking libglpk-dev (from .../libglpk-dev_4.45-1_amd64.deb) ...
+Setting up libltdl7:amd64 (2.4.2-1.1) ...
+Setting up libglpk0 (4.45-1) ...
+Setting up libglpk-dev (4.45-1) ...
+# OS packages installation successful
 The following actions will be performed:
   - install ocamlfind  1.5.5                                    [required by ocaml-glpk]
   - install ocaml-glpk 0.1.6
@@ -9,9 +23,9 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocaml-glpk: from default] Command started
 [ocamlfind: from default] Command started
-[ocamlfind: from default] Command started
 [ocaml-glpk: from default] Command started
 [default] http://opam-archive:8080/archives/ocaml-glpk.0.1.6+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -248,55 +262,37 @@ The following actions will be performed:
 - ocamlc -c -cc "cc" -ccopt "-fPIC -Wall -ansi -DCAML_NAME_SPACE -g \
 - 				-DPIC   \
 - 				    -o glpk_stubs.o " glpk_stubs.c 
+- ar rcs libglpk_stubs.a  glpk_stubs.o
+- ocamlc -c -dtypes glpk.mli
+- ocamlc -c -dtypes glpk.ml
+- ocamlmklib          \
+- 				-o glpk_stubs  glpk_stubs.o -lglpk \
+- 				
+- ocamlc -a -dllib dllglpk_stubs.so -custom              \
+- 				-cclib -lglpk_stubs -cclib -lglpk  -o glpk.cma  glpk.cmo
 - make[2]: Leaving directory `/home/opam/.opam/4.01.0/build/ocaml-glpk.0.1.6/src'
 - make[1]: Leaving directory `/home/opam/.opam/4.01.0/build/ocaml-glpk.0.1.6/src'
-- glpk_stubs.c:34:18: fatal error: glpk.h: No such file or directory
-- compilation terminated.
-- make[2]: *** [glpk_stubs.o] Error 2
-- make[1]: *** [byte-code-library] Error 2
-- make: *** [byte] Error 2
-[ERROR] The compilation of ocaml-glpk failed at "make".
-[ocaml-glpk: ocamlfind remove] Command started
-+ ocamlfind "remove" "glpk" (CWD=/home/opam/.opam/4.01.0/build/ocaml-glpk.0.1.6)
-- ocamlfind: [WARNING] No such directory: /home/opam/.opam/4.01.0/lib/glpk
-
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions failed
-  - install ocaml-glpk 0.1.6
-The following changes have been performed
-  - install ocamlfind 1.5.5
-
-#=== ERROR while installing ocaml-glpk.0.1.6 ==================================#
-# opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
-# os                   linux
-# command              make
-# path                 /home/opam/.opam/4.01.0/build/ocaml-glpk.0.1.6
-# compiler             4.01.0
-# exit-code            2
-# env-file             /home/opam/.opam/4.01.0/build/ocaml-glpk.0.1.6/ocaml-glpk-5-c743ac.env
-# stdout-file          /home/opam/.opam/4.01.0/build/ocaml-glpk.0.1.6/ocaml-glpk-5-c743ac.out
-# stderr-file          /home/opam/.opam/4.01.0/build/ocaml-glpk.0.1.6/ocaml-glpk-5-c743ac.err
-### stdout ###
-# [...]
-# make[2]: Entering directory `/home/opam/.opam/4.01.0/build/ocaml-glpk.0.1.6/src'
-# making ._bcdi/glpk.di from glpk.mli
-# making ._d/glpk.d from glpk.ml
-# make[2]: Leaving directory `/home/opam/.opam/4.01.0/build/ocaml-glpk.0.1.6/src'
-# make[2]: Entering directory `/home/opam/.opam/4.01.0/build/ocaml-glpk.0.1.6/src'
-# ocamlc -c -cc "cc" -ccopt "-fPIC -Wall -ansi -DCAML_NAME_SPACE -g \
-# 				-DPIC   \
-# 				    -o glpk_stubs.o " glpk_stubs.c 
-# make[2]: Leaving directory `/home/opam/.opam/4.01.0/build/ocaml-glpk.0.1.6/src'
-# make[1]: Leaving directory `/home/opam/.opam/4.01.0/build/ocaml-glpk.0.1.6/src'
-### stderr ###
-# glpk_stubs.c:34:18: fatal error: glpk.h: No such file or directory
-# compilation terminated.
-# make[2]: *** [glpk_stubs.o] Error 2
-# make[1]: *** [byte-code-library] Error 2
-# make: *** [byte] Error 2
-
-
-The former state can be restored with:
-    opam switch import "~/.opam/4.01.0/backup/state-20150219210709.export"
-'opam install ocaml-glpk' failed.
+[ocaml-glpk: make install] Command started
++ make "install" (CWD=/home/opam/.opam/4.01.0/build/ocaml-glpk.0.1.6)
+- make -C src install
+- make[1]: Entering directory `/home/opam/.opam/4.01.0/build/ocaml-glpk.0.1.6/src'
+- make[2]: Entering directory `/home/opam/.opam/4.01.0/build/ocaml-glpk.0.1.6/src'
+- make[2]: `libglpk_stubs.a' is up to date.
+- make[2]: `glpk.cma' is up to date.
+- make[2]: Leaving directory `/home/opam/.opam/4.01.0/build/ocaml-glpk.0.1.6/src'
+- 
+- Installing library with ocamlfind
+- ocamlfind install  glpk META glpk.mli glpk.cmi glpk.cma libglpk_stubs.a dllglpk_stubs.so
+- 
+- Installation successful.
+- make[1]: Leaving directory `/home/opam/.opam/4.01.0/build/ocaml-glpk.0.1.6/src'
+- Installed /home/opam/.opam/4.01.0/lib/glpk/libglpk_stubs.a
+- Installed /home/opam/.opam/4.01.0/lib/glpk/glpk.cma
+- Installed /home/opam/.opam/4.01.0/lib/glpk/glpk.cmi
+- Installed /home/opam/.opam/4.01.0/lib/glpk/glpk.mli
+- Installed /home/opam/.opam/4.01.0/lib/glpk/META
+- Installed /home/opam/.opam/4.01.0/lib/stublibs/dllglpk_stubs.so
+- Installed /home/opam/.opam/4.01.0/lib/stublibs/dllglpk_stubs.so.owner
+- ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/4.01.0/lib/stublibs is not mentioned in ld.conf
+-> installed ocaml-glpk.0.1.6
+Done.
