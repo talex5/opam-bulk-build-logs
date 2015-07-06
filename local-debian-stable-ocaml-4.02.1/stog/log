@@ -1,30 +1,29 @@
 ++ opam install stog -e debian
 + depext=m4
 + echo Debian depexts: m4
-Debian depexts: m4
 + '[' m4 '!=' '' ']'
 + sudo apt-get update -y
-Hit http://download.opensuse.org  Release.gpg
-Hit http://download.opensuse.org  Release
-Hit http://download.opensuse.org  Packages
+Debian depexts: m4
+Get:1 http://download.opensuse.org  Release.gpg [481 B]
 Hit http://http.debian.net stable Release.gpg
-Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
+Get:2 http://download.opensuse.org  Release [989 B]
+Get:3 http://http.debian.net stable-updates Release.gpg [836 B]
 Hit http://http.debian.net stable Release
-Get:2 http://security.debian.org stable/updates Release.gpg [836 B]
-Get:3 http://http.debian.net stable-updates Release [124 kB]
+Get:4 http://http.debian.net stable-updates Release [124 kB]
+Get:5 http://download.opensuse.org  Packages [5902 B]
 Hit http://http.debian.net stable/main amd64 Packages
-Get:4 http://security.debian.org stable/updates Release [102 kB]
-Get:5 http://http.debian.net stable-updates/main amd64 Packages [4374 B]
-Get:6 http://security.debian.org stable/updates/main amd64 Packages [340 kB]
-Fetched 572 kB in 1s (350 kB/s)
+Get:6 http://http.debian.net stable-updates/main amd64 Packages [4374 B]
+Get:7 http://security.debian.org stable/updates Release.gpg [836 B]
+Get:8 http://security.debian.org stable/updates Release [102 kB]
+Get:9 http://security.debian.org stable/updates/main amd64 Packages [340 kB]
+Fetched 580 kB in 2s (205 kB/s)
 Reading package lists...
-W: Size of file /var/lib/apt/lists/security.debian.org_dists_stable_updates_main_binary-amd64_Packages.gz is not what the server reported 340423 340445
 + sudo apt-get install -qq -y build-essential m4
 + sudo apt-get install -qq -y m4
 ++ opam install stog -e source,linux
+Debian srcexts:
 + srcext=
 + echo Debian srcexts:
-Debian srcexts:
 + '[' '' '!=' '' ']'
 + opam install stog
 The following actions will be performed:
@@ -43,12 +42,12 @@ The following actions will be performed:
 [camlp4: from default] Command started
 [config-file: from default] Command started
 [higlo: from default] Command started
-[higlo: from default] Command started
 [config-file: from default] Command started
+[higlo: from default] Command started
 [camlp4: from default] Command started
-[default] http://opam-archive:8080/archives/higlo.0.4+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/config-file.1.2+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/higlo.0.4+opam.tar.gz downloaded
 [ocamlnet: from default] Command started
 [default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
 [stog: from default] Command started
@@ -56,14 +55,14 @@ The following actions will be performed:
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [ulex: from default] Command started
 [stog: from default] Command started
-[default] http://opam-archive:8080/archives/stog.0.14.0+opam.tar.gz downloaded
-[xmlm: from default] Command started
 [ulex: from default] Command started
 [ocamlnet: from default] Command started
+[default] http://opam-archive:8080/archives/stog.0.14.0+opam.tar.gz downloaded
+[xmlm: from default] Command started
 [default] http://opam-archive:8080/archives/ulex.1.1+opam.tar.gz downloaded
 [xtmpl: from default] Command started
-[xmlm: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlnet.4.0.2+opam.tar.gz downloaded
+[xmlm: from default] Command started
 [xtmpl: from default] Command started
 [default] http://opam-archive:8080/archives/xmlm.1.2.0+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/xtmpl.0.10+opam.tar.gz downloaded
@@ -150,6 +149,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -195,12 +195,13 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -209,8 +210,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -262,7 +261,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -307,6 +305,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -3078,43 +3077,6 @@ The following actions will be performed:
 - ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -I ../../src/netplex -I ../../src/netcamlbox -package "unix"  -w -3-25 -c  netmcore_queue.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -I ../../src/netplex -I ../../src/netcamlbox -package "unix"  -w -3-25 -c -p -o `basename netmcore_queue.cmx .cmx`.p.cmx  netmcore_queue.ml
 - ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -I ../../src/netplex -I ../../src/netcamlbox -package "unix"  -w -3-25 -c  netmcore_buffer.ml
-- [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -I ../../src/netplex -I ../../src/netcamlbox -package "unix"  -w -3-25 -c -p -o `basename netmcore_buffer.cmx .cmx`.p.cmx  netmcore_buffer.ml
-- ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -I ../../src/netplex -I ../../src/netcamlbox -package "unix"  -w -3-25 -c  netmcore_matrix.ml
-- [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -I ../../src/netplex -I ../../src/netcamlbox -package "unix"  -w -3-25 -c -p -o `basename netmcore_matrix.cmx .cmx`.p.cmx  netmcore_matrix.ml
-- ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -I ../../src/netplex -I ../../src/netcamlbox -package "unix"  -w -3-25 -c  netmcore_hashtbl.ml
-- [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -I ../../src/netplex -I ../../src/netcamlbox -package "unix"  -w -3-25 -c -p -o `basename netmcore_hashtbl.cmx .cmx`.p.cmx  netmcore_hashtbl.ml
-- ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -I ../../src/netplex -I ../../src/netcamlbox -package "unix"  -w -3-25 -c  netmcore_process.ml
-- [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -I ../../src/netplex -I ../../src/netcamlbox -package "unix"  -w -3-25 -c -p -o `basename netmcore_process.cmx .cmx`.p.cmx  netmcore_process.ml
-- if [ "X" = "X" ]; then \
-- 		ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -I ../../src/netplex -I ../../src/netcamlbox -package "unix"  -w -3-25 -a -o netmulticore.cmxa  netmcore.cmx netmcore_camlbox.cmx netmcore_util.cmx netmcore_mempool.cmx netmcore_heap.cmx netmcore_ref.cmx netmcore_array.cmx netmcore_sem.cmx netmcore_mutex.cmx netmcore_condition.cmx netmcore_queue.cmx netmcore_buffer.cmx netmcore_matrix.cmx netmcore_hashtbl.cmx netmcore_process.cmx; \
-- 	else \
-- 		../../tools/mkstublib -o netmulticore netmcore.cmx netmcore_camlbox.cmx netmcore_util.cmx netmcore_mempool.cmx netmcore_heap.cmx netmcore_ref.cmx netmcore_array.cmx netmcore_sem.cmx netmcore_mutex.cmx netmcore_condition.cmx netmcore_queue.cmx netmcore_buffer.cmx netmcore_matrix.cmx netmcore_hashtbl.cmx netmcore_process.cmx  ; \
-- 	fi
-- if [ "X" = "X" ]; then \
-- 		ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -I ../../src/netplex -I ../../src/netcamlbox -package "unix"  -w -3-25 -a -o netmulticore.p.cmxa netmcore.p.cmx netmcore_camlbox.p.cmx netmcore_util.p.cmx netmcore_mempool.p.cmx netmcore_heap.p.cmx netmcore_ref.p.cmx netmcore_array.p.cmx netmcore_sem.p.cmx netmcore_mutex.p.cmx netmcore_condition.p.cmx netmcore_queue.p.cmx netmcore_buffer.p.cmx netmcore_matrix.p.cmx netmcore_hashtbl.p.cmx netmcore_process.p.cmx; \
-- 	else \
-- 		../../tools/mkstublib -o netmulticore.p netmcore.p.cmx netmcore_camlbox.p.cmx netmcore_util.p.cmx netmcore_mempool.p.cmx netmcore_heap.p.cmx netmcore_ref.p.cmx netmcore_array.p.cmx netmcore_sem.p.cmx netmcore_mutex.p.cmx netmcore_condition.p.cmx netmcore_queue.p.cmx netmcore_buffer.p.cmx netmcore_matrix.p.cmx netmcore_hashtbl.p.cmx netmcore_process.p.cmx  ; \
-- 	fi
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netmulticore'
-- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/nethttpd'
-- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/nethttpd'
-- make[2]: Nothing to be done for `realgenerate'.
-- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/nethttpd'
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/nethttpd'
-- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/nethttpd'
-- make[1]: `depend' is up to date.
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/nethttpd'
-- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/nethttpd'
-- ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c  nethttpd_types.ml
-- [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c -p -o `basename nethttpd_types.cmx .cmx`.p.cmx  nethttpd_types.ml
-- ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c  nethttpd_util.ml
-- [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c -p -o `basename nethttpd_util.cmx .cmx`.p.cmx  nethttpd_util.ml
-- ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c  nethttpd_kernel.ml
-- [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c -p -o `basename nethttpd_kernel.cmx .cmx`.p.cmx  nethttpd_kernel.ml
-- ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c  nethttpd_reactor.ml
-- [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c -p -o `basename nethttpd_reactor.cmx .cmx`.p.cmx  nethttpd_reactor.ml
-- ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c  nethttpd_engine.ml
-- [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c -p -o `basename nethttpd_engine.cmx .cmx`.p.cmx  nethttpd_engine.ml
 - make[1]: Circular netsys_signal.cmx <- netlog.cmx dependency dropped.
 - make[1]: Circular netsys_posix.cmx <- netlog.cmx dependency dropped.
 - File "netsys.ml", line 271, characters 6-39:
@@ -3154,12 +3116,49 @@ The following actions will be performed:
 - Warning 26: unused variable get_props.
 - File "rpc_auth_gssapi.ml", line 1078, characters 12-16:
 - Warning 26: unused variable prog.
+- [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -I ../../src/netplex -I ../../src/netcamlbox -package "unix"  -w -3-25 -c -p -o `basename netmcore_buffer.cmx .cmx`.p.cmx  netmcore_buffer.ml
+- ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -I ../../src/netplex -I ../../src/netcamlbox -package "unix"  -w -3-25 -c  netmcore_matrix.ml
+- [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -I ../../src/netplex -I ../../src/netcamlbox -package "unix"  -w -3-25 -c -p -o `basename netmcore_matrix.cmx .cmx`.p.cmx  netmcore_matrix.ml
+- ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -I ../../src/netplex -I ../../src/netcamlbox -package "unix"  -w -3-25 -c  netmcore_hashtbl.ml
+- [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -I ../../src/netplex -I ../../src/netcamlbox -package "unix"  -w -3-25 -c -p -o `basename netmcore_hashtbl.cmx .cmx`.p.cmx  netmcore_hashtbl.ml
+- ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -I ../../src/netplex -I ../../src/netcamlbox -package "unix"  -w -3-25 -c  netmcore_process.ml
+- [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -I ../../src/netplex -I ../../src/netcamlbox -package "unix"  -w -3-25 -c -p -o `basename netmcore_process.cmx .cmx`.p.cmx  netmcore_process.ml
+- if [ "X" = "X" ]; then \
+- 		ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -I ../../src/netplex -I ../../src/netcamlbox -package "unix"  -w -3-25 -a -o netmulticore.cmxa  netmcore.cmx netmcore_camlbox.cmx netmcore_util.cmx netmcore_mempool.cmx netmcore_heap.cmx netmcore_ref.cmx netmcore_array.cmx netmcore_sem.cmx netmcore_mutex.cmx netmcore_condition.cmx netmcore_queue.cmx netmcore_buffer.cmx netmcore_matrix.cmx netmcore_hashtbl.cmx netmcore_process.cmx; \
+- 	else \
+- 		../../tools/mkstublib -o netmulticore netmcore.cmx netmcore_camlbox.cmx netmcore_util.cmx netmcore_mempool.cmx netmcore_heap.cmx netmcore_ref.cmx netmcore_array.cmx netmcore_sem.cmx netmcore_mutex.cmx netmcore_condition.cmx netmcore_queue.cmx netmcore_buffer.cmx netmcore_matrix.cmx netmcore_hashtbl.cmx netmcore_process.cmx  ; \
+- 	fi
+- if [ "X" = "X" ]; then \
+- 		ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -I ../../src/netplex -I ../../src/netcamlbox -package "unix"  -w -3-25 -a -o netmulticore.p.cmxa netmcore.p.cmx netmcore_camlbox.p.cmx netmcore_util.p.cmx netmcore_mempool.p.cmx netmcore_heap.p.cmx netmcore_ref.p.cmx netmcore_array.p.cmx netmcore_sem.p.cmx netmcore_mutex.p.cmx netmcore_condition.p.cmx netmcore_queue.p.cmx netmcore_buffer.p.cmx netmcore_matrix.p.cmx netmcore_hashtbl.p.cmx netmcore_process.p.cmx; \
+- 	else \
+- 		../../tools/mkstublib -o netmulticore.p netmcore.p.cmx netmcore_camlbox.p.cmx netmcore_util.p.cmx netmcore_mempool.p.cmx netmcore_heap.p.cmx netmcore_ref.p.cmx netmcore_array.p.cmx netmcore_sem.p.cmx netmcore_mutex.p.cmx netmcore_condition.p.cmx netmcore_queue.p.cmx netmcore_buffer.p.cmx netmcore_matrix.p.cmx netmcore_hashtbl.p.cmx netmcore_process.p.cmx  ; \
+- 	fi
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netmulticore'
+- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/nethttpd'
+- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/nethttpd'
+- make[2]: Nothing to be done for `realgenerate'.
+- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/nethttpd'
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/nethttpd'
+- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/nethttpd'
+- make[1]: `depend' is up to date.
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/nethttpd'
+- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/nethttpd'
+- ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c  nethttpd_types.ml
+- [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c -p -o `basename nethttpd_types.cmx .cmx`.p.cmx  nethttpd_types.ml
+- ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c  nethttpd_util.ml
+- [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c -p -o `basename nethttpd_util.cmx .cmx`.p.cmx  nethttpd_util.ml
+- ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c  nethttpd_kernel.ml
+- [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c -p -o `basename nethttpd_kernel.cmx .cmx`.p.cmx  nethttpd_kernel.ml
+- ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c  nethttpd_reactor.ml
+- [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c -p -o `basename nethttpd_reactor.cmx .cmx`.p.cmx  nethttpd_reactor.ml
+- ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c  nethttpd_engine.ml
+- [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c -p -o `basename nethttpd_engine.cmx .cmx`.p.cmx  nethttpd_engine.ml
 - ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c  nethttpd_services.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c -p -o `basename nethttpd_services.cmx .cmx`.p.cmx  nethttpd_services.ml
-- File "nethttpd_services.ml", line 1118, characters 4-5:
-- Warning 11: this match case is unused.
 - ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c  nethttpd_plex.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c -p -o `basename nethttpd_plex.cmx .cmx`.p.cmx  nethttpd_plex.ml
+- File "nethttpd_services.ml", line 1118, characters 4-5:
+- Warning 11: this match case is unused.
 - File "nethttpd_services.ml", line 1118, characters 4-5:
 - Warning 11: this match case is unused.
 - if [ "X" = "X" ]; then \
@@ -3284,6 +3283,8 @@ The following actions will be performed:
 - make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/nethttpd'
 - files=`../../tools/collect_files *.mli *.cmi *.cma *.cmxa *.a dll* META LICENSE` && \
 - 	ocamlfind install nethttpd $files
+- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/nethttpd'
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/nethttpd'
 - Installed /home/opam/.opam/4.02.1/lib/netsys/netsys_c_outofheap.o
 - Installed /home/opam/.opam/4.02.1/lib/netsys/netsys_c_event.h
 - Installed /home/opam/.opam/4.02.1/lib/netsys/netsys_c_gprof.o
@@ -3836,8 +3837,6 @@ The following actions will be performed:
 - Installed /home/opam/.opam/4.02.1/lib/netmulticore/netmcore_array.mli
 - Installed /home/opam/.opam/4.02.1/lib/netmulticore/netmcore.mli
 - Installed /home/opam/.opam/4.02.1/lib/netmulticore/META
-- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/nethttpd'
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/nethttpd'
 - Installed /home/opam/.opam/4.02.1/lib/nethttpd/LICENSE
 - Installed /home/opam/.opam/4.02.1/lib/nethttpd/nethttpd.p.a
 - Installed /home/opam/.opam/4.02.1/lib/nethttpd/nethttpd.a
@@ -3920,6 +3919,17 @@ The following actions will be performed:
 - stog.server and stog.multi-server packages will NOT be available
 - 
 - ###
+- configure: creating ./config.status
+- config.status: creating master.Makefile
+- config.status: creating META
+- config.status: creating stog_config.ml
+- config.status: creating stog_install.ml
+- 
+- ### Results of configuration ###
+- 
+- Version is 0.14.0
+- Binaries will be installed in /home/opam/.opam/4.02.1/bin
+- Shared files will be installed in /home/opam/.opam/4.02.1/share/stog
 - ocamlfind: Package `yojson' not found
 - ocamlfind: Package `ppx_deriving_yojson' not found
 - ocamlfind: Package `ojs' not found
@@ -3932,17 +3942,6 @@ The following actions will be performed:
 - ocamlfind: Package `lwt.unix' not found
 - Cannot find ocaml-crunch
 - Cannot find js_of_ocaml
-- configure: creating ./config.status
-- config.status: creating master.Makefile
-- config.status: creating META
-- config.status: creating stog_config.ml
-- config.status: creating stog_install.ml
-- 
-- ### Results of configuration ###
-- 
-- Version is 0.14.0
-- Binaries will be installed in /home/opam/.opam/4.02.1/bin
-- Shared files will be installed in /home/opam/.opam/4.02.1/share/stog
 [stog: make stog_filter_parser.mli] Command started
 + make "stog_filter_parser.mli" (CWD=/home/opam/.opam/4.02.1/build/stog.0.14.0)
 - /home/opam/.opam/4.02.1/bin/ocamlyacc -v stog_filter_parser.mly
@@ -4031,10 +4030,10 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -package xmlm,xtmpl,netstring,config-file,dynlink,unix,str,higlo.lexers -verbose -linkall -linkpkg -o stog -I +ocamldoc -annot -rectypes -g -thread  -safe-string  stog.cmxa stog_main.cmx
 - Effective set of compiler predicates: pkg_unix,pkg_threads.posix,pkg_threads,pkg_xmlm,pkg_str,pkg_xtmpl,pkg_bigarray,pkg_netsys,pkg_netstring,pkg_config-file,pkg_dynlink,pkg_camlp4,pkg_ulex,pkg_higlo,pkg_higlo.ocaml,pkg_higlo.xml,pkg_higlo.lexers,autolink,mt,mt_posix,native
 - + ocamlopt.opt -verbose -linkall -o stog -I /home/opam/.opam/4.02.1/lib/ocaml/ocamldoc -annot -rectypes -g -safe-string -thread -I /home/opam/.opam/4.02.1/lib/xmlm -I /home/opam/.opam/4.02.1/lib/xtmpl -I /home/opam/.opam/4.02.1/lib/netsys -I /home/opam/.opam/4.02.1/lib/netstring -I /home/opam/.opam/4.02.1/lib/config-file -I /home/opam/.opam/4.02.1/lib/ocaml/camlp4 -I /home/opam/.opam/4.02.1/lib/ulex -I /home/opam/.opam/4.02.1/lib/higlo /home/opam/.opam/4.02.1/lib/ocaml/unix.cmxa /home/opam/.opam/4.02.1/lib/ocaml/threads/threads.cmxa /home/opam/.opam/4.02.1/lib/xmlm/xmlm.cmxa /home/opam/.opam/4.02.1/lib/ocaml/str.cmxa /home/opam/.opam/4.02.1/lib/xtmpl/xtmpl.cmx /home/opam/.opam/4.02.1/lib/ocaml/bigarray.cmxa /home/opam/.opam/4.02.1/lib/netsys/netsys_oothr_mt.cmxa /home/opam/.opam/4.02.1/lib/netsys/netsys_oothr_mt_init.cmx /home/opam/.opam/4.02.1/lib/netsys/netsys.cmxa /home/opam/.opam/4.02.1/lib/netstring/netstring.cmxa /home/opam/.opam/4.02.1/lib/config-file/config_file.cmx /home/opam/.opam/4.02.1/lib/ocaml/dynlink.cmxa /home/opam/.opam/4.02.1/lib/ulex/ulexing.cmxa /home/opam/.opam/4.02.1/lib/higlo/higlo.cmx /home/opam/.opam/4.02.1/lib/higlo/higlo_ocaml.cmx /home/opam/.opam/4.02.1/lib/higlo/higlo_xml.cmx stog.cmxa stog_main.cmx
-- + as -o '/tmp/camlstartupb81695.o' '/tmp/camlstartupd61efa.s'
+- + as -o '/tmp/camlstartup4ef3fe.o' '/tmp/camlstartupc315d7.s'
+- + gcc -o 'stog'   '-L/home/opam/.opam/4.02.1/lib/ocaml/ocamldoc' '-L/home/opam/.opam/4.02.1/lib/xmlm' '-L/home/opam/.opam/4.02.1/lib/xtmpl' '-L/home/opam/.opam/4.02.1/lib/netsys' '-L/home/opam/.opam/4.02.1/lib/netstring' '-L/home/opam/.opam/4.02.1/lib/config-file' '-L/home/opam/.opam/4.02.1/lib/ocaml/camlp4' '-L/home/opam/.opam/4.02.1/lib/ulex' '-L/home/opam/.opam/4.02.1/lib/higlo' '-L/home/opam/.opam/4.02.1/lib/ocaml/threads' '-L/home/opam/.opam/4.02.1/lib/ocaml' -Wl,-E '/tmp/camlstartup4ef3fe.o' '/home/opam/.opam/4.02.1/lib/ocaml/std_exit.o' 'stog_main.o' 'stog.a' '/home/opam/.opam/4.02.1/lib/higlo/higlo_xml.o' '/home/opam/.opam/4.02.1/lib/higlo/higlo_ocaml.o' '/home/opam/.opam/4.02.1/lib/higlo/higlo.o' '/home/opam/.opam/4.02.1/lib/ulex/ulexing.a' '/home/opam/.opam/4.02.1/lib/ocaml/dynlink.a' '/home/opam/.opam/4.02.1/lib/config-file/config_file.o' '/home/opam/.opam/4.02.1/lib/netstring/netstring.a' '/home/opam/.opam/4.02.1/lib/netsys/netsys.a' '/home/opam/.opam/4.02.1/lib/netsys/netsys_oothr_mt_init.o' '/home/opam/.opam/4.02.1/lib/netsys/netsys_oothr_mt.a' '/home/opam/.opam/4.02.1/lib/ocaml/bigarray.a' '/home/opam/.opam/4.02.1/lib/xtmpl/xtmpl.o' '/home/opam/.opam/4.02.1/lib/ocaml/str.a' '/home/opam/.opam/4.02.1/lib/xmlm/xmlm.a' '/home/opam/.opam/4.02.1/lib/ocaml/threads/threads.a' '/home/opam/.opam/4.02.1/lib/ocaml/unix.a' '/home/opam/.opam/4.02.1/lib/ocaml/stdlib.a' '-lnetsys' '-lrt' '-lpthread' '-lbigarray' '-lcamlstr' '-lthreadsnat' '-lpthread' '-lunix' '/home/opam/.opam/4.02.1/lib/ocaml/libasmrun.a' -lm  -ldl
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -package xmlm,xtmpl,netstring,config-file,dynlink,unix,str,higlo.lexers,  -I +ocamldoc -annot -rectypes -g -thread  -safe-string  -c latex2stog.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -o latex2stog -package xmlm,xtmpl,netstring,config-file,dynlink,unix,str,higlo.lexers -linkall -linkpkg stog.cmxa latex2stog.cmx
-- + gcc -o 'stog'   '-L/home/opam/.opam/4.02.1/lib/ocaml/ocamldoc' '-L/home/opam/.opam/4.02.1/lib/xmlm' '-L/home/opam/.opam/4.02.1/lib/xtmpl' '-L/home/opam/.opam/4.02.1/lib/netsys' '-L/home/opam/.opam/4.02.1/lib/netstring' '-L/home/opam/.opam/4.02.1/lib/config-file' '-L/home/opam/.opam/4.02.1/lib/ocaml/camlp4' '-L/home/opam/.opam/4.02.1/lib/ulex' '-L/home/opam/.opam/4.02.1/lib/higlo' '-L/home/opam/.opam/4.02.1/lib/ocaml/threads' '-L/home/opam/.opam/4.02.1/lib/ocaml' -Wl,-E '/tmp/camlstartupb81695.o' '/home/opam/.opam/4.02.1/lib/ocaml/std_exit.o' 'stog_main.o' 'stog.a' '/home/opam/.opam/4.02.1/lib/higlo/higlo_xml.o' '/home/opam/.opam/4.02.1/lib/higlo/higlo_ocaml.o' '/home/opam/.opam/4.02.1/lib/higlo/higlo.o' '/home/opam/.opam/4.02.1/lib/ulex/ulexing.a' '/home/opam/.opam/4.02.1/lib/ocaml/dynlink.a' '/home/opam/.opam/4.02.1/lib/config-file/config_file.o' '/home/opam/.opam/4.02.1/lib/netstring/netstring.a' '/home/opam/.opam/4.02.1/lib/netsys/netsys.a' '/home/opam/.opam/4.02.1/lib/netsys/netsys_oothr_mt_init.o' '/home/opam/.opam/4.02.1/lib/netsys/netsys_oothr_mt.a' '/home/opam/.opam/4.02.1/lib/ocaml/bigarray.a' '/home/opam/.opam/4.02.1/lib/xtmpl/xtmpl.o' '/home/opam/.opam/4.02.1/lib/ocaml/str.a' '/home/opam/.opam/4.02.1/lib/xmlm/xmlm.a' '/home/opam/.opam/4.02.1/lib/ocaml/threads/threads.a' '/home/opam/.opam/4.02.1/lib/ocaml/unix.a' '/home/opam/.opam/4.02.1/lib/ocaml/stdlib.a' '-lnetsys' '-lrt' '-lpthread' '-lbigarray' '-lcamlstr' '-lthreadsnat' '-lpthread' '-lunix' '/home/opam/.opam/4.02.1/lib/ocaml/libasmrun.a' -lm  -ldl
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -package xmlm,xtmpl,netstring,config-file,dynlink,unix,str,higlo.lexers,  -I +ocamldoc -annot -rectypes -g -thread  -safe-string  -shared -o plugins/plugin_example.cmxs plugins/plugin_example.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -package xmlm,xtmpl,netstring,config-file,dynlink,unix,str,higlo.lexers,  -I +ocamldoc -annot -rectypes -g -thread  -safe-string  -shared -o plugins/stog_asy.cmxs plugins/stog_asy.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -package xmlm,xtmpl,netstring,config-file,dynlink,unix,str,higlo.lexers,  -I +ocamldoc -annot -rectypes -g -thread  -safe-string  -shared -o plugins/stog_disqus.cmxs plugins/stog_disqus.ml
@@ -4094,13 +4093,13 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -package xmlm,xtmpl,netstring,config-file,dynlink,unix,str,higlo.lexers,  -I +ocamldoc -annot -rectypes -g -thread  -safe-string  -c plugins/stog_markdown.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -package xmlm,xtmpl,netstring,config-file,dynlink,unix,str,higlo.lexers,  -I +ocamldoc -annot -rectypes -g -thread  -safe-string  -c plugins/stog_multi_doc.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -package xmlm,xtmpl,netstring,config-file,dynlink,unix,str,higlo.lexers,  -I +ocamldoc -annot -rectypes -g -thread  -safe-string  -c plugins/stog_rel_href.ml
-- findlib: [WARNING] Interface errors.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface errors.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 - Creating mk-stog.byte... done
 - Creating mk-stog-ocaml-session... done
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -package xmlm,xtmpl,netstring,config-file,dynlink,unix,str,higlo.lexers,  -I +ocamldoc -annot -rectypes -g -thread  -safe-string  -c odoc_stog.ml
+- findlib: [WARNING] Interface errors.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface errors.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 [stog: make install-lib] Command started
 + make "install-lib" "install-share" (CWD=/home/opam/.opam/4.02.1/build/stog.0.14.0)
 - mkdir -p //home/opam/.opam/4.02.1/share/stog
