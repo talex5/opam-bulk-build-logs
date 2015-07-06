@@ -2,19 +2,19 @@
 # The following system packages are needed:
 #  - m4
 Not running as root, system installation will be done through "sudo"
+Hit http://security.debian.org stable/updates Release.gpg
 Hit http://download.opensuse.org  Release.gpg
-Hit http://download.opensuse.org  Release
 Hit http://http.debian.net stable Release.gpg
 Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
+Hit http://security.debian.org stable/updates Release
+Hit http://download.opensuse.org  Release
 Hit http://http.debian.net stable Release
-Hit http://download.opensuse.org  Packages
 Get:2 http://http.debian.net stable-updates Release [124 kB]
-Hit http://security.debian.org stable/updates Release.gpg
+Hit http://security.debian.org stable/updates/main amd64 Packages
+Hit http://download.opensuse.org  Packages
 Hit http://http.debian.net stable/main amd64 Packages
 Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
-Hit http://security.debian.org stable/updates Release
-Hit http://security.debian.org stable/updates/main amd64 Packages
-Fetched 129 kB in 1s (84.8 kB/s)
+Fetched 129 kB in 1s (121 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
@@ -30,11 +30,11 @@ The following actions will be performed:
 [camlp4: from default] Command started
 [ocamlfind: from default] Command started
 [CamlGI: from default] Command started
-[ocamlfind: from default] Command started
-[camlp4: from default] Command started
 [default] http://opam-archive:8080/archives/CamlGI.0.6+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[camlp4: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -115,6 +115,9 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_metascanner.mli
 - ocamlc -I +compiler-libs -g -c fl_metascanner.ml
 - ocamlc -I +compiler-libs -c fl_topo.mli
+- ocamlc -I +compiler-libs -g -c fl_topo.ml
+- ocamlc -I +compiler-libs -c fl_package_base.mli
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -160,22 +163,22 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c fl_topo.ml
-- ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -214,9 +217,6 @@ The following actions will be performed:
 - if ocamldoc.opt >/dev/null 2>&1; then \
 - 		echo 'ocamldoc="ocamldoc.opt"' >>findlib.conf; \
 - 	fi
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlfind.1.5.5'
 [ocamlfind: make opt] Command started
 + make "opt" (CWD=/home/opam/.opam/4.02.1/build/ocamlfind.1.5.5)
@@ -228,6 +228,10 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c findlib_config.ml
 - ocamlopt -I +compiler-libs -c fl_split.ml
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
+- ocamlopt -I +compiler-libs -c fl_meta.ml
+- ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -257,9 +261,6 @@ The following actions will be performed:
 - File "fl_split.ml", line 140, characters 1-19:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlopt -I +compiler-libs -c fl_meta.ml
-- ocamlopt -I +compiler-libs -c fl_metascanner.ml
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_meta.mll", line 57, characters 13-26:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -275,7 +276,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -345,9 +345,9 @@ The following actions will be performed:
 + make "all" (CWD=/home/opam/.opam/4.02.1/build/camlp4.4.02.1+2)
 - ocamlbuild -classic-display -no-ocamlfind  `./build/camlp4-byte-only.sh`
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt unix.cmxa -I /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild_config.ml myocamlbuild.ml /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
-- + echo camlp4/Camlp4.cmo camlp4/Camlp4Top.cmo camlp4/camlp4prof.byte camlp4/mkcamlp4.byte camlp4/camlp4.byte camlp4/camlp4fulllib.cma camlp4/camlp4boot.byte camlp4/camlp4boot.cma camlp4/camlp4r.byte camlp4/camlp4r.cma camlp4/camlp4rf.byte camlp4/camlp4rf.cma camlp4/camlp4o.byte camlp4/camlp4o.cma camlp4/camlp4of.byte camlp4/camlp4of.cma camlp4/camlp4oof.byte camlp4/camlp4oof.cma camlp4/camlp4orf.byte camlp4/camlp4orf.cma camlp4/Camlp4Parsers/Camlp4AstLoader.cmo camlp4/Camlp4Parsers/Camlp4DebugParser.cmo camlp4/Camlp4Parsers/Camlp4GrammarParser.cmo camlp4/Camlp4Parsers/Camlp4ListComprehension.cmo camlp4/Camlp4Parsers/Camlp4MacroParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4OCamlParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmo camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmo camlp4/Camlp4Printers/Camlp4AstDumper.cmo camlp4/Camlp4Printers/Camlp4AutoPrinter.cmo camlp4/Camlp4Printers/Camlp4NullDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlPrinter.cmo camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.cmo camlp4/Camlp4Filters/Camlp4AstLifter.cmo camlp4/Camlp4Filters/Camlp4ExceptionTracer.cmo camlp4/Camlp4Filters/Camlp4FoldGenerator.cmo camlp4/Camlp4Filters/Camlp4LocationStripper.cmo camlp4/Camlp4Filters/Camlp4MapGenerator.cmo camlp4/Camlp4Filters/Camlp4MetaGenerator.cmo camlp4/Camlp4Filters/Camlp4Profiler.cmo camlp4/Camlp4Filters/Camlp4TrashRemover.cmo
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules camlp4/boot/camlp4boot.ml > camlp4/boot/camlp4boot.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules camlp4/boot/Camlp4.ml > camlp4/boot/Camlp4.ml.depends
+- + echo camlp4/Camlp4.cmo camlp4/Camlp4Top.cmo camlp4/camlp4prof.byte camlp4/mkcamlp4.byte camlp4/camlp4.byte camlp4/camlp4fulllib.cma camlp4/camlp4boot.byte camlp4/camlp4boot.cma camlp4/camlp4r.byte camlp4/camlp4r.cma camlp4/camlp4rf.byte camlp4/camlp4rf.cma camlp4/camlp4o.byte camlp4/camlp4o.cma camlp4/camlp4of.byte camlp4/camlp4of.cma camlp4/camlp4oof.byte camlp4/camlp4oof.cma camlp4/camlp4orf.byte camlp4/camlp4orf.cma camlp4/Camlp4Parsers/Camlp4AstLoader.cmo camlp4/Camlp4Parsers/Camlp4DebugParser.cmo camlp4/Camlp4Parsers/Camlp4GrammarParser.cmo camlp4/Camlp4Parsers/Camlp4ListComprehension.cmo camlp4/Camlp4Parsers/Camlp4MacroParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4OCamlParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmo camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmo camlp4/Camlp4Printers/Camlp4AstDumper.cmo camlp4/Camlp4Printers/Camlp4AutoPrinter.cmo camlp4/Camlp4Printers/Camlp4NullDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlPrinter.cmo camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.cmo camlp4/Camlp4Filters/Camlp4AstLifter.cmo camlp4/Camlp4Filters/Camlp4ExceptionTracer.cmo camlp4/Camlp4Filters/Camlp4FoldGenerator.cmo camlp4/Camlp4Filters/Camlp4LocationStripper.cmo camlp4/Camlp4Filters/Camlp4MapGenerator.cmo camlp4/Camlp4Filters/Camlp4MetaGenerator.cmo camlp4/Camlp4Filters/Camlp4Profiler.cmo camlp4/Camlp4Filters/Camlp4TrashRemover.cmo
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules camlp4/config/Camlp4_config.mli > camlp4/config/Camlp4_config.mli.depends
 - cp /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs/warnings.cmi camlp4/import/warnings.cmi
 - cp /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs/location.cmi camlp4/import/location.cmi
@@ -911,420 +911,420 @@ The following actions will be performed:
 - Makefile:134: .depend: No such file or directory
 - ocamlc -dtypes -I +threads -c camlGI.mli
 - ocamlc -pp "camlp4o pa_macro.cmo pr_o.cmo" -a -o camlGI.cma -dtypes -I +threads camlGI.ml
-- File "/tmp/ocamlpp491eb8", line 383, characters 14-31:
+- File "/tmp/ocamlpp1b3e7e", line 383, characters 14-31:
 - Warning 3: deprecated: String.unsafe_set
-- File "/tmp/ocamlpp491eb8", line 393, characters 22-39:
+- File "/tmp/ocamlpp1b3e7e", line 393, characters 22-39:
 - Warning 3: deprecated: String.unsafe_set
-- File "/tmp/ocamlpp491eb8", line 394, characters 39-56:
+- File "/tmp/ocamlpp1b3e7e", line 394, characters 39-56:
 - Warning 3: deprecated: String.unsafe_set
-- File "/tmp/ocamlpp491eb8", line 397, characters 14-31:
+- File "/tmp/ocamlpp1b3e7e", line 397, characters 14-31:
 - Warning 3: deprecated: String.unsafe_set
-- File "/tmp/ocamlpp491eb8", line 437, characters 17-30:
+- File "/tmp/ocamlpp1b3e7e", line 437, characters 17-30:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- File "/tmp/ocamlpp491eb8", line 449, characters 22-39:
+- File "/tmp/ocamlpp1b3e7e", line 449, characters 22-39:
 - Warning 3: deprecated: String.unsafe_set
-- File "/tmp/ocamlpp491eb8", line 450, characters 22-39:
+- File "/tmp/ocamlpp1b3e7e", line 450, characters 22-39:
 - Warning 3: deprecated: String.unsafe_set
-- File "/tmp/ocamlpp491eb8", line 451, characters 22-39:
+- File "/tmp/ocamlpp1b3e7e", line 451, characters 22-39:
 - Warning 3: deprecated: String.unsafe_set
-- File "/tmp/ocamlpp491eb8", line 455, characters 24-41:
+- File "/tmp/ocamlpp1b3e7e", line 455, characters 24-41:
 - Warning 3: deprecated: String.unsafe_set
-- File "/tmp/ocamlpp491eb8", line 457, characters 21-38:
+- File "/tmp/ocamlpp1b3e7e", line 457, characters 21-38:
 - Warning 3: deprecated: String.unsafe_set
-- File "/tmp/ocamlpp491eb8", line 587, characters 14-31:
+- File "/tmp/ocamlpp1b3e7e", line 587, characters 14-31:
 - Warning 3: deprecated: String.unsafe_set
-- File "/tmp/ocamlpp491eb8", line 599, characters 16-33:
+- File "/tmp/ocamlpp1b3e7e", line 599, characters 16-33:
 - Warning 3: deprecated: String.unsafe_set
-- File "/tmp/ocamlpp491eb8", line 603, characters 12-29:
+- File "/tmp/ocamlpp1b3e7e", line 603, characters 12-29:
 - Warning 3: deprecated: String.unsafe_set
-- File "/tmp/ocamlpp491eb8", line 957, characters 17-30:
+- File "/tmp/ocamlpp1b3e7e", line 957, characters 17-30:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- File "/tmp/ocamlpp491eb8", line 961, characters 14-24:
+- File "/tmp/ocamlpp1b3e7e", line 961, characters 14-24:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 963, characters 20-37:
+- File "/tmp/ocamlpp1b3e7e", line 963, characters 20-37:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1104, characters 29-42:
+- File "/tmp/ocamlpp1b3e7e", line 1104, characters 29-42:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- File "/tmp/ocamlpp491eb8", line 1168, characters 14-27:
+- File "/tmp/ocamlpp1b3e7e", line 1168, characters 14-27:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- File "/tmp/ocamlpp491eb8", line 1170, characters 9-30:
+- File "/tmp/ocamlpp1b3e7e", line 1170, characters 9-30:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1171, characters 9-20:
+- File "/tmp/ocamlpp1b3e7e", line 1171, characters 9-20:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1172, characters 9-37:
+- File "/tmp/ocamlpp1b3e7e", line 1172, characters 9-37:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1173, characters 9-40:
+- File "/tmp/ocamlpp1b3e7e", line 1173, characters 9-40:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1174, characters 9-38:
+- File "/tmp/ocamlpp1b3e7e", line 1174, characters 9-38:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1175, characters 9-41:
+- File "/tmp/ocamlpp1b3e7e", line 1175, characters 9-41:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1176, characters 9-38:
+- File "/tmp/ocamlpp1b3e7e", line 1176, characters 9-38:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1197, characters 14-27:
+- File "/tmp/ocamlpp1b3e7e", line 1197, characters 14-27:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- File "/tmp/ocamlpp491eb8", line 1199, characters 9-30:
+- File "/tmp/ocamlpp1b3e7e", line 1199, characters 9-30:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1200, characters 9-34:
+- File "/tmp/ocamlpp1b3e7e", line 1200, characters 9-34:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1201, characters 9-37:
+- File "/tmp/ocamlpp1b3e7e", line 1201, characters 9-37:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1202, characters 9-40:
+- File "/tmp/ocamlpp1b3e7e", line 1202, characters 9-40:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1203, characters 9-24:
+- File "/tmp/ocamlpp1b3e7e", line 1203, characters 9-24:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1204, characters 9-22:
+- File "/tmp/ocamlpp1b3e7e", line 1204, characters 9-22:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1205, characters 9-24:
+- File "/tmp/ocamlpp1b3e7e", line 1205, characters 9-24:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1206, characters 9-48:
+- File "/tmp/ocamlpp1b3e7e", line 1206, characters 9-48:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1209, characters 12-51:
+- File "/tmp/ocamlpp1b3e7e", line 1209, characters 12-51:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1212, characters 15-53:
+- File "/tmp/ocamlpp1b3e7e", line 1212, characters 15-53:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1213, characters 15-50:
+- File "/tmp/ocamlpp1b3e7e", line 1213, characters 15-50:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1214, characters 15-259:
+- File "/tmp/ocamlpp1b3e7e", line 1214, characters 15-259:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1224, characters 14-27:
+- File "/tmp/ocamlpp1b3e7e", line 1224, characters 14-27:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- File "/tmp/ocamlpp491eb8", line 1226, characters 9-30:
+- File "/tmp/ocamlpp1b3e7e", line 1226, characters 9-30:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1227, characters 9-35:
+- File "/tmp/ocamlpp1b3e7e", line 1227, characters 9-35:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1228, characters 9-24:
+- File "/tmp/ocamlpp1b3e7e", line 1228, characters 9-24:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1229, characters 9-24:
+- File "/tmp/ocamlpp1b3e7e", line 1229, characters 9-24:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1230, characters 9-24:
+- File "/tmp/ocamlpp1b3e7e", line 1230, characters 9-24:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1231, characters 9-22:
+- File "/tmp/ocamlpp1b3e7e", line 1231, characters 9-22:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1232, characters 9-24:
+- File "/tmp/ocamlpp1b3e7e", line 1232, characters 9-24:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1233, characters 9-19:
+- File "/tmp/ocamlpp1b3e7e", line 1233, characters 9-19:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1237, characters 7-51:
+- File "/tmp/ocamlpp1b3e7e", line 1237, characters 7-51:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1240, characters 10-54:
+- File "/tmp/ocamlpp1b3e7e", line 1240, characters 10-54:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1243, characters 13-57:
+- File "/tmp/ocamlpp1b3e7e", line 1243, characters 13-57:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1244, characters 13-53:
+- File "/tmp/ocamlpp1b3e7e", line 1244, characters 13-53:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1254, characters 21-34:
+- File "/tmp/ocamlpp1b3e7e", line 1254, characters 21-34:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- File "/tmp/ocamlpp491eb8", line 1255, characters 17-39:
+- File "/tmp/ocamlpp1b3e7e", line 1255, characters 17-39:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1255, characters 41-63:
+- File "/tmp/ocamlpp1b3e7e", line 1255, characters 41-63:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1257, characters 21-34:
+- File "/tmp/ocamlpp1b3e7e", line 1257, characters 21-34:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- File "/tmp/ocamlpp491eb8", line 1258, characters 17-39:
+- File "/tmp/ocamlpp1b3e7e", line 1258, characters 17-39:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1262, characters 21-34:
+- File "/tmp/ocamlpp1b3e7e", line 1262, characters 21-34:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- File "/tmp/ocamlpp491eb8", line 1263, characters 39-61:
+- File "/tmp/ocamlpp1b3e7e", line 1263, characters 39-61:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1265, characters 21-34:
+- File "/tmp/ocamlpp1b3e7e", line 1265, characters 21-34:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- File "/tmp/ocamlpp491eb8", line 1272, characters 49-62:
+- File "/tmp/ocamlpp1b3e7e", line 1272, characters 49-62:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- File "/tmp/ocamlpp491eb8", line 1274, characters 25-38:
+- File "/tmp/ocamlpp1b3e7e", line 1274, characters 25-38:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- File "/tmp/ocamlpp491eb8", line 1716, characters 19-32:
+- File "/tmp/ocamlpp1b3e7e", line 1716, characters 19-32:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- File "/tmp/ocamlpp491eb8", line 1723, characters 20-51:
+- File "/tmp/ocamlpp1b3e7e", line 1723, characters 20-51:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1724, characters 20-59:
+- File "/tmp/ocamlpp1b3e7e", line 1724, characters 20-59:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1731, characters 20-33:
+- File "/tmp/ocamlpp1b3e7e", line 1731, characters 20-33:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- File "/tmp/ocamlpp491eb8", line 1737, characters 21-55:
+- File "/tmp/ocamlpp1b3e7e", line 1737, characters 21-55:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1740, characters 24-62:
+- File "/tmp/ocamlpp1b3e7e", line 1740, characters 24-62:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1743, characters 27-65:
+- File "/tmp/ocamlpp1b3e7e", line 1743, characters 27-65:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1744, characters 27-62:
+- File "/tmp/ocamlpp1b3e7e", line 1744, characters 27-62:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "/tmp/ocamlpp491eb8", line 1787, characters 39-45:
+- File "/tmp/ocamlpp1b3e7e", line 1787, characters 39-45:
 - Warning 43: the label cookie is not optional.
-- File "/tmp/ocamlpp491eb8", line 1787, characters 47-54:
+- File "/tmp/ocamlpp1b3e7e", line 1787, characters 47-54:
 - Warning 43: the label cookies is not optional.
-- File "/tmp/ocamlpp491eb8", line 1810, characters 36-42:
+- File "/tmp/ocamlpp1b3e7e", line 1810, characters 36-42:
 - Warning 43: the label cookie is not optional.
-- File "/tmp/ocamlpp491eb8", line 1810, characters 44-51:
+- File "/tmp/ocamlpp1b3e7e", line 1810, characters 44-51:
 - Warning 43: the label cookies is not optional.
-- File "/tmp/ocamlpp491eb8", line 2190, characters 37-45:
-- Warning 43: the label filename is not optional.
-- File "/tmp/ocamlpp491eb8", line 730, characters 16-24:
-- Warning 26: unused variable encoding.
 - ocamlopt -pp "camlp4o pa_macro.cmo pr_o.cmo" -a -o camlGI.cmxa -p -inline 2 -I +threads camlGI.ml
-- File "/tmp/ocamlpp0640fb", line 383, characters 14-31:
-- Warning 3: deprecated: String.unsafe_set
-- File "/tmp/ocamlpp0640fb", line 393, characters 22-39:
-- Warning 3: deprecated: String.unsafe_set
-- File "/tmp/ocamlpp0640fb", line 394, characters 39-56:
-- Warning 3: deprecated: String.unsafe_set
-- File "/tmp/ocamlpp0640fb", line 397, characters 14-31:
-- Warning 3: deprecated: String.unsafe_set
-- File "/tmp/ocamlpp0640fb", line 437, characters 17-30:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "/tmp/ocamlpp0640fb", line 449, characters 22-39:
-- Warning 3: deprecated: String.unsafe_set
-- File "/tmp/ocamlpp0640fb", line 450, characters 22-39:
-- Warning 3: deprecated: String.unsafe_set
-- File "/tmp/ocamlpp0640fb", line 451, characters 22-39:
-- Warning 3: deprecated: String.unsafe_set
-- File "/tmp/ocamlpp0640fb", line 455, characters 24-41:
-- Warning 3: deprecated: String.unsafe_set
-- File "/tmp/ocamlpp0640fb", line 457, characters 21-38:
-- Warning 3: deprecated: String.unsafe_set
-- File "/tmp/ocamlpp0640fb", line 587, characters 14-31:
-- Warning 3: deprecated: String.unsafe_set
-- File "/tmp/ocamlpp0640fb", line 599, characters 16-33:
-- Warning 3: deprecated: String.unsafe_set
-- File "/tmp/ocamlpp0640fb", line 603, characters 12-29:
-- Warning 3: deprecated: String.unsafe_set
-- File "/tmp/ocamlpp0640fb", line 957, characters 17-30:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "/tmp/ocamlpp0640fb", line 961, characters 14-24:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 963, characters 20-37:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1104, characters 29-42:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "/tmp/ocamlpp0640fb", line 1168, characters 14-27:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "/tmp/ocamlpp0640fb", line 1170, characters 9-30:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1171, characters 9-20:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1172, characters 9-37:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1173, characters 9-40:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1174, characters 9-38:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1175, characters 9-41:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1176, characters 9-38:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1197, characters 14-27:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "/tmp/ocamlpp0640fb", line 1199, characters 9-30:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1200, characters 9-34:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1201, characters 9-37:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1202, characters 9-40:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1203, characters 9-24:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1204, characters 9-22:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1205, characters 9-24:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1206, characters 9-48:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1209, characters 12-51:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1212, characters 15-53:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1213, characters 15-50:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1214, characters 15-259:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1224, characters 14-27:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "/tmp/ocamlpp0640fb", line 1226, characters 9-30:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1227, characters 9-35:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1228, characters 9-24:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1229, characters 9-24:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1230, characters 9-24:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1231, characters 9-22:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1232, characters 9-24:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1233, characters 9-19:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1237, characters 7-51:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1240, characters 10-54:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1243, characters 13-57:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1244, characters 13-53:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1254, characters 21-34:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "/tmp/ocamlpp0640fb", line 1255, characters 17-39:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1255, characters 41-63:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1257, characters 21-34:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "/tmp/ocamlpp0640fb", line 1258, characters 17-39:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1262, characters 21-34:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "/tmp/ocamlpp0640fb", line 1263, characters 39-61:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1265, characters 21-34:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "/tmp/ocamlpp0640fb", line 1272, characters 49-62:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "/tmp/ocamlpp0640fb", line 1274, characters 25-38:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "/tmp/ocamlpp0640fb", line 1716, characters 19-32:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "/tmp/ocamlpp0640fb", line 1723, characters 20-51:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1724, characters 20-59:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1731, characters 20-33:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "/tmp/ocamlpp0640fb", line 1737, characters 21-55:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1740, characters 24-62:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1743, characters 27-65:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1744, characters 27-62:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/tmp/ocamlpp0640fb", line 1787, characters 39-45:
-- Warning 43: the label cookie is not optional.
-- File "/tmp/ocamlpp0640fb", line 1787, characters 47-54:
-- Warning 43: the label cookies is not optional.
-- File "/tmp/ocamlpp0640fb", line 1810, characters 36-42:
-- Warning 43: the label cookie is not optional.
-- File "/tmp/ocamlpp0640fb", line 1810, characters 44-51:
-- Warning 43: the label cookies is not optional.
-- File "/tmp/ocamlpp0640fb", line 2190, characters 37-45:
+- File "/tmp/ocamlpp1b3e7e", line 2190, characters 37-45:
 - Warning 43: the label filename is not optional.
-- File "/tmp/ocamlpp0640fb", line 730, characters 16-24:
+- File "/tmp/ocamlpp1b3e7e", line 730, characters 16-24:
+- Warning 26: unused variable encoding.
+- File "/tmp/ocamlpp2de739", line 383, characters 14-31:
+- Warning 3: deprecated: String.unsafe_set
+- File "/tmp/ocamlpp2de739", line 393, characters 22-39:
+- Warning 3: deprecated: String.unsafe_set
+- File "/tmp/ocamlpp2de739", line 394, characters 39-56:
+- Warning 3: deprecated: String.unsafe_set
+- File "/tmp/ocamlpp2de739", line 397, characters 14-31:
+- Warning 3: deprecated: String.unsafe_set
+- File "/tmp/ocamlpp2de739", line 437, characters 17-30:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "/tmp/ocamlpp2de739", line 449, characters 22-39:
+- Warning 3: deprecated: String.unsafe_set
+- File "/tmp/ocamlpp2de739", line 450, characters 22-39:
+- Warning 3: deprecated: String.unsafe_set
+- File "/tmp/ocamlpp2de739", line 451, characters 22-39:
+- Warning 3: deprecated: String.unsafe_set
+- File "/tmp/ocamlpp2de739", line 455, characters 24-41:
+- Warning 3: deprecated: String.unsafe_set
+- File "/tmp/ocamlpp2de739", line 457, characters 21-38:
+- Warning 3: deprecated: String.unsafe_set
+- File "/tmp/ocamlpp2de739", line 587, characters 14-31:
+- Warning 3: deprecated: String.unsafe_set
+- File "/tmp/ocamlpp2de739", line 599, characters 16-33:
+- Warning 3: deprecated: String.unsafe_set
+- File "/tmp/ocamlpp2de739", line 603, characters 12-29:
+- Warning 3: deprecated: String.unsafe_set
+- File "/tmp/ocamlpp2de739", line 957, characters 17-30:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "/tmp/ocamlpp2de739", line 961, characters 14-24:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 963, characters 20-37:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1104, characters 29-42:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "/tmp/ocamlpp2de739", line 1168, characters 14-27:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "/tmp/ocamlpp2de739", line 1170, characters 9-30:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1171, characters 9-20:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1172, characters 9-37:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1173, characters 9-40:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1174, characters 9-38:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1175, characters 9-41:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1176, characters 9-38:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1197, characters 14-27:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "/tmp/ocamlpp2de739", line 1199, characters 9-30:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1200, characters 9-34:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1201, characters 9-37:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1202, characters 9-40:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1203, characters 9-24:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1204, characters 9-22:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1205, characters 9-24:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1206, characters 9-48:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1209, characters 12-51:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1212, characters 15-53:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1213, characters 15-50:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1214, characters 15-259:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1224, characters 14-27:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "/tmp/ocamlpp2de739", line 1226, characters 9-30:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1227, characters 9-35:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1228, characters 9-24:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1229, characters 9-24:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1230, characters 9-24:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1231, characters 9-22:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1232, characters 9-24:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1233, characters 9-19:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1237, characters 7-51:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1240, characters 10-54:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1243, characters 13-57:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1244, characters 13-53:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1254, characters 21-34:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "/tmp/ocamlpp2de739", line 1255, characters 17-39:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1255, characters 41-63:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1257, characters 21-34:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "/tmp/ocamlpp2de739", line 1258, characters 17-39:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1262, characters 21-34:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "/tmp/ocamlpp2de739", line 1263, characters 39-61:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1265, characters 21-34:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "/tmp/ocamlpp2de739", line 1272, characters 49-62:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "/tmp/ocamlpp2de739", line 1274, characters 25-38:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "/tmp/ocamlpp2de739", line 1716, characters 19-32:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "/tmp/ocamlpp2de739", line 1723, characters 20-51:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1724, characters 20-59:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1731, characters 20-33:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "/tmp/ocamlpp2de739", line 1737, characters 21-55:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1740, characters 24-62:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1743, characters 27-65:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1744, characters 27-62:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/tmp/ocamlpp2de739", line 1787, characters 39-45:
+- Warning 43: the label cookie is not optional.
+- File "/tmp/ocamlpp2de739", line 1787, characters 47-54:
+- Warning 43: the label cookies is not optional.
+- File "/tmp/ocamlpp2de739", line 1810, characters 36-42:
+- Warning 43: the label cookie is not optional.
+- File "/tmp/ocamlpp2de739", line 1810, characters 44-51:
+- Warning 43: the label cookies is not optional.
+- File "/tmp/ocamlpp2de739", line 2190, characters 37-45:
+- Warning 43: the label filename is not optional.
+- File "/tmp/ocamlpp2de739", line 730, characters 16-24:
 - Warning 26: unused variable encoding.
 [CamlGI: make install] Command started
 + make "install" (CWD=/home/opam/.opam/4.02.1/build/CamlGI.0.6)
