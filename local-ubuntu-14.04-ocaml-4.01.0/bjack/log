@@ -32,7 +32,7 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [19.6 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [320 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [116 kB]
-Fetched 2045 kB in 3s (598 kB/s)
+Fetched 2044 kB in 5s (399 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
@@ -70,8 +70,8 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [bjack: from default] Command started
 [ocamlfind: from default] Command started
-[bjack: from default] Command started
 [ocamlfind: from default] Command started
+[bjack: from default] Command started
 [default] http://opam-archive:8080/archives/bjack.0.1.4+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
@@ -346,7 +346,8 @@ The following actions will be performed:
 - checking for camlp4r... camlp4r
 - checking for camlp4rf... camlp4rf
 - checking for ocamlfind... ocamlfind
-- checking for caml/threads.h... yes
+- checking for caml/threads.h... 
+- yes
 - checking for gcc option to produce PIC... -fPIC
 - checking for pkg-config... /usr/bin/pkg-config
 - checking pkg-config is at least version 0.9.0... yes
@@ -371,6 +372,21 @@ The following actions will be performed:
 - ocamlc.opt -c -cc "gcc" -ccopt "-fPIC -g -O2 -I/home/opam/.opam/system/include     -Wall -DCAML_NAME_SPACE \
 - 				-DPIC -fPIC -I/home/opam/.opam/system/include      \
 - 				    -o jack_wrapper.o " jack_wrapper.c 
+- ar rcs libbjack_stubs.a  jack_stubs.o jack_wrapper.o
+- ocamlc.opt -c -thread bjack.mli
+- ocamlc.opt -c -thread bjack.ml
+- ocamlmklib      -L/home/opam/.opam/system/lib    \
+- 				-o bjack_stubs  jack_stubs.o jack_wrapper.o -ljack -lpthread -lsamplerate \
+- 				
+- ocamlc.opt -a -dllib dllbjack_stubs.so       -ccopt -L/home/opam/.opam/system/lib  -ccopt -L/home/opam/.opam/system/lib     \
+- 				-cclib -lbjack_stubs -cclib -ljack -cclib -lpthread -cclib -lsamplerate  -o bjack.cma  bjack.cmo
+- make[2]: Leaving directory `/home/opam/.opam/system/build/bjack.0.1.4/src'
+- make[2]: Entering directory `/home/opam/.opam/system/build/bjack.0.1.4/src'
+- making ._ncdi/bjack.di from bjack.mli
+- make[2]: Leaving directory `/home/opam/.opam/system/build/bjack.0.1.4/src'
+- make[2]: Entering directory `/home/opam/.opam/system/build/bjack.0.1.4/src'
+- make[2]: `libbjack_stubs.a' is up to date.
+- ocamlopt.opt -c -thread bjack.ml
 - jack_wrapper.c: In function 'JACK_Open':
 - jack_wrapper.c:1172:5: warning: 'jack_port_get_total_latency' is deprecated (declared at /usr/include/jack/jack.h:1050) [-Wdeprecated-declarations]
 -      periods = jack_port_get_total_latency(drv->client,
@@ -390,21 +406,6 @@ The following actions will be performed:
 - jack_wrapper.c:1938:5: warning: 'jack_port_get_total_latency' is deprecated (declared at /usr/include/jack/jack.h:1050) [-Wdeprecated-declarations]
 -      return_val = jack_port_get_total_latency(drv->client, drv->input_port[0]);
 -      ^
-- ar rcs libbjack_stubs.a  jack_stubs.o jack_wrapper.o
-- ocamlc.opt -c -thread bjack.mli
-- ocamlc.opt -c -thread bjack.ml
-- ocamlmklib      -L/home/opam/.opam/system/lib    \
-- 				-o bjack_stubs  jack_stubs.o jack_wrapper.o -ljack -lpthread -lsamplerate \
-- 				
-- ocamlc.opt -a -dllib dllbjack_stubs.so       -ccopt -L/home/opam/.opam/system/lib  -ccopt -L/home/opam/.opam/system/lib     \
-- 				-cclib -lbjack_stubs -cclib -ljack -cclib -lpthread -cclib -lsamplerate  -o bjack.cma  bjack.cmo
-- make[2]: Leaving directory `/home/opam/.opam/system/build/bjack.0.1.4/src'
-- make[2]: Entering directory `/home/opam/.opam/system/build/bjack.0.1.4/src'
-- making ._ncdi/bjack.di from bjack.mli
-- make[2]: Leaving directory `/home/opam/.opam/system/build/bjack.0.1.4/src'
-- make[2]: Entering directory `/home/opam/.opam/system/build/bjack.0.1.4/src'
-- make[2]: `libbjack_stubs.a' is up to date.
-- ocamlopt.opt -c -thread bjack.ml
 - ocamlopt.opt -a        -ccopt -L/home/opam/.opam/system/lib  -ccopt -L/home/opam/.opam/system/lib    -cclib -lbjack_stubs -cclib -ljack -cclib -lpthread -cclib -lsamplerate  \
 - 				 -o bjack.cmxa bjack.cmx
 - make[2]: Leaving directory `/home/opam/.opam/system/build/bjack.0.1.4/src'
