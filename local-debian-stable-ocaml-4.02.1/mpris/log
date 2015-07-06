@@ -1,24 +1,24 @@
 ++ opam install mpris -e debian
-Debian depexts: m4
 + depext=m4
 + echo Debian depexts: m4
+Debian depexts: m4
 + '[' m4 '!=' '' ']'
 + sudo apt-get update -y
-Hit http://download.opensuse.org  Release.gpg
-Hit http://download.opensuse.org  Release
+Get:1 http://download.opensuse.org  Release.gpg [481 B]
 Hit http://http.debian.net stable Release.gpg
-Hit http://download.opensuse.org  Packages
-Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
+Get:2 http://http.debian.net stable-updates Release.gpg [836 B]
+Get:3 http://download.opensuse.org  Release [989 B]
 Hit http://http.debian.net stable Release
-Get:2 http://security.debian.org stable/updates Release.gpg [836 B]
-Get:3 http://http.debian.net stable-updates Release [124 kB]
+Get:4 http://http.debian.net stable-updates Release [124 kB]
+Get:5 http://security.debian.org stable/updates Release.gpg [836 B]
+Get:6 http://download.opensuse.org  Packages [5902 B]
 Hit http://http.debian.net stable/main amd64 Packages
-Get:4 http://http.debian.net stable-updates/main amd64 Packages [4374 B]
-Get:5 http://security.debian.org stable/updates Release [102 kB]
-Get:6 http://security.debian.org stable/updates/main amd64 Packages [340 kB]
-Fetched 572 kB in 1s (319 kB/s)
+Get:7 http://http.debian.net stable-updates/main amd64 Packages [4374 B]
+Get:8 http://security.debian.org stable/updates Release [102 kB]
+Get:9 http://security.debian.org stable/updates/main amd64 Packages [340 kB]
+Fetched 580 kB in 2s (282 kB/s)
 Reading package lists...
-W: Size of file /var/lib/apt/lists/security.debian.org_dists_stable_updates_main_binary-amd64_Packages.gz is not what the server reported 340423 340445
+W: Size of file /var/lib/apt/lists/security.debian.org_dists_stable_updates_main_binary-amd64_Packages.gz is not what the server reported 340393 340445
 + sudo apt-get install -qq -y build-essential m4
 + sudo apt-get install -qq -y m4
 ++ opam install mpris -e source,linux
@@ -43,21 +43,21 @@ The following actions will be performed:
 [lwt: from default] Command started
 [mpris: from default] Command started
 [mpris: from default] Command started
+[lwt: from default] Command started
 [default] http://opam-archive:8080/archives/mpris.0.1.0+opam.tar.gz downloaded
 [obus: from default] Command started
 [camlp4: from default] Command started
-[lwt: from default] Command started
-[default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/lwt.2.4.5+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
 [react: from default] Command started
 [obus: from default] Command started
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/obus.1.1.6+opam.tar.gz downloaded
 [type_conv: from default] Command started
+[react: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [xmlm: from default] Command started
-[react: from default] Command started
 [type_conv: from default] Command started
 [default] http://opam-archive:8080/archives/react.1.2.0+opam.tar.gz downloaded
 [xmlm: from default] Command started
@@ -147,6 +147,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -192,12 +194,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -206,8 +208,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -1196,14 +1196,7 @@ The following actions will be performed:
 - testing for fd passing: ........................ available
 - testing for sched_getcpu: ...................... available
 - testing for affinity getting/setting: .......... available
-- testing for credentials getting (Linux):
-- File "setup.ml", line 254, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "setup.ml", line 2419, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
--  ....... available
+- testing for credentials getting (Linux): ....... available
 - testing for credentials getting (NetBSD): ...... unavailable
 - testing for credentials getting (OpenBSD): ..... unavailable
 - testing for credentials getting (FreeBSD): ..... unavailable
@@ -1211,6 +1204,12 @@ The following actions will be performed:
 - testing for fdatasync: ......................... available
 - testing for netdb_reentrant: ................... available
 - Generating C stubs...
+- File "setup.ml", line 254, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "setup.ml", line 2419, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
 - 
 - Configuration: 
 - ocamlfind: ........................................... /home/opam/.opam/4.02.1/bin/ocamlfind
