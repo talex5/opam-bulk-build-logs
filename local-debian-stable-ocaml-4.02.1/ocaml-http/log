@@ -5,17 +5,18 @@
 #  - pkg-config
 Not running as root, system installation will be done through "sudo"
 Hit http://download.opensuse.org  Release.gpg
-Hit http://download.opensuse.org  Release
-Hit http://download.opensuse.org  Packages
-Hit http://security.debian.org stable/updates Release.gpg
-Hit http://security.debian.org stable/updates Release
-Hit http://security.debian.org stable/updates/main amd64 Packages
 Hit http://http.debian.net stable Release.gpg
-Hit http://http.debian.net stable-updates Release.gpg
+Hit http://download.opensuse.org  Release
+Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
 Hit http://http.debian.net stable Release
-Hit http://http.debian.net stable-updates Release
+Hit http://download.opensuse.org  Packages
+Get:2 http://http.debian.net stable-updates Release [124 kB]
 Hit http://http.debian.net stable/main amd64 Packages
-Hit http://http.debian.net stable-updates/main amd64 Packages
+Get:3 http://security.debian.org stable/updates Release.gpg [836 B]
+Get:4 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
+Get:5 http://security.debian.org stable/updates Release [102 kB]
+Get:6 http://security.debian.org stable/updates/main amd64 Packages [370 kB]
+Fetched 602 kB in 2s (292 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
@@ -42,12 +43,12 @@ The following actions will be performed:
 [camlp4: from default] Command started
 [ocaml-http: from default] Command started
 [ocamlfind: from default] Command started
-[camlp4: from default] Command started
 [ocaml-http: from default] Command started
+[default] http://opam-archive:8080/archives/ocaml-http.0.1.5+opam.tar.gz downloaded
+[ocamlnet: from default] Command started
+[camlp4: from default] Command started
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
-[ocamlnet: from default] Command started
-[default] http://opam-archive:8080/archives/ocaml-http.0.1.5+opam.tar.gz downloaded
 [pcre: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [pcre: from default] Command started
@@ -199,7 +200,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -245,11 +245,20 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -266,14 +275,6 @@ The following actions will be performed:
 - 	    	    >topfind
 - ocamlc -I +compiler-libs -c num_top_printers.mli
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -c num_top.mli
 - ocamlc -I +compiler-libs -g -c num_top.ml
 - ocamlc -I +compiler-libs -a -o num_top.cma num_top_printers.cmo num_top.cmo
@@ -310,6 +311,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -354,7 +356,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -2599,33 +2600,6 @@ The following actions will be performed:
 - ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netmech_crammd5_sasl.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c -p -o `basename netmech_crammd5_sasl.cmx .cmx`.p.cmx  netmech_crammd5_sasl.ml
 - ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netmech_digest.ml
-- make[1]: Circular netsys_signal.cmx <- netlog.cmx dependency dropped.
-- make[1]: Circular netsys_posix.cmx <- netlog.cmx dependency dropped.
-- File "netsys.ml", line 271, characters 6-39:
-- Warning 26: unused variable addr.
-- File "netsys.ml", line 271, characters 6-39:
-- Warning 26: unused variable addr.
-- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c  -O -g  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'netsys_c_gprof.c'
-- File "nethtml.ml", line 620, characters 4-16:
-- Warning 21: this statement never returns (or has an unsound type.)
-- File "nethtml.ml", line 620, characters 4-16:
-- Warning 21: this statement never returns (or has an unsound type.)
-- File "netmime_channels.ml", line 137, characters 33-65:
-- Warning 18: this ground coercion is not principal.
-- File "netmime_channels.ml", line 137, characters 33-65:
-- Warning 18: this ground coercion is not principal.
-- File "netgssapi_auth.ml", line 100, characters 8-17:
-- Warning 26: unused variable mech_type.
-- File "netgssapi_auth.ml", line 100, characters 8-17:
-- Warning 26: unused variable mech_type.
-- File "netmech_scram_sasl.ml", line 76, characters 14-15:
-- Warning 11: this match case is unused.
-- File "netmech_scram_sasl.ml", line 76, characters 14-15:
-- Warning 11: this match case is unused.
-- File "netmech_crammd5_sasl.ml", line 92, characters 10-14:
-- Warning 26: unused variable resp.
-- File "netmech_crammd5_sasl.ml", line 92, characters 10-14:
-- Warning 26: unused variable resp.
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c -p -o `basename netmech_digest.cmx .cmx`.p.cmx  netmech_digest.ml
 - ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netmech_digest_sasl.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c -p -o `basename netmech_digest_sasl.cmx .cmx`.p.cmx  netmech_digest_sasl.ml
@@ -2793,6 +2767,33 @@ The following actions will be performed:
 - ocamlfind ocamlopt -g  -I ../../src/netstring -package "unix"  -w -3-25 -c  rename.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netstring -package "unix"  -w -3-25 -c -p -o `basename rename.cmx .cmx`.p.cmx  rename.ml
 - ocamlfind ocamlopt -g  -I ../../src/netstring -package "unix"  -w -3-25 -c  generate.ml
+- make[1]: Circular netsys_signal.cmx <- netlog.cmx dependency dropped.
+- make[1]: Circular netsys_posix.cmx <- netlog.cmx dependency dropped.
+- File "netsys.ml", line 271, characters 6-39:
+- Warning 26: unused variable addr.
+- File "netsys.ml", line 271, characters 6-39:
+- Warning 26: unused variable addr.
+- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c  -O -g  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'netsys_c_gprof.c'
+- File "nethtml.ml", line 620, characters 4-16:
+- Warning 21: this statement never returns (or has an unsound type.)
+- File "nethtml.ml", line 620, characters 4-16:
+- Warning 21: this statement never returns (or has an unsound type.)
+- File "netmime_channels.ml", line 137, characters 33-65:
+- Warning 18: this ground coercion is not principal.
+- File "netmime_channels.ml", line 137, characters 33-65:
+- Warning 18: this ground coercion is not principal.
+- File "netgssapi_auth.ml", line 100, characters 8-17:
+- Warning 26: unused variable mech_type.
+- File "netgssapi_auth.ml", line 100, characters 8-17:
+- Warning 26: unused variable mech_type.
+- File "netmech_scram_sasl.ml", line 76, characters 14-15:
+- Warning 11: this match case is unused.
+- File "netmech_scram_sasl.ml", line 76, characters 14-15:
+- Warning 11: this match case is unused.
+- File "netmech_crammd5_sasl.ml", line 92, characters 10-14:
+- Warning 26: unused variable resp.
+- File "netmech_crammd5_sasl.ml", line 92, characters 10-14:
+- Warning 26: unused variable resp.
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netstring -package "unix"  -w -3-25 -c -p -o `basename generate.cmx .cmx`.p.cmx  generate.ml
 - File "generate.ml", line 612, characters 6-22:
 - Warning 26: unused variable get_type_of_decl.
@@ -3903,16 +3904,16 @@ The following actions will be performed:
 - ocamlfind ocamlc  -pp camlp4o -package "unix str pcre netstring" -c http_response.ml
 - ocamlfind ocamlc  -pp camlp4o -package "unix str pcre netstring" -c http_user_agent.mli
 - ocamlfind ocamlc  -pp camlp4o -package "unix str pcre netstring" -c http_user_agent.ml
-- ocamlfind ocamlc  -pp camlp4o -package "unix str pcre netstring" -a -o http.cma http_constants.cmo http_types.cmo http_parser_sanity.cmo http_misc.cmo http_common.cmo non_mt/http_threaded_tcp_server.cmo http_tcp_server.cmo cookie_lexer.cmo http_parser.cmo http_message.cmo http_request.cmo http_daemon.cmo http_response.cmo http_user_agent.cmo
-- cp http_threaded_tcp_server.{cmi,mli} mt/
-- ocamlfind ocamlc  -pp camlp4o -package "unix str pcre netstring" -package threads -thread -c mt/http_threaded_tcp_server.ml
 - File "http_daemon.ml", line 457, characters 2-250:
 - Warning 23: all the fields are explicitly listed in this record:
 - the 'with' clause is useless.
+- ocamlfind ocamlc  -pp camlp4o -package "unix str pcre netstring" -a -o http.cma http_constants.cmo http_types.cmo http_parser_sanity.cmo http_misc.cmo http_common.cmo non_mt/http_threaded_tcp_server.cmo http_tcp_server.cmo cookie_lexer.cmo http_parser.cmo http_message.cmo http_request.cmo http_daemon.cmo http_response.cmo http_user_agent.cmo
+- cp http_threaded_tcp_server.{cmi,mli} mt/
+- ocamlfind ocamlc  -pp camlp4o -package "unix str pcre netstring" -package threads -thread -c mt/http_threaded_tcp_server.ml
+- ocamlfind ocamlc  -pp camlp4o -package "unix str pcre netstring" -a -o http_mt.cma http_constants.cmo http_types.cmo http_parser_sanity.cmo http_misc.cmo http_common.cmo mt/http_threaded_tcp_server.cmo http_tcp_server.cmo cookie_lexer.cmo http_parser.cmo http_message.cmo http_request.cmo http_daemon.cmo http_response.cmo http_user_agent.cmo
 - File "http_user_agent.ml", line 76, characters 12-25:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlfind ocamlc  -pp camlp4o -package "unix str pcre netstring" -a -o http_mt.cma http_constants.cmo http_types.cmo http_parser_sanity.cmo http_misc.cmo http_common.cmo mt/http_threaded_tcp_server.cmo http_tcp_server.cmo cookie_lexer.cmo http_parser.cmo http_message.cmo http_request.cmo http_daemon.cmo http_response.cmo http_user_agent.cmo
 [ocaml-http: make opt] Command started
 + make "opt" (CWD=/home/opam/.opam/4.02.1/build/ocaml-http.0.1.5)
 - ocamlfind ocamlopt  -pp camlp4o -package "unix str pcre netstring" -c http_constants.ml
@@ -3924,24 +3925,24 @@ The following actions will be performed:
 - ocamlfind ocamlopt  -pp camlp4o -package "unix str pcre netstring" -c non_mt/http_threaded_tcp_server.ml
 - ocamlfind ocamlopt  -pp camlp4o -package "unix str pcre netstring" -c http_tcp_server.ml
 - ocamlfind ocamlopt  -pp camlp4o -package "unix str pcre netstring" -c cookie_lexer.ml
+- ocamlfind ocamlopt  -pp camlp4o -package "unix str pcre netstring" -c http_parser.ml
 - File "cookie_lexer.ml", line 211, characters 27-39:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
-- ocamlfind ocamlopt  -pp camlp4o -package "unix str pcre netstring" -c http_parser.ml
 - ocamlfind ocamlopt  -pp camlp4o -package "unix str pcre netstring" -c http_message.ml
 - ocamlfind ocamlopt  -pp camlp4o -package "unix str pcre netstring" -c http_request.ml
 - ocamlfind ocamlopt  -pp camlp4o -package "unix str pcre netstring" -c http_daemon.ml
 - ocamlfind ocamlopt  -pp camlp4o -package "unix str pcre netstring" -c http_response.ml
 - ocamlfind ocamlopt  -pp camlp4o -package "unix str pcre netstring" -c http_user_agent.ml
 - ocamlfind ocamlopt  -pp camlp4o -package "unix str pcre netstring" -a -o http.cmxa http_constants.cmx http_types.cmx http_parser_sanity.cmx http_misc.cmx http_common.cmx non_mt/http_threaded_tcp_server.cmx http_tcp_server.cmx cookie_lexer.cmx http_parser.cmx http_message.cmx http_request.cmx http_daemon.cmx http_response.cmx http_user_agent.cmx
+- cp http_threaded_tcp_server.{cmi,mli} mt/
+- ocamlfind ocamlopt  -pp camlp4o -package "unix str pcre netstring" -package threads -thread -c mt/http_threaded_tcp_server.ml
 - File "http_daemon.ml", line 457, characters 2-250:
 - Warning 23: all the fields are explicitly listed in this record:
 - the 'with' clause is useless.
 - File "http_user_agent.ml", line 76, characters 12-25:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- cp http_threaded_tcp_server.{cmi,mli} mt/
-- ocamlfind ocamlopt  -pp camlp4o -package "unix str pcre netstring" -package threads -thread -c mt/http_threaded_tcp_server.ml
 - ocamlfind ocamlopt  -pp camlp4o -package "unix str pcre netstring" -a -o http_mt.cmxa http_constants.cmx http_types.cmx http_parser_sanity.cmx http_misc.cmx http_common.cmx mt/http_threaded_tcp_server.cmx http_tcp_server.cmx cookie_lexer.cmx http_parser.cmx http_message.cmx http_request.cmx http_daemon.cmx http_response.cmx http_user_agent.cmx
 [ocaml-http: make install] Command started
 + make "install" (CWD=/home/opam/.opam/4.02.1/build/ocaml-http.0.1.5)
