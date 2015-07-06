@@ -5,16 +5,16 @@ Not running as root, system installation will be done through "sudo"
 Hit http://download.opensuse.org  Release.gpg
 Hit http://http.debian.net stable Release.gpg
 Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
-Hit http://http.debian.net stable Release
 Hit http://download.opensuse.org  Release
 Get:2 http://http.debian.net stable-updates Release [124 kB]
 Hit http://download.opensuse.org  Packages
+Hit http://http.debian.net stable Release
 Hit http://http.debian.net stable/main amd64 Packages
 Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
 Hit http://security.debian.org stable/updates Release.gpg
 Hit http://security.debian.org stable/updates Release
 Hit http://security.debian.org stable/updates/main amd64 Packages
-Fetched 129 kB in 1s (118 kB/s)
+Fetched 129 kB in 1s (106 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
@@ -25,7 +25,7 @@ The following actions will be performed:
   - install type_conv        112.01.01                          [required by cstruct, ipaddr]
   - install optcomp          1.6                                [required by ocplib-endian]
   - install lwt              2.4.5                              [required by mirage-types-lwt]
-  - install sexplib          112.24.00                          [required by mirage-types-lwt]
+  - install sexplib          112.24.01                          [required by mirage-types-lwt]
   - install ocplib-endian    0.4                                [required by cstruct]
   - install ipaddr           2.5.0                              [required by mirage-types-lwt]
   - install cstruct          1.5.0                              [required by mirage-types-lwt]
@@ -58,16 +58,16 @@ The following actions will be performed:
 [optcomp: from default] Command started
 [ocplib-endian: from default] Command started
 [default] http://opam-archive:8080/archives/ocplib-endian.0.4+opam.tar.gz downloaded
-[sexplib: http] Command started
+[sexplib: from default] Command started
 [optcomp: from default] Command started
 [default] http://opam-archive:8080/archives/optcomp.1.6+opam.tar.gz downloaded
 [type_conv: from default] Command started
 [type_conv: from default] Command started
+[sexplib: from default] Command started
 [default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/sexplib.112.24.01+opam.tar.gz downloaded
 [cstruct: http] Command started
 [cstruct.1.5.0] https://github.com/mirage/ocaml-cstruct/archive/v1.5.0.tar.gz downloaded
-[sexplib: http] Command started
-[sexplib.112.24.00] https://ocaml.janestreet.com/ocaml-core/112.24/files/sexplib-112.24.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -207,11 +207,11 @@ The following actions will be performed:
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -262,6 +262,8 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_split.ml
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
+- ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -291,10 +293,6 @@ The following actions will be performed:
 - File "fl_split.ml", line 140, characters 1-19:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlopt -I +compiler-libs -c fl_metascanner.ml
-- ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
-- ocamlopt -I +compiler-libs -c findlib.ml
 - File "fl_meta.mll", line 57, characters 13-26:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -310,6 +308,8 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
+- ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
 - if [ 1 -gt 0 ]; then \
@@ -650,8 +650,8 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.ml > camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4Parsers -I camlp4 -I camlp4/config -o camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.ml
 - ocamlbuild -classic-display -no-ocamlfind  `./build/camlp4-native-only.sh`
-- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -for-pack Camlp4 -g -w Z -I camlp4/import -warn-error A-3 -pp 'camlp4/boot/camlp4boot.native -D OPT' -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Sig.cmx camlp4/Camlp4/Sig.ml
 - + echo camlp4/Camlp4.cmx camlp4/Camlp4Top.cmx camlp4/camlp4prof.native camlp4/mkcamlp4.native camlp4/camlp4.native camlp4/camlp4fulllib.cmxa camlp4/camlp4boot.native camlp4/camlp4r.native camlp4/camlp4rf.native camlp4/camlp4o.native camlp4/camlp4of.native camlp4/camlp4oof.native camlp4/camlp4orf.native camlp4/Camlp4Parsers/Camlp4AstLoader.cmx camlp4/Camlp4Parsers/Camlp4AstLoader.o camlp4/Camlp4Parsers/Camlp4DebugParser.cmx camlp4/Camlp4Parsers/Camlp4DebugParser.o camlp4/Camlp4Parsers/Camlp4GrammarParser.cmx camlp4/Camlp4Parsers/Camlp4GrammarParser.o camlp4/Camlp4Parsers/Camlp4ListComprehension.cmx camlp4/Camlp4Parsers/Camlp4ListComprehension.o camlp4/Camlp4Parsers/Camlp4MacroParser.cmx camlp4/Camlp4Parsers/Camlp4MacroParser.o camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmx camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.o camlp4/Camlp4Parsers/Camlp4OCamlParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlParser.o camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlParserParser.o camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.o camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.o camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.o camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmx camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.o camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmx camlp4/Camlp4Parsers/Camlp4QuotationCommon.o camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmx camlp4/Camlp4Parsers/Camlp4QuotationExpander.o camlp4/Camlp4Printers/Camlp4AstDumper.cmx camlp4/Camlp4Printers/Camlp4AstDumper.o camlp4/Camlp4Printers/Camlp4AutoPrinter.cmx camlp4/Camlp4Printers/Camlp4AutoPrinter.o camlp4/Camlp4Printers/Camlp4NullDumper.cmx camlp4/Camlp4Printers/Camlp4NullDumper.o camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmx camlp4/Camlp4Printers/Camlp4OCamlAstDumper.o camlp4/Camlp4Printers/Camlp4OCamlPrinter.cmx camlp4/Camlp4Printers/Camlp4OCamlPrinter.o camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.cmx camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.o camlp4/Camlp4Filters/Camlp4AstLifter.cmx camlp4/Camlp4Filters/Camlp4AstLifter.o camlp4/Camlp4Filters/Camlp4ExceptionTracer.cmx camlp4/Camlp4Filters/Camlp4ExceptionTracer.o camlp4/Camlp4Filters/Camlp4FoldGenerator.cmx camlp4/Camlp4Filters/Camlp4FoldGenerator.o camlp4/Camlp4Filters/Camlp4LocationStripper.cmx camlp4/Camlp4Filters/Camlp4LocationStripper.o camlp4/Camlp4Filters/Camlp4MapGenerator.cmx camlp4/Camlp4Filters/Camlp4MapGenerator.o camlp4/Camlp4Filters/Camlp4MetaGenerator.cmx camlp4/Camlp4Filters/Camlp4MetaGenerator.o camlp4/Camlp4Filters/Camlp4Profiler.cmx camlp4/Camlp4Filters/Camlp4Profiler.o camlp4/Camlp4Filters/Camlp4TrashRemover.cmx camlp4/Camlp4Filters/Camlp4TrashRemover.o
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -for-pack Camlp4 -g -w Z -I camlp4/import -warn-error A-3 -pp 'camlp4/boot/camlp4boot.native -D OPT' -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Sig.cmx camlp4/Camlp4/Sig.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -for-pack Camlp4 -g -w Z -I camlp4/import -warn-error A-3 -pp 'camlp4/boot/camlp4boot.native -D OPT' -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Utils.cmx camlp4/Camlp4/Utils.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -for-pack Camlp4 -g -w Z -I camlp4/import -warn-error A-3 -pp 'camlp4/boot/camlp4boot.native -D OPT' -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/OCamlInitSyntax.cmx camlp4/Camlp4/OCamlInitSyntax.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -for-pack Camlp4 -g -w Z -I camlp4/import -warn-error A-3 -pp 'camlp4/boot/camlp4boot.native -D OPT' -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/ErrorHandler.cmx camlp4/Camlp4/ErrorHandler.ml
@@ -1451,7 +1451,7 @@ The following actions will be performed:
 - Installed /home/opam/.opam/4.02.1/lib/type_conv/META
 -> installed type_conv.112.01.01
 [sexplib: ./configure] Command started
-+ ./configure "--enable-syntax" (CWD=/home/opam/.opam/4.02.1/build/sexplib.112.24.00)
++ ./configure "--enable-syntax" (CWD=/home/opam/.opam/4.02.1/build/sexplib.112.24.01)
 - 
 - Configuration: 
 - ocamlfind: ........................................... /home/opam/.opam/4.02.1/bin/ocamlfind
@@ -1459,7 +1459,7 @@ The following actions will be performed:
 - ocamlopt: ............................................ /home/opam/.opam/4.02.1/bin/ocamlopt.opt
 - ocamlbuild: .......................................... /home/opam/.opam/4.02.1/bin/ocamlbuild
 - Package name: ........................................ sexplib
-- Package version: ..................................... 112.24.00
+- Package version: ..................................... 112.24.01
 - os_type: ............................................. Unix
 - system: .............................................. linux
 - architecture: ........................................ amd64
@@ -1508,7 +1508,6 @@ The following actions will be performed:
 - Build the syntax extension: .......................... true
 - Create documentations: ............................... true
 - Compile tests executable and library and run them: ... false
-- camlp4o: ............................................. /home/opam/.opam/4.02.1/bin/camlp4o
 - pkg_bigarray: ........................................ /home/opam/.opam/4.02.1/lib/ocaml
 - pkg_num: ............................................. /home/opam/.opam/4.02.1/lib/num
 - pkg_unix: ............................................ /home/opam/.opam/4.02.1/lib/ocaml
@@ -1517,7 +1516,7 @@ The following actions will be performed:
 - pkg_type_conv: ....................................... /home/opam/.opam/4.02.1/lib/type_conv
 - 
 [sexplib: make] Command started
-+ make  (CWD=/home/opam/.opam/4.02.1/build/sexplib.112.24.00)
++ make  (CWD=/home/opam/.opam/4.02.1/build/sexplib.112.24.01)
 - ocamlopt.opt -o setup.exe setup.ml || ocamlopt -o setup.exe setup.ml || ocamlc -o setup.exe setup.ml
 - rm -f setup.cmx setup.cmi setup.o setup.obj setup.cmo
 - ./setup.exe -configure 
@@ -1528,7 +1527,7 @@ The following actions will be performed:
 - ocamlopt: ............................................ /home/opam/.opam/4.02.1/bin/ocamlopt.opt
 - ocamlbuild: .......................................... /home/opam/.opam/4.02.1/bin/ocamlbuild
 - Package name: ........................................ sexplib
-- Package version: ..................................... 112.24.00
+- Package version: ..................................... 112.24.01
 - os_type: ............................................. Unix
 - system: .............................................. linux
 - architecture: ........................................ amd64
@@ -1577,7 +1576,6 @@ The following actions will be performed:
 - Build the syntax extension: .......................... true
 - Create documentations: ............................... true
 - Compile tests executable and library and run them: ... false
-- camlp4o: ............................................. /home/opam/.opam/4.02.1/bin/camlp4o
 - pkg_bigarray: ........................................ /home/opam/.opam/4.02.1/lib/ocaml
 - pkg_num: ............................................. /home/opam/.opam/4.02.1/lib/num
 - pkg_unix: ............................................ /home/opam/.opam/4.02.1/lib/ocaml
@@ -1648,7 +1646,7 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package bigarray -I lib -o lib/sexp_intf.cmo lib/sexp_intf.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package bigarray -I lib -o lib/sexp.cmi lib/sexp.mli
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package bigarray -I lib -o lib/conv.cmi lib/conv.mli
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt -DOCAML_4_02 -syntax camlp4o -syntax camlp4o -package camlp4.macro -package bigarray -modules lib/conv.ml > lib/conv.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -modules lib/conv.ml > lib/conv.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -modules lib/conv_error.ml > lib/conv_error.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -modules lib/exn_magic.mli > lib/exn_magic.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package bigarray -I lib -o lib/exn_magic.cmi lib/exn_magic.mli
@@ -1669,12 +1667,12 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -modules lib/parser_with_layout.ml > lib/parser_with_layout.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamllex.opt -q lib/lexer.mll
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -modules lib/lexer.ml > lib/lexer.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -ppopt -DOCAML_4_02 -syntax camlp4o -syntax camlp4o -package camlp4.macro -package bigarray -I lib -o lib/conv.cmo lib/conv.ml
-- + /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -ppopt -DOCAML_4_02 -syntax camlp4o -syntax camlp4o -package camlp4.macro -package bigarray -I lib -o lib/conv.cmo lib/conv.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package bigarray -I lib -o lib/conv.cmo lib/conv.ml
+- + /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package bigarray -I lib -o lib/conv.cmo lib/conv.ml
 - File "lib/conv.ml", line 95, characters 12-25:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- File "lib/conv.ml", line 96, characters 24-31:
+- File "lib/conv.ml", line 96, characters 24-43:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
 - File "lib/conv.ml", line 308, characters 37-55:
@@ -1752,12 +1750,12 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package bigarray -for-pack Sexplib -I lib -o lib/sexp_with_layout.cmx lib/sexp_with_layout.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package bigarray -for-pack Sexplib -I lib -o lib/sexp_intf.cmx lib/sexp_intf.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package bigarray -for-pack Sexplib -I lib -o lib/sexp.cmx lib/sexp.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -ppopt -DOCAML_4_02 -syntax camlp4o -syntax camlp4o -package camlp4.macro -package bigarray -for-pack Sexplib -I lib -o lib/conv.cmx lib/conv.ml
-- + /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -ppopt -DOCAML_4_02 -syntax camlp4o -syntax camlp4o -package camlp4.macro -package bigarray -for-pack Sexplib -I lib -o lib/conv.cmx lib/conv.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package bigarray -for-pack Sexplib -I lib -o lib/conv.cmx lib/conv.ml
+- + /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package bigarray -for-pack Sexplib -I lib -o lib/conv.cmx lib/conv.ml
 - File "lib/conv.ml", line 95, characters 12-25:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- File "lib/conv.ml", line 96, characters 24-31:
+- File "lib/conv.ml", line 96, characters 24-43:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
 - File "lib/conv.ml", line 308, characters 37-55:
@@ -1828,7 +1826,7 @@ The following actions will be performed:
 - W: Cannot find source file matching module 'sexplib_num' in library sexplib_num
 - W: Cannot find source file matching module 'sexplib' in library sexplib
 [sexplib: make install] Command started
-+ make "install" (CWD=/home/opam/.opam/4.02.1/build/sexplib.112.24.00)
++ make "install" (CWD=/home/opam/.opam/4.02.1/build/sexplib.112.24.01)
 - ./setup.exe -install 
 - Installed /home/opam/.opam/4.02.1/lib/sexplib_unix/sexplib_unix_conv.ml
 - Installed /home/opam/.opam/4.02.1/lib/sexplib_unix/sexplib_unix.cmt
@@ -1941,7 +1939,7 @@ The following actions will be performed:
 - Installed /home/opam/.opam/4.02.1/lib/sexplib/pa_sexp_conv.annot
 - Installed /home/opam/.opam/4.02.1/lib/sexplib/pa_sexp_conv.cmx
 - Installed /home/opam/.opam/4.02.1/lib/sexplib/META
--> installed sexplib.112.24.00
+-> installed sexplib.112.24.01
 [ipaddr: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/4.02.1" (CWD=/home/opam/.opam/4.02.1/build/ipaddr.2.5.0)
 - 
@@ -3132,12 +3130,6 @@ The following actions will be performed:
 - Warning: the tag "pkg_mirage-types.lwt" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
 - ocamlfind ocamldep -modules types/V1.mli > types/V1.mli.depends
 - ocamlfind ocamlc -c -g -annot -bin-annot -principal -I types -o types/V1.cmi types/V1.mli
-- + ocamlfind query lwt cstruct ipaddr io-page
-- + WITH_LWT=/home/opam/.opam/4.02.1/lib/lwt
-- /home/opam/.opam/4.02.1/lib/cstruct
-- /home/opam/.opam/4.02.1/lib/ipaddr
-- /home/opam/.opam/4.02.1/lib/io-page
-- + ocamlbuild -tag bin_annot types/V1.cmi
 - File "_tags", line 26, characters 26-42:
 - Warning: the tag "pkg_mirage-types" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
 - File "_tags", line 27, characters 26-46:
@@ -3150,6 +3142,12 @@ The following actions will be performed:
 - ocamlfind ocamldep -package ipaddr -package cstruct -package io-page -package lwt -modules types/V1.mli > types/V1.mli.depends
 - ocamlfind ocamlc -c -g -annot -bin-annot -principal -package ipaddr -package cstruct -package io-page -package lwt -I types -o types/V1.cmi types/V1.mli
 - ocamlfind ocamlc -c -g -annot -bin-annot -principal -package ipaddr -package cstruct -package io-page -package lwt -I types -o types/V1_LWT.cmi types/V1_LWT.mli
+- + ocamlfind query lwt cstruct ipaddr io-page
+- + WITH_LWT=/home/opam/.opam/4.02.1/lib/lwt
+- /home/opam/.opam/4.02.1/lib/cstruct
+- /home/opam/.opam/4.02.1/lib/ipaddr
+- /home/opam/.opam/4.02.1/lib/io-page
+- + ocamlbuild -tag bin_annot types/V1.cmi
 - W: Cannot get variable ext_obj
 - W: Cannot get variable ext_lib
 - W: Cannot get variable ext_dll
