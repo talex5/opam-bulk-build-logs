@@ -4,18 +4,18 @@
 #  - m4
 Not running as root, system installation will be done through "sudo"
 Hit http://download.opensuse.org  Release.gpg
-Hit http://http.debian.net stable Release.gpg
 Hit http://download.opensuse.org  Release
+Hit http://http.debian.net stable Release.gpg
 Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
 Hit http://http.debian.net stable Release
 Hit http://download.opensuse.org  Packages
 Get:2 http://http.debian.net stable-updates Release [124 kB]
 Hit http://http.debian.net stable/main amd64 Packages
-Get:3 http://security.debian.org stable/updates Release.gpg [836 B]
-Get:4 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
-Get:5 http://security.debian.org stable/updates Release [102 kB]
-Get:6 http://security.debian.org stable/updates/main amd64 Packages [370 kB]
-Fetched 602 kB in 1s (376 kB/s)
+Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
+Hit http://security.debian.org stable/updates Release.gpg
+Hit http://security.debian.org stable/updates Release
+Hit http://security.debian.org stable/updates/main amd64 Packages
+Fetched 129 kB in 1s (87.2 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
@@ -36,10 +36,10 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [faad: from default] Command started
 [ocamlfind: from default] Command started
-[faad: from default] Command started
-[default] http://opam-archive:8080/archives/faad.0.3.2+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
+[faad: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/faad.0.3.2+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -124,8 +124,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -171,9 +169,19 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
@@ -183,14 +191,6 @@ The following actions will be performed:
 - 			> topfind.ml ;                                   \
 - 	fi
 - ocamlc -I +compiler-libs -c topfind.mli
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -235,8 +235,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
-- ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -275,6 +273,8 @@ The following actions will be performed:
 - File "fl_meta.mll", line 62, characters 11-22:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_metascanner.ml", line 111, characters 23-32:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
@@ -359,7 +359,8 @@ The following actions will be performed:
 - checking build system type... x86_64-unknown-linux-gnu
 - checking host system type... x86_64-unknown-linux-gnu
 - checking for a BSD-compatible install... /usr/bin/install -c
-- checking that calling user is not root... ok
+- checking that calling user is not root... 
+- ok
 - checking for gcc... (cached) gcc
 - checking whether we are using the GNU C compiler... (cached) yes
 - checking whether gcc accepts -g... (cached) yes
@@ -394,15 +395,15 @@ The following actions will be performed:
 - checking for ocamlfind... ocamlfind
 - checking for caml/threads.h... yes
 - checking for gcc option to produce PIC... -fPIC
-- checking how to run the C preprocessor... 
-- gcc -E
+- checking how to run the C preprocessor... gcc -E
 - checking for grep that handles long lines and -e... /bin/grep
 - checking for egrep... /bin/grep -E
 - checking for ANSI C header files... yes
 - checking for sys/types.h... yes
 - checking for sys/stat.h... yes
 - checking for stdlib.h... yes
-- checking for string.h... yes
+- checking for string.h... 
+- yes
 - checking for memory.h... yes
 - checking for strings.h... yes
 - checking for inttypes.h... yes
@@ -411,8 +412,7 @@ The following actions will be performed:
 - checking errno.h usability... yes
 - checking errno.h presence... yes
 - checking for errno.h... yes
-- checking neaacdec.h usability... 
-- yes
+- checking neaacdec.h usability... yes
 - checking neaacdec.h presence... yes
 - checking for neaacdec.h... yes
 - checking for NeAACDecInit... yes
@@ -439,11 +439,11 @@ The following actions will be performed:
 - ocamlc.opt -c -cc "gcc" -ccopt "-fPIC -g -O2 -I/home/opam/.opam/4.02.1/include -I.. -DHAVE_CONFIG_H  -Wall -DCAML_NAME_SPACE -DUSE_TAGGING -DITUNES_DRM \
 - 				-DPIC -fPIC -I/home/opam/.opam/4.02.1/include   \
 - 				    -o mp4atom.o " mp4atom.c
-- mp4atom.c: In function 'mp4ff_read_mp4a':
-- mp4atom.c:317:14: warning: variable 'size' set but not used [-Wunused-but-set-variable]
 - ocamlc.opt -c -cc "gcc" -ccopt "-fPIC -g -O2 -I/home/opam/.opam/4.02.1/include -I.. -DHAVE_CONFIG_H  -Wall -DCAML_NAME_SPACE -DUSE_TAGGING -DITUNES_DRM \
 - 				-DPIC -fPIC -I/home/opam/.opam/4.02.1/include   \
 - 				    -o mp4ff.o " mp4ff.c
+- mp4atom.c: In function 'mp4ff_read_mp4a':
+- mp4atom.c:317:14: warning: variable 'size' set but not used [-Wunused-but-set-variable]
 - ocamlc.opt -c -cc "gcc" -ccopt "-fPIC -g -O2 -I/home/opam/.opam/4.02.1/include -I.. -DHAVE_CONFIG_H  -Wall -DCAML_NAME_SPACE -DUSE_TAGGING -DITUNES_DRM \
 - 				-DPIC -fPIC -I/home/opam/.opam/4.02.1/include   \
 - 				    -o mp4meta.o " mp4meta.c
