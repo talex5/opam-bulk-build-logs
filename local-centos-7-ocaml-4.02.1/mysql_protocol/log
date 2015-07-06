@@ -4,17 +4,17 @@
 Not running as root, system installation will be done through "sudo"
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: mirrors.coreix.net
- * extras: mirror.vorboss.net
- * updates: mirror.vorboss.net
+ * base: mirrors.vooservers.com
+ * extras: anorien.csc.warwick.ac.uk
+ * updates: mirror.sov.uk.goscomb.net
 No packages marked for update
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: mirrors.coreix.net
- * extras: mirror.vorboss.net
- * updates: mirror.vorboss.net
+ * base: mirrors.vooservers.com
+ * extras: mirrors.coreix.net
+ * updates: mirror.sov.uk.goscomb.net
 Resolving Dependencies
 --> Running transaction check
 ---> Package zlib-devel.x86_64 0:1.2.7-13.el7 will be installed
@@ -64,10 +64,10 @@ The following actions will be performed:
 [default] http://opam-archive:8080/archives/bitstring.2.0.4+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/cryptokit.1.10+opam.tar.gz downloaded
-[mysql_protocol: from default] Command started
-[default] http://opam-archive:8080/archives/mysql_protocol.1.0+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[mysql_protocol: from default] Command started
+[default] http://opam-archive:8080/archives/mysql_protocol.1.0+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlp4: sh] Command started
@@ -159,6 +159,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
+- ocamlc -I +compiler-libs -g -c frontend.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -204,18 +206,8 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
-- ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -234,6 +226,14 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
 - ocamlc -I +compiler-libs -c num_top.mli
 - ocamlc -I +compiler-libs -g -c num_top.ml
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -a -o num_top.cma num_top_printers.cmo num_top.cmo
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
 - make all-config
@@ -267,8 +267,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
-- ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -313,6 +311,8 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -378,9 +378,9 @@ The following actions will be performed:
 -> installed ocamlfind.1.5.5
 [bitstring: ./configure] Command started
 [cryptokit: make] Command started
++ ./configure "--prefix" "/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/bitstring.2.0.4)
 [ERROR] The compilation of bitstring failed at "./configure --prefix
         /home/opam/.opam/system".
-+ ./configure "--prefix" "/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/bitstring.2.0.4)
 - checking for a sed that does not truncate output... /usr/bin/sed
 - checking for gcc... gcc
 - checking whether the C compiler works... yes
@@ -504,22 +504,22 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -ccopt -O -ccopt -DHAVE_ZLIB -c src/stubs-arcfour.c
 - mv stubs-arcfour.o src/stubs-arcfour.o
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -ccopt -O -ccopt -DHAVE_ZLIB -c src/blowfish.c
-- File "setup.ml", line 247, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "setup.ml", line 2502, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
-- File "setup.ml", line 247, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "setup.ml", line 2502, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
 - mv blowfish.o src/blowfish.o
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -ccopt -O -ccopt -DHAVE_ZLIB -c src/stubs-blowfish.c
 - mv stubs-blowfish.o src/stubs-blowfish.o
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -ccopt -O -ccopt -DHAVE_ZLIB -c src/d3des.c
+- File "setup.ml", line 247, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "setup.ml", line 2502, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
+- File "setup.ml", line 247, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "setup.ml", line 2502, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
 - mv d3des.o src/d3des.o
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -ccopt -O -ccopt -DHAVE_ZLIB -c src/stubs-des.c
 - mv stubs-des.o src/stubs-des.o
@@ -933,6 +933,17 @@ The following actions will be performed:
 - ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/system/lib/stublibs is not mentioned in ld.conf
 -> installed cryptokit.1.10
 
+
+=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+The following actions were aborted
+  - install mysql_protocol 1.0
+The following actions failed
+  - install bitstring 2.0.4
+The following changes have been performed
+  - install camlp4    4.02.1+system
+  - install cryptokit 1.10         
+  - install ocamlfind 1.5.5        
+
 #=== ERROR while installing bitstring.2.0.4 ===================================#
 # opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
 # os                   linux
@@ -959,17 +970,6 @@ The following actions will be performed:
 # configure: error: 'time' command not found
 
 
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions were aborted
-  - install mysql_protocol 1.0
-The following actions failed
-  - install bitstring 2.0.4
-The following changes have been performed
-  - install camlp4    4.02.1+system
-  - install cryptokit 1.10         
-  - install ocamlfind 1.5.5        
-
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150229002234.export"
+    opam switch import "~/.opam/system/backup/state-20150231015424.export"
 'opam install mysql_protocol' failed.
