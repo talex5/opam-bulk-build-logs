@@ -7,18 +7,18 @@
 #  - uuid-dev
 Not running as root, system installation will be done through "sudo"
 Hit http://download.opensuse.org  Release.gpg
+Hit http://security.debian.org stable/updates Release.gpg
 Hit http://http.debian.net stable Release.gpg
+Hit http://security.debian.org stable/updates Release
 Hit http://download.opensuse.org  Release
 Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
 Hit http://http.debian.net stable Release
+Hit http://security.debian.org stable/updates/main amd64 Packages
 Hit http://download.opensuse.org  Packages
 Get:2 http://http.debian.net stable-updates Release [124 kB]
 Hit http://http.debian.net stable/main amd64 Packages
-Get:3 http://security.debian.org stable/updates Release.gpg [836 B]
-Get:4 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
-Get:5 http://security.debian.org stable/updates Release [102 kB]
-Get:6 http://security.debian.org stable/updates/main amd64 Packages [370 kB]
-Fetched 602 kB in 1s (495 kB/s)
+Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
+Fetched 129 kB in 1s (108 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
@@ -115,10 +115,10 @@ The following actions will be performed:
 [xenstore_transport: from default] Command started
 [xenstore_transport: from default] Command started
 [default] http://opam-archive:8080/archives/xenstore_transport.0.9.4+opam.tar.gz downloaded
-[sexplib: http] Command started
-[sexplib.112.24.00] https://ocaml.janestreet.com/ocaml-core/112.24/files/sexplib-112.24.tar.gz downloaded
 [cstruct: http] Command started
 [cstruct.1.5.0] https://github.com/mirage/ocaml-cstruct/archive/v1.5.0.tar.gz downloaded
+[sexplib: http] Command started
+[sexplib.112.24.00] https://ocaml.janestreet.com/ocaml-core/112.24/files/sexplib-112.24.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -202,9 +202,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -250,9 +247,20 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
@@ -263,14 +271,6 @@ The following actions will be performed:
 - 	fi
 - ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
 - 	export USE_CYGPATH; \
@@ -315,7 +315,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -360,6 +359,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -2727,6 +2727,13 @@ The following actions will be performed:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I src/core -I src/logger -package bigarray -package camlp4 -package unix -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -ppopt syntax/pa_optcomp.cmo -I src/unix -I src/core -I src/logger -o src/unix/lwt_log.cmx src/unix/lwt_log.ml
+- File "setup.ml", line 254, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "setup.ml", line 2419, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
+- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I src/core -I src/logger -package bigarray -package camlp4 -package unix -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -ppopt syntax/pa_optcomp.cmo -I src/unix -I src/core -I src/logger -o src/unix/lwt_chan.cmx src/unix/lwt_chan.ml
 - + /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I src/core -I src/logger -package bigarray -package camlp4 -package unix -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -ppopt syntax/pa_optcomp.cmo -I src/unix -I src/core -I src/logger -o src/unix/lwt_chan.cmx src/unix/lwt_chan.ml
 - File "src/unix/lwt_chan.ml", line 36, characters 17-30:
@@ -2784,13 +2791,6 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared syntax/lwt-syntax-options.cmxa syntax/pa_lwt_options.cmx -o syntax/lwt-syntax-options.cmxs
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a syntax/pa_lwt_log.cmo -o syntax/lwt-syntax-log.cma
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -package camlp4 -syntax camlp4o -package camlp4.extend -syntax camlp4o -package camlp4.quotations.o -syntax camlp4o -I syntax -o syntax/pa_lwt_log.cmx syntax/pa_lwt_log.ml
-- File "setup.ml", line 254, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "setup.ml", line 2419, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
-- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a syntax/pa_lwt_log.cmx -o syntax/lwt-syntax-log.cmxa
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared syntax/lwt-syntax-log.cmxa syntax/pa_lwt_log.cmx -o syntax/lwt-syntax-log.cmxs
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -package camlp4 -syntax camlp4o -package camlp4.extend -syntax camlp4o -package camlp4.quotations.o -package unix -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -ppopt syntax/pa_optcomp.cmo -modules examples/unix/logging.ml > examples/unix/logging.ml.depends
@@ -3607,10 +3607,10 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldoc -dump lwt/lwt_ring.odoc -I lib -package cstruct -syntax camlp4o -package cstruct.syntax -package lwt -syntax camlp4o -package lwt.syntax -syntax camlp4o -I lib -I lwt -I xen lwt/lwt_ring.mli
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldoc -dump xen/xenstore_ring.odoc -I lib -package cstruct -syntax camlp4o -package cstruct.syntax -syntax camlp4o -I lib -I xen -I lwt xen/xenstore_ring.mli
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldoc -dump xen/console_ring.odoc -I lib -package cstruct -syntax camlp4o -package cstruct.syntax -syntax camlp4o -I lib -I xen -I lwt xen/console_ring.mli
-- + /home/opam/.opam/4.02.1/bin/ocamlfind ocamldoc -dump xen/console_ring.odoc -I lib -package cstruct -syntax camlp4o -package cstruct.syntax -syntax camlp4o -I lib -I xen -I lwt xen/console_ring.mli
-- Warning: Module type Ring.Bidirectional_byte_stream not found
-- Warning: Module type Ring.Bidirectional_byte_stream not found
 - + /home/opam/.opam/4.02.1/bin/ocamlfind ocamldoc -dump xen/xenstore_ring.odoc -I lib -package cstruct -syntax camlp4o -package cstruct.syntax -syntax camlp4o -I lib -I xen -I lwt xen/xenstore_ring.mli
+- Warning: Module type Ring.Bidirectional_byte_stream not found
+- Warning: Module type Ring.Bidirectional_byte_stream not found
+- + /home/opam/.opam/4.02.1/bin/ocamlfind ocamldoc -dump xen/console_ring.odoc -I lib -package cstruct -syntax camlp4o -package cstruct.syntax -syntax camlp4o -I lib -I xen -I lwt xen/console_ring.mli
 - Warning: Module type Ring.Bidirectional_byte_stream not found
 - Warning: Module type Ring.Bidirectional_byte_stream not found
 - rm -rf doc/api.docdir
@@ -3828,12 +3828,6 @@ The following actions will be performed:
 - ocamlfind ocamlc -c -g -annot -I core -package unix -package threads -package cstruct.syntax -package cstruct -thread -I client_unix -I core -I server -I client_lwt -o client_unix/xs_client_unix.cmi client_unix/xs_client_unix.mli
 - ocamlfind ocamldep -package unix -package threads -package cstruct.syntax -package cstruct -syntax camlp4o -modules client_unix/xs_client_unix.ml > client_unix/xs_client_unix.ml.depends
 - ocamlfind ocamlc -c -g -annot -I core -package unix -package threads -package cstruct.syntax -package cstruct -syntax camlp4o -thread -I client_unix -I core -I server -I client_lwt -o client_unix/xs_client_unix.cmo client_unix/xs_client_unix.ml
-- File "setup.ml", line 213, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "setup.ml", line 1793, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
 - ocamlfind ocamlc -a client_unix/xs_client_unix.cmo -o client_unix/xenstore_client_unix.cma
 - ocamlfind ocamlopt -c -g -annot -I core -package unix -package threads -package cstruct.syntax -package cstruct -syntax camlp4o -thread -I client_unix -I core -I server -I client_lwt -o client_unix/xs_client_unix.cmx client_unix/xs_client_unix.ml
 - ocamlfind ocamlopt -a client_unix/xs_client_unix.cmx -o client_unix/xenstore_client_unix.cmxa
@@ -3841,6 +3835,12 @@ The following actions will be performed:
 - ocamlfind ocamldep -package lwt.syntax -package lwt -package cstruct.syntax -package cstruct -syntax camlp4o -modules server/logging.ml > server/logging.ml.depends
 - ocamlfind ocamldep -package lwt.syntax -package lwt -package cstruct.syntax -package cstruct -syntax camlp4o -modules server/logging_interface.ml > server/logging_interface.ml.depends
 - ocamlfind ocamlc -c -g -annot -I core -package lwt.syntax -package lwt -package cstruct.syntax -package cstruct -syntax camlp4o -I server -I core -I client_unix -I client_lwt -o server/logging.cmo server/logging.ml
+- File "setup.ml", line 213, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "setup.ml", line 1793, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
 - + ocamlfind ocamlc -c -g -annot -I core -package lwt.syntax -package lwt -package cstruct.syntax -package cstruct -syntax camlp4o -I server -I core -I client_unix -I client_lwt -o server/logging.cmo server/logging.ml
 - File "server/logging.ml", line 159, characters 12-23:
 - Warning 3: deprecated: String.copy
@@ -4155,9 +4155,9 @@ The following actions will be performed:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
 - ocamlfind: Package `mirage' not found
-- W: Field 'pkg_mirage' is not set: Command ''/home/opam/.opam/4.02.1/bin/ocamlfind' query -format %d mirage > '/tmp/oasis-c4ac19.txt'' terminated with error code 2
+- W: Field 'pkg_mirage' is not set: Command ''/home/opam/.opam/4.02.1/bin/ocamlfind' query -format %d mirage > '/tmp/oasis-0417f3.txt'' terminated with error code 2
 - ocamlfind: Package `mirage' not found
-- W: Failure("Command ''/home/opam/.opam/4.02.1/bin/ocamlfind' query -format %d mirage > '/tmp/oasis-013aff.txt'' terminated with error code 2")
+- W: Failure("Command ''/home/opam/.opam/4.02.1/bin/ocamlfind' query -format %d mirage > '/tmp/oasis-ab6725.txt'' terminated with error code 2")
 - E: Cannot find findlib package mirage
 - E: Failure("1 configuration error")
 - make: *** [setup.data] Error 1
@@ -4173,9 +4173,9 @@ The following actions will be performed:
 # path                 /home/opam/.opam/4.02.1/build/xen-block-driver.0.2.5
 # compiler             4.02.1
 # exit-code            2
-# env-file             /home/opam/.opam/4.02.1/build/xen-block-driver.0.2.5/xen-block-driver-5-268fea.env
-# stdout-file          /home/opam/.opam/4.02.1/build/xen-block-driver.0.2.5/xen-block-driver-5-268fea.out
-# stderr-file          /home/opam/.opam/4.02.1/build/xen-block-driver.0.2.5/xen-block-driver-5-268fea.err
+# env-file             /home/opam/.opam/4.02.1/build/xen-block-driver.0.2.5/xen-block-driver-8-268fea.env
+# stdout-file          /home/opam/.opam/4.02.1/build/xen-block-driver.0.2.5/xen-block-driver-8-268fea.out
+# stderr-file          /home/opam/.opam/4.02.1/build/xen-block-driver.0.2.5/xen-block-driver-8-268fea.err
 ### stdout ###
 # ocamlfind ocamlopt -package "cmdliner,findlib" -linkpkg configure.ml -o configure
 # ./configure
@@ -4185,9 +4185,9 @@ The following actions will be performed:
 # Warning 3: deprecated: Lazy.lazy_from_fun
 # Use Lazy.from_fun instead.
 # ocamlfind: Package `mirage' not found
-# W: Field 'pkg_mirage' is not set: Command ''/home/opam/.opam/4.02.1/bin/ocamlfind' query -format %d mirage > '/tmp/oasis-c4ac19.txt'' terminated with error code 2
+# W: Field 'pkg_mirage' is not set: Command ''/home/opam/.opam/4.02.1/bin/ocamlfind' query -format %d mirage > '/tmp/oasis-0417f3.txt'' terminated with error code 2
 # ocamlfind: Package `mirage' not found
-# W: Failure("Command ''/home/opam/.opam/4.02.1/bin/ocamlfind' query -format %d mirage > '/tmp/oasis-013aff.txt'' terminated with error code 2")
+# W: Failure("Command ''/home/opam/.opam/4.02.1/bin/ocamlfind' query -format %d mirage > '/tmp/oasis-ab6725.txt'' terminated with error code 2")
 # E: Cannot find findlib package mirage
 # E: Failure("1 configuration error")
 # make: *** [setup.data] Error 1
@@ -4217,5 +4217,5 @@ The following changes have been performed
   - install xenstore_transport 0.9.4    
 
 The former state can be restored with:
-    opam switch import "~/.opam/4.02.1/backup/state-20150228182944.export"
+    opam switch import "~/.opam/4.02.1/backup/state-20150230202723.export"
 'opam install xen-block-driver' failed.
