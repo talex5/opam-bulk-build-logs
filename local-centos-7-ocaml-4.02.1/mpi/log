@@ -1,9 +1,6 @@
-++ opam install mpi -e centos,centos-7
-+ depext=
-+ echo CentOS 7 depexts:
-+ '[' '' '!=' '' ']'
-CentOS 7 depexts:
-+ opam install mpi
+/bin/sh: lsb_release: command not found
+# Detecting depexts using flags: x86_64 linux
+# No extra OS packages requirements found.
 The following actions will be performed:
   - install ocamlfind 1.5.5                                     [required by mpi]
   - install mpi       1.01 
@@ -152,6 +149,12 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 	cp topfind.ml.in topfind.ml;                             \
+- else                                                             \
+- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 		> topfind.ml ;                                   \
+- fi
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -160,12 +163,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 	cp topfind.ml.in topfind.ml;                             \
-- else                                                             \
-- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 		> topfind.ml ;                                   \
-- fi
 - ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
@@ -276,6 +273,28 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -o ocamlfind_opt findlib.cmxa unix.cmxa \
 - 	   ocaml_args.cmx frontend.cmx
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
+[ERROR] The compilation of mpi failed at "make all".
+
+#=== ERROR while installing mpi.1.01 ==========================================#
+# opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
+# os                   linux
+# command              make all
+# path                 /home/opam/.opam/system/build/mpi.1.01
+# compiler             system (4.02.1)
+# exit-code            2
+# env-file             /home/opam/.opam/system/build/mpi.1.01/mpi-1-2dea01.env
+# stdout-file          /home/opam/.opam/system/build/mpi.1.01/mpi-1-2dea01.out
+# stderr-file          /home/opam/.opam/system/build/mpi.1.01/mpi-1-2dea01.err
+### stdout ###
+# /usr/bin/mpicc.openmpi -I`ocamlc -where` -I/usr/lib/openmpi/include -O2 -g -Wall   -c -o init.o init.c
+### stderr ###
+# /bin/sh: /usr/bin/mpicc.openmpi: No such file or directory
+# make: *** [init.o] Error 127
+
+
+The former state can be restored with:
+    opam switch import "~/.opam/system/backup/state-20150219234859.export"
+'opam install mpi' failed.
 [ocamlfind: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
 - mkdir -p "/home/opam/.opam/system/bin"
@@ -325,28 +344,10 @@ The following actions will be performed:
 - /usr/bin/mpicc.openmpi -I`ocamlc -where` -I/usr/lib/openmpi/include -O2 -g -Wall   -c -o init.o init.c
 - /bin/sh: /usr/bin/mpicc.openmpi: No such file or directory
 - make: *** [init.o] Error 127
-[ERROR] The compilation of mpi failed at "make all".
 [mpi: make uninstall] Command started
 + make "uninstall" (CWD=/home/opam/.opam/system/build/mpi.1.01)
 - ocamlfind remove mpi
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/mpi
-
-#=== ERROR while installing mpi.1.01 ==========================================#
-# opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
-# os                   linux
-# command              make all
-# path                 /home/opam/.opam/system/build/mpi.1.01
-# compiler             system (4.02.1)
-# exit-code            2
-# env-file             /home/opam/.opam/system/build/mpi.1.01/mpi-13-2dea01.env
-# stdout-file          /home/opam/.opam/system/build/mpi.1.01/mpi-13-2dea01.out
-# stderr-file          /home/opam/.opam/system/build/mpi.1.01/mpi-13-2dea01.err
-### stdout ###
-# /usr/bin/mpicc.openmpi -I`ocamlc -where` -I/usr/lib/openmpi/include -O2 -g -Wall   -c -o init.o init.c
-### stderr ###
-# /bin/sh: /usr/bin/mpicc.openmpi: No such file or directory
-# make: *** [init.o] Error 127
-
 
 
 =-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -354,7 +355,3 @@ The following actions failed
   - install mpi 1.01
 The following changes have been performed
   - install ocamlfind 1.5.5
-
-The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150219074714.export"
-'opam install mpi' failed.
