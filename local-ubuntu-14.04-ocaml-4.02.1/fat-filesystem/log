@@ -1,3 +1,4 @@
+/usr/bin/lsb_release
 # Detecting depexts using flags: x86_64 linux ubuntu
 # The following system packages are needed:
 #  - m4
@@ -24,14 +25,14 @@ The following actions will be performed:
 [cstruct: from default] Command started
 [fat-filesystem: from default] Command started
 [io-page: from default] Command started
-[cstruct: from default] Command started
 [fat-filesystem: from default] Command started
 [io-page: from default] Command started
-[default] http://opam-archive:8080/archives/cstruct.1.5.0+opam.tar.gz downloaded
-[lwt: from default] Command started
+[cstruct: from default] Command started
 [default] http://opam-archive:8080/archives/fat-filesystem.0.10.3+opam.tar.gz downloaded
-[mirage-block-unix: from default] Command started
+[lwt: from default] Command started
 [default] http://opam-archive:8080/archives/io-page.1.5.1+opam.tar.gz downloaded
+[mirage-block-unix: from default] Command started
+[default] http://opam-archive:8080/archives/cstruct.1.5.0+opam.tar.gz downloaded
 [mirage-types: from default] Command started
 [lwt: from default] Command started
 [default] http://opam-archive:8080/archives/lwt.2.4.5+opam.tar.gz downloaded
@@ -55,8 +56,8 @@ The following actions will be performed:
 [re: from default] Command started
 [default] http://opam-archive:8080/archives/ounit.2.0.0+opam.tar.gz downloaded
 [type_conv: from default] Command started
-[default] http://opam-archive:8080/archives/re.1.2.2+opam.tar.gz downloaded
 [sexplib: from default] Command started
+[default] http://opam-archive:8080/archives/re.1.2.2+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/sexplib.112.24.00+opam.tar.gz downloaded
 [type_conv: from default] Command started
 [default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
@@ -96,8 +97,7 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) 
-- ok
+- Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib/ocaml
@@ -259,6 +259,8 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_split.ml
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
+- ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -297,16 +299,14 @@ The following actions will be performed:
 - File "fl_meta.mll", line 62, characters 11-22:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlopt -I +compiler-libs -c fl_metascanner.ml
-- ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
-- ocamlopt -I +compiler-libs -c findlib.ml
 - File "fl_metascanner.ml", line 111, characters 23-32:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
+- ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
 - if [ 1 -gt 0 ]; then \
@@ -2311,10 +2311,10 @@ The following actions will be performed:
 - pkg_type_conv: ....................................... /home/opam/.opam/system/lib/type_conv
 - 
 - ./setup.exe -build 
+- ocamlfind ocamlopt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa -linkpkg myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
 - W: Cannot find source file matching module 'sexplib_unix' in library sexplib_unix
 - W: Cannot find source file matching module 'sexplib_num' in library sexplib_num
 - W: Cannot find source file matching module 'sexplib' in library sexplib
-- ocamlfind ocamlopt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa -linkpkg myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bigarray -modules lib/conv.mli > lib/conv.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bigarray -modules lib/sexp.mli > lib/sexp.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bigarray -modules lib/sexp_intf.ml > lib/sexp_intf.ml.depends
@@ -3196,6 +3196,7 @@ The following actions will be performed:
 - pkg_ounit: ........................................... /home/opam/.opam/system/lib/oUnit
 - 
 - /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
+- W: Cannot find source file matching module 'fat' in library fat
 - Configuration "true: quiet, debug, tests", line 1, characters 20-25:
 - Warning: the tag "tests" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package cstruct -package lwt -package mirage-types -package re -package re.str -modules lib/fat_format.mli > lib/fat_format.mli.depends
@@ -3206,7 +3207,6 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -principal -package cstruct -package lwt -package mirage-types -package re -package re.str -I lib -o lib/result.cmi lib/result.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -principal -package cstruct -package lwt -package mirage-types -package re -package re.str -I lib -o lib/boot_sector.cmi lib/boot_sector.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package cstruct -syntax camlp4o -package cstruct.syntax -package lwt -package mirage-types -package re -package re.str -syntax camlp4o -modules lib/boot_sector.ml > lib/boot_sector.ml.depends
-- W: Cannot find source file matching module 'fat' in library fat
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package cstruct -package lwt -package mirage-types -package re -package re.str -modules lib/entry.mli > lib/entry.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -principal -package cstruct -package lwt -package mirage-types -package re -package re.str -I lib -o lib/entry.cmi lib/entry.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package cstruct -syntax camlp4o -package cstruct.syntax -package lwt -package mirage-types -package re -package re.str -syntax camlp4o -modules lib/entry.ml > lib/entry.ml.depends
@@ -3238,10 +3238,10 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -principal -package cstruct -syntax camlp4o -package cstruct.syntax -package lwt -package mirage-types -package re -package re.str -syntax camlp4o -I lib -o lib/name.cmo lib/name.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -principal -package cstruct -package lwt -package mirage-types -package re -package re.str -I lib -o lib/path.cmo lib/path.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -principal -package cstruct -package lwt -package mirage-types -package re -package re.str -I lib -o lib/fs.cmo lib/fs.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -principal -package cstruct -package lwt -package mirage-types -package re -package re.str -I lib -o lib/update.cmo lib/update.ml
 - + /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -principal -package cstruct -package lwt -package mirage-types -package re -package re.str -I lib -o lib/fs.cmo lib/fs.ml
 - File "lib/fs.ml", line 156, characters 8-17:
 - Warning 26: unused variable to_string.
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -principal -package cstruct -package lwt -package mirage-types -package re -package re.str -I lib -o lib/update.cmo lib/update.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -principal -package cstruct -package lwt -package mirage-types -package re -package re.str -I lib -o lib/sectorMap.cmo lib/sectorMap.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -principal -package cstruct -package lwt -package mirage-types -package re -package re.str -I lib -o lib/result.cmo lib/result.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -principal -package cstruct -package lwt -package mirage-types -package re -package re.str -I lib -o lib/memoryIO.cmo lib/memoryIO.ml
