@@ -1,31 +1,31 @@
 ++ opam install ocp-manager -e debian
-+ depext=m4
 Debian depexts: m4
++ depext=m4
 + echo Debian depexts: m4
 + '[' m4 '!=' '' ']'
 + sudo apt-get update -y
-Hit http://download.opensuse.org  Release.gpg
-Hit http://download.opensuse.org  Release
+Get:1 http://download.opensuse.org  Release.gpg [481 B]
 Hit http://http.debian.net stable Release.gpg
-Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
-Hit http://download.opensuse.org  Packages
-Get:2 http://security.debian.org stable/updates Release.gpg [836 B]
+Get:2 http://download.opensuse.org  Release [989 B]
+Get:3 http://http.debian.net stable-updates Release.gpg [836 B]
 Hit http://http.debian.net stable Release
-Get:3 http://http.debian.net stable-updates Release [124 kB]
-Get:4 http://security.debian.org stable/updates Release [102 kB]
+Get:4 http://http.debian.net stable-updates Release [124 kB]
+Get:5 http://download.opensuse.org  Packages [5902 B]
 Hit http://http.debian.net stable/main amd64 Packages
-Get:5 http://http.debian.net stable-updates/main amd64 Packages [4374 B]
-Get:6 http://security.debian.org stable/updates/main amd64 Packages [340 kB]
-Fetched 572 kB in 1s (404 kB/s)
+Get:6 http://http.debian.net stable-updates/main amd64 Packages [4374 B]
+Get:7 http://security.debian.org stable/updates Release.gpg [836 B]
+Get:8 http://security.debian.org stable/updates Release [102 kB]
+Get:9 http://security.debian.org stable/updates/main amd64 Packages [340 kB]
+Fetched 580 kB in 2s (201 kB/s)
 Reading package lists...
 + sudo apt-get install -qq -y build-essential m4
 + sudo apt-get install -qq -y m4
 ++ opam install ocp-manager -e source,linux
 + srcext=
+Debian srcexts:
 + echo Debian srcexts:
 + '[' '' '!=' '' ']'
 + opam install ocp-manager
-Debian srcexts:
 The following actions will be performed:
   - install ocamlfind   1.5.5                                   [required by ocp-build]
   - install camlp4      4.02.1+2                                [required by ocp-build]
@@ -37,9 +37,9 @@ The following actions will be performed:
 [camlp4: from default] Command started
 [ocamlfind: from default] Command started
 [ocp-build: from default] Command started
-[ocp-build: from default] Command started
 [ocamlfind: from default] Command started
 [camlp4: from default] Command started
+[ocp-build: from default] Command started
 [default] http://opam-archive:8080/archives/ocp-build.1.99.9-beta+opam.tar.gz downloaded
 [ocp-manager: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
@@ -129,6 +129,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -174,12 +176,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -188,8 +190,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -923,11 +923,11 @@ The following actions will be performed:
 - checking for C compiler default output file name... a.out
 - checking for suffix of executables... 
 - checking whether we are cross compiling... no
-- checking for suffix of object files... 
-- o
+- checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
-- checking for gcc option to accept ISO C89... none needed
+- checking for gcc option to accept ISO C89... 
+- none needed
 - checking for ocamlc... ocamlc
 - OCaml version is 4.02.1
 - OCaml library path is /home/opam/.opam/4.02.1/lib/ocaml
@@ -958,13 +958,13 @@ The following actions will be performed:
 - configure: creating ./config.status
 - config.status: creating Makefile
 - config.status: creating ../src/ocp-build-bundle.ocp
-- config.status: WARNING:  '../src/ocp-build-bundle.ocp.in' seems to ignore the --datarootdir setting
 - 
 - Executables will be installed in /home/opam/.opam/4.02.1/bin
 - Libraries will be installed in /home/opam/.opam/4.02.1/lib/ocaml/typerex
 - Data files will be installed in /home/opam/.opam/4.02.1/share/typerex
 - Manual pages will be installed in /home/opam/.opam/4.02.1/share/man
 - Creating root directory _obuild/
+- config.status: WARNING:  '../src/ocp-build-bundle.ocp.in' seems to ignore the --datarootdir setting
 [ocp-build: make] Command started
 + make  (CWD=/home/opam/.opam/4.02.1/build/ocp-build.1.99.9-beta)
 - ocamllex.opt src/ocplib/lang/ocamllexer.mll
@@ -998,6 +998,16 @@ The following actions will be performed:
 - ocamlopt.opt -c -o src/ocplib/lang/intMap.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/lang/intMap.ml
 - ocamlc.opt -c -o src/ocplib/lang/intSet.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/lang/intSet.mli
 - ocamlopt.opt -c -o src/ocplib/lang/intSet.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/lang/intSet.ml
+- ocamlc.opt -c -o src/ocplib/lang/stringMap.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/lang/stringMap.mli
+- ocamlopt.opt -c -o src/ocplib/lang/stringMap.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/lang/stringMap.ml
+- ocamlc.opt -c -o src/ocplib/lang/stringSet.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/lang/stringSet.mli
+- ocamlopt.opt -c -o src/ocplib/lang/stringSet.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/lang/stringSet.ml
+- ocamlc.opt -c -o src/ocplib/lang/toposort.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/lang/toposort.mli
+- ocamlopt.opt -c -o src/ocplib/lang/toposort.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/lang/toposort.ml
+- ocamlc.opt -c -o src/ocplib/lang/linearToposort.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/lang/linearToposort.mli
+- ocamlopt.opt -c -o src/ocplib/lang/linearToposort.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/lang/linearToposort.ml
+- ocamlc.opt -c -o src/ocplib/lang/ocamllexer.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/lang/ocamllexer.mli
+- ocamlopt.opt -c -o src/ocplib/lang/ocamllexer.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/lang/ocamllexer.ml
 - 12 shift/reduce conflicts, 22 reduce/reduce conflicts.
 - File "src/ocplib/lang/ocpString.ml", line 343, characters 13-24:
 - Warning 3: deprecated: String.copy
@@ -1025,16 +1035,6 @@ The following actions will be performed:
 - File "src/ocplib/lang/ocpDigest.ml", line 116, characters 4-47:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc.opt -c -o src/ocplib/lang/stringMap.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/lang/stringMap.mli
-- ocamlopt.opt -c -o src/ocplib/lang/stringMap.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/lang/stringMap.ml
-- ocamlc.opt -c -o src/ocplib/lang/stringSet.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/lang/stringSet.mli
-- ocamlopt.opt -c -o src/ocplib/lang/stringSet.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/lang/stringSet.ml
-- ocamlc.opt -c -o src/ocplib/lang/toposort.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/lang/toposort.mli
-- ocamlopt.opt -c -o src/ocplib/lang/toposort.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/lang/toposort.ml
-- ocamlc.opt -c -o src/ocplib/lang/linearToposort.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/lang/linearToposort.mli
-- ocamlopt.opt -c -o src/ocplib/lang/linearToposort.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/lang/linearToposort.ml
-- ocamlc.opt -c -o src/ocplib/lang/ocamllexer.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/lang/ocamllexer.mli
-- ocamlopt.opt -c -o src/ocplib/lang/ocamllexer.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/lang/ocamllexer.ml
 - ocamlc.opt -c -o src/ocplib/lang/trie.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/lang/trie.mli
 - ocamlopt.opt -c -o src/ocplib/lang/trie.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/lang/trie.ml
 - ocamlc.opt -c -o src/ocplib/lang/ocpLang.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/lang/ocpLang.mli
@@ -1047,17 +1047,6 @@ The following actions will be performed:
 - ocamlopt.opt -c -o src/ocplib/lang/stringTemplate.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/lang/stringTemplate.ml
 - ocamlc.opt -c -o src/ocplib/unix/minUnix.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/unix/minUnix.mli
 - ocamlopt.opt -c -o src/ocplib/unix/minUnix.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/unix/minUnix.ml
-- File "src/ocplib/lang/ocamllexer.mll", line 66, characters 28-41:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "src/ocplib/lang/ocamllexer.mll", line 76, characters 19-32:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "src/ocplib/lang/ocamllexer.mll", line 80, characters 2-19:
-- Warning 3: deprecated: String.unsafe_set
-- File "src/ocplib/lang/stringTemplate.ml", line 44, characters 14-26:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
 - ocamlc.opt -c -o src/ocplib/unix/onlyUnix.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/unix/onlyUnix.mli
 - ocamlopt.opt -c -o src/ocplib/unix/onlyUnix.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/unix/onlyUnix.ml
 - ocamlc.opt -c -o src/ocplib/unix/onlyWin32.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/unix/onlyWin32.mli
@@ -1074,12 +1063,17 @@ The following actions will be performed:
 - ocamlopt.opt -c -o src/ocplib/system/date.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/system/date.ml
 - ocamlc.opt -c -o src/ocplib/system/ocpUnix.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/system/ocpUnix.mli
 - ocamlopt.opt -c -o src/ocplib/system/ocpUnix.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/system/ocpUnix.ml
-- ocamlc.opt -c -o src/ocplib/system/ocpFilename.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/system/ocpFilename.mli
-- ocamlopt.opt -c -o src/ocplib/system/ocpFilename.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/system/ocpFilename.ml
-- ocamlc.opt -c -o src/ocplib/system/debug.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/system/debug.mli
-- ocamlopt.opt -c -o src/ocplib/system/debug.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/system/debug.ml
-- ocamlc.opt -c -o src/ocplib/system/configParser.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/system/configParser.mli
-- ocamlopt.opt -c -o src/ocplib/system/configParser.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/system/configParser.ml
+- File "src/ocplib/lang/ocamllexer.mll", line 66, characters 28-41:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "src/ocplib/lang/ocamllexer.mll", line 76, characters 19-32:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "src/ocplib/lang/ocamllexer.mll", line 80, characters 2-19:
+- Warning 3: deprecated: String.unsafe_set
+- File "src/ocplib/lang/stringTemplate.ml", line 44, characters 14-26:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
 - File "src/ocplib/system/reentrantBuffers.ml", line 51, characters 4-17:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -1089,6 +1083,12 @@ The following actions will be performed:
 - File "src/ocplib/system/fileLabels.ml", line 25, characters 10-23:
 - Warning 3: deprecated: OcpLang.String.create
 - Use Bytes.create instead.
+- ocamlc.opt -c -o src/ocplib/system/ocpFilename.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/system/ocpFilename.mli
+- ocamlopt.opt -c -o src/ocplib/system/ocpFilename.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/system/ocpFilename.ml
+- ocamlc.opt -c -o src/ocplib/system/debug.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/system/debug.mli
+- ocamlopt.opt -c -o src/ocplib/system/debug.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/system/debug.ml
+- ocamlc.opt -c -o src/ocplib/system/configParser.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/system/configParser.mli
+- ocamlopt.opt -c -o src/ocplib/system/configParser.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/system/configParser.ml
 - ocamlc.opt -c -o src/ocplib/system/simpleConfig.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/system/simpleConfig.mli
 - ocamlopt.opt -c -o src/ocplib/system/simpleConfig.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/system/simpleConfig.ml
 - ocamlc.opt -c -o src/ocplib/system/fileTemplate.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/system/fileTemplate.mli
@@ -1100,15 +1100,6 @@ The following actions will be performed:
 - ocamlopt.opt -c -o src/ocp-build/buildScanner.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildScanner.ml
 - ocamlc.opt -c -o src/ocp-build/buildSubst.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildSubst.mli
 - ocamlopt.opt -c -o src/ocp-build/buildSubst.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildSubst.ml
-- ocamlc.opt -c -o src/ocp-build/buildFind.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildFind.mli
-- ocamlopt.opt -c -o src/ocp-build/buildFind.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildFind.ml
-- ocamlc.opt -c -o src/ocp-build/buildTerm.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildTerm.mli
-- ocamlopt.opt -c -o src/ocp-build/buildTerm.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildTerm.ml
-- ocamlc.opt -c -o src/ocp-build/ocamldot.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/ocamldot.mli
-- ocamlopt.opt -c -o src/ocp-build/ocamldot.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/ocamldot.ml
-- ocamlopt.opt -c -o src/ocp-build/buildOCPTypes.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOCPTypes.ml
-- ocamlopt.opt -c -o src/ocp-build/buildOCPTree.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOCPTree.ml
-- ocamlc.opt -c -o src/ocp-build/buildOCPTypes.cmo -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOCPTypes.ml
 - File "src/ocplib/system/simpleConfig.ml4", line 206, characters 42-55:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -1126,9 +1117,15 @@ The following actions will be performed:
 - File "src/ocp-build/buildMisc.ml", line 103, characters 6-31:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "src/ocp-build/buildOCPTree.ml", line 54, characters 2-43:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
+- ocamlc.opt -c -o src/ocp-build/buildFind.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildFind.mli
+- ocamlopt.opt -c -o src/ocp-build/buildFind.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildFind.ml
+- ocamlc.opt -c -o src/ocp-build/buildTerm.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildTerm.mli
+- ocamlopt.opt -c -o src/ocp-build/buildTerm.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildTerm.ml
+- ocamlc.opt -c -o src/ocp-build/ocamldot.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/ocamldot.mli
+- ocamlopt.opt -c -o src/ocp-build/ocamldot.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/ocamldot.ml
+- ocamlopt.opt -c -o src/ocp-build/buildOCPTypes.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOCPTypes.ml
+- ocamlopt.opt -c -o src/ocp-build/buildOCPTree.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOCPTree.ml
+- ocamlc.opt -c -o src/ocp-build/buildOCPTypes.cmo -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOCPTypes.ml
 - ocamlc.opt -c -o src/ocp-build/buildOCPTree.cmo -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOCPTree.ml
 - ocamlc.opt -c -o src/ocp-build/buildOCPParser.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOCPParser.mli
 - ocamlopt.opt -c -o src/ocp-build/buildOCPParser.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOCPParser.ml
@@ -1152,6 +1149,9 @@ The following actions will be performed:
 - File "src/ocp-build/buildOCPTree.ml", line 54, characters 2-43:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- File "src/ocp-build/buildOCPTree.ml", line 54, characters 2-43:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 - File "src/ocp-build/buildOCPParser.mly", line 253, characters 30-59:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
@@ -1172,6 +1172,13 @@ The following actions will be performed:
 - ocamlopt.opt -c -o src/ocp-build/buildGlobals.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildGlobals.ml
 - ocamlc.opt -c -o src/ocp-build/buildConfig.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildConfig.mli
 - ocamlopt.opt -c -o src/ocp-build/buildConfig.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildConfig.ml
+- ocamlc.opt -c -o src/ocp-build/buildAutogen.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildAutogen.mli
+- ocamlopt.opt -c -o src/ocp-build/buildAutogen.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildAutogen.ml
+- ocamlopt.opt -c -o src/ocp-build/metaTypes.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/metaTypes.ml
+- ocamlc.opt -c -o src/ocp-build/metaLexer.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/metaLexer.mli
+- ocamlopt.opt -c -o src/ocp-build/metaLexer.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/metaLexer.ml
+- ocamlc.opt -c -o src/ocp-build/metaTypes.cmo -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/metaTypes.ml
+- ocamlc.opt -c -o src/ocp-build/metaFile.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/metaFile.mli
 - File "src/ocp-build/buildEngineContext.ml", line 73, characters 17-28:
 - Warning 3: deprecated: String.copy
 - File "src/ocp-build/buildEngineContext.ml", line 76, characters 32-51:
@@ -1188,13 +1195,16 @@ The following actions will be performed:
 - File "src/ocp-build/buildOptions.ml", line 94, characters 13-25:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc.opt -c -o src/ocp-build/buildAutogen.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildAutogen.mli
-- ocamlopt.opt -c -o src/ocp-build/buildAutogen.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildAutogen.ml
-- ocamlopt.opt -c -o src/ocp-build/metaTypes.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/metaTypes.ml
-- ocamlc.opt -c -o src/ocp-build/metaLexer.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/metaLexer.mli
-- ocamlopt.opt -c -o src/ocp-build/metaLexer.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/metaLexer.ml
-- ocamlc.opt -c -o src/ocp-build/metaTypes.cmo -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/metaTypes.ml
-- ocamlc.opt -c -o src/ocp-build/metaFile.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/metaFile.mli
+- File "src/ocp-build/buildConfig.ml", line 95, characters 16-27:
+- Warning 3: deprecated: String.copy
+- File "src/ocp-build/buildConfig.ml", line 99, characters 11-29:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "src/ocp-build/buildAutogen.ml", line 27, characters 20-31:
+- Warning 3: deprecated: String.copy
+- File "src/ocp-build/buildAutogen.ml", line 28, characters 6-47:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 - ocamlopt.opt -c -o src/ocp-build/metaFile.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/metaFile.ml
 - ocamlc.opt -c -o src/ocp-build/metaParser.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/metaParser.mli
 - ocamlopt.opt -c -o src/ocp-build/metaParser.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/metaParser.ml
@@ -1213,16 +1223,6 @@ The following actions will be performed:
 - ocamlopt.opt -c -o src/ocp-build/buildOCamlSyntaxes.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOCamlSyntaxes.ml
 - ocamlc.opt -c -o src/ocp-build/buildOCamlRules.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOCamlRules.mli
 - ocamlopt.opt -c -o src/ocp-build/buildOCamlRules.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOCamlRules.ml
-- File "src/ocp-build/buildConfig.ml", line 95, characters 16-27:
-- Warning 3: deprecated: String.copy
-- File "src/ocp-build/buildConfig.ml", line 99, characters 11-29:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "src/ocp-build/buildAutogen.ml", line 27, characters 20-31:
-- Warning 3: deprecated: String.copy
-- File "src/ocp-build/buildAutogen.ml", line 28, characters 6-47:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 - File "src/ocp-build/metaParser.ml", line 35, characters 13-25:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
@@ -1260,6 +1260,13 @@ The following actions will be performed:
 - ocamlc.opt -c -o src/ocp-build/buildOasis.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOasis.mli
 - ocamlopt.opt -c -o src/ocp-build/buildOasis.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOasis.ml
 - ocamlopt.opt -c -o src/ocp-build/buildArgs.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildArgs.ml
+- ocamlc.opt -c -o src/ocp-build/buildActions.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildActions.mli
+- ocamlopt.opt -c -o src/ocp-build/buildActions.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildActions.ml
+- ocamlopt.opt -c -o src/ocp-build/buildActionRoot.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildActionRoot.ml
+- ocamlopt.opt -c -o src/ocp-build/buildActionPrefs.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildActionPrefs.ml
+- ocamlopt.opt -c -o src/ocp-build/buildActionConfigure.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildActionConfigure.ml
+- ocamlopt.opt -c -o src/ocp-build/buildActionBuild.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildActionBuild.ml
+- ocamlopt.opt -c -o src/ocp-build/buildActionInstall.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildActionInstall.ml
 - File "src/ocp-build/buildOasis.ml", line 102, characters 13-24:
 - Warning 3: deprecated: String.copy
 - File "src/ocp-build/buildOasis.ml", line 106, characters 6-18:
@@ -1273,13 +1280,6 @@ The following actions will be performed:
 - File "src/ocp-build/buildOasis.ml", line 122, characters 18-47:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc.opt -c -o src/ocp-build/buildActions.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildActions.mli
-- ocamlopt.opt -c -o src/ocp-build/buildActions.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildActions.ml
-- ocamlopt.opt -c -o src/ocp-build/buildActionRoot.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildActionRoot.ml
-- ocamlopt.opt -c -o src/ocp-build/buildActionPrefs.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildActionPrefs.ml
-- ocamlopt.opt -c -o src/ocp-build/buildActionConfigure.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildActionConfigure.ml
-- ocamlopt.opt -c -o src/ocp-build/buildActionBuild.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildActionBuild.ml
-- ocamlopt.opt -c -o src/ocp-build/buildActionInstall.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildActionInstall.ml
 - ocamlopt.opt -c -o src/ocp-build/buildActionClean.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildActionClean.ml
 - ocamlopt.opt -c -o src/ocp-build/buildActionTests.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildActionTests.ml
 - ocamlopt.opt -c -o src/ocp-build/buildActionUninstall.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildActionUninstall.ml
@@ -1375,5 +1375,5 @@ The following changes have been performed
   - install ocp-build 1.99.9-beta
 
 The former state can be restored with:
-    opam switch import "~/.opam/4.02.1/backup/state-20150218135547.export"
+    opam switch import "~/.opam/4.02.1/backup/state-20150219030359.export"
 'opam install ocp-manager' failed.
