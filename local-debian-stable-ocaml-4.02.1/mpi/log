@@ -1,24 +1,23 @@
 ++ opam install mpi -e debian
 + depext='m4 mpi-default-dev'
-Debian depexts: m4 mpi-default-dev
 + echo Debian depexts: m4 mpi-default-dev
+Debian depexts: m4 mpi-default-dev
 + '[' 'm4 mpi-default-dev' '!=' '' ']'
 + sudo apt-get update -y
-Hit http://download.opensuse.org  Release.gpg
-Hit http://download.opensuse.org  Release
+Get:1 http://download.opensuse.org  Release.gpg [481 B]
 Hit http://http.debian.net stable Release.gpg
-Hit http://download.opensuse.org  Packages
-Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
-Get:2 http://security.debian.org stable/updates Release.gpg [836 B]
+Get:2 http://http.debian.net stable-updates Release.gpg [836 B]
+Get:3 http://download.opensuse.org  Release [989 B]
 Hit http://http.debian.net stable Release
-Get:3 http://http.debian.net stable-updates Release [124 kB]
-Get:4 http://security.debian.org stable/updates Release [102 kB]
+Get:4 http://http.debian.net stable-updates Release [124 kB]
+Get:5 http://security.debian.org stable/updates Release.gpg [836 B]
+Get:6 http://security.debian.org stable/updates Release [102 kB]
+Get:7 http://download.opensuse.org  Packages [5902 B]
 Hit http://http.debian.net stable/main amd64 Packages
-Get:5 http://http.debian.net stable-updates/main amd64 Packages [4374 B]
-Get:6 http://security.debian.org stable/updates/main amd64 Packages [340 kB]
-Fetched 572 kB in 2s (269 kB/s)
+Get:8 http://http.debian.net stable-updates/main amd64 Packages [4374 B]
+Get:9 http://security.debian.org stable/updates/main amd64 Packages [340 kB]
+Fetched 580 kB in 2s (270 kB/s)
 Reading package lists...
-W: Size of file /var/lib/apt/lists/security.debian.org_dists_stable_updates_main_binary-amd64_Packages.gz is not what the server reported 340423 340445
 + sudo apt-get install -qq -y build-essential m4
 + sudo apt-get install -qq -y m4 mpi-default-dev
 debconf: delaying package configuration, since apt-utils is not installed
@@ -30,7 +29,6 @@ Unpacking libnuma1 (from .../libnuma1_2.0.8~rc4-1_amd64.deb) ...
 Selecting previously unselected package libtorque2.
 Unpacking libtorque2 (from .../libtorque2_2.4.16+dfsg-1+deb7u4_amd64.deb) ...
 Selecting previously unselected package libibverbs1.
-++ opam install mpi -e source,linux
 Unpacking libibverbs1 (from .../libibverbs1_1.1.6-1_amd64.deb) ...
 Selecting previously unselected package libibverbs-dev.
 Unpacking libibverbs-dev (from .../libibverbs-dev_1.1.6-1_amd64.deb) ...
@@ -47,6 +45,7 @@ Setting up libnuma1 (2.0.8~rc4-1) ...
 Setting up libtorque2 (2.4.16+dfsg-1+deb7u4) ...
 Setting up libibverbs1 (1.1.6-1) ...
 Setting up libibverbs-dev (1.1.6-1) ...
+++ opam install mpi -e source,linux
 Setting up libopenmpi1.3 (1.4.5-1) ...
 Setting up openmpi-common (1.4.5-1) ...
 Setting up libopenmpi-dev (1.4.5-1) ...
@@ -65,10 +64,10 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [mpi: from default] Command started
 [ocamlfind: from default] Command started
-[mpi: from default] Command started
-[default] http://opam-archive:8080/archives/mpi.1.01+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
+[mpi: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/mpi.1.01+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -152,6 +151,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -197,12 +198,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -211,8 +212,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -264,7 +263,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -309,6 +307,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -393,10 +392,10 @@ The following actions will be performed:
 - ar rc libcamlmpi.a init.o comm.o msgs.o collcomm.o groups.o utils.o
 - ocamlc -c mpi.mli
 - ocamlc -c mpi.ml
-- ocamlc -a -o mpi.cma -custom mpi.cmo -cclib -lcamlmpi -ccopt -L/usr/lib/openmpi/lib -cclib -lmpi
 - File "mpi.ml", line 200, characters 15-28:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- ocamlc -a -o mpi.cma -custom mpi.cmo -cclib -lcamlmpi -ccopt -L/usr/lib/openmpi/lib -cclib -lmpi
 - File "mpi.ml", line 249, characters 22-35:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
