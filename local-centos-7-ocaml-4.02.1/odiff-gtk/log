@@ -12,13 +12,13 @@ The following actions will be performed:
 [lablgtk: from default] Command started
 [ocamldiff: from default] Command started
 [ocamlfind: from default] Command started
-[ocamldiff: from default] Command started
 [ocamlfind: from default] Command started
-[lablgtk: from default] Command started
-[default] http://opam-archive:8080/archives/lablgtk.2.18.3+opam.tar.gz downloaded
-[odiff-gtk: from default] Command started
-[default] http://opam-archive:8080/archives/ocamldiff.1.1+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[odiff-gtk: from default] Command started
+[lablgtk: from default] Command started
+[ocamldiff: from default] Command started
+[default] http://opam-archive:8080/archives/lablgtk.2.18.3+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamldiff.1.1+opam.tar.gz downloaded
 [odiff-gtk: from default] Command started
 [default] http://opam-archive:8080/archives/odiff-gtk.1.0+opam.tar.gz downloaded
 
@@ -112,6 +112,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -157,18 +158,9 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -184,6 +176,14 @@ The following actions will be performed:
 - 	../../tools/patch '@SITELIB@' '/home/opam/.opam/system/lib' \
 -     	    >topfind
 - ocamlc -I +compiler-libs -c num_top_printers.mli
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
 - ocamlc -I +compiler-libs -c num_top.mli
 - ocamlc -I +compiler-libs -g -c num_top.ml
@@ -351,6 +351,38 @@ The following actions will be performed:
 - ocamlfind ocamlopt -package unix  -o odiff.cmxa -a odiff_types.cmx odiff_parser.cmx odiff_lexer.cmx odiff.cmx
 - ocamlfind ocamlopt -package unix  -o odiff.cmxs -shared odiff_types.cmx odiff_parser.cmx odiff_lexer.cmx odiff.cmx
 - rm odiff_parser.mli odiff_lexer.ml
+[ERROR] The compilation of lablgtk failed at "./configure --prefix
+        /home/opam/.opam/system LABLGLDIR=/home/opam/.opam/system/lib/lablgl".
+
+#=== ERROR while installing lablgtk.2.18.3 ====================================#
+# opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
+# os                   linux
+# command              ./configure --prefix /home/opam/.opam/system LABLGLDIR=/home/opam/.opam/system/lib/lablgl
+# path                 /home/opam/.opam/system/build/lablgtk.2.18.3
+# compiler             system (4.02.1)
+# exit-code            1
+# env-file             /home/opam/.opam/system/build/lablgtk.2.18.3/lablgtk-1-6aa130.env
+# stdout-file          /home/opam/.opam/system/build/lablgtk.2.18.3/lablgtk-1-6aa130.out
+# stderr-file          /home/opam/.opam/system/build/lablgtk.2.18.3/lablgtk-1-6aa130.err
+### stdout ###
+# [...]
+# checking for suffix of object files... o
+# checking whether we are using the GNU C compiler... yes
+# checking whether gcc accepts -g... yes
+# checking for gcc option to accept ISO C89... none needed
+# checking platform... Unix
+# checking native dynlink... checking for pkg-config... /usr/bin/pkg-config
+# checking for GTK+ - version >= 2.0.0... no
+# *** Could not run GTK+ test program, checking why...
+# *** The test program failed to compile or link. See the file config.log for the
+# *** exact error that occured. This usually means GTK+ is incorrectly installed.
+### stderr ###
+# configure: error: GTK+ is required
+
+
+The former state can be restored with:
+    opam switch import "~/.opam/system/backup/state-20150231020115.export"
+'opam install odiff-gtk' failed.
 [ocamldiff: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/ocamldiff.1.1)
 - ocamlfind install diff META LICENSE \
@@ -406,37 +438,9 @@ The following actions will be performed:
 - *** The test program failed to compile or link. See the file config.log for the
 - *** exact error that occured. This usually means GTK+ is incorrectly installed.
 - configure: error: GTK+ is required
-[ERROR] The compilation of lablgtk failed at "./configure --prefix
-        /home/opam/.opam/system LABLGLDIR=/home/opam/.opam/system/lib/lablgl".
 [lablgtk: ocamlfind remove] Command started
 + ocamlfind "remove" "lablgtk2" (CWD=/home/opam/.opam/system/build/lablgtk.2.18.3)
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/lablgtk2
-
-#=== ERROR while installing lablgtk.2.18.3 ====================================#
-# opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
-# os                   linux
-# command              ./configure --prefix /home/opam/.opam/system LABLGLDIR=/home/opam/.opam/system/lib/lablgl
-# path                 /home/opam/.opam/system/build/lablgtk.2.18.3
-# compiler             system (4.02.1)
-# exit-code            1
-# env-file             /home/opam/.opam/system/build/lablgtk.2.18.3/lablgtk-1-6aa130.env
-# stdout-file          /home/opam/.opam/system/build/lablgtk.2.18.3/lablgtk-1-6aa130.out
-# stderr-file          /home/opam/.opam/system/build/lablgtk.2.18.3/lablgtk-1-6aa130.err
-### stdout ###
-# [...]
-# checking for suffix of object files... o
-# checking whether we are using the GNU C compiler... yes
-# checking whether gcc accepts -g... yes
-# checking for gcc option to accept ISO C89... none needed
-# checking platform... Unix
-# checking native dynlink... checking for pkg-config... /usr/bin/pkg-config
-# checking for GTK+ - version >= 2.0.0... no
-# *** Could not run GTK+ test program, checking why...
-# *** The test program failed to compile or link. See the file config.log for the
-# *** exact error that occured. This usually means GTK+ is incorrectly installed.
-### stderr ###
-# configure: error: GTK+ is required
-
 
 
 =-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -451,7 +455,3 @@ The following changes have been performed
 
 =-=- lablgtk.2.18.3 troubleshooting -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 => This package requires gtk+ 2.0 development packages installed on your system
-
-The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150229003001.export"
-'opam install odiff-gtk' failed.
