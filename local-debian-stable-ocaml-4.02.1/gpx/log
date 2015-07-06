@@ -1,22 +1,22 @@
 ++ opam install gpx -e debian
-Debian depexts: m4
 + depext=m4
+Debian depexts: m4
 + echo Debian depexts: m4
 + '[' m4 '!=' '' ']'
 + sudo apt-get update -y
-Hit http://download.opensuse.org  Release.gpg
-Hit http://download.opensuse.org  Release
-Hit http://download.opensuse.org  Packages
 Get:1 http://security.debian.org stable/updates Release.gpg [836 B]
+Hit http://download.opensuse.org  Release.gpg
 Hit http://http.debian.net stable Release.gpg
-Get:2 http://http.debian.net stable-updates Release.gpg [836 B]
+Get:2 http://security.debian.org stable/updates Release [102 kB]
+Hit http://download.opensuse.org  Release
+Get:3 http://http.debian.net stable-updates Release.gpg [836 B]
 Hit http://http.debian.net stable Release
-Get:3 http://http.debian.net stable-updates Release [124 kB]
-Get:4 http://security.debian.org stable/updates Release [102 kB]
+Get:4 http://http.debian.net stable-updates Release [124 kB]
+Hit http://download.opensuse.org  Packages
 Hit http://http.debian.net stable/main amd64 Packages
-Get:5 http://http.debian.net stable-updates/main amd64 Packages [4104 B]
-Get:6 http://security.debian.org stable/updates/main amd64 Packages [302 kB]
-Fetched 534 kB in 1s (373 kB/s)
+Get:5 http://security.debian.org stable/updates/main amd64 Packages [339 kB]
+Get:6 http://http.debian.net stable-updates/main amd64 Packages [4374 B]
+Fetched 571 kB in 1s (497 kB/s)
 Reading package lists...
 + sudo apt-get install -qq -y build-essential m4
 + sudo apt-get install -qq -y m4
@@ -29,25 +29,31 @@ Debian srcexts:
 The following actions will be performed:
  - install   ocamlfind.1.5.5                       [required by gpx]
  - install   xml-light.2.4                         [required by gpx]
- - install   gpx.1.0.1
-=== 3 to install ===
+ - install   ISO8601.0.2.2                         [required by gpx]
+ - install   gpx.1.1.1
+=== 4 to install ===
 
 =-=- Synchronizing package archives -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-[default] Downloading http://opam-archive:8080/archives/gpx.1.0.1+opam.tar.gz
+[default] Downloading http://opam-archive:8080/archives/gpx.1.1.1+opam.tar.gz
+[default] Downloading http://opam-archive:8080/archives/ISO8601.0.2.2+opam.tar.gz
 [default] Downloading http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz
-[default] Downloading http://opam-archive:8080/archives/xml-light.2.4+opam.tar.gz
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  4691 100 16488  100 16488    0     0  35480      0 --:--:-- --:--:-- --:--:-- 8050k
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  5351  100  5351    0     0   413k      0 --:--:-- --:--:-- --:--:--  475k
+100  5195  100  5195    0     0   458k      0 --:--:-- --:--:-- --:--:--  507k
 200
- 100  4691    0     0  10083      0 --:--:-- --:--:-- --:--:-- 4581k
 200
-100  234k  100  234k    0     0   501k      0 --:--:-- --:--:-- --:--:-- 38.2M
 200
+100  234k  100  234k    0     0  19.0M      0 --:--:-- --:--:-- --:--:-- 20.8M
+[default] Downloading http://opam-archive:8080/archives/xml-light.2.4+opam.tar.gz
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0200
+100 16488  100 16488    0     0   348k      0 --:--:-- --:--:-- --:--:-- 15.7M
 
 =-=- Installing packages =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 Building ocamlfind.1.5.5:
@@ -349,18 +355,73 @@ cp doc/ref-man/ocamlfind.1 /home/opam/.opam/system/man/man1
 cp doc/ref-man/META.5 doc/ref-man/site-lib.5 doc/ref-man/findlib.conf.5 /home/opam/.opam/system/man/man5
 make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5'
 Installing ocamlfind.1.5.5.
+Building ISO8601.0.2.2:
+  make build
+  make install
 Building xml-light.2.4:
   make install_ocamlfind
+Makefile:34: warning: overriding commands for target `clean'
+Makefile:31: warning: ignoring old commands for target `clean'
+ocamlbuild -I src ISO8601.a
 ocamlyacc xml_parser.mly
+/usr/bin/ocamldep.opt -modules src/ISO8601.ml > src/ISO8601.ml.depends
 ocamlc  xml.mli
+/usr/bin/ocamldep.opt -modules src/ISO8601.mli > src/ISO8601.mli.depends
+/usr/bin/ocamlc.opt -c -I src -o src/ISO8601.cmi src/ISO8601.mli
 ocamlc  dtd.mli
+/usr/bin/ocamllex.opt -q src/ISO8601_lexer.mll
 ocamlc  xml_parser.mli
 ocamlc  -c xml_parser.ml
+/usr/bin/ocamldep.opt -modules src/ISO8601_lexer.ml > src/ISO8601_lexer.ml.depends
+/usr/bin/ocamlc.opt -c -I src -o src/ISO8601_lexer.cmo src/ISO8601_lexer.ml
++ /usr/bin/ocamlc.opt -c -I src -o src/ISO8601_lexer.cmo src/ISO8601_lexer.ml
+File "src/ISO8601_lexer.mll", line 69, characters 11-12:
+Warning 26: unused variable y.
+File "src/ISO8601_lexer.mll", line 69, characters 27-28:
+Warning 26: unused variable w.
+File "src/ISO8601_lexer.mll", line 74, characters 11-12:
+Warning 26: unused variable y.
+File "src/ISO8601_lexer.mll", line 74, characters 27-28:
+Warning 26: unused variable w.
+File "src/ISO8601_lexer.mll", line 74, characters 43-44:
+Warning 26: unused variable d.
+/usr/bin/ocamlopt.opt -c -I src -o src/ISO8601_lexer.cmx src/ISO8601_lexer.ml
 ocamllex xml_lexer.mll
++ /usr/bin/ocamlopt.opt -c -I src -o src/ISO8601_lexer.cmx src/ISO8601_lexer.ml
+File "src/ISO8601_lexer.mll", line 69, characters 11-12:
+Warning 26: unused variable y.
+File "src/ISO8601_lexer.mll", line 69, characters 27-28:
+Warning 26: unused variable w.
+File "src/ISO8601_lexer.mll", line 74, characters 11-12:
+Warning 26: unused variable y.
+File "src/ISO8601_lexer.mll", line 74, characters 27-28:
+Warning 26: unused variable w.
+File "src/ISO8601_lexer.mll", line 74, characters 43-44:
+Warning 26: unused variable d.
+/usr/bin/ocamlopt.opt -c -I src -o src/ISO8601.cmx src/ISO8601.ml
 248 states, 1238 transitions, table size 6440 bytes
 ocamlc  xml_lexer.mli
+/usr/bin/ocamlopt.opt -a src/ISO8601_lexer.cmx src/ISO8601.cmx -o src/ISO8601.cmxa
 ocamlc  -c xml_lexer.ml
+ocamlbuild -I src ISO8601.cmxa
+ocamlbuild -I src ISO8601.cma
+/usr/bin/ocamlc.opt -c -I src -o src/ISO8601.cmo src/ISO8601.ml
+/usr/bin/ocamlc.opt -a src/ISO8601_lexer.cmo src/ISO8601.cmo -o src/ISO8601.cma
+ocamlbuild -I src ISO8601.cmi
 ocamlc  -c dtd.ml
+ocamlbuild -I src ISO8601.a
+Makefile:34: warning: overriding commands for target `clean'
+Makefile:31: warning: ignoring old commands for target `clean'
+ocamlbuild -I src ISO8601.cmxa
+ocamlbuild -I src ISO8601.cma
+ocamlbuild -I src ISO8601.cmi
+ocamlfind install ISO8601 META _build/src/ISO8601.a _build/src/ISO8601.cmxa _build/src/ISO8601.cma _build/src/ISO8601.cmi
+Installed /home/opam/.opam/system/lib/ISO8601/ISO8601.cmi
+Installed /home/opam/.opam/system/lib/ISO8601/ISO8601.cma
+Installed /home/opam/.opam/system/lib/ISO8601/ISO8601.cmxa
+Installed /home/opam/.opam/system/lib/ISO8601/ISO8601.a
+Installed /home/opam/.opam/system/lib/ISO8601/META
+Installing ISO8601.0.2.2.
 ocamlc  xmlParser.mli
 ocamlc  -c xmlParser.ml
 ocamlc  -c xml.ml
@@ -395,11 +456,11 @@ Installed /home/opam/.opam/system/lib/xml-light/xml-light.cma
 Installed /home/opam/.opam/system/lib/xml-light/xml-light.a
 Installed /home/opam/.opam/system/lib/xml-light/META
 Installing xml-light.2.4.
-Building gpx.1.0.1:
+Building gpx.1.1.1:
   make -C src build
   make -C src install
-make: Entering directory `/home/opam/.opam/system/build/gpx.1.0.1/src'
-ocamlfind ocamlc -package str -package xml-light -c gpx.mli
+make: Entering directory `/home/opam/.opam/system/build/gpx.1.1.1/src'
+ocamlfind ocamlc -package str -package xml-light -package ISO8601 -c gpx.mli
 File "gpx.mli", line 31, characters 3-31:
 Warning 30: the label extensions is defined in both types gpx and metadata.
 File "gpx.mli", line 37, characters 3-25:
@@ -452,9 +513,7 @@ File "gpx.mli", line 107, characters 3-22:
 Warning 30: the label name is defined in both types metadata and person.
 File "gpx.mli", line 109, characters 3-20:
 Warning 30: the label link is defined in both types metadata and person.
-File "gpx.mli", line 130, characters 3-12:
-Warning 30: the label year is defined in both types copyright and date_time.
-ocamlfind ocamlc -package str -package xml-light -a -o gpx.cma gpx.ml
+ocamlfind ocamlc -package str -package xml-light -package ISO8601 -a -o gpx.cma gpx.ml
 File "gpx.ml", line 20, characters 3-31:
 Warning 30: the label extensions is defined in both types gpx and metadata.
 File "gpx.ml", line 26, characters 3-25:
@@ -507,21 +566,19 @@ File "gpx.ml", line 96, characters 3-22:
 Warning 30: the label name is defined in both types metadata and person.
 File "gpx.ml", line 98, characters 3-20:
 Warning 30: the label link is defined in both types metadata and person.
-File "gpx.ml", line 119, characters 3-12:
-Warning 30: the label year is defined in both types copyright and date_time.
-File "gpx.ml", line 190, characters 20-138:
+File "gpx.ml", line 152, characters 24-162:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a value that is not matched:
 ""
-File "gpx.ml", line 370, characters 6-43:
+File "gpx.ml", line 331, characters 10-47:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a value that is not matched:
 PCData _
-File "gpx.ml", line 374, characters 6-43:
+File "gpx.ml", line 335, characters 10-47:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a value that is not matched:
 PCData _
-ocamlfind ocamlopt -package str -package xml-light -a -o gpx.cmxa gpx.ml
+ocamlfind ocamlopt -package str -package xml-light -package ISO8601 -a -o gpx.cmxa gpx.ml
 File "gpx.ml", line 20, characters 3-31:
 Warning 30: the label extensions is defined in both types gpx and metadata.
 File "gpx.ml", line 26, characters 3-25:
@@ -574,27 +631,25 @@ File "gpx.ml", line 96, characters 3-22:
 Warning 30: the label name is defined in both types metadata and person.
 File "gpx.ml", line 98, characters 3-20:
 Warning 30: the label link is defined in both types metadata and person.
-File "gpx.ml", line 119, characters 3-12:
-Warning 30: the label year is defined in both types copyright and date_time.
-File "gpx.ml", line 190, characters 20-138:
+File "gpx.ml", line 152, characters 24-162:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a value that is not matched:
 ""
-File "gpx.ml", line 370, characters 6-43:
+File "gpx.ml", line 331, characters 10-47:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a value that is not matched:
 PCData _
-File "gpx.ml", line 374, characters 6-43:
+File "gpx.ml", line 335, characters 10-47:
 Warning 8: this pattern-matching is not exhaustive.
 Here is an example of a value that is not matched:
 PCData _
-make: Leaving directory `/home/opam/.opam/system/build/gpx.1.0.1/src'
-make: Entering directory `/home/opam/.opam/system/build/gpx.1.0.1/src'
+make: Leaving directory `/home/opam/.opam/system/build/gpx.1.1.1/src'
+make: Entering directory `/home/opam/.opam/system/build/gpx.1.1.1/src'
 ocamlfind install gpx META gpx.cmi gpx.cma gpx.cmxa gpx.a
 Installed /home/opam/.opam/system/lib/gpx/gpx.a
 Installed /home/opam/.opam/system/lib/gpx/gpx.cmxa
 Installed /home/opam/.opam/system/lib/gpx/gpx.cma
 Installed /home/opam/.opam/system/lib/gpx/gpx.cmi
 Installed /home/opam/.opam/system/lib/gpx/META
-make: Leaving directory `/home/opam/.opam/system/build/gpx.1.0.1/src'
-Installing gpx.1.0.1.
+make: Leaving directory `/home/opam/.opam/system/build/gpx.1.1.1/src'
+Installing gpx.1.1.1.
