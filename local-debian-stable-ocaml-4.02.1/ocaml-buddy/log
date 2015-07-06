@@ -1,6 +1,17 @@
-/bin/sh: 1: lsb_release: not found
-# Detecting depexts using flags: x86_64 linux
-# No extra OS packages requirements found.
+# Detecting depexts using flags: x86_64 linux debian
+# The following system packages are needed:
+#  - libbdd-dev
+#  - m4
+Not running as root, system installation will be done through "sudo"
+debconf: delaying package configuration, since apt-utils is not installed
+Selecting previously unselected package libbdd0c2.
+(Reading database ... 19968 files and directories currently installed.)
+Unpacking libbdd0c2 (from .../libbdd0c2_2.4-8_amd64.deb) ...
+Selecting previously unselected package libbdd-dev.
+Unpacking libbdd-dev (from .../libbdd-dev_2.4-8_amd64.deb) ...
+Setting up libbdd0c2 (2.4-8) ...
+Setting up libbdd-dev (2.4-8) ...
+# OS packages installation successful
 The following actions will be performed:
   - install ocamlfind   1.5.5                                   [required by ocaml-buddy]
   - install ocaml-buddy 0.6.1
@@ -322,46 +333,32 @@ The following actions will be performed:
 - ocamlbuild -classic-display -use-ocamlfind buddy.cma
 - ocamlfind ocamlopt unix.cmxa -I /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa -linkpkg myocamlbuild.ml /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
 - ocamlfind ocamlc -cc gcc -ccopt -fPIC -c libbuddy_stubs.c
-- + ocamlfind ocamlc -cc gcc -ccopt -fPIC -c libbuddy_stubs.c
-- libbuddy_stubs.c:22:17: fatal error: bdd.h: No such file or directory
-- compilation terminated.
-- Command exited with code 2.
-[ERROR] The compilation of ocaml-buddy failed at "make all".
-- make: *** [_build/buddy.cma] Error 10
-[ocaml-buddy: make uninstall] Command started
-+ make "uninstall" (CWD=/home/opam/.opam/4.02.1/build/ocaml-buddy.0.6.1)
-- ocamlfind remove buddy
-- ocamlfind: [WARNING] No such directory: /home/opam/.opam/4.02.1/lib/buddy
-
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions failed
-  - install ocaml-buddy 0.6.1
-The following changes have been performed
-  - install ocamlfind 1.5.5
-
-#=== ERROR while installing ocaml-buddy.0.6.1 =================================#
-# opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
-# os                   linux
-# command              make all
-# path                 /home/opam/.opam/4.02.1/build/ocaml-buddy.0.6.1
-# compiler             4.02.1
-# exit-code            2
-# env-file             /home/opam/.opam/4.02.1/build/ocaml-buddy.0.6.1/ocaml-buddy-5-c743ac.env
-# stdout-file          /home/opam/.opam/4.02.1/build/ocaml-buddy.0.6.1/ocaml-buddy-5-c743ac.out
-# stderr-file          /home/opam/.opam/4.02.1/build/ocaml-buddy.0.6.1/ocaml-buddy-5-c743ac.err
-### stdout ###
-# ocamlbuild -classic-display -use-ocamlfind buddy.cma
-# ocamlfind ocamlopt unix.cmxa -I /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa -linkpkg myocamlbuild.ml /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
-# ocamlfind ocamlc -cc gcc -ccopt -fPIC -c libbuddy_stubs.c
-# + ocamlfind ocamlc -cc gcc -ccopt -fPIC -c libbuddy_stubs.c
-# libbuddy_stubs.c:22:17: fatal error: bdd.h: No such file or directory
-# compilation terminated.
-# Command exited with code 2.
-### stderr ###
-# make: *** [_build/buddy.cma] Error 10
-
-
-The former state can be restored with:
-    opam switch import "~/.opam/4.02.1/backup/state-20150219193113.export"
-'opam install ocaml-buddy' failed.
+- ocamlfind ocamlmklib -o buddy_stubs -lbdd libbuddy_stubs.o
+- ocamlfind ocamldep -modules buddy.mli > buddy.mli.depends
+- ocamlfind ocamlc -c -ccopt -O9 -o buddy.cmi buddy.mli
+- ocamlfind ocamldep -modules buddy.ml > buddy.ml.depends
+- ocamlfind ocamlc -c -ccopt -O9 -o buddy.cmo buddy.ml
+- ocamlfind ocamlc -a -dllib -lbuddy_stubs buddy.cmo -o buddy.cma
+[ocaml-buddy: make opt] Command started
++ make "opt" (CWD=/home/opam/.opam/4.02.1/build/ocaml-buddy.0.6.1)
+- ocamlbuild -classic-display -use-ocamlfind buddy.cmxa
+- ocamlfind ocamlopt -c -ccopt -O9 -o buddy.cmx buddy.ml
+- ocamlfind ocamlopt -a -cclib -lbdd -cclib -lbuddy_stubs buddy.cmx -o buddy.cmxa
+- ocamlbuild -classic-display -use-ocamlfind buddy.cmxs
+- ocamlfind ocamlopt -shared libbuddy_stubs.a buddy.cmx -o buddy.cmxs
+[ocaml-buddy: make install] Command started
++ make "install" (CWD=/home/opam/.opam/4.02.1/build/ocaml-buddy.0.6.1)
+- test -d //home/opam/.opam/4.02.1/lib/ocaml || mkdir -p //home/opam/.opam/4.02.1/lib/ocaml
+- ocamlfind install -ldconf ignore -patch-version 0.1 buddy META _build/buddy.cma _build/buddy.cmxa _build/buddy.a _build/libbuddy_stubs.a _build/buddy.cmi buddy.mli _build/buddy.cmx _build/dllbuddy_stubs.so
+- Installed /home/opam/.opam/4.02.1/lib/buddy/buddy.cmx
+- Installed /home/opam/.opam/4.02.1/lib/buddy/buddy.mli
+- Installed /home/opam/.opam/4.02.1/lib/buddy/buddy.cmi
+- Installed /home/opam/.opam/4.02.1/lib/buddy/libbuddy_stubs.a
+- Installed /home/opam/.opam/4.02.1/lib/buddy/buddy.a
+- Installed /home/opam/.opam/4.02.1/lib/buddy/buddy.cmxa
+- Installed /home/opam/.opam/4.02.1/lib/buddy/buddy.cma
+- Installed /home/opam/.opam/4.02.1/lib/buddy/META
+- Installed /home/opam/.opam/4.02.1/lib/stublibs/dllbuddy_stubs.so
+- Installed /home/opam/.opam/4.02.1/lib/stublibs/dllbuddy_stubs.so.owner
+-> installed ocaml-buddy.0.6.1
+Done.
