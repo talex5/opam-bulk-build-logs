@@ -4,9 +4,9 @@
 Not running as root, system installation will be done through "sudo"
 Hit http://download.opensuse.org  Release.gpg
 Hit http://http.debian.net stable Release.gpg
-Hit http://download.opensuse.org  Release
 Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
 Hit http://http.debian.net stable Release
+Hit http://download.opensuse.org  Release
 Get:2 http://http.debian.net stable-updates Release [124 kB]
 Hit http://download.opensuse.org  Packages
 Hit http://http.debian.net stable/main amd64 Packages
@@ -14,7 +14,7 @@ Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
 Hit http://security.debian.org stable/updates Release.gpg
 Hit http://security.debian.org stable/updates Release
 Hit http://security.debian.org stable/updates/main amd64 Packages
-Fetched 129 kB in 1s (117 kB/s)
+Fetched 129 kB in 1s (118 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
@@ -114,6 +114,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -159,12 +160,13 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -173,8 +175,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -368,8 +368,7 @@ The following actions will be performed:
 - checking for ocamlyacc... ocamlyacc
 - checking for ocamlfind... ocamlfind
 - checking for perl... perl
-- checking for gcc version... checking how to run the C preprocessor... 
-- gcc -E
+- checking for gcc version... checking how to run the C preprocessor... gcc -E
 - checking for grep that handles long lines and -e... /bin/grep
 - checking for egrep... /bin/grep -E
 - checking for ANSI C header files... yes
@@ -382,8 +381,7 @@ The following actions will be performed:
 - checking for inttypes.h... yes
 - checking for stdint.h... yes
 - checking for unistd.h... yes
-- checking for __builtin_va_list... 
-- yes
+- checking for __builtin_va_list... yes
 - checking if __thread is a keyword... true
 - checking if gcc adds underscores to assembly labels.... false
 - checking for ANSI C header files... (cached) yes
@@ -400,13 +398,13 @@ The following actions will be performed:
 - checking stdbool.h presence... yes
 - checking for stdbool.h... yes
 - checking for an ANSI C-conforming const... yes
-- checking for inline... inline
+- checking for inline... 
+- inline
 - checking whether time.h and sys/time.h may both be included... yes
 - checking for working memcmp... yes
 - checking for mkdir... yes
 - checking for select... yes
-- checking for socket... 
-- yes
+- checking for socket... yes
 - checking for __sysv_signal... yes
 - checking for real definition of size_t... unsigned long
 - checking for real definition of wchar_t... int
@@ -1047,6 +1045,18 @@ The following actions will be performed:
 - cd lib; perl Makefile.PL
 - Checking if your kit is complete...
 - Looks good
+- Writing Makefile for cilly
+- Writing MYMETA.yml
+- make -C lib
+- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/cil.1.7.3/lib'
+- cp App/Cilly.pm blib/lib/App/Cilly.pm
+- cp App/Cilly/CilConfig.pm blib/lib/App/Cilly/CilConfig.pm
+- cp App/Cilly/KeptFile.pm blib/lib/App/Cilly/KeptFile.pm
+- cp App/Cilly/OutputFile.pm blib/lib/App/Cilly/OutputFile.pm
+- cp App/Cilly/TempFile.pm blib/lib/App/Cilly/TempFile.pm
+- cp ../bin/cilly blib/script/cilly
+- /usr/bin/perl -MExtUtils::MY -e 'MY->fixin(shift)' -- blib/script/cilly
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/cil.1.7.3/lib'
 - In file included from /usr/include/stdio.h:28:0,
 -                  from src/machdep-ml.c:40:
 - /usr/include/features.h:323:26: fatal error: bits/predefs.h: No such file or directory
@@ -1063,18 +1073,6 @@ The following actions will be performed:
 - src/machdep-ml.c:178:22: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
 - src/machdep-ml.c:187:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
 - Generating CIL_MACHINE machine dependency information string (for CIL)
-- Writing Makefile for cilly
-- Writing MYMETA.yml
-- make -C lib
-- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/cil.1.7.3/lib'
-- cp App/Cilly.pm blib/lib/App/Cilly.pm
-- cp App/Cilly/CilConfig.pm blib/lib/App/Cilly/CilConfig.pm
-- cp App/Cilly/KeptFile.pm blib/lib/App/Cilly/KeptFile.pm
-- cp App/Cilly/OutputFile.pm blib/lib/App/Cilly/OutputFile.pm
-- cp App/Cilly/TempFile.pm blib/lib/App/Cilly/TempFile.pm
-- cp ../bin/cilly blib/script/cilly
-- /usr/bin/perl -MExtUtils::MY -e 'MY->fixin(shift)' -- blib/script/cilly
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/cil.1.7.3/lib'
 [cil: make install] Command started
 + make "install" (CWD=/home/opam/.opam/4.02.1/build/cil.1.7.3)
 - ocamlbuild -build-dir _build -no-links -classic-display src/main.native
@@ -1095,6 +1093,8 @@ The following actions will be performed:
 - Installing /home/opam/.opam/4.02.1/lib/perl5/App/Cilly/OutputFile.pm
 - Installing /home/opam/.opam/4.02.1/lib/perl5/App/Cilly/TempFile.pm
 - Installing /home/opam/.opam/4.02.1/bin/cilly
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/cil.1.7.3/lib'
+- /usr/bin/install -c -m 0755 bin/cilly.* /home/opam/.opam/4.02.1/bin
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/4.02.1/lib/cil
 - Installed /home/opam/.opam/4.02.1/lib/cil/whitetrack.mli
 - Installed /home/opam/.opam/4.02.1/lib/cil/whitetrack.cmx
@@ -1316,7 +1316,5 @@ The following actions will be performed:
 - Installed /home/opam/.opam/4.02.1/lib/cil/cil.cmxa
 - Installed /home/opam/.opam/4.02.1/lib/cil/cil.cma
 - Installed /home/opam/.opam/4.02.1/lib/cil/META
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/cil.1.7.3/lib'
-- /usr/bin/install -c -m 0755 bin/cilly.* /home/opam/.opam/4.02.1/bin
 -> installed cil.1.7.3
 Done.
