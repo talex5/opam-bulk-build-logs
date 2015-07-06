@@ -1,9 +1,6 @@
-++ opam install scrypt -e centos,centos-7
-+ depext=
-+ echo CentOS 7 depexts:
-+ '[' '' '!=' '' ']'
-+ opam install scrypt
-CentOS 7 depexts:
+/bin/sh: lsb_release: command not found
+# Detecting depexts using flags: x86_64 linux
+# No extra OS packages requirements found.
 The following actions will be performed:
   - install ocamlfind 1.5.5                                     [required by scrypt]
   - install scrypt    0.2.1
@@ -14,8 +11,8 @@ The following actions will be performed:
 [scrypt: from default] Command started
 [scrypt: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/scrypt.0.2.1+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/scrypt.0.2.1+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -101,6 +98,9 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -146,12 +146,16 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c fl_args.ml
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 	cp topfind.ml.in topfind.ml;                             \
+- else                                                             \
+- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 		> topfind.ml ;                                   \
+- fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -160,13 +164,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 	cp topfind.ml.in topfind.ml;                             \
-- else                                                             \
-- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 		> topfind.ml ;                                   \
-- fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -345,13 +342,12 @@ The following actions will be performed:
 - checking whether gcc accepts -g... yes
 - checking for gcc option to accept ISO C89... none needed
 - checking for style of include used by make... GNU
-- checking dependency style of gcc... 
-- gcc3
-- checking how to run the C preprocessor... gcc -E
+- checking dependency style of gcc... gcc3
+- checking how to run the C preprocessor... 
+- gcc -E
 - checking for grep that handles long lines and -e... /usr/bin/grep
 - checking for egrep... /usr/bin/grep -E
-- checking for ANSI C header files... 
-- yes
+- checking for ANSI C header files... yes
 - checking for sys/types.h... yes
 - checking for sys/stat.h... yes
 - checking for stdlib.h... yes
@@ -359,15 +355,15 @@ The following actions will be performed:
 - checking for memory.h... yes
 - checking for strings.h... yes
 - checking for inttypes.h... yes
-- checking for stdint.h... 
-- yes
+- checking for stdint.h... yes
 - checking for unistd.h... yes
 - checking sys/endian.h usability... no
 - checking sys/endian.h presence... no
 - checking for sys/endian.h... no
 - checking whether be64enc is declared... no
 - checking err.h usability... yes
-- checking err.h presence... yes
+- checking err.h presence... 
+- yes
 - checking for err.h... yes
 - checking for clock_gettime in -lrt... yes
 - checking for clock_gettime... yes
@@ -381,7 +377,8 @@ The following actions will be performed:
 - checking sys/param.h usability... yes
 - checking sys/param.h presence... yes
 - checking for sys/param.h... yes
-- checking for posix_memalign... yes
+- checking for posix_memalign... 
+- yes
 - checking for special C compiler options needed for large files... no
 - checking for _FILE_OFFSET_BITS value needed for large files... no
 - configure: creating ./config.status
@@ -390,16 +387,7 @@ The following actions will be performed:
 - config.status: executing depfiles commands
 - cc -g -O2 -fPIC -lcrypto -DHAVE_CONFIG_H -Iscrypt-1.1.6 -Iscrypt-1.1.6/lib/crypto -Iscrypt-1.1.6/lib/scryptenc -Iscrypt-1.1.6/lib/util   -c -o scrypt-1.1.6/lib/crypto/crypto_aesctr.o scrypt-1.1.6/lib/crypto/crypto_aesctr.c
 - make[1]: Leaving directory `/home/opam/.opam/system/build/scrypt.0.2.1/libscrypt'
-- scrypt-1.1.6/lib/crypto/crypto_aesctr.c:34:25: fatal error: openssl/aes.h: No such file or directory
--  #include <openssl/aes.h>
--                          ^
-- compilation terminated.
-- make[1]: *** [scrypt-1.1.6/lib/crypto/crypto_aesctr.o] Error 1
-- make: *** [libscrypt/libscrypt.a] Error 2
 [ERROR] The compilation of scrypt failed at "make".
-[scrypt: ocamlfind remove] Command started
-+ ocamlfind "remove" "scrypt" (CWD=/home/opam/.opam/system/build/scrypt.0.2.1)
-- ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/scrypt
 
 #=== ERROR while installing scrypt.0.2.1 ======================================#
 # opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
@@ -408,9 +396,9 @@ The following actions will be performed:
 # path                 /home/opam/.opam/system/build/scrypt.0.2.1
 # compiler             system (4.02.1)
 # exit-code            2
-# env-file             /home/opam/.opam/system/build/scrypt.0.2.1/scrypt-15-2dea01.env
-# stdout-file          /home/opam/.opam/system/build/scrypt.0.2.1/scrypt-15-2dea01.out
-# stderr-file          /home/opam/.opam/system/build/scrypt.0.2.1/scrypt-15-2dea01.err
+# env-file             /home/opam/.opam/system/build/scrypt.0.2.1/scrypt-1-2dea01.env
+# stdout-file          /home/opam/.opam/system/build/scrypt.0.2.1/scrypt-1-2dea01.out
+# stderr-file          /home/opam/.opam/system/build/scrypt.0.2.1/scrypt-1-2dea01.err
 ### stdout ###
 # [...]
 # checking for sys/param.h... yes
@@ -432,13 +420,22 @@ The following actions will be performed:
 # make: *** [libscrypt/libscrypt.a] Error 2
 
 
+The former state can be restored with:
+    opam switch import "~/.opam/system/backup/state-20150220000535.export"
+'opam install scrypt' failed.
+- scrypt-1.1.6/lib/crypto/crypto_aesctr.c:34:25: fatal error: openssl/aes.h: No such file or directory
+-  #include <openssl/aes.h>
+-                          ^
+- compilation terminated.
+- make[1]: *** [scrypt-1.1.6/lib/crypto/crypto_aesctr.o] Error 1
+- make: *** [libscrypt/libscrypt.a] Error 2
+[scrypt: ocamlfind remove] Command started
++ ocamlfind "remove" "scrypt" (CWD=/home/opam/.opam/system/build/scrypt.0.2.1)
+- ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/scrypt
+
 
 =-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 The following actions failed
   - install scrypt 0.2.1
 The following changes have been performed
   - install ocamlfind 1.5.5
-
-The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150219080431.export"
-'opam install scrypt' failed.
