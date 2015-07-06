@@ -12,17 +12,17 @@ Get:5 http://http.debian.net stable/main amd64 Packages [7625 kB]
 Get:6 http://security.debian.org stable/updates Release.gpg [836 B]
 Get:7 http://security.debian.org stable/updates Release [102 kB]
 Get:8 http://http.debian.net stable-updates/main amd64 Packages [3329 B]
-Get:9 http://security.debian.org stable/updates/main amd64 Packages [297 kB]
-Fetched 8323 kB in 3s (2416 kB/s)
+Get:9 http://security.debian.org stable/updates/main amd64 Packages [298 kB]
+Fetched 8324 kB in 3s (2214 kB/s)
 Reading package lists...
 + sudo apt-get install -qq -y build-essential m4
 + sudo apt-get install -qq -y m4
 ++ opam install pa_ovisitor -e source,linux
 + srcext=
-Debian srcexts:
 + echo Debian srcexts:
 + '[' '' '!=' '' ']'
 + opam install pa_ovisitor
+Debian srcexts:
 The following actions will be performed:
  - install   camlp4.4.01.0                         [required by type_conv]
  - install   ocamlfind.1.5.5                       [required by pa_ovisitor]
@@ -37,20 +37,20 @@ The following actions will be performed:
 [default] Downloading http://opam-archive:8080/archives/pa_ovisitor.1.0.0+opam.tar.gz
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload   Upload   Total   Spent    Le%ft  Speed
-   0     0    0 T    0    0     0    o  0      0 --:--:-- t--:--:-- --:--:--   a  0l    % Received % Xferd  Average Speed   Time    Time     Time  Current
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100 50648  100 50648    0     0  4512k      0 --:--:-- --:--:-- --:--:-- 4946k
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100 50647  100 50647    0     0  12.2M      0 --:--:-- --:--:-- --:--:-- 24.1M
 200
-100  234k  100  234k    0     0  14.3M      0 --:--:-- --:--:-- --:--:-- 15.2M
+100  234k  100  234k    0     0  32.0M      0 --:--:-- --:--:-- --:--:-- 38.2M
 200
-100 3178k  100 3178k    0     0  52.8M      0 --:--:-- --:--:-- --:--:-- 54.4M
+100 3178k  100 3178k    0     0  58.0M      0 --:--:-- --:--:-- --:--:-- 59.6M
 200
 [default] Downloading http://opam-archive:8080/archives/type_conv.111.13.00+opam.tar.gz
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100 61463  100 61463    0     0  20.1M      0 --:--:-- --:--:-- --:--:-- 58.6M
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100 61463  100 61463    0     0  17.1M      0 --:--:-- --:--:-- --:--:-- 29.3M
 200
 
 =-=- Installing packages =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -114,8 +114,8 @@ Configuration has been written to Makefile.config
 
 You can now do 'make all', and optionally 'make opt', to build ocamlfind.
 for p in findlib bytes; do ( cd src/$p; make all ) || exit; done
-Makefile:160: depend: No such file or directory
 make[1]: Entering directory `/home/opam/.opam/4.01.0/build/ocamlfind.1.5.5/src/findlib'
+Makefile:160: depend: No such file or directory
 ocamllex fl_meta.mll
 22 states, 392 transitions, table size 1700 bytes
 ocamldep *.ml *.mli >depend
@@ -351,6 +351,9 @@ pkg_camlp4_extend: ................................... /home/opam/.opam/4.01.0/l
 
 ./setup.exe -build 
 ocamlfind ocamlopt unix.cmxa -I /home/opam/.opam/4.01.0/lib/ocaml/ocamlbuild /home/opam/.opam/4.01.0/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa -linkpkg myocamlbuild.ml /home/opam/.opam/4.01.0/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
+ocamlfind ocamldep -package camlp4.extend -package camlp4.quotations -modules lib/pa_type_conv.mli > lib/pa_type_conv.mli.depends
+ocamlfind ocamlc -c -g -package camlp4.extend -package camlp4.quotations -I lib -o lib/pa_type_conv.cmi lib/pa_type_conv.mli
+ocamlfind ocamldep -syntax camlp4o -package camlp4.extend -package camlp4.quotations -modules lib/pa_type_conv.ml > lib/pa_type_conv.ml.depends
 ln -sf ../src/Makefile boot/Makefile
 make[1]: Entering directory `/home/opam/.opam/4.01.0/build/omake.0.9.8.6-0.rc1/boot'
 ln -sf ../src/clib/omake_shell_sys.c omake_shell_sys.c
@@ -591,16 +594,27 @@ ln -sf ../src/main/omake_shell.mli omake_shell.mli
 ocamllex omake_ast_lex.mll
 143 states, 3100 transitions, table size 13258 bytes
 ocamlc -g -c omake_gen_parse.ml
+ocamlfind ocamlc -c -g -syntax camlp4o -package camlp4.extend -package camlp4.quotations -I lib -o lib/pa_type_conv.cmo lib/pa_type_conv.ml
 ocamlc -g -custom -o omake_gen_parse  unix.cma   omake_gen_parse.cmo
 ./omake_gen_parse -o omake_ast_parse.mly omake_ast_parse.input
 ocamlyacc omake_ast_parse.mly
 ocamlyacc omake_exp_parse.mly
 ocamlyacc omake_shell_parse.mly
 ocamldep  *.ml *.mli > Makefile.dep
-ocamlfind ocamldep -package camlp4.extend -package camlp4.quotations -modules lib/pa_type_conv.mli > lib/pa_type_conv.mli.depends
-ocamlfind ocamlc -c -g -package camlp4.extend -package camlp4.quotations -I lib -o lib/pa_type_conv.cmi lib/pa_type_conv.mli
-ocamlfind ocamldep -syntax camlp4o -package camlp4.extend -package camlp4.quotations -modules lib/pa_type_conv.ml > lib/pa_type_conv.ml.depends
-ocamlfind ocamlc -c -g -syntax camlp4o -package camlp4.extend -package camlp4.quotations -I lib -o lib/pa_type_conv.cmo lib/pa_type_conv.ml
+ocamlfind ocamlc -a lib/pa_type_conv.cmo -o lib/pa_type_conv.cma
+ocamlfind ocamlopt -c -g -syntax camlp4o -package camlp4.extend -package camlp4.quotations -I lib -o lib/pa_type_conv.cmx lib/pa_type_conv.ml
+ocamlfind ocamlopt -a lib/pa_type_conv.cmx -o lib/pa_type_conv.cmxa
+ocamlfind ocamlopt -shared lib/pa_type_conv.cmx -o lib/pa_type_conv.cmxs
+./setup.exe -install 
+Installed /home/opam/.opam/4.01.0/lib/type_conv/pa_type_conv.mli
+Installed /home/opam/.opam/4.01.0/lib/type_conv/pa_type_conv.cma
+Installed /home/opam/.opam/4.01.0/lib/type_conv/pa_type_conv.cmxa
+Installed /home/opam/.opam/4.01.0/lib/type_conv/pa_type_conv.a
+Installed /home/opam/.opam/4.01.0/lib/type_conv/pa_type_conv.cmxs
+Installed /home/opam/.opam/4.01.0/lib/type_conv/pa_type_conv.cmi
+Installed /home/opam/.opam/4.01.0/lib/type_conv/pa_type_conv.cmx
+Installed /home/opam/.opam/4.01.0/lib/type_conv/META
+Installing type_conv.111.13.00.
 make[1]: Leaving directory `/home/opam/.opam/4.01.0/build/omake.0.9.8.6-0.rc1/boot'
 make[1]: Entering directory `/home/opam/.opam/4.01.0/build/omake.0.9.8.6-0.rc1/boot'
 make[1]: `Makefile.dep' is up to date.
@@ -623,10 +637,8 @@ File "lm_list_util.ml", line 766, characters 18-19:
 Warning 3: deprecated feature: operator (&); you should use (&&) instead
 File "lm_list_util.ml", line 579, characters 19-21:
 Warning 3: deprecated feature: operator (or); you should use (||) instead
-ocamlfind ocamlc -a lib/pa_type_conv.cmo -o lib/pa_type_conv.cma
 ocamlc -g -c lm_array_util.mli
 ocamlc -g -c lm_array_util.ml
-ocamlfind ocamlopt -c -g -syntax camlp4o -package camlp4.extend -package camlp4.quotations -I lib -o lib/pa_type_conv.cmx lib/pa_type_conv.ml
 File "lm_array_util.ml", line 115, characters 24-26:
 Warning 3: deprecated feature: operator (or); you should use (||) instead
 File "lm_array_util.ml", line 115, characters 12-13:
@@ -651,23 +663,11 @@ ocamlc -g -c lm_arg.mli
 ocamlc -g -c lm_arg.ml
 ocamlc -g -c lm_index.mli
 ocamlc -g -c lm_index.ml
-ocamlfind ocamlopt -a lib/pa_type_conv.cmx -o lib/pa_type_conv.cmxa
 ocamlc -g -c lm_thread_sig.ml
-ocamlfind ocamlopt -shared lib/pa_type_conv.cmx -o lib/pa_type_conv.cmxs
 ocamlc -g -c lm_thread_core.mli
 ocamlc -g -c lm_thread_core.ml
 ocamlc -g -c lm_thread.mli
 ocamlc -g -c lm_thread.ml
-./setup.exe -install 
-Installed /home/opam/.opam/4.01.0/lib/type_conv/pa_type_conv.mli
-Installed /home/opam/.opam/4.01.0/lib/type_conv/pa_type_conv.cma
-Installed /home/opam/.opam/4.01.0/lib/type_conv/pa_type_conv.cmxa
-Installed /home/opam/.opam/4.01.0/lib/type_conv/pa_type_conv.a
-Installed /home/opam/.opam/4.01.0/lib/type_conv/pa_type_conv.cmxs
-Installed /home/opam/.opam/4.01.0/lib/type_conv/pa_type_conv.cmi
-Installed /home/opam/.opam/4.01.0/lib/type_conv/pa_type_conv.cmx
-Installed /home/opam/.opam/4.01.0/lib/type_conv/META
-Installing type_conv.111.13.00.
 ocamlc -g -c lm_string_util.ml
 File "lm_string_util.ml", line 1537, characters 28-29:
 Warning 3: deprecated feature: operator (&); you should use (&&) instead
@@ -941,18 +941,18 @@ Updating the .config file.
 --- Checking for hevea... (FAILED - no hevea found)
 --- Checking for date... (found /bin/date)
 --- Checking for date... (found /bin/date)
-*** omake: finished reading OMakefiles (2.68 sec)
+*** omake: finished reading OMakefiles (2.41 sec)
 *** omake: warning: stdout is not a tty, disabling the progress bar
    (use --progress to override).
 *** omake: saved .omakedb
 *** omake: saved .omakedb
-*** omake: done (34.70 sec, 234/234 scans, 343/505 rules, 788/2319 digests)
+*** omake: done (33.72 sec, 234/234 scans, 343/505 rules, 788/2318 digests)
 OMAKEFLAGS= OMAKEPATH=lib src/main/omake --dotomake .omake --force-dotomake -j2 all
 *** omake: reading OMakefiles
-*** omake: finished reading OMakefiles (0.05 sec)
+*** omake: finished reading OMakefiles (0.07 sec)
 *** omake: warning: stdout is not a tty, disabling the progress bar
    (use --progress to override).
-*** omake: done (6.98 sec, 219/235 scans, 27/534 rules, 39/1843 digests)
+*** omake: done (6.87 sec, 219/235 scans, 27/534 rules, 39/1843 digests)
 make[1]: Entering directory `/home/opam/.opam/4.01.0/build/omake.0.9.8.6-0.rc1/boot'
 make[1]: `Makefile.dep' is up to date.
 make[1]: Leaving directory `/home/opam/.opam/4.01.0/build/omake.0.9.8.6-0.rc1/boot'
@@ -962,18 +962,18 @@ make[1]: Leaving directory `/home/opam/.opam/4.01.0/build/omake.0.9.8.6-0.rc1/bo
 touch .config
 OMAKEFLAGS= OMAKEPATH=lib ./omake-boot --dotomake .omake --force-dotomake -j2 main
 *** omake: reading OMakefiles
-*** omake: finished reading OMakefiles (0.35 sec)
+*** omake: finished reading OMakefiles (0.37 sec)
 *** omake: warning: stdout is not a tty, disabling the progress bar
    (use --progress to override).
-*** omake: done (4.27 sec, 0/234 scans, 0/505 rules, 1/1762 digests)
+*** omake: done (4.33 sec, 0/234 scans, 0/505 rules, 1/1762 digests)
 OMAKEFLAGS= OMAKEPATH=lib src/main/omake --dotomake .omake --force-dotomake -j2 all
 *** omake: reading OMakefiles
-*** omake: finished reading OMakefiles (0.07 sec)
-*** omake: done (0.56 sec, 0/235 scans, 0/534 rules, 0/1821 digests)
+*** omake: finished reading OMakefiles (0.05 sec)
+*** omake: done (0.45 sec, 0/235 scans, 0/534 rules, 0/1821 digests)
 OMAKEFLAGS= OMAKEPATH=lib src/main/omake --dotomake .omake --force-dotomake -j2 install
 *** omake: reading OMakefiles
-*** omake: finished reading OMakefiles (0.06 sec)
-*** omake: done (0.57 sec, 0/235 scans, 2/536 rules, 0/1821 digests)
+*** omake: finished reading OMakefiles (0.05 sec)
+*** omake: done (0.51 sec, 0/235 scans, 2/536 rules, 0/1821 digests)
 Installing omake.0.9.8.6-0.rc1.
 Building pa_ovisitor.1.0.0:
   ocaml setup.ml -configure --prefix /home/opam/.opam/4.01.0
@@ -1047,7 +1047,7 @@ File OMyMakefile: line 669, characters 2-21:
 --- Checking for ocamlc.opt... (found /home/opam/.opam/4.01.0/bin/ocamlc.opt)
 --- Checking for ocamlopt.opt... (found /home/opam/.opam/4.01.0/bin/ocamlopt.opt)
 --- Checking whether ocamlc understands the "z" warnings... (yes)
-*** omake: finished reading OMakefiles (0.16 sec)
+*** omake: finished reading OMakefiles (0.11 sec)
 --- Checking if ocamldep understands -modules... (yes)
 *** omake: warning: stdout is not a tty, disabling the progress bar
    (use --progress to override).
@@ -1071,19 +1071,19 @@ File "pa_ovisitor.ml", line 514, characters 0-11:
 Warning 44: this open statement shadows the module identifier Gram (which is later used)
 File "pa_ovisitor.ml", line 514, characters 0-11:
 Warning 44: this open statement shadows the module identifier Ast (which is later used)
-- build pa tctools.cmo
-+ ocamlfind ocamlc -annot -bin-annot -package type_conv -g -w A-4-9 -warn-error a -g -pp camlp4of -I . File "tctools.ml", line 4, characters 0-8:
+- build paFile "tctools.ml", line 4, characters 0-8:
 Warning 44: this open statement shadows the module identifier Loc (which is later used)
--c tctools.ml
-*** omake: done (5.04 sec, 3/3 scans, 13/18 rules, 38/139 digests)
+ tctools.cmo
++ ocamlfind ocamlc -annot -bin-annot -package type_conv -g -w A-4-9 -warn-error a -g -pp camlp4of -I . -c tctools.ml
+*** omake: done (4.54 sec, 3/3 scans, 13/18 rules, 38/139 digests)
 *** omake: reading OMakefiles
 *** omake: finished reading OMakefiles (0.06 sec)
 ocamlfind: [WARNING] No such directory: /home/opam/.opam/4.01.0/lib/pa_ovisitor
 - build pa <install>
 + ocamlfind remove pa_ovisitor
 - build pa <install>
-+ ocamlfind install pa_ovisitor pa_ovisitor.cmxa pa_ovisitor.a pa_ovisitor.cmxs pa_ovisitor.cma tctools.cmi pa_ovisitor.cmi tctools.mli META tctools.cmt pa_ovisitor.cmt tctools.cmti
 Installed /home/opam/.opam/4.01.0/lib/pa_ovisitor/tctools.cmti
++ ocamlfind install pa_ovisitor pa_ovisitor.cmxa pa_ovisitor.a pa_ovisitor.cmxs pa_ovisitor.cma tctools.cmi pa_ovisitor.cmi tctools.mli META tctools.cmt pa_ovisitor.cmt tctools.cmti
 Installed /home/opam/.opam/4.01.0/lib/pa_ovisitor/pa_ovisitor.cmt
 Installed /home/opam/.opam/4.01.0/lib/pa_ovisitor/tctools.cmt
 Installed /home/opam/.opam/4.01.0/lib/pa_ovisitor/tctools.mli
