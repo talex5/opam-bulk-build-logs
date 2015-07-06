@@ -8,29 +8,29 @@ Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
 Hit http://archive.ubuntu.com trusty Release.gpg
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
-Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
+Hit http://archive.ubuntu.com trusty-security Release.gpg
 Hit http://archive.ubuntu.com trusty Release
-Get:3 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
-Get:4 http://archive.ubuntu.com trusty-security Release [63.5 kB]
+Get:2 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
+Hit http://archive.ubuntu.com trusty-security Release
 Hit http://archive.ubuntu.com trusty/main Sources
 Hit http://archive.ubuntu.com trusty/restricted Sources
 Hit http://archive.ubuntu.com trusty/universe Sources
 Hit http://archive.ubuntu.com trusty/main amd64 Packages
 Hit http://archive.ubuntu.com trusty/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty/universe amd64 Packages
-Get:5 http://archive.ubuntu.com trusty-updates/main Sources [241 kB]
-Get:6 http://archive.ubuntu.com trusty-updates/restricted Sources [2310 B]
-Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [133 kB]
-Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [619 kB]
-Get:9 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [15.1 kB]
-Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [340 kB]
-Get:11 http://archive.ubuntu.com trusty-security/main Sources [93.7 kB]
-Get:12 http://archive.ubuntu.com trusty-security/restricted Sources [1874 B]
-Get:13 http://archive.ubuntu.com trusty-security/universe Sources [19.6 kB]
-Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [320 kB]
-Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
-Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [116 kB]
-Fetched 2044 kB in 3s (599 kB/s)
+Get:3 http://archive.ubuntu.com trusty-updates/main Sources [241 kB]
+Get:4 http://archive.ubuntu.com trusty-updates/restricted Sources [2310 B]
+Get:5 http://archive.ubuntu.com trusty-updates/universe Sources [133 kB]
+Get:6 http://archive.ubuntu.com trusty-updates/main amd64 Packages [619 kB]
+Get:7 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [15.1 kB]
+Get:8 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [340 kB]
+Hit http://archive.ubuntu.com trusty-security/main Sources
+Hit http://archive.ubuntu.com trusty-security/restricted Sources
+Hit http://archive.ubuntu.com trusty-security/universe Sources
+Hit http://archive.ubuntu.com trusty-security/main amd64 Packages
+Hit http://archive.ubuntu.com trusty-security/restricted amd64 Packages
+Hit http://archive.ubuntu.com trusty-security/universe amd64 Packages
+Fetched 1414 kB in 6s (221 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
@@ -318,8 +318,6 @@ The following actions will be performed:
 - ocamlmklib -o sha256 sha256.lib.o sha256_stubs.o sha256.cmx
 - ocamlc -c -o sha512.cmi sha512.mli
 - ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha512.o sha512.c
-- mv sha512.o sha512.lib.o
-- ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha512_stubs.o sha512_stubs.c
 - sha256_stubs.c: In function 'stub_sha256_file':
 - sha256_stubs.c:116:2: warning: implicit declaration of function 'strcpy' [-Wimplicit-function-declaration]
 -   char *name_dup = strdupa(String_val(name));
@@ -347,6 +345,15 @@ The following actions will be performed:
 -   memcpy((sha256_digest *)result, &digest, sizeof(sha256_digest));
 -   ^
 - sha256_stubs.c:126:2: warning: incompatible implicit declaration of built-in function 'memcpy' [enabled by default]
+- mv sha512.o sha512.lib.o
+- ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha512_stubs.o sha512_stubs.c
+- ocamlc -c -o sha512.cmo sha512.ml
+- ocamlmklib -o sha512 sha512.lib.o sha512_stubs.o sha512.cmo
+- ocamlopt  -c -o sha512.cmx sha512.ml
+- ocamlmklib -o sha512 sha512.lib.o sha512_stubs.o sha512.cmx
+- ocamlmklib -o sha  sha1.lib.o sha1_stubs.o sha1.cmo  sha256.lib.o sha256_stubs.o sha256.cmo  sha512.lib.o sha512_stubs.o sha512.cmo
+- ocamlmklib -o sha  sha1.lib.o sha1_stubs.o sha1.cmx  sha256.lib.o sha256_stubs.o sha256.cmx  sha512.lib.o sha512_stubs.o sha512.cmx
+- rm sha1.o sha256.o sha512.o
 - sha512_stubs.c: In function 'stub_sha512_file':
 - sha512_stubs.c:116:2: warning: implicit declaration of function 'strcpy' [-Wimplicit-function-declaration]
 -   char *name_dup = strdupa(String_val(name));
@@ -360,13 +367,6 @@ The following actions will be performed:
 - sha512_stubs.c:116:2: warning: implicit declaration of function 'strlen' [-Wimplicit-function-declaration]
 -   char *name_dup = strdupa(String_val(name));
 -   ^
-- ocamlc -c -o sha512.cmo sha512.ml
-- ocamlmklib -o sha512 sha512.lib.o sha512_stubs.o sha512.cmo
-- ocamlopt  -c -o sha512.cmx sha512.ml
-- ocamlmklib -o sha512 sha512.lib.o sha512_stubs.o sha512.cmx
-- ocamlmklib -o sha  sha1.lib.o sha1_stubs.o sha1.cmo  sha256.lib.o sha256_stubs.o sha256.cmo  sha512.lib.o sha512_stubs.o sha512.cmo
-- ocamlmklib -o sha  sha1.lib.o sha1_stubs.o sha1.cmx  sha256.lib.o sha256_stubs.o sha256.cmx  sha512.lib.o sha512_stubs.o sha512.cmx
-- rm sha1.o sha256.o sha512.o
 - In file included from /usr/include/stdlib.h:492:0,
 -                  from /usr/lib/ocaml/caml/misc.h:27,
 -                  from /usr/lib/ocaml/caml/mlvalues.h:21,

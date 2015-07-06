@@ -98,8 +98,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -145,6 +143,8 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
@@ -325,6 +325,9 @@ The following actions will be performed:
 - ocamlc -c -o sha1.cmo sha1.ml
 - ocamlmklib -o sha1 sha1.lib.o sha1_stubs.o sha1.cmo
 - ocamlopt  -c -o sha1.cmx sha1.ml
+- ocamlmklib -o sha1 sha1.lib.o sha1_stubs.o sha1.cmx
+- ocamlc -c -o sha256.cmi sha256.mli
+- ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha256.o sha256.c
 - sha1_stubs.c: In function 'stub_sha1_file':
 - sha1_stubs.c:118:2: warning: implicit declaration of function 'strcpy' [-Wimplicit-function-declaration]
 -   char *name_dup = strdupa(String_val(name));
@@ -358,14 +361,14 @@ The following actions will be performed:
 - File "sha1.ml", line 61, characters 11-24:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlmklib -o sha1 sha1.lib.o sha1_stubs.o sha1.cmx
-- ocamlc -c -o sha256.cmi sha256.mli
-- ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha256.o sha256.c
 - mv sha256.o sha256.lib.o
 - ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha256_stubs.o sha256_stubs.c
 - ocamlc -c -o sha256.cmo sha256.ml
 - ocamlmklib -o sha256 sha256.lib.o sha256_stubs.o sha256.cmo
 - ocamlopt  -c -o sha256.cmx sha256.ml
+- ocamlmklib -o sha256 sha256.lib.o sha256_stubs.o sha256.cmx
+- ocamlc -c -o sha512.cmi sha512.mli
+- ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha512.o sha512.c
 - sha256_stubs.c: In function 'stub_sha256_file':
 - sha256_stubs.c:116:2: warning: implicit declaration of function 'strcpy' [-Wimplicit-function-declaration]
 -   char *name_dup = strdupa(String_val(name));
@@ -396,14 +399,14 @@ The following actions will be performed:
 - File "sha256.ml", line 62, characters 11-24:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlmklib -o sha256 sha256.lib.o sha256_stubs.o sha256.cmx
-- ocamlc -c -o sha512.cmi sha512.mli
-- ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha512.o sha512.c
-- mv sha512.o sha512.lib.o
-- ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha512_stubs.o sha512_stubs.c
 - File "sha256.ml", line 62, characters 11-24:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- mv sha512.o sha512.lib.o
+- ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha512_stubs.o sha512_stubs.c
+- ocamlc -c -o sha512.cmo sha512.ml
+- ocamlmklib -o sha512 sha512.lib.o sha512_stubs.o sha512.cmo
+- ocamlopt  -c -o sha512.cmx sha512.ml
 - sha512_stubs.c: In function 'stub_sha512_file':
 - sha512_stubs.c:116:2: warning: implicit declaration of function 'strcpy' [-Wimplicit-function-declaration]
 -   char *name_dup = strdupa(String_val(name));
@@ -431,19 +434,16 @@ The following actions will be performed:
 -   memcpy((sha512_digest *)result, &digest, sizeof(sha512_digest));
 -   ^
 - sha512_stubs.c:126:2: warning: incompatible implicit declaration of built-in function 'memcpy' [enabled by default]
-- ocamlc -c -o sha512.cmo sha512.ml
-- ocamlmklib -o sha512 sha512.lib.o sha512_stubs.o sha512.cmo
-- ocamlopt  -c -o sha512.cmx sha512.ml
+- File "sha512.ml", line 60, characters 11-24:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "sha512.ml", line 60, characters 11-24:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlmklib -o sha512 sha512.lib.o sha512_stubs.o sha512.cmx
 - ocamlmklib -o sha  sha1.lib.o sha1_stubs.o sha1.cmo  sha256.lib.o sha256_stubs.o sha256.cmo  sha512.lib.o sha512_stubs.o sha512.cmo
 - ocamlmklib -o sha  sha1.lib.o sha1_stubs.o sha1.cmx  sha256.lib.o sha256_stubs.o sha256.cmx  sha512.lib.o sha512_stubs.o sha512.cmx
 - rm sha1.o sha256.o sha512.o
-- File "sha512.ml", line 60, characters 11-24:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "sha512.ml", line 60, characters 11-24:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 [sha: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/sha.1.9)
 - ocamlfind install sha META *.cmx sha1.cmi sha1.cma sha1.cmxa sha256.cmi sha256.cma sha256.cmxa sha512.cmi sha512.cma sha512.cmxa sha.cma sha.cmxa *.a *.so
