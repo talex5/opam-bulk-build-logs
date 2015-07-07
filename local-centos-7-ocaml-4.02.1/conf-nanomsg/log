@@ -1,14 +1,14 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux centos
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=conf-nanomsg
+# Detecting depexts using flags: x86_64 linux centos
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=conf-nanomsg
++ sudo yum update
 # The following scripts need to be run:
 #  - https://gist.githubusercontent.com/avsm/ce2ce785f27c9349d99d/raw
 Not running as root, system installation will be done through "sudo"
-+ sudo yum update
 Loaded plugins: fastestmirror
-Loading mirror speeds from cached hostfile
+Determining fastest mirrors
  * base: mirrors.melbourne.co.uk
  * extras: mirror.sov.uk.goscomb.net
  * updates: mirrors.melbourne.co.uk
@@ -16,7 +16,18 @@ No packages marked for update
 + curl -L "https://gist.githubusercontent.com/avsm/ce2ce785f27c9349d99d/raw" | bash -ex -
 # OS package update successful
 /usr/bin/curl
-nanomsg-0.3-beta/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   164  100   164    0     0    158      0  0:00:01  0:00:01 --:--:--   158
++ V=0.3-beta
++ curl -OL http://download.nanomsg.org/nanomsg-0.3-beta.tar.gz
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:nanomsg-0.3-beta/
+--     0100  559k  100  559k    0     0   344k      0  0:00:01  0:00:01 --:--:--  345k
++ tar -zxvf nanomsg-0.3-beta.tar.gz
++ cd nanomsg-0.3-beta
++ ./configure
 nanomsg-0.3-beta/m4/
 nanomsg-0.3-beta/m4/dolt.m4
 nanomsg-0.3-beta/m4/libtool.m4
@@ -354,17 +365,6 @@ nanomsg-0.3-beta/AUTHORS
 nanomsg-0.3-beta/ChangeLog
 nanomsg-0.3-beta/COPYING
 nanomsg-0.3-beta/libnanomsg.pc.in
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0   164    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   164  100   164    0     0    181      0 --:--:-- --:--:-- --:--:--   181
-+ V=0.3-beta
-+ curl -OL http://download.nanomsg.org/nanomsg-0.3-beta.tar.gz
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  559k  100  559k    0     0   774k      0 --:--:-- --:--:-- --:--:--  775k
-+ tar -zxvf nanomsg-0.3-beta.tar.gz
-+ cd nanomsg-0.3-beta
-+ ./configure
 checking for a BSD-compatible install... /usr/bin/install -c
 checking whether build environment is sane... yes
 checking for a thread-safe mkdir -p... /usr/bin/mkdir -p
@@ -495,10 +495,10 @@ checking if dolt supports this host... yes, replacing libtool
 checking that generated files are newer than configure... done
 configure: creating ./config.status
 config.status: creating Makefile
-+ make
 config.status: creating libnanomsg.pc
 config.status: executing depfiles commands
 config.status: executing libtool commands
++ make
   CC       src/core/ep.lo
   CC       src/core/epbase.lo
   CC       src/core/global.lo
@@ -516,6 +516,7 @@ config.status: executing libtool commands
   CC       src/aio/timerset.lo
   CC       src/aio/usock.lo
   CC       src/aio/worker.lo
++ sudo make install
   CC       src/utils/alloc.lo
   CC       src/utils/atomic.lo
   CC       src/utils/chunk.lo
@@ -603,7 +604,6 @@ config.status: executing libtool commands
 make[1]: Entering directory `/home/opam/opam-repository/nanomsg-0.3-beta'
  /usr/bin/mkdir -p '/usr/local/lib'
  ./doltlibtool   --mode=install /usr/bin/install -c   libnanomsg.la '/usr/local/lib'
-+ sudo make install
 libtool: install: /usr/bin/install -c .libs/libnanomsg.so.0.1.0 /usr/local/lib/libnanomsg.so.0.1.0
 libtool: install: (cd /usr/local/lib && { ln -s -f libnanomsg.so.0.1.0 libnanomsg.so.0 || { rm -f libnanomsg.so.0 && ln -s libnanomsg.so.0.1.0 libnanomsg.so.0; }; })
 libtool: install: (cd /usr/local/lib && { ln -s -f libnanomsg.so.0.1.0 libnanomsg.so || { rm -f libnanomsg.so && ln -s libnanomsg.so.0.1.0 libnanomsg.so; }; })
@@ -654,7 +654,6 @@ make[2]: Leaving directory `/home/opam/opam-repository/nanomsg-0.3-beta'
 make[1]: Leaving directory `/home/opam/opam-repository/nanomsg-0.3-beta'
 Source installation scripts run successfully
 The following actions will be performed:
-[ERROR] The compilation of conf-nanomsg failed at "pkg-config libnanomsg".
   - install conf-nanomsg 0
 
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -662,12 +661,7 @@ The following actions will be performed:
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [conf-nanomsg: pkg-config libnanomsg] Command started
 + pkg-config "libnanomsg" (CWD=/home/opam/.opam/system/build/conf-nanomsg.0)
-
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions failed
-  - install conf-nanomsg 0
-No changes have been performed
+[ERROR] The compilation of conf-nanomsg failed at "pkg-config libnanomsg".
 
 #=== ERROR while installing conf-nanomsg.0 ====================================#
 # opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
@@ -680,4 +674,10 @@ No changes have been performed
 # stdout-file          /home/opam/.opam/system/build/conf-nanomsg.0/conf-nanomsg-1-dd682e.out
 # stderr-file          /home/opam/.opam/system/build/conf-nanomsg.0/conf-nanomsg-1-dd682e.err
 
+
+
+=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+The following actions failed
+  - install conf-nanomsg 0
+No changes have been performed
 'opam install conf-nanomsg' failed.
