@@ -1,15 +1,15 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-# Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=ocamlfuse
+# Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=ocamlfuse
 # The following system packages are needed:
 #  - libfuse-dev
 #  - m4
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
@@ -30,16 +30,16 @@ Get:6 http://archive.ubuntu.com trusty-updates/restricted Sources [2310 B]
 Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [141 kB]
 Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [636 kB]
 Get:9 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [15.1 kB]
-+ sudo apt-get install -qq -yy libfuse-dev m4
 Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [356 kB]
-Get:11 http://archive.ubuntu.com trusty-security/main Sources [97.2 kB]
+Get:11 http://archive.ubuntu.com trusty-security/main Sources [97.7 kB]
 Get:12 http://archive.ubuntu.com trusty-security/restricted Sources [1874 B]
 Get:13 http://archive.ubuntu.com trusty-security/universe Sources [23.3 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [329 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [128 kB]
-Fetched 2120 kB in 4s (426 kB/s)
-Reading package lists...
+Fetched 2122 kB in 5s (363 kB/s)
+Reading package lists...+ sudo apt-get install -qq -yy libfuse-dev m4
+
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libfuse-dev m4
@@ -87,12 +87,12 @@ The following actions will be performed:
 [camlidl: from default] Command started
 [ocamlfind: from default] Command started
 [ocamlfuse: from default] Command started
-[ocamlfind: from default] Command started
-[ocamlfuse: from default] Command started
 [camlidl: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/ocamlfuse.2.7.1-cvs2+opam.tar.gz downloaded
+[ocamlfuse: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/camlidl.1.05+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfuse.2.7.1-cvs2+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlidl: mv] Command started
@@ -385,8 +385,8 @@ The following actions will be performed:
 - if ocamldoc.opt >/dev/null 2>&1; then \
 - 		echo 'ocamldoc="ocamldoc.opt"' >>findlib.conf; \
 - 	fi
-- make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5'
 - Makefile:160: depend: No such file or directory
+- make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5'
 [ocamlfind: make opt] Command started
 + make "opt" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
 - for p in findlib bytes; do ( cd src/$p; make opt ) || exit; done
@@ -495,6 +495,11 @@ The following actions will be performed:
 - ocamlc -c -cc "cc" -ccopt "-fPIC -D_FILE_OFFSET_BITS=64 -I. -pthread \
 - 				-DPIC -DNATIVE_CODE   \
 - 				  -I/home/opam/.opam/system/lib/camlidl  -o Fuse_util.o " Fuse_util.c 
+- ar rcs libFuse_stubs.a Fuse_bindings_stubs.o Unix_util_stubs.o Fuse_util.o
+- ocamlopt -c -thread -I /home/opam/.opam/system/lib/camlidl Result.ml
+- ocamlopt -c -thread -I /home/opam/.opam/system/lib/camlidl Unix_util.ml
+- ocamlc -c -thread -I /home/opam/.opam/system/lib/camlidl Fuse_bindings.mli
+- ocamlopt -c -thread -I /home/opam/.opam/system/lib/camlidl Fuse_bindings.ml
 - In file included from Fuse_util.c:30:0:
 - Fuse_util.c: In function 'gm281_ops_init':
 - /usr/lib/ocaml/caml/memory.h:222:28: warning: initialization makes pointer from integer without a cast [enabled by default]
@@ -509,11 +514,6 @@ The following actions will be performed:
 - Fuse_util.c:625:1: note: in expansion of macro 'FOR_ALL_OPS'
 -  FOR_ALL_OPS(CALLBACK)
 -  ^
-- ar rcs libFuse_stubs.a Fuse_bindings_stubs.o Unix_util_stubs.o Fuse_util.o
-- ocamlopt -c -thread -I /home/opam/.opam/system/lib/camlidl Result.ml
-- ocamlopt -c -thread -I /home/opam/.opam/system/lib/camlidl Unix_util.ml
-- ocamlc -c -thread -I /home/opam/.opam/system/lib/camlidl Fuse_bindings.mli
-- ocamlopt -c -thread -I /home/opam/.opam/system/lib/camlidl Fuse_bindings.ml
 - ocamlopt -c -thread -I /home/opam/.opam/system/lib/camlidl Fuse_lib.ml
 - ocamlc -c -thread -I /home/opam/.opam/system/lib/camlidl Fuse.mli
 - ocamlopt -c -thread -I /home/opam/.opam/system/lib/camlidl Fuse.ml
