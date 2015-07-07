@@ -1,28 +1,29 @@
 + uname -m
+# Detecting depexts using flags: x86_64 linux debian
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=redis
-# Detecting depexts using flags: x86_64 linux debian
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=redis
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=redis
-+ sudo apt-get update
 Not running as root, system installation will be done through "sudo"
++ sudo apt-get update
 Hit http://download.opensuse.org  Release.gpg
 Hit http://http.debian.net stable Release.gpg
-Hit http://http.debian.net stable-updates Release.gpg
+Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
 Hit http://download.opensuse.org  Release
 Hit http://http.debian.net stable Release
-Hit http://http.debian.net stable-updates Release
+Get:2 http://http.debian.net stable-updates Release [124 kB]
 Hit http://download.opensuse.org  Packages
 Hit http://http.debian.net stable/main amd64 Packages
-Hit http://http.debian.net stable-updates/main amd64 Packages
+Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
 Hit http://security.debian.org stable/updates Release.gpg
 Hit http://security.debian.org stable/updates Release
 Hit http://security.debian.org stable/updates/main amd64 Packages
+Fetched 129 kB in 1s (117 kB/s)
 Reading package lists...
-+ sudo apt-get install -qq -yy m4
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
++ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind 1.5.5                                     [required by redis]
@@ -36,12 +37,12 @@ The following actions will be performed:
 [re: from default] Command started
 [redis: from default] Command started
 [redis: from default] Command started
-[ocamlfind: from default] Command started
 [re: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/redis.0.2.3+opam.tar.gz downloaded
 [uuidm: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/re.1.2.2+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [uuidm: from default] Command started
 [default] http://opam-archive:8080/archives/uuidm.0.9.5+opam.tar.gz downloaded
 
@@ -178,6 +179,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -186,8 +189,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -961,6 +962,12 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I lib -I lib -I lib -I lib -o lib/re_perl.cmo lib/re_perl.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a lib/re_perl.cmo -o lib/re_perl.cma
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I lib -I lib -I lib -I lib -o lib/re_perl.cmx lib/re_perl.ml
+- File "setup.ml", line 247, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "setup.ml", line 2502, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a lib/re_perl.cmx -o lib/re_perl.cmxa
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared lib/re_perl.cmxa lib/re_perl.cmx -o lib/re_perl.cmxs
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -modules lib/re_pcre.ml > lib/re_pcre.ml.depends
@@ -995,12 +1002,6 @@ The following actions will be performed:
 - Warning 3: deprecated: String.unsafe_set
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a lib/re_pcre.cmx -o lib/re_pcre.cmxa
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared lib/re_pcre.cmxa lib/re_pcre.cmx -o lib/re_pcre.cmxs
-- File "setup.ml", line 247, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "setup.ml", line 2502, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
 [re: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/4.02.1/build/re.1.2.2)
 - File "setup.ml", line 247, characters 8-26:
@@ -1164,6 +1165,7 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package re.str -package uuidm -modules src/cache.mli > src/cache.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package re.str -package uuidm -modules src/client.mli > src/client.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package re.str -package uuidm -modules src/make.ml > src/make.ml.depends
+- W: Cannot find source file matching module 'redis' in library redis
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I src -package re.str -package uuidm -I src -o src/make.cmo src/make.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I src -package re.str -package uuidm -I src -o src/client.cmi src/client.mli
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package re.str -package uuidm -modules src/mutex.mli > src/mutex.mli.depends
@@ -1177,7 +1179,6 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package re.str -package uuidm -modules src/client.ml > src/client.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package re.str -package uuidm -modules src/cache.ml > src/cache.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package re.str -package uuidm -modules src/mutex.ml > src/mutex.ml.depends
-- W: Cannot find source file matching module 'redis' in library redis
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I src -package re.str -package uuidm -I src -o src/redis_sync.cmo src/redis_sync.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I src -package re.str -package uuidm -I src -o src/utils.cmo src/utils.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I src -package re.str -package uuidm -I src -o src/client.cmo src/client.ml
