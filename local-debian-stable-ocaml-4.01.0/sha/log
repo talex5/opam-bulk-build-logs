@@ -1,21 +1,21 @@
-# Detecting depexts using flags: x86_64 linux debian
 + uname -m
 + uname -s
 + lsb_release -i -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=sha
+# Detecting depexts using flags: x86_64 linux debian
 # The following system packages are needed:
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=sha
-+ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
++ sudo apt-get update
 Hit http://security.debian.org stable/updates InRelease
-Hit http://httpredir.debian.org stable InRelease
-Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
+Get:1 http://httpredir.debian.org stable InRelease [128 kB]
 Get:2 http://security.debian.org stable/updates/main amd64 Packages [78.7 kB]
-Get:3 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
-Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9227 kB in 7s (1205 kB/s)
+Get:3 http://httpredir.debian.org stable-updates InRelease [126 kB]
+Get:4 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
+Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
+Fetched 9355 kB in 3s (2591 kB/s)
 Reading package lists...
 # OS package update successful
 + sudo apt-get install -qq -yy m4
@@ -65,10 +65,7 @@ The following actions will be performed:
 - Configuration for camlp4 written to site-lib-src/camlp4/META
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
-- Detecting compiler arguments: (extractor built) 
-- File "itest-aux/ppx.ml", line 1, characters 0-25:
-- Error: Unbound value Toploop.preprocess_phrase
-- ok
+- Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /home/opam/.opam/4.01.0/lib/ocaml
@@ -92,6 +89,8 @@ The following actions will be performed:
 - Configuration has been written to Makefile.config
 - 
 - You can now do 'make all', and optionally 'make opt', to build ocamlfind.
+- File "itest-aux/ppx.ml", line 1, characters 0-25:
+- Error: Unbound value Toploop.preprocess_phrase
 [ocamlfind: make all] Command started
 + make "all" (CWD=/home/opam/.opam/4.01.0/build/ocamlfind.1.5.5)
 - for p in findlib bytes; do ( cd src/$p; make all ) || exit; done
@@ -119,11 +118,11 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
-- Makefile:160: depend: No such file or directory
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- Makefile:160: depend: No such file or directory
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
 - if [ "false" = "true" ]; then                 \
@@ -299,6 +298,7 @@ The following actions will be performed:
 - ocamlmklib -o sha256 sha256.lib.o sha256_stubs.o sha256.cmo
 - ocamlopt  -c -o sha256.cmx sha256.ml
 - ocamlmklib -o sha256 sha256.lib.o sha256_stubs.o sha256.cmx
+- ocamlc -c -o sha512.cmi sha512.mli
 - sha256_stubs.c: In function 'stub_sha256_file':
 - sha256_stubs.c:116:2: warning: implicit declaration of function 'strcpy' [-Wimplicit-function-declaration]
 -   char *name_dup = strdupa(String_val(name));
@@ -326,13 +326,13 @@ The following actions will be performed:
 -   memcpy((sha256_digest *)result, &digest, sizeof(sha256_digest));
 -   ^
 - sha256_stubs.c:126:2: warning: incompatible implicit declaration of built-in function 'memcpy'
-- ocamlc -c -o sha512.cmi sha512.mli
 - ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha512.o sha512.c
 - mv sha512.o sha512.lib.o
 - ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha512_stubs.o sha512_stubs.c
 - ocamlc -c -o sha512.cmo sha512.ml
 - ocamlmklib -o sha512 sha512.lib.o sha512_stubs.o sha512.cmo
 - ocamlopt  -c -o sha512.cmx sha512.ml
+- ocamlmklib -o sha512 sha512.lib.o sha512_stubs.o sha512.cmx
 - sha512_stubs.c: In function 'stub_sha512_file':
 - sha512_stubs.c:116:2: warning: implicit declaration of function 'strcpy' [-Wimplicit-function-declaration]
 -   char *name_dup = strdupa(String_val(name));
@@ -360,7 +360,6 @@ The following actions will be performed:
 -   memcpy((sha512_digest *)result, &digest, sizeof(sha512_digest));
 -   ^
 - sha512_stubs.c:126:2: warning: incompatible implicit declaration of built-in function 'memcpy'
-- ocamlmklib -o sha512 sha512.lib.o sha512_stubs.o sha512.cmx
 - ocamlmklib -o sha  sha1.lib.o sha1_stubs.o sha1.cmo  sha256.lib.o sha256_stubs.o sha256.cmo  sha512.lib.o sha512_stubs.o sha512.cmo
 - ocamlmklib -o sha  sha1.lib.o sha1_stubs.o sha1.cmx  sha256.lib.o sha256_stubs.o sha256.cmx  sha512.lib.o sha512_stubs.o sha512.cmx
 - rm sha1.o sha256.o sha512.o
