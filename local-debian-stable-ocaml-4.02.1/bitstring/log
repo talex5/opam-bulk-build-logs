@@ -2,28 +2,28 @@
 + uname -s
 # Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=bitstring
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=bitstring
 # The following system packages are needed:
 #  - m4
 #  - time
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=bitstring
 Not running as root, system installation will be done through "sudo"
 + sudo apt-get update
-Hit http://download.opensuse.org  Release.gpg
 Hit http://http.debian.net stable Release.gpg
+Hit http://download.opensuse.org  Release.gpg
 Hit http://http.debian.net stable-updates Release.gpg
-Hit http://download.opensuse.org  Release
-Hit http://http.debian.net stable Release
-Hit http://http.debian.net stable-updates Release
-Hit http://download.opensuse.org  Packages
-Hit http://http.debian.net stable/main amd64 Packages
-Hit http://http.debian.net stable-updates/main amd64 Packages
 Hit http://security.debian.org stable/updates Release.gpg
+Hit http://http.debian.net stable Release
+Hit http://download.opensuse.org  Release
 Hit http://security.debian.org stable/updates Release
+Hit http://http.debian.net stable-updates Release
+Hit http://http.debian.net stable/main amd64 Packages
+Hit http://download.opensuse.org  Packages
 Hit http://security.debian.org stable/updates/main amd64 Packages
+Hit http://http.debian.net stable-updates/main amd64 Packages
 Reading package lists...
 # OS package update successful
-Not running as root, system installation will be done through "sudo"
 + sudo apt-get install -qq -yy m4 time
+Not running as root, system installation will be done through "sudo"
 debconf: delaying package configuration, since apt-utils is not installed
 Selecting previously unselected package time.
 (Reading database ... 19958 files and directories currently installed.)
@@ -40,11 +40,11 @@ The following actions will be performed:
 [bitstring: from default] Command started
 [camlp4: from default] Command started
 [ocamlfind: from default] Command started
-[ocamlfind: from default] Command started
 [bitstring: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [camlp4: from default] Command started
 [default] http://opam-archive:8080/archives/bitstring.2.0.4+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -125,6 +125,10 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_meta.ml
 - ocamlc -I +compiler-libs -c fl_metascanner.mli
 - ocamlc -I +compiler-libs -g -c fl_metascanner.ml
+- ocamlc -I +compiler-libs -c fl_topo.mli
+- ocamlc -I +compiler-libs -g -c fl_topo.ml
+- ocamlc -I +compiler-libs -c fl_package_base.mli
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -167,24 +171,23 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 111, characters 23-32:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c fl_topo.mli
-- ocamlc -I +compiler-libs -g -c fl_topo.ml
-- ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- File "fl_metascanner.ml", line 372, characters 20-29:
+- Warning 3: deprecated: Sort.list
+- Use List.sort instead.
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
-- File "fl_metascanner.ml", line 372, characters 20-29:
-- Warning 3: deprecated: Sort.list
-- Use List.sort instead.
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
@@ -205,9 +208,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
 - ocamlc -I +compiler-libs -c num_top.mli
 - ocamlc -I +compiler-libs -g -c num_top.ml
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -a -o num_top.cma num_top_printers.cmo num_top.cmo
 - make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlfind.1.5.5/src/findlib'
 - make all-config
@@ -241,6 +241,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -285,7 +286,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -929,8 +929,7 @@ The following actions will be performed:
 - checking whether gcc accepts -g... yes
 - checking for gcc option to accept ISO C89... none needed
 - checking for a BSD-compatible install... /usr/bin/install -c
-- checking how to run the C preprocessor... 
-- gcc -E
+- checking how to run the C preprocessor... gcc -E
 - checking for function prototypes... yes
 - checking whether gcc and cc understand -c and -o together... yes
 - checking for grep that handles long lines and -e... /bin/grep
@@ -941,9 +940,9 @@ The following actions will be performed:
 - checking for stdlib.h... yes
 - checking for string.h... yes
 - checking for memory.h... yes
-- checking for strings.h... yes
-- checking for inttypes.h... 
+- checking for strings.h... 
 - yes
+- checking for inttypes.h... yes
 - checking for stdint.h... yes
 - checking for unistd.h... yes
 - checking whether byte ordering is bigendian... no
@@ -1034,6 +1033,10 @@ The following actions will be performed:
 - ocamlfind ocamlopt   -c bitstring_types.ml
 - ocamlfind ocamlopt   -c bitstring_config.ml
 - ocamlfind ocamlopt   -c bitstring.ml
+- ocamlfind ocamlopt   -c bitmatch.ml
+- ocamlmklib -o bitstring bitstring_types.cmx bitstring_config.cmx bitstring_c.o bitstring.cmx bitmatch.cmx
+- ocamlfind ocamlopt   \
+- 	  -I +camlp4 -pp camlp4of -c bitstring_persistent.ml
 - File "bitstring.ml", line 64, characters 12-25:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -1061,10 +1064,6 @@ The following actions will be performed:
 - File "bitstring.ml", line 1205, characters 25-45:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlfind ocamlopt   -c bitmatch.ml
-- ocamlmklib -o bitstring bitstring_types.cmx bitstring_config.cmx bitstring_c.o bitstring.cmx bitmatch.cmx
-- ocamlfind ocamlopt   \
-- 	  -I +camlp4 -pp camlp4of -c bitstring_persistent.ml
 - ocamlfind ocamlopt -a -o bitstring_persistent.cmxa bitstring_persistent.cmx
 - ocamlfind ocamlc bitstring.cma -I +camlp4 dynlink.cma camlp4lib.cma \
 - 	  -pp camlp4of -c pa_bitstring.ml -o pa_bitstring.cmo
