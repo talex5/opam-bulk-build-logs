@@ -5,15 +5,15 @@
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=mysql_protocol
 # The following system packages are needed:
 #  - zlib-devel
-+ sudo yum -y update
 Not running as root, the following command will be run through "sudo":
     yum -y update
++ sudo yum -y update
 Loaded plugins: fastestmirror
 Repodata is over 2 weeks old. Install yum-cron? Or run: yum makecache fast
 Determining fastest mirrors
  * base: anorien.csc.warwick.ac.uk
  * extras: anorien.csc.warwick.ac.uk
- * updates: anorien.csc.warwick.ac.uk
+ * updates: mirrors.coreix.net
 Resolving Dependencies
 --> Running transaction check
 ---> Package openssl-libs.x86_64 1:1.0.1e-42.el7.4 will be updated
@@ -40,8 +40,7 @@ Running transaction test
 Transaction test succeeded
 Running transaction
   Updating   : 1:openssl-libs-1.0.1e-42.el7.6.x86_64                        1/2 
-  Cleanup    : 1:openssl-libs-1.0.1e-42.el7.4.x86_64                        2/2+ sudo yum install -y zlib-devel
- 
+  Cleanup    : 1:openssl-libs-1.0.1e-42.el7.4.x86_64                        2/2 
   Verifying  : 1:openssl-libs-1.0.1e-42.el7.6.x86_64                        1/2 
   Verifying  : 1:openssl-libs-1.0.1e-42.el7.4.x86_64                        2/2 
 
@@ -54,11 +53,12 @@ Not running as root, the following command will be run through "sudo":
     yum install -y zlib-devel
 Not running as root, the following command will be run through "sudo":
     rpm -q zlib-devel
++ sudo yum install -y zlib-devel
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
  * base: anorien.csc.warwick.ac.uk
  * extras: anorien.csc.warwick.ac.uk
- * updates: anorien.csc.warwick.ac.uk
+ * updates: mirrors.coreix.net
 Resolving Dependencies
 --> Running transaction check
 ---> Package zlib-devel.x86_64 0:1.2.7-13.el7 will be installed
@@ -106,14 +106,14 @@ The following actions will be performed:
 [cryptokit: from default] Command started
 [mysql_protocol: from default] Command started
 [cryptokit: from default] Command started
-[bitstring: from default] Command started
 [default] http://opam-archive:8080/archives/cryptokit.1.10+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [mysql_protocol: from default] Command started
-[default] http://opam-archive:8080/archives/bitstring.2.0.4+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/mysql_protocol.1.0+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[bitstring: from default] Command started
+[default] http://opam-archive:8080/archives/bitstring.2.0.4+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlp4: sh] Command started
@@ -254,14 +254,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -276,6 +268,14 @@ The following actions will be performed:
 - cat topfind_rd1.p | \
 - 	../../tools/patch '@SITELIB@' '/home/opam/.opam/system/lib' \
 -     	    >topfind
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -c num_top_printers.mli
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
 - ocamlc -I +compiler-libs -c num_top.mli
@@ -314,6 +314,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -358,7 +359,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -425,6 +425,8 @@ The following actions will be performed:
 [bitstring: ./configure] Command started
 [cryptokit: make] Command started
 + ./configure "--prefix" "/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/bitstring.2.0.4)
+[ERROR] The compilation of bitstring failed at "./configure --prefix
+        /home/opam/.opam/system".
 - checking for a sed that does not truncate output... /usr/bin/sed
 - checking for gcc... gcc
 - checking whether the C compiler works... yes
@@ -473,8 +475,6 @@ The following actions will be performed:
 - checking for OCaml findlib package cil... not found
 - checking for time... no
 - configure: error: 'time' command not found
-[ERROR] The compilation of bitstring failed at "./configure --prefix
-        /home/opam/.opam/system".
 [bitstring: ocamlfind remove] Command started
 + ocamlfind "remove" "bitstring" (CWD=/home/opam/.opam/system/build/bitstring.2.0.4)
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/bitstring
@@ -979,22 +979,6 @@ The following actions will be performed:
 - ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/system/lib/stublibs is not mentioned in ld.conf
 -> installed cryptokit.1.10
 
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions were aborted
-  - install mysql_protocol 1.0
-The following actions failed
-  - install bitstring 2.0.4
-The following changes have been performed
-  - install camlp4    4.02.1+system
-  - install cryptokit 1.10         
-  - install ocamlfind 1.5.5        
-
-=-=- bitstring.2.0.4 troobleshooting =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-=> This package relies on external (system) dependencies that may be missing.
-   `opam depext bitstring.2.0.4' may help you find the correct installation for
-   your system.
-
 #=== ERROR while installing bitstring.2.0.4 ===================================#
 # opam-version         1.2.2 (c30ed46b7e70bcf0f872e482cbcbf6a1fa0c60b3)
 # os                   linux
@@ -1021,6 +1005,22 @@ The following changes have been performed
 # configure: error: 'time' command not found
 
 
+
+=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+The following actions were aborted
+  - install mysql_protocol 1.0
+The following actions failed
+  - install bitstring 2.0.4
+The following changes have been performed
+  - install camlp4    4.02.1+system
+  - install cryptokit 1.10         
+  - install ocamlfind 1.5.5        
+
+=-=- bitstring.2.0.4 troobleshooting =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+=> This package relies on external (system) dependencies that may be missing.
+   `opam depext bitstring.2.0.4' may help you find the correct installation for
+   your system.
+
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150509225830.export"
+    opam switch import "~/.opam/system/backup/state-20150510094014.export"
 'opam install mysql_protocol' failed.
