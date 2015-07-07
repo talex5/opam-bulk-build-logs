@@ -1,24 +1,24 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux debian
 + uname -s
 + lsb_release -i -s
+# Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=lz4
 # The following system packages are needed:
 #  - liblz4-dev
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=lz4
-+ sudo apt-get update
 # The following scripts need to be run:
 #  - https://gist.githubusercontent.com/whitequark/eef074a8daa14602e447/raw/c151d3ab2f35f6cac54c7ef7459e2bbfff852938/install.sh
 Not running as root, the following command will be run through "sudo":
     apt-get update
-Hit http://security.debian.org stable/updates InRelease
++ sudo apt-get update
+Get:1 http://security.debian.org stable/updates InRelease [63.1 kB]
 Hit http://httpredir.debian.org stable InRelease
-Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
-Get:2 http://security.debian.org stable/updates/main amd64 Packages [88.8 kB]
-Get:3 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
+Get:2 http://httpredir.debian.org stable-updates InRelease [126 kB]
+Get:3 http://security.debian.org stable/updates/main amd64 Packages [88.8 kB]
 Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9237 kB in 5s (1543 kB/s)
+Get:5 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
+Fetched 9301 kB in 8s (1096 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
@@ -40,19 +40,21 @@ Preparing to unpack .../liblz4-dev_0.0~r122-2_amd64.deb ...
 Unpacking liblz4-dev:amd64 (0.0~r122-2) ...
 Setting up liblz4-1:amd64 (0.0~r122-2) ...
 Setting up liblz4-dev:amd64 (0.0~r122-2) ...
-+ curl -L "https://gist.githubusercontent.com/whitequark/eef074a8daa14602e447/raw/c151d3ab2f35f6cac54c7ef7459e2bbfff852938/install.sh" | bash -ex -
 # OS packages installation successful
++ curl -L "https://gist.githubusercontent.com/whitequark/eef074a8daa14602e447/raw/c151d3ab2f35f6cac54c7ef7459e2bbfff852938/install.sh" | bash -ex -
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   144  100   144    0     0    498      0 --:--:-- --:--:-- --:--:--   500
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   144  100   144    0     0    500      0 --:--:-- --:--:-- --:--:--   501
 + V=r119
 + curl -OJL https://github.com/Cyan4973/lz4/archive/r119.tar.gz
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   118    0   118    0     0    309      0 --:--:-- --:--:-- --:--:--   309
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  155k    0  155k    0     0   145k      0 --:--:--  0:00:01 --:--:--  397k
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   118    0   118    0     0    311      0 --:--:-- --:--:-- --:--:--   312
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  155k    0  155k    0     0   145k      0 --:--:--  0:00:01 --:--:--  321k
 curl: Saved to filename 'lz4-r119.tar.gz'
 + tar -zxvf lz4-r119.tar.gz
++ cd lz4-r119
++ make
 lz4-r119/
 lz4-r119/.travis.yml
 lz4-r119/LICENSE
@@ -83,8 +85,6 @@ lz4-r119/programs/lz4io.c
 lz4-r119/programs/lz4io.h
 lz4-r119/programs/xxhash.c
 lz4-r119/programs/xxhash.h
-+ cd lz4-r119
-+ make
 compiling static library
 compiling dynamic library
 creating versioned links
@@ -202,11 +202,11 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_topo.mli
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
-- Makefile:160: depend: No such file or directory
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
+- Makefile:160: depend: No such file or directory
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
@@ -428,15 +428,13 @@ The following actions will be performed:
 - ocamlfind ocamlc -package compiler-libs     -c -o _build/src/ctypes-top/ctypes_printers.cmo -I _build/src/ctypes-top  -I _build/src/ctypes src/ctypes-top/ctypes_printers.ml
 - ocamlfind ocamlc -package compiler-libs     -c -o _build/src/ctypes-top/install_ctypes_printers.cmo -I _build/src/ctypes-top  -I _build/src/ctypes src/ctypes-top/install_ctypes_printers.ml
 - ocamlfind ocamlc -a    -package compiler-libs  -o _build/ctypes-top.cma _build/src/ctypes-top/ctypes_printers.cmo _build/src/ctypes-top/install_ctypes_printers.cmo -cclib -Wl,--no-as-needed
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.01.0/lib/ocaml, /home/opam/.opam/4.01.0/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.01.0/lib/ocaml, /home/opam/.opam/4.01.0/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.01.0/lib/ocaml, /home/opam/.opam/4.01.0/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.01.0/lib/ocaml, /home/opam/.opam/4.01.0/lib/ocaml/compiler-libs
 - ocamlfind opt -c -o _build/src/ctypes-top/ctypes_printers.cmx -package compiler-libs    -package compiler-libs   -I _build/src/ctypes-top  -I _build/src/ctypes src/ctypes-top/ctypes_printers.ml
 - ocamlfind opt -c -o _build/src/ctypes-top/install_ctypes_printers.cmx -package compiler-libs    -package compiler-libs   -I _build/src/ctypes-top  -I _build/src/ctypes src/ctypes-top/install_ctypes_printers.ml
 - ocamlfind opt -a -linkall   -package compiler-libs   -o _build/ctypes-top.cmxa _build/src/ctypes-top/ctypes_printers.cmx _build/src/ctypes-top/install_ctypes_printers.cmx -cclib -Wl,--no-as-needed
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.01.0/lib/ocaml, /home/opam/.opam/4.01.0/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.01.0/lib/ocaml, /home/opam/.opam/4.01.0/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.01.0/lib/ocaml, /home/opam/.opam/4.01.0/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.01.0/lib/ocaml, /home/opam/.opam/4.01.0/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.01.0/lib/ocaml, /home/opam/.opam/4.01.0/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.01.0/lib/ocaml, /home/opam/.opam/4.01.0/lib/ocaml/compiler-libs
 - ocamlfind opt -shared -linkall   -package compiler-libs  -o _build/ctypes-top.cmxs _build/src/ctypes-top/ctypes_printers.cmx _build/src/ctypes-top/install_ctypes_printers.cmx  -cclib -Wl,--no-as-needed
 - ocamlfind ocamlc -c -o _build/src/cstubs/cstubs_analysis.cmi -package str -package bytes   -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_analysis.mli
 - ocamlfind ocamlc -package str -package bytes     -c -o _build/src/cstubs/cstubs_analysis.cmo -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_analysis.ml
@@ -462,10 +460,12 @@ The following actions will be performed:
 - ocamlfind opt -c -o _build/src/cstubs/cstubs_analysis.cmx -package str -package bytes    -package str -package bytes   -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_analysis.ml
 - ocamlfind opt -c -o _build/src/cstubs/cstubs_errors.cmx -package str -package bytes    -package str -package bytes   -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_errors.ml
 - ocamlfind opt -c -o _build/src/cstubs/cstubs_internals.cmx -package str -package bytes    -package str -package bytes   -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_internals.ml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.01.0/lib/ocaml, /home/opam/.opam/4.01.0/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.01.0/lib/ocaml, /home/opam/.opam/4.01.0/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.01.0/lib/ocaml, /home/opam/.opam/4.01.0/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.01.0/lib/ocaml, /home/opam/.opam/4.01.0/lib/ocaml/compiler-libs
 - ocamlfind opt -c -o _build/src/cstubs/cstubs_public_name.cmx -package str -package bytes    -package str -package bytes   -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_public_name.ml
 - ocamlfind opt -c -o _build/src/cstubs/cstubs_generate_ml.cmx -package str -package bytes    -package str -package bytes   -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_generate_ml.ml
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.01.0/lib/ocaml, /home/opam/.opam/4.01.0/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.01.0/lib/ocaml, /home/opam/.opam/4.01.0/lib/ocaml/compiler-libs
 - ocamlfind opt -c -o _build/src/cstubs/cstubs_c_language.cmx -package str -package bytes    -package str -package bytes   -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_c_language.ml
 - ocamlfind opt -c -o _build/src/cstubs/cstubs_emit_c.cmx -package str -package bytes    -package str -package bytes   -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_emit_c.ml
 - ocamlfind opt -c -o _build/src/cstubs/cstubs_generate_c.cmx -package str -package bytes    -package str -package bytes   -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_generate_c.ml
