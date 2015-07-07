@@ -6,9 +6,9 @@
 # The following system packages are needed:
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=merlin-acme
-+ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
++ sudo apt-get update
 Hit http://security.debian.org stable/updates InRelease
 Ign http://download.opensuse.org  InRelease
 Hit http://httpredir.debian.org stable InRelease
@@ -17,10 +17,10 @@ Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
 Get:2 http://security.debian.org stable/updates/main amd64 Packages [83.0 kB]
 Get:3 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
-+ sudo apt-get install -qq -yy m4
 Get:4 http://download.opensuse.org  Packages [5783 B]
 Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9238 kB in 3s (2360 kB/s)
++ sudo apt-get install -qq -yy m4
+Fetched 9237 kB in 6s (1424 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
@@ -49,9 +49,9 @@ The following actions will be performed:
 [default] http://opam-archive:8080/archives/acme.0.1+opam.tar.gz downloaded
 [easy-format: from default] Command started
 [cppo: from default] Command started
+[easy-format: from default] Command started
 [default] http://opam-archive:8080/archives/cppo.1.1.2+opam.tar.gz downloaded
 [merlin-acme: from default] Command started
-[easy-format: from default] Command started
 [default] http://opam-archive:8080/archives/easy-format.1.0.2+opam.tar.gz downloaded
 [ocaml9p: from default] Command started
 [merlin-acme: from default] Command started
@@ -98,8 +98,7 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) 
-- ok
+- Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /home/opam/.opam/4.02.1/lib/ocaml
@@ -204,6 +203,9 @@ The following actions will be performed:
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
@@ -222,9 +224,6 @@ The following actions will be performed:
 -     	    >topfind
 - ocamlc -I +compiler-libs -c num_top_printers.mli
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -c num_top.mli
 - ocamlc -I +compiler-libs -g -c num_top.ml
 - ocamlc -I +compiler-libs -a -o num_top.cma num_top_printers.cmo num_top.cmo
@@ -259,6 +258,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -303,7 +303,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -1544,6 +1543,7 @@ The following actions will be performed:
 - Warning 3: deprecated: String.copy
 - ocamlfind ocamlc -c -g -annot -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batCharParser.cmo src/batCharParser.ml
 - ocamlfind ocamlc -c -g -annot -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batConcurrent.cmo src/batConcurrent.ml
+- ocamlfind: Package `bisect' not found
 - ocamlfind ocamlc -c -g -annot -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batDllist.cmo src/batDllist.ml
 - ocamlfind ocamlc -c -g -annot -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batDynArray.cmo src/batDynArray.ml
 - ocamlfind ocamlc -c -g -annot -w z -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batFile.cmo src/batFile.ml
@@ -1634,7 +1634,6 @@ The following actions will be performed:
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 - ocamlfind ocamldep -package bigarray,num,str -I +compiler-libs -package bytes -modules src/batteriesHelp.ml > src/batteriesHelp.ml.depends
 - ocamlfind ocamlc -c -g -annot -package bigarray,num,str -I +compiler-libs -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batteriesHelp.cmo src/batteriesHelp.ml
-- ocamlfind: Package `bisect' not found
 - + ocamlfind ocamlc -c -g -annot -package bigarray,num,str -I +compiler-libs -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batteriesHelp.cmo src/batteriesHelp.ml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batMutex.mli > src/batMutex.mli.depends
@@ -2011,10 +2010,10 @@ The following actions will be performed:
 - ocamlbuild -no-links -use-ocamlfind src/batteries.cma src/batteriesHelp.cmo src/batteriesThread.cma META src/batteries.cmxs src/batteriesThread.cmxs
 - File "_tags", line 2, characters 32-42:
 - Warning: the tag "warn_Ae-29" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
+- ocamlfind: Package `bisect' not found
 - ocamlfind remove batteries
 - ocamlfind install batteries _build/META _build/src/*.cma battop.ml _build/src/*.cmi _build/src/*.mli _build/src/batteriesHelp.cmo _build/src/batteriesConfig.cmo _build/src/batteriesPrint.cmo ocamlinit build/ocaml \
 - 	-optional _build/src/*.cmx _build/src/*.a _build/src/*.cmxa _build/src/*.cmxs _build/src/*.lib
-- ocamlfind: Package `bisect' not found
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/4.02.1/lib/batteries
 - Installed /home/opam/.opam/4.02.1/lib/batteries/batteriesThread.cmxs
 - Installed /home/opam/.opam/4.02.1/lib/batteries/batteries.cmxs
