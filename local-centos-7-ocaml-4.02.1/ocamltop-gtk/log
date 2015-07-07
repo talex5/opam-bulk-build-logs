@@ -1,7 +1,7 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux centos
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=ocamltop-gtk
+# Detecting depexts using flags: x86_64 linux centos
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=ocamltop-gtk
 # No extra OS packages requirements found.
 The following actions will be performed:
@@ -21,24 +21,24 @@ The following actions will be performed:
 [config-file: from default] Command started
 [gtktop: from default] Command started
 [lablgtk: from default] Command started
+[config-file: from default] Command started
 [gtktop: from default] Command started
-[default] http://opam-archive:8080/archives/gtktop.2.0+opam.tar.gz downloaded
-[lablgtk-extras: from default] Command started
 [lablgtk: from default] Command started
-[default] http://opam-archive:8080/archives/lablgtk.2.18.3+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/config-file.1.2+opam.tar.gz downloaded
 [lablgtk-extras: from default] Command started
-[default] http://opam-archive:8080/archives/lablgtk-extras.1.5+opam.tar.gz downloaded
-[ocamltop-gtk: from default] Command started
+[default] http://opam-archive:8080/archives/gtktop.2.0+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[xmlm: from default] Command started
+[default] http://opam-archive:8080/archives/lablgtk.2.18.3+opam.tar.gz downloaded
+[ocamltop-gtk: from default] Command started
 [ocamltop-gtk: from default] Command started
 [default] http://opam-archive:8080/archives/ocamltop-gtk.2.1.1+opam.tar.gz downloaded
-[config-file: from default] Command started
-[default] http://opam-archive:8080/archives/config-file.1.2+opam.tar.gz downloaded
+[xmlm: from default] Command started
 [xmlm: from default] Command started
 [default] http://opam-archive:8080/archives/xmlm.1.2.0+opam.tar.gz downloaded
+[lablgtk-extras: from default] Command started
+[ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/lablgtk-extras.1.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlp4: sh] Command started
@@ -46,13 +46,13 @@ The following actions will be performed:
 + pkg-config "libglade-2.0" (CWD=/home/opam/.opam/system/build/conf-glade.2)
 [ERROR] The compilation of conf-glade failed at "pkg-config libglade-2.0".
 [conf-gtksourceview: pkg-config gtksourceview-2.0] Command started
++ pkg-config "gtksourceview-2.0" (CWD=/home/opam/.opam/system/build/conf-gtksourceview.2)
+[ERROR] The compilation of conf-gtksourceview failed at "pkg-config
+        gtksourceview-2.0".
+[ocamlfind: ./configure] Command started
 + sh "./check-camlp4.sh" (CWD=/home/opam/.opam/system/build/camlp4.4.02.1+system)
 - Camlp4 version 4.02.1
 -> installed camlp4.4.02.1+system
-[ocamlfind: ./configure] Command started
-[ERROR] The compilation of conf-gtksourceview failed at "pkg-config
-        gtksourceview-2.0".
-+ pkg-config "gtksourceview-2.0" (CWD=/home/opam/.opam/system/build/conf-gtksourceview.2)
 + ./configure "-bindir" "/home/opam/.opam/system/bin" "-sitelib" "/home/opam/.opam/system/lib" "-mandir" "/home/opam/.opam/system/man" "-config" "/home/opam/.opam/system/lib/findlib.conf" "-no-topfind" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
 - Welcome to findlib version 1.5.5
 - Configuring core...
@@ -136,8 +136,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -183,9 +181,19 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -200,14 +208,6 @@ The following actions will be performed:
 - cat topfind_rd1.p | \
 - 	../../tools/patch '@SITELIB@' '/home/opam/.opam/system/lib' \
 -     	    >topfind
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -c num_top_printers.mli
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
 - ocamlc -I +compiler-libs -c num_top.mli
@@ -246,6 +246,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -290,7 +291,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -363,12 +363,6 @@ The following actions will be performed:
 - checking for camlp4... /usr/bin/camlp4
 - configure: creating ./config.status
 - config.status: creating master.Makefile
-[config-file: make all] Command started
-+ make "all" (CWD=/home/opam/.opam/system/build/config-file.1.2)
-- /home/opam/.opam/system/bin/ocamlfind ocamlc   -c config_file.mli
-- /home/opam/.opam/system/bin/ocamlfind ocamlc   -c config_file.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt   -c config_file.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -o config_file.cmxs -shared config_file.cmx
 
 #=== ERROR while installing conf-glade.2 ======================================#
 # opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
@@ -393,10 +387,12 @@ The following actions will be performed:
 # stdout-file          /home/opam/.opam/system/build/conf-gtksourceview.2/conf-gtksourceview-1-60459a.out
 # stderr-file          /home/opam/.opam/system/build/conf-gtksourceview.2/conf-gtksourceview-1-60459a.err
 
-
-The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150303230204.export"
-'opam install ocamltop-gtk' failed.
+[config-file: make all] Command started
++ make "all" (CWD=/home/opam/.opam/system/build/config-file.1.2)
+- /home/opam/.opam/system/bin/ocamlfind ocamlc   -c config_file.mli
+- /home/opam/.opam/system/bin/ocamlfind ocamlc   -c config_file.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt   -c config_file.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -o config_file.cmxs -shared config_file.cmx
 [config-file: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/config-file.1.2)
 - Installed /home/opam/.opam/system/lib/config-file/config_file.cmxs
@@ -444,3 +440,7 @@ The following changes have been performed
 =-=- conf-gtksourceview.2 troubleshooting -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 => This package requires gtksourceview 2.0 development packages installed on
    your system
+
+The former state can be restored with:
+    opam switch import "~/.opam/system/backup/state-20150304102225.export"
+'opam install ocamltop-gtk' failed.
