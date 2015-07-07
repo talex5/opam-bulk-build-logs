@@ -3,24 +3,24 @@
 + lsb_release -i -s
 # Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=xapi-stdext
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=xapi-stdext
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=xapi-stdext
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
 Hit http://security.debian.org stable/updates InRelease
-Get:1 http://security.debian.org stable/updates/main amd64 Packages [58.9 kB]
+Get:1 http://security.debian.org stable/updates/main amd64 Packages [59.5 kB]
 Hit http://httpredir.debian.org stable InRelease
 Get:2 http://httpredir.debian.org stable-updates InRelease [126 kB]
 Get:3 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
 Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9208 kB in 5s (1813 kB/s)
+Fetched 9208 kB in 15s (601 kB/s)
 Reading package lists...
 # OS package update successful
++ sudo apt-get install -qq -yy m4
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
-+ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install base-no-ppx    base                                 [required by lwt]
@@ -51,9 +51,9 @@ The following actions will be performed:
 [default] http://opam-archive:8080/archives/lwt.2.4.8+opam.tar.gz downloaded
 [type_conv: from default] Command started
 [rpc: from default] Command started
+[sexplib: from default] Command started
 [default] http://opam-archive:8080/archives/rpc.1.5.1+opam.tar.gz downloaded
 [uuidm: from default] Command started
-[sexplib: from default] Command started
 [type_conv: from default] Command started
 [default] http://opam-archive:8080/archives/sexplib.111.25.00+opam.tar.gz downloaded
 [xapi-backtrace: from default] Command started
@@ -63,8 +63,8 @@ The following actions will be performed:
 [xapi-backtrace: from default] Command started
 [default] http://opam-archive:8080/archives/uuidm.0.9.5+opam.tar.gz downloaded
 [xmlm: from default] Command started
-[default] http://opam-archive:8080/archives/xapi-backtrace.0.2+opam.tar.gz downloaded
 [xapi-stdext: from default] Command started
+[default] http://opam-archive:8080/archives/xapi-backtrace.0.2+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/xapi-stdext.0.13.0+opam.tar.gz downloaded
 [xmlm: from default] Command started
 [default] http://opam-archive:8080/archives/xmlm.1.2.0+opam.tar.gz downloaded
@@ -157,8 +157,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
-- ocamlc -I +compiler-libs -g -c frontend.ml
 - Makefile:160: depend: No such file or directory
+- ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
 - if [ "false" = "true" ]; then                 \
@@ -967,6 +967,8 @@ The following actions will be performed:
 - Installed /home/opam/.opam/4.01.0/lib/uuidm/META
 -> installed uuidm.0.9.5
 [xmlm: ./pkg/pkg-git] Command started
++ ./pkg/pkg-git  (CWD=/home/opam/.opam/4.01.0/build/xmlm.1.2.0)
+[xmlm: ./pkg/build true] Command started
 + make "build" (CWD=/home/opam/.opam/4.01.0/build/lwt.2.4.8)
 - ocamlopt.opt -o setup.exe setup.ml || ocamlopt -o setup.exe setup.ml || ocamlc -o setup.exe setup.ml
 - rm -f setup.cmx setup.cmi setup.o setup.obj setup.cmo
@@ -1316,8 +1318,23 @@ The following actions will be performed:
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -linkpkg -g -I src/unix -linkpkg -package unix -package bytes -package bigarray -package camlp4.quotations.o -package camlp4.extend -package camlp4 syntax/lwt-syntax.cmxa src/core/lwt.cmxa src/logger/lwt-log.cmxa src/unix/lwt-unix.cmxa examples/unix/parallelize.cmx -o examples/unix/parallelize.native
 - ocamlfind: Package `wikidoc' not found
 [lwt: make install] Command started
-+ ./pkg/pkg-git  (CWD=/home/opam/.opam/4.01.0/build/xmlm.1.2.0)
-[xmlm: ./pkg/build true] Command started
++ ./pkg/build "true" (CWD=/home/opam/.opam/4.01.0/build/xmlm.1.2.0)
+- ocamlfind ocamldep -modules src/xmlm.mli > src/xmlm.mli.depends
+- ocamlfind ocamlc -c -I src -I test -o src/xmlm.cmi src/xmlm.mli
+- ocamlfind ocamldep -modules src/xmlm.ml > src/xmlm.ml.depends
+- ocamlfind ocamlopt -c -annot -bin-annot -I src -I test -o src/xmlm.cmx src/xmlm.ml
+- ocamlfind ocamlc -c -annot -bin-annot -I src -I test -o src/xmlm.cmo src/xmlm.ml
+- ocamlfind ocamlc -a src/xmlm.cmo -o src/xmlm.cma
+- ocamlfind ocamlopt -a src/xmlm.cmx -o src/xmlm.cmxa
+- ocamlfind ocamlopt -shared src/xmlm.cmx -o src/xmlm.cmxs
+- ocamlfind ocamldep -modules test/xmltrip.ml > test/xmltrip.ml.depends
+- ocamlfind ocamldep -modules test/xhtml.ml > test/xhtml.ml.depends
+- ocamlfind ocamlc -c -annot -bin-annot -I test -I src -o test/xhtml.cmo test/xhtml.ml
+- ocamlfind ocamlc -c -annot -bin-annot -I test -I src -o test/xmltrip.cmo test/xmltrip.ml
+- ocamlfind ocamlopt -c -annot -bin-annot -I test -I src -o test/xhtml.cmx test/xhtml.ml
+- ocamlfind ocamlopt -c -annot -bin-annot -I test -I src -o test/xmltrip.cmx test/xmltrip.ml
+- ocamlfind ocamlopt -linkpkg src/xmlm.cmx test/xhtml.cmx test/xmltrip.cmx -o test/xmltrip.native
+-> installed xmlm.1.2.0
 + make "install" (CWD=/home/opam/.opam/4.01.0/build/lwt.2.4.8)
 - ./setup.exe -install 
 - W: Nothing to install for findlib library 'test'
@@ -1533,23 +1550,6 @@ The following actions will be performed:
 - Installed /home/opam/.opam/4.01.0/lib/stublibs/dlllwt-unix_stubs.so.owner
 - ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/4.01.0/lib/stublibs is not mentioned in ld.conf
 -> installed lwt.2.4.8
-+ ./pkg/build "true" (CWD=/home/opam/.opam/4.01.0/build/xmlm.1.2.0)
-- ocamlfind ocamldep -modules src/xmlm.mli > src/xmlm.mli.depends
-- ocamlfind ocamlc -c -I src -I test -o src/xmlm.cmi src/xmlm.mli
-- ocamlfind ocamldep -modules src/xmlm.ml > src/xmlm.ml.depends
-- ocamlfind ocamlopt -c -annot -bin-annot -I src -I test -o src/xmlm.cmx src/xmlm.ml
-- ocamlfind ocamlc -c -annot -bin-annot -I src -I test -o src/xmlm.cmo src/xmlm.ml
-- ocamlfind ocamlc -a src/xmlm.cmo -o src/xmlm.cma
-- ocamlfind ocamlopt -a src/xmlm.cmx -o src/xmlm.cmxa
-- ocamlfind ocamlopt -shared src/xmlm.cmx -o src/xmlm.cmxs
-- ocamlfind ocamldep -modules test/xmltrip.ml > test/xmltrip.ml.depends
-- ocamlfind ocamldep -modules test/xhtml.ml > test/xhtml.ml.depends
-- ocamlfind ocamlc -c -annot -bin-annot -I test -I src -o test/xhtml.cmo test/xhtml.ml
-- ocamlfind ocamlc -c -annot -bin-annot -I test -I src -o test/xmltrip.cmo test/xmltrip.ml
-- ocamlfind ocamlopt -c -annot -bin-annot -I test -I src -o test/xhtml.cmx test/xhtml.ml
-- ocamlfind ocamlopt -c -annot -bin-annot -I test -I src -o test/xmltrip.cmx test/xmltrip.ml
-- ocamlfind ocamlopt -linkpkg src/xmlm.cmx test/xhtml.cmx test/xmltrip.cmx -o test/xmltrip.native
--> installed xmlm.1.2.0
 [rpc: make] Command started
 + make  (CWD=/home/opam/.opam/4.01.0/build/rpc.1.5.1)
 - cd lib && make all
@@ -1573,6 +1573,8 @@ The following actions will be performed:
 - ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o jsonrpc.o jsonrpc.ml
 - ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o rpc_client.cmi rpc_client.mli
 - ocamlfind ocamlc -annot -g -package xmlm,lwt -c -o rpc_client.cmo rpc_client.ml
+- ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o rpc_client.o rpc_client.ml
+- make[1]: Leaving directory '/home/opam/.opam/4.01.0/build/rpc.1.5.1/lib'
 - File "p4_idl.ml", line 112, characters 5-143:
 - Warning 8: this pattern-matching is not exhaustive.
 - Here is an example of a value that is not matched:
@@ -1585,8 +1587,6 @@ The following actions will be performed:
 - TySta (_, _, _)|TyVrnEq (_, _)|TyVrnSup (_, _)|TyVrnInf (_, _)|
 - TyVrnInfSup (_, _, _)|TyAmp (_, _, _)|TyOfAmp (_, _, _)|TyPkg (_, _)|
 - TyAnt (_, _))
-- ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o rpc_client.o rpc_client.ml
-- make[1]: Leaving directory '/home/opam/.opam/4.01.0/build/rpc.1.5.1/lib'
 [rpc: make install] Command started
 + make "install" (CWD=/home/opam/.opam/4.01.0/build/rpc.1.5.1)
 - cd lib && make install
