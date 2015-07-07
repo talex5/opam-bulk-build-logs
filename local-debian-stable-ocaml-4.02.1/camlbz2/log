@@ -1,8 +1,8 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-# Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=camlbz2
+# Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=camlbz2
 # The following system packages are needed:
 #  - libbz2-dev
@@ -13,19 +13,19 @@ Not running as root, the following command will be run through "sudo":
 Hit http://security.debian.org stable/updates InRelease
 Ign http://download.opensuse.org  InRelease
 Hit http://httpredir.debian.org stable InRelease
-Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
+Hit http://httpredir.debian.org stable-updates InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Get:2 http://security.debian.org stable/updates/main amd64 Packages [61.0 kB]
-Get:3 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Get:4 http://download.opensuse.org  Packages [5783 B]
-Get:5 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
-Fetched 9216 kB in 4s (1853 kB/s)
+Get:1 http://security.debian.org stable/updates/main amd64 Packages [61.0 kB]
+Get:2 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
+Get:3 http://download.opensuse.org  Packages [5783 B]
+Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
+Fetched 9090 kB in 7s (1223 kB/s)
 Reading package lists...
 # OS package update successful
-+ sudo apt-get install -qq -yy libbz2-dev m4
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libbz2-dev m4
++ sudo apt-get install -qq -yy libbz2-dev m4
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
@@ -51,10 +51,10 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlbz2: from default] Command started
 [ocamlfind: from default] Command started
-[camlbz2: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/camlbz2.0.6.0+opam.tar.gz downloaded
+[camlbz2: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/camlbz2.0.6.0+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -133,9 +133,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_metascanner.mli
 - ocamlc -I +compiler-libs -g -c fl_metascanner.ml
 - ocamlc -I +compiler-libs -c fl_topo.mli
-- ocamlc -I +compiler-libs -g -c fl_topo.ml
-- ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -181,6 +178,9 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c fl_topo.ml
+- ocamlc -I +compiler-libs -c fl_package_base.mli
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
@@ -246,6 +246,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -290,7 +291,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -375,14 +375,14 @@ The following actions will be performed:
 - checking whether we are cross compiling... no
 - checking for suffix of executables... 
 - checking for suffix of object files... o
-- checking whether we are using the GNU C compiler... 
-- awk: line 1: regular expression compile failed (syntax error ^* or ^+)
-- ^+
-- yes
+- checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
 - checking for gcc option to accept ISO C89... none needed
 - checking for a BSD-compatible install... /usr/bin/install -c
-- checking how to run the C preprocessor... gcc -E
+- checking how to run the C preprocessor... 
+- awk: line 1: regular expression compile failed (syntax error ^* or ^+)
+- ^+
+- gcc -E
 - checking for grep that handles long lines and -e... /bin/grep
 - checking for egrep... /bin/grep -E
 - checking for ANSI C header files... yes
@@ -390,7 +390,8 @@ The following actions will be performed:
 - checking for sys/stat.h... yes
 - checking for stdlib.h... yes
 - checking for string.h... yes
-- checking for memory.h... yes
+- checking for memory.h... 
+- yes
 - checking for strings.h... yes
 - checking for inttypes.h... yes
 - checking for stdint.h... yes
