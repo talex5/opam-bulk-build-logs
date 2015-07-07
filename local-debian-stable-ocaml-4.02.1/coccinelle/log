@@ -11,22 +11,19 @@
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=coccinelle
 Not running as root, system installation will be done through "sudo"
 + sudo apt-get update
-Hit http://download.opensuse.org  Release.gpg
 Hit http://http.debian.net stable Release.gpg
-Hit http://http.debian.net stable-updates Release.gpg
-Hit http://download.opensuse.org  Release
-Hit http://http.debian.net stable Release
-Hit http://download.opensuse.org  Packages
-Get:1 http://http.debian.net stable-updates Release [124 kB]
 Hit http://security.debian.org stable/updates Release.gpg
-Hit http://http.debian.net stable/main amd64 Packages
-Ign http://http.debian.net stable-updates Release
+Hit http://http.debian.net stable-updates Release.gpg
+Hit http://download.opensuse.org  Release.gpg
+Hit http://http.debian.net stable Release
 Hit http://security.debian.org stable/updates Release
-Hit http://http.debian.net stable-updates/main amd64 Packages
+Hit http://download.opensuse.org  Release
+Hit http://http.debian.net stable-updates Release
+Hit http://http.debian.net stable/main amd64 Packages
 Hit http://security.debian.org stable/updates/main amd64 Packages
-Fetched 124 kB in 1s (87.1 kB/s)
+Hit http://download.opensuse.org  Packages
+Hit http://http.debian.net stable-updates/main amd64 Packages
 Reading package lists...
-W: GPG error: http://http.debian.net stable-updates Release: The following signatures were invalid: BADSIG 8B48AD6246925553 Debian Archive Automatic Signing Key (7.0/wheezy) <ftpmaster@debian.org>
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
 + sudo apt-get install -qq -yy libpcre3-dev m4 pkg-config python2.7 python2.7-dev
@@ -72,14 +69,14 @@ The following actions will be performed:
 [coccinelle: from default] Command started
 [menhir: from default] Command started
 [ocamlfind: from default] Command started
-[coccinelle: from default] Command started
-[menhir: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/coccinelle.1.0.0-rc24+opam.tar.gz downloaded
-[pcre: from default] Command started
-[default] http://opam-archive:8080/archives/menhir.20140422+opam.tar.gz downloaded
+[menhir: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [pcre: from default] Command started
+[coccinelle: from default] Command started
+[default] http://opam-archive:8080/archives/menhir.20140422+opam.tar.gz downloaded
+[pcre: from default] Command started
+[default] http://opam-archive:8080/archives/coccinelle.1.0.0-rc24+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/pcre.7.1.1+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -212,7 +209,6 @@ The following actions will be performed:
 - ocamllex fl_meta.mll
 - 22 states, 392 transitions, table size 1700 bytes
 - ocamldep *.ml *.mli >depend
-- Makefile:160: depend: No such file or directory
 - make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlfind.1.5.5/src/findlib'
 - make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlfind.1.5.5/src/findlib'
 - USE_CYGPATH="0"; \
@@ -228,6 +224,9 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_metatoken.ml
 - ocamlc -I +compiler-libs -g -c fl_meta.ml
 - ocamlc -I +compiler-libs -c fl_metascanner.mli
+- ocamlc -I +compiler-libs -g -c fl_metascanner.ml
+- ocamlc -I +compiler-libs -c fl_topo.mli
+- Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -266,8 +265,12 @@ The following actions will be performed:
 - File "fl_meta.mll", line 62, characters 11-22:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc -I +compiler-libs -g -c fl_metascanner.ml
-- ocamlc -I +compiler-libs -c fl_topo.mli
+- File "fl_metascanner.ml", line 111, characters 23-32:
+- Warning 3: deprecated: Sort.list
+- Use List.sort instead.
+- File "fl_metascanner.ml", line 372, characters 20-29:
+- Warning 3: deprecated: Sort.list
+- Use List.sort instead.
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
@@ -277,12 +280,14 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
-- File "fl_metascanner.ml", line 111, characters 23-32:
-- Warning 3: deprecated: Sort.list
-- Use List.sort instead.
-- File "fl_metascanner.ml", line 372, characters 20-29:
-- Warning 3: deprecated: Sort.list
-- Use List.sort instead.
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
@@ -292,14 +297,6 @@ The following actions will be performed:
 - 			> topfind.ml ;                                   \
 - 	fi
 - ocamlc -I +compiler-libs -c topfind.mli
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -342,6 +339,8 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c findlib_config.ml
 - ocamlopt -I +compiler-libs -c fl_split.ml
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
+- ocamlopt -I +compiler-libs -c fl_meta.ml
+- ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -371,9 +370,6 @@ The following actions will be performed:
 - File "fl_split.ml", line 140, characters 1-19:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlopt -I +compiler-libs -c fl_meta.ml
-- ocamlopt -I +compiler-libs -c fl_metascanner.ml
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_meta.mll", line 57, characters 13-26:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -389,6 +385,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -942,16 +939,16 @@ The following actions will be performed:
 - Use Bytes.set instead.
 - File "lexer.mll", line 68, characters 18-29:
 - Warning 3: deprecated: String.copy
-- + /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -g -inline 1000 -o parameterizedGrammar.cmx parameterizedGrammar.ml
-- File "parameterizedGrammar.ml", line 340, characters 26-38:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
 - + /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -g -inline 1000 -o partialGrammar.cmx partialGrammar.ml
 - File "partialGrammar.ml", line 259, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "partialGrammar.ml", line 262, characters 6-18:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- + /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -g -inline 1000 -o parameterizedGrammar.cmx parameterizedGrammar.ml
+- File "parameterizedGrammar.ml", line 340, characters 26-38:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules tokenType.ml > tokenType.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules tokenType.mli > tokenType.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -o tokenType.cmi tokenType.mli
@@ -1385,16 +1382,16 @@ The following actions will be performed:
 - Use Bytes.set instead.
 - File "lexer.mll", line 68, characters 18-29:
 - Warning 3: deprecated: String.copy
-- + /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -g -inline 1000 -o parameterizedGrammar.cmx parameterizedGrammar.ml
-- File "parameterizedGrammar.ml", line 340, characters 26-38:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
 - + /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -g -inline 1000 -o partialGrammar.cmx partialGrammar.ml
 - File "partialGrammar.ml", line 259, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "partialGrammar.ml", line 262, characters 6-18:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- + /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -g -inline 1000 -o parameterizedGrammar.cmx parameterizedGrammar.ml
+- File "parameterizedGrammar.ml", line 340, characters 26-38:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules tokenType.ml > tokenType.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules tokenType.mli > tokenType.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -o tokenType.cmi tokenType.mli
@@ -1727,7 +1724,7 @@ The following actions will be performed:
 - checking whether make supports nested variables... yes
 - configure: determining version suffix
 - checking for date... /bin/date
-- configure: version suffix set to Mon, 13 Apr 2015 15:58:39 +0000
+- configure: version suffix set to Tue, 14 Apr 2015 04:41:09 +0000
 - configure: this configure program uses pkg-config m4 macros
 - configure: this configure program uses ocaml m4 macros (see setup/ocaml.m4)
 - configure: this configure program uses custom m4 macros (see setup/cocci.m4)
@@ -1740,12 +1737,12 @@ The following actions will be performed:
 - checking for suffix of executables... 
 - checking whether we are cross compiling... no
 - checking for suffix of object files... o
-- checking whether we are using the GNU C compiler... yes
-- checking whether gcc accepts -g... 
+- checking whether we are using the GNU C compiler... 
 - /home/opam/.opam/4.02.1/build/coccinelle.1.0.0-rc24/setup/missing: Unknown '--is-lightweight' option
 - Try '/home/opam/.opam/4.02.1/build/coccinelle.1.0.0-rc24/setup/missing --help' for more information
 - configure: WARNING: 'missing' script is too old or missing
 - yes
+- checking whether gcc accepts -g... yes
 - checking for gcc option to accept ISO C89... none needed
 - checking whether gcc understands -c and -o together... yes
 - checking dependency style of gcc... none
@@ -2129,6 +2126,7 @@ The following actions will be performed:
 - checking whether the C compiler works... yes
 - checking for C compiler default output file name... a.out
 - checking for suffix of executables... 
+- 
 - checking whether we are cross compiling... no
 - checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
@@ -2136,18 +2134,17 @@ The following actions will be performed:
 - checking for gcc option to accept ISO C89... none needed
 - checking how to run the C preprocessor... gcc -E
 - checking for grep that handles long lines and -e... /bin/grep
-- checking for egrep... 
-- /bin/grep -E
+- checking for egrep... /bin/grep -E
 - checking for ANSI C header files... yes
 - checking for sys/types.h... yes
 - checking for sys/stat.h... yes
 - checking for stdlib.h... yes
-- checking for string.h... yes
+- checking for string.h... 
+- yes
 - checking for memory.h... yes
 - checking for strings.h... yes
 - checking for inttypes.h... yes
-- checking for stdint.h... 
-- yes
+- checking for stdint.h... yes
 - checking for unistd.h... yes
 - checking sched.h usability... yes
 - checking sched.h presence... yes
@@ -2156,7 +2153,8 @@ The following actions will be performed:
 - checking mach/thread_policy.h usability... no
 - checking mach/thread_policy.h presence... no
 - checking for mach/thread_policy.h... no
-- checking whether thread_policy_set is declared... no
+- checking whether thread_policy_set is declared... 
+- no
 - ocaml version 4.02.1. Use standard Makefile
 - configure: creating ./config.status
 - config.status: creating Makefile
@@ -2364,11 +2362,11 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c parser_cocci_menhir.mli
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c parser_cocci_menhir.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c lexer_cocci.ml
-- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c lexer_cli.ml
-- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c lexer_script.ml
 - File "lexer_cocci.ml", line 2664, characters 27-39:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c lexer_cli.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c lexer_script.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c cocci_grep.mli
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c cocci_grep.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c dpll.mli
