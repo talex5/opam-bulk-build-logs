@@ -1,25 +1,26 @@
-# Detecting depexts using flags: x86_64 linux debian
 + uname -m
+# Detecting depexts using flags: x86_64 linux debian
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=alsa
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=alsa
 # The following system packages are needed:
 #  - libasound2-dev
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=alsa
 Not running as root, system installation will be done through "sudo"
 + sudo apt-get update
 Hit http://download.opensuse.org  Release.gpg
 Hit http://http.debian.net stable Release.gpg
 Hit http://download.opensuse.org  Release
-Hit http://http.debian.net stable-updates Release.gpg
+Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
 Hit http://http.debian.net stable Release
-Hit http://http.debian.net stable-updates Release
 Hit http://download.opensuse.org  Packages
+Get:2 http://http.debian.net stable-updates Release [124 kB]
 Hit http://http.debian.net stable/main amd64 Packages
-Hit http://http.debian.net stable-updates/main amd64 Packages
 Hit http://security.debian.org stable/updates Release.gpg
+Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
 Hit http://security.debian.org stable/updates Release
 Hit http://security.debian.org stable/updates/main amd64 Packages
+Fetched 129 kB in 1s (121 kB/s)
 Reading package lists...
 + sudo apt-get install -qq -yy libasound2-dev m4
 # OS package update successful
@@ -130,7 +131,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -176,6 +176,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
@@ -239,9 +240,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_split.ml
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
-- ocamlopt -I +compiler-libs -c fl_metascanner.ml
-- ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -271,6 +269,8 @@ The following actions will be performed:
 - File "fl_split.ml", line 140, characters 1-19:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_meta.mll", line 57, characters 13-26:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -286,6 +286,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -365,9 +366,9 @@ The following actions will be performed:
 - checking for grep that handles long lines and -e... /bin/grep
 - checking for egrep... /bin/grep -E
 - checking for ANSI C header files... yes
-- checking for sys/types.h... yes
-- checking for sys/stat.h... 
+- checking for sys/types.h... 
 - yes
+- checking for sys/stat.h... yes
 - checking for stdlib.h... yes
 - checking for string.h... yes
 - checking for memory.h... yes
@@ -403,6 +404,11 @@ The following actions will be performed:
 - checking for ocamlfind... ocamlfind
 - checking caml/threads.h usability... no
 - checking caml/threads.h presence... yes
+- configure: WARNING: caml/threads.h: present but cannot be compiled
+- configure: WARNING: caml/threads.h:     check for missing prerequisite headers?
+- configure: WARNING: caml/threads.h: see the Autoconf documentation
+- configure: WARNING: caml/threads.h:     section "Present But Cannot Be Compiled"
+- configure: WARNING: caml/threads.h: proceeding with the compiler's result
 - checking for caml/threads.h... no
 - checking for gcc... (cached) gcc
 - checking whether we are using the GNU C compiler... (cached) yes
@@ -412,17 +418,12 @@ The following actions will be performed:
 - checking for pkg-config... /usr/bin/pkg-config
 - checking pkg-config is at least version 0.9.0... yes
 - configure: creating ./config.status
-- configure: WARNING: caml/threads.h: present but cannot be compiled
-- configure: WARNING: caml/threads.h:     check for missing prerequisite headers?
-- configure: WARNING: caml/threads.h: see the Autoconf documentation
-- configure: WARNING: caml/threads.h:     section "Present But Cannot Be Compiled"
-- configure: WARNING: caml/threads.h: proceeding with the compiler's result
-- configure: WARNING:     ## -------------------------------------------------- ##
-- configure: WARNING:     ## Report this to savonet-users@lists.sourceforge.net ##
-- configure: WARNING:     ## -------------------------------------------------- ##
 - config.status: creating Makefile
 - config.status: creating src/META
 - config.status: creating src/Makefile
+- configure: WARNING:     ## -------------------------------------------------- ##
+- configure: WARNING:     ## Report this to savonet-users@lists.sourceforge.net ##
+- configure: WARNING:     ## -------------------------------------------------- ##
 [alsa: make] Command started
 + make  (CWD=/home/opam/.opam/4.02.1/build/alsa.0.2.1)
 - make -C src all
