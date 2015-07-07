@@ -1,7 +1,7 @@
+# Detecting depexts using flags: x86_64 linux debian
 + uname -m
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=xenstore
-# Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=xenstore
 # The following system packages are needed:
 #  - m4
@@ -9,19 +9,18 @@
 Not running as root, the following command will be run through "sudo":
     apt-get update
 + sudo apt-get update
-Get:1 http://security.debian.org stable/updates Release.gpg [836 B]
+Hit http://security.debian.org stable/updates Release.gpg
+Hit http://security.debian.org stable/updates Release
 Hit http://download.opensuse.org  Release.gpg
-Hit http://httpredir.debian.org stable Release.gpg
-Get:2 http://httpredir.debian.org stable-updates Release.gpg [836 B]
-Get:3 http://security.debian.org stable/updates Release [102 kB]
 Hit http://download.opensuse.org  Release
+Hit http://httpredir.debian.org stable Release.gpg
+Hit http://httpredir.debian.org stable-updates Release.gpg
 Hit http://httpredir.debian.org stable Release
-Get:4 http://httpredir.debian.org stable-updates Release [124 kB]
+Hit http://httpredir.debian.org stable-updates Release
+Hit http://security.debian.org stable/updates/main amd64 Packages
 Hit http://download.opensuse.org  Packages
-Get:5 http://security.debian.org stable/updates/main amd64 Packages [382 kB]
 Hit http://httpredir.debian.org stable/main amd64 Packages
-Get:6 http://httpredir.debian.org stable-updates/main amd64 Packages [4369 B]
-Fetched 614 kB in 2s (225 kB/s)
+Hit http://httpredir.debian.org stable-updates/main amd64 Packages
 Reading package lists...
 # OS package update successful
 + sudo apt-get install -qq -yy m4 time
@@ -54,14 +53,14 @@ The following actions will be performed:
 [cstruct: from default] Command started
 [cppo: from default] Command started
 [cstruct: from default] Command started
+[camlp4: from default] Command started
 [default] http://opam-archive:8080/archives/cppo.1.1.2+opam.tar.gz downloaded
 [lwt: from default] Command started
-[camlp4: from default] Command started
 [default] http://opam-archive:8080/archives/cstruct.1.6.0+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
-[lwt: from default] Command started
 [default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
 [ocplib-endian: from default] Command started
+[lwt: from default] Command started
 [default] http://opam-archive:8080/archives/lwt.2.4.8+opam.tar.gz downloaded
 [ounit: from default] Command started
 [ocamlfind: from default] Command started
@@ -74,9 +73,9 @@ The following actions will be performed:
 [ppx_tools: from default] Command started
 [default] http://opam-archive:8080/archives/ounit.2.0.0+opam.tar.gz downloaded
 [type_conv: from default] Command started
+[sexplib: from default] Command started
 [default] http://opam-archive:8080/archives/ppx_tools.0.99.2+opam.tar.gz downloaded
 [xenstore: from default] Command started
-[sexplib: from default] Command started
 [type_conv: from default] Command started
 [default] http://opam-archive:8080/archives/sexplib.112.24.01+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
@@ -114,8 +113,7 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) 
-- ok
+- Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /home/opam/.opam/4.02.1/lib/ocaml
@@ -146,7 +144,6 @@ The following actions will be performed:
 - ocamllex fl_meta.mll
 - 22 states, 392 transitions, table size 1700 bytes
 - ocamldep *.ml *.mli >depend
-- Makefile:160: depend: No such file or directory
 - make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlfind.1.5.5/src/findlib'
 - make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlfind.1.5.5/src/findlib'
 - USE_CYGPATH="0"; \
@@ -165,6 +162,9 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_metascanner.ml
 - ocamlc -I +compiler-libs -c fl_topo.mli
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
+- ocamlc -I +compiler-libs -c fl_package_base.mli
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -209,8 +209,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
@@ -219,13 +217,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
-- if [ "true" = "true" ]; then                 \
-- 		cp topfind.ml.in topfind.ml;                             \
-- 	else                                                             \
-- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 			> topfind.ml ;                                   \
-- 	fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -234,6 +225,13 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- if [ "true" = "true" ]; then                 \
+- 		cp topfind.ml.in topfind.ml;                             \
+- 	else                                                             \
+- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 			> topfind.ml ;                                   \
+- 	fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -278,6 +276,8 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -319,12 +319,10 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 111, characters 23-32:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
-- ocamlopt -I +compiler-libs -c findlib.ml
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
 - if [ 1 -gt 0 ]; then \
@@ -951,6 +949,7 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4/ErrorHandler.mli > camlp4/Camlp4/ErrorHandler.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4/Sig.ml > camlp4/Camlp4/Sig.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Sig.cmo camlp4/Camlp4/Sig.ml
+- + echo camlp4/Camlp4.cmo camlp4/Camlp4Top.cmo camlp4/camlp4prof.byte camlp4/mkcamlp4.byte camlp4/camlp4.byte camlp4/camlp4fulllib.cma camlp4/camlp4boot.byte camlp4/camlp4boot.cma camlp4/camlp4r.byte camlp4/camlp4r.cma camlp4/camlp4rf.byte camlp4/camlp4rf.cma camlp4/camlp4o.byte camlp4/camlp4o.cma camlp4/camlp4of.byte camlp4/camlp4of.cma camlp4/camlp4oof.byte camlp4/camlp4oof.cma camlp4/camlp4orf.byte camlp4/camlp4orf.cma camlp4/Camlp4Parsers/Camlp4AstLoader.cmo camlp4/Camlp4Parsers/Camlp4DebugParser.cmo camlp4/Camlp4Parsers/Camlp4GrammarParser.cmo camlp4/Camlp4Parsers/Camlp4ListComprehension.cmo camlp4/Camlp4Parsers/Camlp4MacroParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4OCamlParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmo camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmo camlp4/Camlp4Printers/Camlp4AstDumper.cmo camlp4/Camlp4Printers/Camlp4AutoPrinter.cmo camlp4/Camlp4Printers/Camlp4NullDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlPrinter.cmo camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.cmo camlp4/Camlp4Filters/Camlp4AstLifter.cmo camlp4/Camlp4Filters/Camlp4ExceptionTracer.cmo camlp4/Camlp4Filters/Camlp4FoldGenerator.cmo camlp4/Camlp4Filters/Camlp4LocationStripper.cmo camlp4/Camlp4Filters/Camlp4MapGenerator.cmo camlp4/Camlp4Filters/Camlp4MetaGenerator.cmo camlp4/Camlp4Filters/Camlp4Profiler.cmo camlp4/Camlp4Filters/Camlp4TrashRemover.cmo
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/ErrorHandler.cmi camlp4/Camlp4/ErrorHandler.mli
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4/ErrorHandler.ml > camlp4/Camlp4/ErrorHandler.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4/Utils.mli > camlp4/Camlp4/Utils.mli.depends
@@ -972,7 +971,6 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4/Struct/AstFilters.ml > camlp4/Camlp4/Struct/AstFilters.ml.depends
 - cp -p camlp4/boot/Camlp4Ast.ml camlp4/Camlp4/Struct/Camlp4Ast.ml
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4/Struct/Camlp4Ast.ml > camlp4/Camlp4/Struct/Camlp4Ast.ml.depends
-- + echo camlp4/Camlp4.cmo camlp4/Camlp4Top.cmo camlp4/camlp4prof.byte camlp4/mkcamlp4.byte camlp4/camlp4.byte camlp4/camlp4fulllib.cma camlp4/camlp4boot.byte camlp4/camlp4boot.cma camlp4/camlp4r.byte camlp4/camlp4r.cma camlp4/camlp4rf.byte camlp4/camlp4rf.cma camlp4/camlp4o.byte camlp4/camlp4o.cma camlp4/camlp4of.byte camlp4/camlp4of.cma camlp4/camlp4oof.byte camlp4/camlp4oof.cma camlp4/camlp4orf.byte camlp4/camlp4orf.cma camlp4/Camlp4Parsers/Camlp4AstLoader.cmo camlp4/Camlp4Parsers/Camlp4DebugParser.cmo camlp4/Camlp4Parsers/Camlp4GrammarParser.cmo camlp4/Camlp4Parsers/Camlp4ListComprehension.cmo camlp4/Camlp4Parsers/Camlp4MacroParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4OCamlParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmo camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmo camlp4/Camlp4Printers/Camlp4AstDumper.cmo camlp4/Camlp4Printers/Camlp4AutoPrinter.cmo camlp4/Camlp4Printers/Camlp4NullDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlPrinter.cmo camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.cmo camlp4/Camlp4Filters/Camlp4AstLifter.cmo camlp4/Camlp4Filters/Camlp4ExceptionTracer.cmo camlp4/Camlp4Filters/Camlp4FoldGenerator.cmo camlp4/Camlp4Filters/Camlp4LocationStripper.cmo camlp4/Camlp4Filters/Camlp4MapGenerator.cmo camlp4/Camlp4Filters/Camlp4MetaGenerator.cmo camlp4/Camlp4Filters/Camlp4Profiler.cmo camlp4/Camlp4Filters/Camlp4TrashRemover.cmo
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4/Struct/Camlp4Ast2OCamlAst.mli > camlp4/Camlp4/Struct/Camlp4Ast2OCamlAst.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4/Struct -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Struct/Camlp4Ast2OCamlAst.cmi camlp4/Camlp4/Struct/Camlp4Ast2OCamlAst.mli
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4/Struct/Camlp4Ast2OCamlAst.ml > camlp4/Camlp4/Struct/Camlp4Ast2OCamlAst.ml.depends
@@ -1481,6 +1479,101 @@ The following actions will be performed:
 -> installed camlp4.4.02.1+2
 [lwt: ./configure] Command started
 [type_conv: make] Command started
++ make  (CWD=/home/opam/.opam/4.02.1/build/type_conv.112.01.01)
+- ocamlopt.opt -o setup.exe setup.ml || ocamlopt -o setup.exe setup.ml || ocamlc -o setup.exe setup.ml
+- rm -f setup.cmx setup.cmi setup.o setup.obj setup.cmo
+- ./setup.exe -configure 
+- 
+- Configuration: 
+- ocamlfind: ........................................... /home/opam/.opam/4.02.1/bin/ocamlfind
+- ocamlc: .............................................. /home/opam/.opam/4.02.1/bin/ocamlc.opt
+- ocamlopt: ............................................ /home/opam/.opam/4.02.1/bin/ocamlopt.opt
+- ocamlbuild: .......................................... /home/opam/.opam/4.02.1/bin/ocamlbuild
+- Package name: ........................................ type_conv
+- Package version: ..................................... 112.01.01
+- os_type: ............................................. Unix
+- system: .............................................. linux
+- architecture: ........................................ amd64
+- ccomp_type: .......................................... cc
+- ocaml_version: ....................................... 4.02.1
+- standard_library_default: ............................ /home/opam/.opam/4.02.1/lib/ocaml
+- standard_library: .................................... /home/opam/.opam/4.02.1/lib/ocaml
+- standard_runtime: .................................... /home/opam/.opam/4.02.1/bin/ocamlrun
+- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
+- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
+- model: ............................................... default
+- ext_obj: ............................................. .o
+- ext_asm: ............................................. .s
+- ext_lib: ............................................. .a
+- ext_dll: ............................................. .so
+- default_executable_name: ............................. a.out
+- systhread_supported: ................................. true
+- Install architecture-independent files dir: .......... /usr/local
+- Install architecture-dependent files in dir: ......... $prefix
+- User executables: .................................... $exec_prefix/bin
+- System admin executables: ............................ $exec_prefix/sbin
+- Program executables: ................................. $exec_prefix/libexec
+- Read-only single-machine data: ....................... $prefix/etc
+- Modifiable architecture-independent data: ............ $prefix/com
+- Modifiable single-machine data: ...................... $prefix/var
+- Object code libraries: ............................... $exec_prefix/lib
+- Read-only arch-independent data root: ................ $prefix/share
+- Read-only architecture-independent data: ............. $datarootdir
+- Info documentation: .................................. $datarootdir/info
+- Locale-dependent data: ............................... $datarootdir/locale
+- Man documentation: ................................... $datarootdir/man
+- Documentation root: .................................. $datarootdir/doc/$pkg_name
+- HTML documentation: .................................. $docdir
+- DVI documentation: ................................... $docdir
+- PDF documentation: ................................... $docdir
+- PS documentation: .................................... $docdir
+- findlib_version: ..................................... 1.5.5
+- is_native: ........................................... true
+- suffix_program: ...................................... 
+- Remove a file.: ...................................... rm -f
+- Remove a directory.: ................................. rm -rf
+- Turn ocaml debug flag on: ............................ true
+- Turn ocaml profile flag on: .......................... false
+- Compiler support generation of .cmxs.: ............... true
+- OCamlbuild additional flags: ......................... 
+- Create documentations: ............................... true
+- Compile tests executable and library and run them: ... false
+- camlp4o: ............................................. /home/opam/.opam/4.02.1/bin/camlp4o
+- pkg_camlp4_quotations: ............................... /home/opam/.opam/4.02.1/lib/ocaml/camlp4
+- pkg_camlp4_extend: ................................... /home/opam/.opam/4.02.1/lib/ocaml/camlp4
+- 
+- ./setup.exe -build 
+- ocamlfind ocamlopt unix.cmxa -I /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa -linkpkg myocamlbuild.ml /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package camlp4.quotations -package camlp4.extend -modules lib/pa_type_conv.mli > lib/pa_type_conv.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -package camlp4.quotations -package camlp4.extend -I lib -o lib/pa_type_conv.cmi lib/pa_type_conv.mli
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -syntax camlp4o -package camlp4.quotations -package camlp4.extend -modules lib/pa_type_conv.ml > lib/pa_type_conv.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package camlp4.quotations -package camlp4.extend -I lib -o lib/pa_type_conv.cmo lib/pa_type_conv.ml
+- + /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package camlp4.quotations -package camlp4.extend -I lib -o lib/pa_type_conv.cmo lib/pa_type_conv.ml
+- File "lib/pa_type_conv.ml", line 291, characters 6-20:
+- Warning 3: deprecated: Format.bprintf
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a lib/pa_type_conv.cmo -o lib/pa_type_conv.cma
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package camlp4.quotations -package camlp4.extend -I lib -o lib/pa_type_conv.cmx lib/pa_type_conv.ml
+- + /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package camlp4.quotations -package camlp4.extend -I lib -o lib/pa_type_conv.cmx lib/pa_type_conv.ml
+- File "lib/pa_type_conv.ml", line 291, characters 6-20:
+- Warning 3: deprecated: Format.bprintf
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a lib/pa_type_conv.cmx -o lib/pa_type_conv.cmxa
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared lib/pa_type_conv.cmxa lib/pa_type_conv.cmx -o lib/pa_type_conv.cmxs
+[type_conv: make install] Command started
++ make "install" (CWD=/home/opam/.opam/4.02.1/build/type_conv.112.01.01)
+- ./setup.exe -install 
+- Installed /home/opam/.opam/4.02.1/lib/type_conv/pa_type_conv.mli
+- Installed /home/opam/.opam/4.02.1/lib/type_conv/pa_type_conv.cma
+- Installed /home/opam/.opam/4.02.1/lib/type_conv/pa_type_conv.cmxa
+- Installed /home/opam/.opam/4.02.1/lib/type_conv/pa_type_conv.a
+- Installed /home/opam/.opam/4.02.1/lib/type_conv/pa_type_conv.cmxs
+- Installed /home/opam/.opam/4.02.1/lib/type_conv/pa_type_conv.cmi
+- Installed /home/opam/.opam/4.02.1/lib/type_conv/pa_type_conv.cmti
+- Installed /home/opam/.opam/4.02.1/lib/type_conv/pa_type_conv.cmt
+- Installed /home/opam/.opam/4.02.1/lib/type_conv/pa_type_conv.annot
+- Installed /home/opam/.opam/4.02.1/lib/type_conv/pa_type_conv.cmx
+- Installed /home/opam/.opam/4.02.1/lib/type_conv/META
+-> installed type_conv.112.01.01
+[sexplib: ./configure] Command started
 + ./configure "--prefix" "/home/opam/.opam/4.02.1" "--disable-libev" "--enable-camlp4" "--disable-react" "--disable-ssl" "--enable-unix" "--enable-preemptive" "--disable-glib" "--enable-ppx" (CWD=/home/opam/.opam/4.02.1/build/lwt.2.4.8)
 - not checking for pkg-config
 - not checking for libev
@@ -1577,101 +1670,6 @@ The following actions will be performed:
 - ocamldoc: ............................................ /home/opam/.opam/4.02.1/bin/ocamldoc
 - 
 [lwt: make build] Command started
-+ make  (CWD=/home/opam/.opam/4.02.1/build/type_conv.112.01.01)
-- ocamlopt.opt -o setup.exe setup.ml || ocamlopt -o setup.exe setup.ml || ocamlc -o setup.exe setup.ml
-- rm -f setup.cmx setup.cmi setup.o setup.obj setup.cmo
-- ./setup.exe -configure 
-- 
-- Configuration: 
-- ocamlfind: ........................................... /home/opam/.opam/4.02.1/bin/ocamlfind
-- ocamlc: .............................................. /home/opam/.opam/4.02.1/bin/ocamlc.opt
-- ocamlopt: ............................................ /home/opam/.opam/4.02.1/bin/ocamlopt.opt
-- ocamlbuild: .......................................... /home/opam/.opam/4.02.1/bin/ocamlbuild
-- Package name: ........................................ type_conv
-- Package version: ..................................... 112.01.01
-- os_type: ............................................. Unix
-- system: .............................................. linux
-- architecture: ........................................ amd64
-- ccomp_type: .......................................... cc
-- ocaml_version: ....................................... 4.02.1
-- standard_library_default: ............................ /home/opam/.opam/4.02.1/lib/ocaml
-- standard_library: .................................... /home/opam/.opam/4.02.1/lib/ocaml
-- standard_runtime: .................................... /home/opam/.opam/4.02.1/bin/ocamlrun
-- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
-- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
-- model: ............................................... default
-- ext_obj: ............................................. .o
-- ext_asm: ............................................. .s
-- ext_lib: ............................................. .a
-- ext_dll: ............................................. .so
-- default_executable_name: ............................. a.out
-- systhread_supported: ................................. true
-- Install architecture-independent files dir: .......... /usr/local
-- Install architecture-dependent files in dir: ......... $prefix
-- User executables: .................................... $exec_prefix/bin
-- System admin executables: ............................ $exec_prefix/sbin
-- Program executables: ................................. $exec_prefix/libexec
-- Read-only single-machine data: ....................... $prefix/etc
-- Modifiable architecture-independent data: ............ $prefix/com
-- Modifiable single-machine data: ...................... $prefix/var
-- Object code libraries: ............................... $exec_prefix/lib
-- Read-only arch-independent data root: ................ $prefix/share
-- Read-only architecture-independent data: ............. $datarootdir
-- Info documentation: .................................. $datarootdir/info
-- Locale-dependent data: ............................... $datarootdir/locale
-- Man documentation: ................................... $datarootdir/man
-- Documentation root: .................................. $datarootdir/doc/$pkg_name
-- HTML documentation: .................................. $docdir
-- DVI documentation: ................................... $docdir
-- PDF documentation: ................................... $docdir
-- PS documentation: .................................... $docdir
-- findlib_version: ..................................... 1.5.5
-- is_native: ........................................... true
-- suffix_program: ...................................... 
-- Remove a file.: ...................................... rm -f
-- Remove a directory.: ................................. rm -rf
-- Turn ocaml debug flag on: ............................ true
-- Turn ocaml profile flag on: .......................... false
-- Compiler support generation of .cmxs.: ............... true
-- OCamlbuild additional flags: ......................... 
-- Create documentations: ............................... true
-- Compile tests executable and library and run them: ... false
-- camlp4o: ............................................. /home/opam/.opam/4.02.1/bin/camlp4o
-- pkg_camlp4_quotations: ............................... /home/opam/.opam/4.02.1/lib/ocaml/camlp4
-- pkg_camlp4_extend: ................................... /home/opam/.opam/4.02.1/lib/ocaml/camlp4
-- 
-- ./setup.exe -build 
-- ocamlfind ocamlopt unix.cmxa -I /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa -linkpkg myocamlbuild.ml /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package camlp4.quotations -package camlp4.extend -modules lib/pa_type_conv.mli > lib/pa_type_conv.mli.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -package camlp4.quotations -package camlp4.extend -I lib -o lib/pa_type_conv.cmi lib/pa_type_conv.mli
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -syntax camlp4o -package camlp4.quotations -package camlp4.extend -modules lib/pa_type_conv.ml > lib/pa_type_conv.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package camlp4.quotations -package camlp4.extend -I lib -o lib/pa_type_conv.cmo lib/pa_type_conv.ml
-- + /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package camlp4.quotations -package camlp4.extend -I lib -o lib/pa_type_conv.cmo lib/pa_type_conv.ml
-- File "lib/pa_type_conv.ml", line 291, characters 6-20:
-- Warning 3: deprecated: Format.bprintf
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a lib/pa_type_conv.cmo -o lib/pa_type_conv.cma
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package camlp4.quotations -package camlp4.extend -I lib -o lib/pa_type_conv.cmx lib/pa_type_conv.ml
-- + /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package camlp4.quotations -package camlp4.extend -I lib -o lib/pa_type_conv.cmx lib/pa_type_conv.ml
-- File "lib/pa_type_conv.ml", line 291, characters 6-20:
-- Warning 3: deprecated: Format.bprintf
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a lib/pa_type_conv.cmx -o lib/pa_type_conv.cmxa
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared lib/pa_type_conv.cmxa lib/pa_type_conv.cmx -o lib/pa_type_conv.cmxs
-[type_conv: make install] Command started
-+ make "install" (CWD=/home/opam/.opam/4.02.1/build/type_conv.112.01.01)
-- ./setup.exe -install 
-- Installed /home/opam/.opam/4.02.1/lib/type_conv/pa_type_conv.mli
-- Installed /home/opam/.opam/4.02.1/lib/type_conv/pa_type_conv.cma
-- Installed /home/opam/.opam/4.02.1/lib/type_conv/pa_type_conv.cmxa
-- Installed /home/opam/.opam/4.02.1/lib/type_conv/pa_type_conv.a
-- Installed /home/opam/.opam/4.02.1/lib/type_conv/pa_type_conv.cmxs
-- Installed /home/opam/.opam/4.02.1/lib/type_conv/pa_type_conv.cmi
-- Installed /home/opam/.opam/4.02.1/lib/type_conv/pa_type_conv.cmti
-- Installed /home/opam/.opam/4.02.1/lib/type_conv/pa_type_conv.cmt
-- Installed /home/opam/.opam/4.02.1/lib/type_conv/pa_type_conv.annot
-- Installed /home/opam/.opam/4.02.1/lib/type_conv/pa_type_conv.cmx
-- Installed /home/opam/.opam/4.02.1/lib/type_conv/META
--> installed type_conv.112.01.01
-[sexplib: ./configure] Command started
 + ./configure "--enable-syntax" (CWD=/home/opam/.opam/4.02.1/build/sexplib.112.24.01)
 - 
 - Configuration: 
@@ -2485,6 +2483,7 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -syntax camlp4o -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -modules syntax/pa_lwt_options.ml > syntax/pa_lwt_options.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -safe-string -syntax camlp4o -syntax camlp4o -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -I syntax -o syntax/pa_lwt_options.cmo syntax/pa_lwt_options.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -safe-string -syntax camlp4o -syntax camlp4o -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -I syntax -o syntax/pa_lwt.cmo syntax/pa_lwt.ml
+- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a syntax/pa_lwt.cmo -o syntax/lwt-syntax.cma
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -safe-string -syntax camlp4o -syntax camlp4o -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -I syntax -o syntax/pa_lwt_options.cmx syntax/pa_lwt_options.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -safe-string -syntax camlp4o -syntax camlp4o -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -I syntax -o syntax/pa_lwt.cmx syntax/pa_lwt.ml
@@ -2517,7 +2516,6 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared ppx/ppx.cmxa ppx/ppx_lwt.cmx -o ppx/ppx.cmxs
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package ppx_tools.metaquot -package compiler-libs.common -modules ppx/ppx_lwt_ex.ml > ppx/ppx_lwt_ex.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -safe-string -package ppx_tools.metaquot -package compiler-libs.common -I ppx -o ppx/ppx_lwt_ex.cmo ppx/ppx_lwt_ex.ml
-- ocamlfind: Package `wikidoc' not found
 - + /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -safe-string -package ppx_tools.metaquot -package compiler-libs.common -I ppx -o ppx/ppx_lwt_ex.cmo ppx/ppx_lwt_ex.ml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -safe-string -package ppx_tools.metaquot -package compiler-libs.common -I ppx -o ppx/ppx_lwt_ex.cmx ppx/ppx_lwt_ex.ml
