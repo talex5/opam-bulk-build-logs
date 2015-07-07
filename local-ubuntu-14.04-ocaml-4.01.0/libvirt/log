@@ -1,8 +1,8 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux ubuntu
 + uname -s
 + lsb_release -i -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=libvirt
+# Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=libvirt
 # The following system packages are needed:
 #  - libvirt-dev
@@ -29,28 +29,28 @@ Get:5 http://archive.ubuntu.com trusty-updates/main Sources [248 kB]
 Get:6 http://archive.ubuntu.com trusty-updates/restricted Sources [2310 B]
 Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [141 kB]
 Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [636 kB]
++ sudo apt-get install -qq -yy libvirt-dev m4
 Get:9 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [15.1 kB]
 Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [356 kB]
-Get:11 http://archive.ubuntu.com trusty-security/main Sources [97.2 kB]
+Get:11 http://archive.ubuntu.com trusty-security/main Sources [97.7 kB]
 Get:12 http://archive.ubuntu.com trusty-security/restricted Sources [1874 B]
 Get:13 http://archive.ubuntu.com trusty-security/universe Sources [23.3 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [329 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [128 kB]
-Fetched 2120 kB in 6s (326 kB/s)
+Fetched 2122 kB in 5s (423 kB/s)
 Reading package lists...
-+ sudo apt-get install -qq -yy libvirt-dev m4
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libvirt-dev m4
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
-Selecting previously unselected package libcap-ng0.
 debconf: falling back to frontend: Readline
 debconf: unable to initialize frontend: Readline
 debconf: (This frontend requires a controlling tty.)
 debconf: falling back to frontend: Teletype
 dpkg-preconfigure: unable to re-open stdin: 
+Selecting previously unselected package libcap-ng0.
 (Reading database ... 23161 files and directories currently installed.)
 Preparing to unpack .../libcap-ng0_0.7.3-1ubuntu2_amd64.deb ...
 Unpacking libcap-ng0 (0.7.3-1ubuntu2) ...
@@ -115,8 +115,8 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [ocamlfind: from default] Command started
 [libvirt: from default] Command started
-[default] http://opam-archive:8080/archives/libvirt.0.6.1.2+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/libvirt.0.6.1.2+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -132,6 +132,8 @@ The following actions will be performed:
 - native dynlink: found
 - labltk: found
 - ocamlbuild: found
+- File "itest-aux/ppx.ml", line 1, characters 0-25:
+- Error: Unbound value Toploop.preprocess_phrase
 - camlp4: using camlp4, style 310
 - compiler-libs: found
 - dbm: not present (normal since OCaml-4.00)
@@ -173,13 +175,12 @@ The following actions will be performed:
 - Configuration has been written to Makefile.config
 - 
 - You can now do 'make all', and optionally 'make opt', to build ocamlfind.
-- File "itest-aux/ppx.ml", line 1, characters 0-25:
-- Error: Unbound value Toploop.preprocess_phrase
 [ocamlfind: make all] Command started
 + make "all" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
 - for p in findlib bytes; do ( cd src/$p; make all ) || exit; done
 - make[1]: Entering directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
 - ocamllex fl_meta.mll
+- Makefile:160: depend: No such file or directory
 - 22 states, 392 transitions, table size 1700 bytes
 - ocamldep *.ml *.mli >depend
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
@@ -207,7 +208,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
-- Makefile:160: depend: No such file or directory
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
@@ -347,7 +347,8 @@ The following actions will be performed:
 - checking whether the C compiler works... yes
 - checking for C compiler default output file name... a.out
 - checking for suffix of executables... 
-- checking whether we are cross compiling... no
+- checking whether we are cross compiling... 
+- no
 - checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
@@ -357,12 +358,14 @@ The following actions will be performed:
 - checking how to run the C preprocessor... gcc -E
 - checking for function prototypes... yes
 - checking whether gcc and cc understand -c and -o together... yes
-- checking build system type... x86_64-unknown-linux-gnu
+- checking build system type... 
+- x86_64-unknown-linux-gnu
 - checking host system type... x86_64-unknown-linux-gnu
 - checking for virConnectOpen in -lvirt... yes
 - checking for grep that handles long lines and -e... /bin/grep
 - checking for egrep... /bin/grep -E
-- checking for ANSI C header files... yes
+- checking for ANSI C header files... 
+- yes
 - checking for sys/types.h... yes
 - checking for sys/stat.h... yes
 - checking for stdlib.h... yes
@@ -372,75 +375,74 @@ The following actions will be performed:
 - checking for inttypes.h... yes
 - checking for stdint.h... yes
 - checking for unistd.h... yes
-- checking libvirt/libvirt.h usability... yes
+- checking libvirt/libvirt.h usability... 
+- yes
 - checking libvirt/libvirt.h presence... yes
 - checking for libvirt/libvirt.h... yes
-- checking libvirt/virterror.h usability... 
-- yes
+- checking libvirt/virterror.h usability... yes
 - checking libvirt/virterror.h presence... yes
 - checking for libvirt/virterror.h... yes
 - checking for virConnectGetCapabilities... yes
 - checking for virConnectGetHostname... yes
-- checking for virConnectGetURI... 
-- yes
+- checking for virConnectGetURI... yes
 - checking for virDomainBlockStats... yes
-- checking for virDomainGetSchedulerParameters... yes
-- checking for virDomainGetSchedulerType... yes
-- checking for virDomainInterfaceStats... 
+- checking for virDomainGetSchedulerParameters... 
 - yes
+- checking for virDomainGetSchedulerType... yes
+- checking for virDomainInterfaceStats... yes
 - checking for virDomainMigrate... yes
 - checking for virDomainSetSchedulerParameters... yes
-- checking for virNodeGetFreeMemory... yes
+- checking for virNodeGetFreeMemory... 
+- yes
 - checking for virNodeGetCellsFreeMemory... yes
 - checking for virStoragePoolGetConnect... yes
 - checking for virConnectNumOfStoragePools... yes
-- checking for virConnectListStoragePools... 
-- yes
+- checking for virConnectListStoragePools... yes
 - checking for virConnectNumOfDefinedStoragePools... yes
-- checking for virConnectListDefinedStoragePools... yes
+- checking for virConnectListDefinedStoragePools... 
+- yes
 - checking for virStoragePoolLookupByName... yes
 - checking for virStoragePoolLookupByUUID... yes
 - checking for virStoragePoolLookupByUUIDString... yes
-- checking for virStoragePoolLookupByVolume... yes
-- checking for virStoragePoolCreateXML... 
+- checking for virStoragePoolLookupByVolume... 
 - yes
+- checking for virStoragePoolCreateXML... yes
 - checking for virStoragePoolDefineXML... yes
 - checking for virStoragePoolBuild... yes
 - checking for virStoragePoolUndefine... yes
 - checking for virStoragePoolCreate... yes
 - checking for virStoragePoolDestroy... yes
-- checking for virStoragePoolDelete... 
-- yes
+- checking for virStoragePoolDelete... yes
 - checking for virStoragePoolFree... yes
-- checking for virStoragePoolRefresh... yes
+- checking for virStoragePoolRefresh... 
+- yes
 - checking for virStoragePoolGetName... yes
 - checking for virStoragePoolGetUUID... yes
 - checking for virStoragePoolGetUUIDString... yes
-- checking for virStoragePoolGetInfo... 
-- yes
+- checking for virStoragePoolGetInfo... yes
 - checking for virStoragePoolGetXMLDesc... yes
-- checking for virStoragePoolGetAutostart... yes
+- checking for virStoragePoolGetAutostart... 
+- yes
 - checking for virStoragePoolSetAutostart... yes
 - checking for virStoragePoolNumOfVolumes... yes
 - checking for virStoragePoolListVolumes... yes
 - checking for virStorageVolLookupByName... yes
-- checking for virStorageVolLookupByKey... 
-- yes
+- checking for virStorageVolLookupByKey... yes
 - checking for virStorageVolLookupByPath... yes
 - checking for virStorageVolGetName... yes
 - checking for virStorageVolGetKey... yes
 - checking for virStorageVolCreateXML... yes
 - checking for virStorageVolDelete... yes
 - checking for virStorageVolFree... yes
-- checking for virStorageVolGetInfo... 
-- yes
+- checking for virStorageVolGetInfo... yes
 - checking for virStorageVolGetXMLDesc... yes
-- checking for virStorageVolGetPath... yes
-- checking for virDomainBlockPeek... yes
-- checking for virDomainMemoryPeek... yes
-- checking for virDomainGetCPUStats... yes
-- checking for virStoragePoolPtr... 
+- checking for virStorageVolGetPath... 
 - yes
+- checking for virDomainBlockPeek... yes
+- checking for virDomainMemoryPeek... 
+- yes
+- checking for virDomainGetCPUStats... yes
+- checking for virStoragePoolPtr... yes
 - checking for virStorageVolPtr... yes
 - checking for ocamlc... ocamlc
 - OCaml version is 4.01.0
