@@ -1,24 +1,30 @@
++ uname -m
 # Detecting depexts using flags: x86_64 linux debian
++ uname -s
++ opam list --safe --recursive --external=x86_64,linux,debian --required-by=riak
 # The following system packages are needed:
 #  - m4
 #  - protobuf-compiler
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=riak
 Not running as root, system installation will be done through "sudo"
-Hit http://security.debian.org stable/updates Release.gpg
++ sudo apt-get update
 Hit http://download.opensuse.org  Release.gpg
+Hit http://security.debian.org stable/updates Release.gpg
 Hit http://http.debian.net stable Release.gpg
 Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
+Hit http://download.opensuse.org  Release
 Hit http://security.debian.org stable/updates Release
 Hit http://http.debian.net stable Release
-Hit http://download.opensuse.org  Release
 Get:2 http://http.debian.net stable-updates Release [124 kB]
-Hit http://security.debian.org stable/updates/main amd64 Packages
 Hit http://download.opensuse.org  Packages
+Hit http://security.debian.org stable/updates/main amd64 Packages
 Hit http://http.debian.net stable/main amd64 Packages
 Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
-Fetched 129 kB in 1s (117 kB/s)
+Fetched 129 kB in 1s (105 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
++ sudo apt-get install -qq -yy m4 protobuf-compiler
 debconf: delaying package configuration, since apt-utils is not installed
 Selecting previously unselected package libprotobuf7.
 (Reading database ... 19958 files and directories currently installed.)
@@ -56,34 +62,34 @@ The following actions will be performed:
 [lwt: from default] Command started
 [camlp4: from default] Command started
 [easy-format: from default] Command started
+[lwt: from default] Command started
 [default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
-[lwt: from default] Command started
 [default] http://opam-archive:8080/archives/easy-format.1.0.2+opam.tar.gz downloaded
 [optcomp: from default] Command started
-[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/lwt.2.4.5+opam.tar.gz downloaded
 [ounit: from default] Command started
+[ocamlfind: from default] Command started
 [optcomp: from default] Command started
+[ounit: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [piqi: from default] Command started
-[ounit: from default] Command started
 [default] http://opam-archive:8080/archives/optcomp.1.6+opam.tar.gz downloaded
 [piqilib: from default] Command started
-[piqi: from default] Command started
 [default] http://opam-archive:8080/archives/ounit.2.0.0+opam.tar.gz downloaded
 [riak: from default] Command started
+[piqi: from default] Command started
+[piqilib: from default] Command started
 [default] http://opam-archive:8080/archives/piqi.0.7.1+opam.tar.gz downloaded
 [riak-pb: from default] Command started
-[piqilib: from default] Command started
 [riak: from default] Command started
 [default] http://opam-archive:8080/archives/piqilib.0.6.10+opam.tar.gz downloaded
 [ulex: from default] Command started
+[riak-pb: from default] Command started
 [default] http://opam-archive:8080/archives/riak.1.0.0+opam.tar.gz downloaded
 [xmlm: from default] Command started
-[riak-pb: from default] Command started
-[ulex: from default] Command started
 [default] http://opam-archive:8080/archives/riak-pb.1.0.0+opam.tar.gz downloaded
+[ulex: from default] Command started
 [xmlm: from default] Command started
 [default] http://opam-archive:8080/archives/ulex.1.1+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/xmlm.1.2.0+opam.tar.gz downloaded
@@ -170,6 +176,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -215,12 +223,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -229,8 +237,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -2435,6 +2441,7 @@ The following actions will be performed:
 - Installed /home/opam/.opam/4.02.1/lib/piqirun/META
 -> installed piqi.0.7.1
 [riak-pb: ./configure] Command started
+[ERROR] The compilation of riak-pb failed at "./configure".
 + ./configure  (CWD=/home/opam/.opam/4.02.1/build/riak-pb.1.0.0)
 - File "setup.ml", line 213, characters 8-26:
 - Warning 3: deprecated: String.set
@@ -2443,13 +2450,12 @@ The following actions will be performed:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
 - ocamlfind: Package `piqi' not found
-- W: Field 'pkg_piqi' is not set: Command ''/home/opam/.opam/4.02.1/bin/ocamlfind' query -format %d piqi > '/tmp/oasis-e713ef.txt'' terminated with error code 2
+- W: Field 'pkg_piqi' is not set: Command ''/home/opam/.opam/4.02.1/bin/ocamlfind' query -format %d piqi > '/tmp/oasis-9166c5.txt'' terminated with error code 2
 - ocamlfind: Package `piqi.runtime' not found
-- W: Field 'pkg_piqi_runtime' is not set: Command ''/home/opam/.opam/4.02.1/bin/ocamlfind' query -format %d piqi.runtime > '/tmp/oasis-ebb4ce.txt'' terminated with error code 2
+- W: Field 'pkg_piqi_runtime' is not set: Command ''/home/opam/.opam/4.02.1/bin/ocamlfind' query -format %d piqi.runtime > '/tmp/oasis-13c42b.txt'' terminated with error code 2
 - E: Cannot find findlib package piqi
 - E: Cannot find findlib package piqi.runtime
 - E: Failure("2 configuration errors")
-[ERROR] The compilation of riak-pb failed at "./configure".
 [riak-pb: ocamlfind remove] Command started
 + ocamlfind "remove" "riak-pb" (CWD=/home/opam/.opam/4.02.1/build/riak-pb.1.0.0)
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/4.02.1/lib/riak-pb
@@ -2844,13 +2850,6 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I src/core -I src/logger -package bigarray -package camlp4 -package unix -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -ppopt syntax/pa_optcomp.cmo -I src/unix -I src/core -I src/logger -o src/unix/lwt_main.cmx src/unix/lwt_main.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I src/core -I src/logger -package bigarray -package camlp4 -package unix -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -ppopt syntax/pa_optcomp.cmo -I src/unix -I src/core -I src/logger -o src/unix/lwt_unix_jobs_generated.cmx src/unix/lwt_unix_jobs_generated.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I src/core -I src/logger -package bigarray -package camlp4 -package unix -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -ppopt syntax/pa_optcomp.cmo -I src/unix -I src/core -I src/logger -o src/unix/lwt_unix.cmx src/unix/lwt_unix.ml
-- File "setup.ml", line 254, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "setup.ml", line 2419, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
-- ocamlfind: Package `wikidoc' not found
 - + /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I src/core -I src/logger -package bigarray -package camlp4 -package unix -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -ppopt syntax/pa_optcomp.cmo -I src/unix -I src/core -I src/logger -o src/unix/lwt_unix.cmx src/unix/lwt_unix.ml
 - File "src/unix/lwt_unix.ml", line 2187, characters 26-39:
 - Warning 3: deprecated: String.create
@@ -2887,6 +2886,13 @@ The following actions will be performed:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I src/core -I src/logger -package bigarray -package camlp4 -package unix -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -ppopt syntax/pa_optcomp.cmo -I src/unix -I src/core -I src/logger -o src/unix/lwt_daemon.cmx src/unix/lwt_daemon.ml
+- File "setup.ml", line 254, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "setup.ml", line 2419, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
+- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I src/core -I src/logger -package bigarray -package camlp4 -package unix -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -ppopt syntax/pa_optcomp.cmo -I src/unix -I src/core -I src/logger -o src/unix/lwt_gc.cmx src/unix/lwt_gc.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I src/core -I src/logger -package bigarray -package camlp4 -package unix -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -ppopt syntax/pa_optcomp.cmo -I src/unix -I src/core -I src/logger -o src/unix/lwt_process.cmx src/unix/lwt_process.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I src/core -I src/logger -package bigarray -package camlp4 -package unix -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -ppopt syntax/pa_optcomp.cmo -I src/unix -I src/core -I src/logger -o src/unix/lwt_throttle.cmx src/unix/lwt_throttle.ml
@@ -2966,9 +2972,9 @@ The following actions will be performed:
 # Warning 3: deprecated: Lazy.lazy_from_fun
 # Use Lazy.from_fun instead.
 # ocamlfind: Package `piqi' not found
-# W: Field 'pkg_piqi' is not set: Command ''/home/opam/.opam/4.02.1/bin/ocamlfind' query -format %d piqi > '/tmp/oasis-e713ef.txt'' terminated with error code 2
+# W: Field 'pkg_piqi' is not set: Command ''/home/opam/.opam/4.02.1/bin/ocamlfind' query -format %d piqi > '/tmp/oasis-9166c5.txt'' terminated with error code 2
 # ocamlfind: Package `piqi.runtime' not found
-# W: Field 'pkg_piqi_runtime' is not set: Command ''/home/opam/.opam/4.02.1/bin/ocamlfind' query -format %d piqi.runtime > '/tmp/oasis-ebb4ce.txt'' terminated with error code 2
+# W: Field 'pkg_piqi_runtime' is not set: Command ''/home/opam/.opam/4.02.1/bin/ocamlfind' query -format %d piqi.runtime > '/tmp/oasis-13c42b.txt'' terminated with error code 2
 # E: Cannot find findlib package piqi
 # E: Cannot find findlib package piqi.runtime
 # E: Failure("2 configuration errors")
@@ -3137,5 +3143,5 @@ The following changes have been performed
   - install xmlm        1.2.0   
 
 The former state can be restored with:
-    opam switch import "~/.opam/4.02.1/backup/state-20150301005356.export"
+    opam switch import "~/.opam/4.02.1/backup/state-20150303172812.export"
 'opam install riak' failed.
