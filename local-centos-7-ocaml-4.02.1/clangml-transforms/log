@@ -1,19 +1,19 @@
 + uname -m
 + uname -s
-+ opam list --safe --recursive --external=x86_64,linux,centos --required-by=clangml-transforms
 # Detecting depexts using flags: x86_64 linux centos
++ opam list --safe --recursive --external=x86_64,linux,centos --required-by=clangml-transforms
 # The following system packages are needed:
 #  - gmp
 #  - gmp-devel
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=clangml-transforms
-+ sudo yum -y update
 Not running as root, the following command will be run through "sudo":
     yum -y update
++ sudo yum -y update
 Loaded plugins: fastestmirror
 Repodata is over 2 weeks old. Install yum-cron? Or run: yum makecache fast
 Determining fastest mirrors
  * base: anorien.csc.warwick.ac.uk
- * extras: mirrors.coreix.net
+ * extras: repo.bigstepcloud.com
  * updates: mirrors.coreix.net
 Resolving Dependencies
 --> Running transaction check
@@ -58,7 +58,7 @@ Not running as root, the following command will be run through "sudo":
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
  * base: anorien.csc.warwick.ac.uk
- * extras: mirrors.coreix.net
+ * extras: repo.bigstepcloud.com
  * updates: mirrors.coreix.net
 Package 1:gmp-6.0.0-11.el7.x86_64 already installed and latest version
 Resolving Dependencies
@@ -85,19 +85,18 @@ Running transaction check
 Running transaction test
 Transaction test succeeded
 Running transaction
-  Installing : 1:gmp-devel-6.0.0-11.el7.x86_64                              1/1 
+  Installing : 1:gmp-devel-6.0.0-11.el7.x86_64                              1/1+ sudo rpm -q gmp gmp-devel
+ 
   Verifying  : 1:gmp-devel-6.0.0-11.el7.x86_64                              1/1 
 
 Installed:
   gmp-devel.x86_64 1:6.0.0-11.el7                                               
 
 Complete!
-+ sudo rpm -q gmp gmp-devel
 gmp-6.0.0-11.el7.x86_64
 gmp-devel-6.0.0-11.el7.x86_64
 # OS packages installation successful
 The following actions will be performed:
-[ERROR] The compilation of conf-mpfr failed at "cc test.c -lgmp -lmpfr".
   - install conf-pic-switch    0.1                              [required by clangml]
   - install obuild             0.1.3                            [required by clangml-transforms]
   - install camlp4             4.02.1+system                    [required by clangml]
@@ -129,8 +128,8 @@ The following actions will be performed:
 [camlidl: from default] Command started
 [default] http://opam-archive:8080/archives/camlidl.1.05+opam.tar.gz downloaded
 [clangml-transforms: from default] Command started
-[clangml: from default] Command started
-[default] http://opam-archive:8080/archives/clangml.0.5.1+opam.tar.gz downloaded
+[clangml-transforms: from default] Command started
+[default] http://opam-archive:8080/archives/clangml-transforms.0.19+opam.tar.gz downloaded
 [deriving: from default] Command started
 [deriving: from default] Command started
 [default] http://opam-archive:8080/archives/deriving.0.7+opam.tar.gz downloaded
@@ -139,17 +138,17 @@ The following actions will be performed:
 [default] http://opam-archive:8080/archives/batteries.2.3.1+opam.tar.gz downloaded
 [obuild: from default] Command started
 [dolog: from default] Command started
-[clangml-transforms: from default] Command started
-[obuild: from default] Command started
+[clangml: from default] Command started
 [default] http://opam-archive:8080/archives/dolog.1.0+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/clangml-transforms.0.19+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/clangml.0.5.1+opam.tar.gz downloaded
 [optcomp: from default] Command started
-[default] http://opam-archive:8080/archives/obuild.0.1.3+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [optcomp: from default] Command started
 [default] http://opam-archive:8080/archives/optcomp.1.6+opam.tar.gz downloaded
+[obuild: from default] Command started
+[default] http://opam-archive:8080/archives/obuild.0.1.3+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlidl: mv] Command started
@@ -173,8 +172,9 @@ The following actions will be performed:
 [conf-pic-switch: ./check.sh] Command started
 + ./check.sh  (CWD=/home/opam/.opam/system/build/conf-pic-switch.0.1)
 - the /home/opam/.opam/4.02.1+PIC opam compiler switch is not installed
-[obuild: ./bootstrap] Command started
+[ERROR] The compilation of conf-mpfr failed at "cc test.c -lgmp -lmpfr".
 [ERROR] The compilation of conf-pic-switch failed at "./check.sh".
+[obuild: ./bootstrap] Command started
 + make "all" (CWD=/home/opam/.opam/system/build/camlidl.1.05)
 - cd compiler; make all
 - make[1]: Entering directory `/home/opam/.opam/system/build/camlidl.1.05/compiler'
@@ -747,9 +747,9 @@ The following actions will be performed:
 - Warning 27: unused variable isSnapshot.
 - 
 - 
-- real	0m3.837s
-- user	0m2.837s
-- sys	0m1.710s
+- real	0m3.095s
+- user	0m2.543s
+- sys	0m1.590s
 -> installed obuild.0.1.3
 + make "all" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
 - for p in findlib; do ( cd src/$p; make all ) || exit; done
@@ -817,6 +817,13 @@ The following actions will be performed:
 - if ocamlopt.opt >/dev/null 2>&1; then \
 - 	echo 'ocamlopt="ocamlopt.opt"' >>findlib.conf; \
 - fi
+- if ocamldep.opt >/dev/null 2>&1; then \
+- 	echo 'ocamldep="ocamldep.opt"' >>findlib.conf; \
+- fi
+- if ocamldoc.opt >/dev/null 2>&1; then \
+- 	echo 'ocamldoc="ocamldoc.opt"' >>findlib.conf; \
+- fi
+- make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5'
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -870,13 +877,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if ocamldep.opt >/dev/null 2>&1; then \
-- 	echo 'ocamldep="ocamldep.opt"' >>findlib.conf; \
-- fi
-- if ocamldoc.opt >/dev/null 2>&1; then \
-- 	echo 'ocamldoc="ocamldoc.opt"' >>findlib.conf; \
-- fi
-- make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5'
 [ocamlfind: make opt] Command started
 + make "opt" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
 - for p in findlib; do ( cd src/$p; make opt ) || exit; done
@@ -889,8 +889,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
-- ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -935,6 +933,8 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -2969,11 +2969,6 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/show_class.ml > syntax/classes/show_class.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/dump_class.ml > syntax/classes/dump_class.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/enum_class.ml > syntax/classes/enum_class.ml.depends
-- /home/opam/.opam/system/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/bounded_class.ml > syntax/classes/bounded_class.ml.depends
-- /home/opam/.opam/system/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/eq_class.ml > syntax/classes/eq_class.ml.depends
-- /home/opam/.opam/system/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/typeable_class.ml > syntax/classes/typeable_class.ml.depends
-- /home/opam/.opam/system/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/pickle_class.ml > syntax/classes/pickle_class.ml.depends
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/eq_class.cmo syntax/classes/eq_class.ml
 - File "setup.ml", line 246, characters 8-26:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
@@ -2982,6 +2977,11 @@ The following actions will be performed:
 - Use Lazy.from_fun instead.
 - W: Cannot find source file matching module 'pa_deriving_common' in library pa_deriving_common
 - ocamlfind: Package `wikidoc' not found
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/bounded_class.ml > syntax/classes/bounded_class.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/eq_class.ml > syntax/classes/eq_class.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/typeable_class.ml > syntax/classes/typeable_class.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/pickle_class.ml > syntax/classes/pickle_class.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/eq_class.cmo syntax/classes/eq_class.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/typeable_class.cmo syntax/classes/typeable_class.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/functor_class.ml > syntax/classes/functor_class.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/default_class.ml > syntax/classes/default_class.ml.depends
@@ -3091,6 +3091,20 @@ The following actions will be performed:
 #  #include <mpfr.h>
 #                   ^
 # compilation terminated.
+
+
+#=== ERROR while installing conf-pic-switch.0.1 ===============================#
+# opam-version         1.2.2 (c30ed46b7e70bcf0f872e482cbcbf6a1fa0c60b3)
+# os                   linux
+# command              ./check.sh
+# path                 /home/opam/.opam/system/build/conf-pic-switch.0.1
+# compiler             system (4.02.1)
+# exit-code            1
+# env-file             /home/opam/.opam/system/build/conf-pic-switch.0.1/conf-pic-switch-1-70a526.env
+# stdout-file          /home/opam/.opam/system/build/conf-pic-switch.0.1/conf-pic-switch-1-70a526.out
+# stderr-file          /home/opam/.opam/system/build/conf-pic-switch.0.1/conf-pic-switch-1-70a526.err
+### stdout ###
+# the /home/opam/.opam/4.02.1+PIC opam compiler switch is not installed
 
 [deriving: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/deriving.0.7)
@@ -3219,20 +3233,6 @@ The following changes have been performed
    `opam depext conf-mpfr.1' may help you find the correct installation for
    your system.
 
-#=== ERROR while installing conf-pic-switch.0.1 ===============================#
-# opam-version         1.2.2 (c30ed46b7e70bcf0f872e482cbcbf6a1fa0c60b3)
-# os                   linux
-# command              ./check.sh
-# path                 /home/opam/.opam/system/build/conf-pic-switch.0.1
-# compiler             system (4.02.1)
-# exit-code            1
-# env-file             /home/opam/.opam/system/build/conf-pic-switch.0.1/conf-pic-switch-1-70a526.env
-# stdout-file          /home/opam/.opam/system/build/conf-pic-switch.0.1/conf-pic-switch-1-70a526.out
-# stderr-file          /home/opam/.opam/system/build/conf-pic-switch.0.1/conf-pic-switch-1-70a526.err
-### stdout ###
-# the /home/opam/.opam/4.02.1+PIC opam compiler switch is not installed
-
-
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150509222604.export"
+    opam switch import "~/.opam/system/backup/state-20150510090616.export"
 'opam install clangml-transforms' failed.
