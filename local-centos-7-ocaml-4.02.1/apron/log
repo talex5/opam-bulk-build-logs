@@ -2,18 +2,18 @@
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=apron
 # Detecting depexts using flags: x86_64 linux centos
-+ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=apron
 # The following system packages are needed:
 #  - gmp
 #  - gmp-devel
++ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=apron
 Not running as root, the following command will be run through "sudo":
     yum -y update
 + sudo yum -y update
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: mirror.vorboss.net
- * extras: repo.bigstepcloud.com
- * updates: repo.bigstepcloud.com
+ * base: anorien.csc.warwick.ac.uk
+ * extras: centos.serverspace.co.uk
+ * updates: anorien.csc.warwick.ac.uk
 No packages marked for update
 + sudo yum install -y gmp gmp-devel
 # OS package update successful
@@ -23,9 +23,9 @@ Not running as root, the following command will be run through "sudo":
     rpm -q gmp gmp-devel
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: mirror.econdc.com
- * extras: mirror.econdc.com
- * updates: mirror.as29550.net
+ * base: anorien.csc.warwick.ac.uk
+ * extras: mirrors.coreix.net
+ * updates: anorien.csc.warwick.ac.uk
 Package 1:gmp-6.0.0-11.el7.x86_64 already installed and latest version
 Resolving Dependencies
 --> Running transaction check
@@ -48,7 +48,6 @@ Total download size: 180 k
 Installed size: 340 k
 Downloading packages:
 Running transaction check
-+ sudo rpm -q gmp gmp-devel
 Running transaction test
 Transaction test succeeded
 Running transaction
@@ -59,6 +58,7 @@ Installed:
   gmp-devel.x86_64 1:6.0.0-11.el7                                               
 
 Complete!
++ sudo rpm -q gmp gmp-devel
 gmp-6.0.0-11.el7.x86_64
 gmp-devel-6.0.0-11.el7.x86_64
 # OS packages installation successful
@@ -76,14 +76,13 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [camlidl: from default] Command started
 [ocamlfind: from default] Command started
-[apron: from default] Command started
 [default] http://opam-archive:8080/archives/camlidl.1.05+opam.tar.gz downloaded
+[apron: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/apron.0.9.10+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlidl: mv] Command started
-[ERROR] The compilation of conf-mpfr failed at "cc test.c -lgmp -lmpfr".
 [conf-gmp: sh cc -c $CFLAGS test.c] Command started
 + mv "config/Makefile.unix" "config/Makefile" (CWD=/home/opam/.opam/system/build/camlidl.1.05)
 [camlidl: mkdir] Command started
@@ -97,6 +96,7 @@ The following actions will be performed:
 -  #include <mpfr.h>
 -                   ^
 - compilation terminated.
+[ERROR] The compilation of conf-mpfr failed at "cc test.c -lgmp -lmpfr".
 [ocamlfind: ./configure] Command started
 + ./configure "-bindir" "/home/opam/.opam/system/bin" "-sitelib" "/home/opam/.opam/system/lib" "-mandir" "/home/opam/.opam/system/man" "-config" "/home/opam/.opam/system/lib/findlib.conf" "-no-topfind" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
 - Welcome to findlib version 1.5.5
@@ -284,6 +284,27 @@ The following actions will be performed:
 -    char * msg = format_caml_exception(exn_bucket);
 -                 ^
 [camlidl: make install] Command started
++ make "install" "BINDIR=/home/opam/.opam/system/bin" "OCAMLLIB=/home/opam/.opam/system/lib/camlidl" (CWD=/home/opam/.opam/system/build/camlidl.1.05)
+- cd compiler; make install
+- make[1]: Entering directory `/home/opam/.opam/system/build/camlidl.1.05/compiler'
+- cp camlidl /home/opam/.opam/system/bin
+- make[1]: Leaving directory `/home/opam/.opam/system/build/camlidl.1.05/compiler'
+- cd runtime; make install
+- make[1]: Entering directory `/home/opam/.opam/system/build/camlidl.1.05/runtime'
+- cp camlidlruntime.h /home/opam/.opam/system/lib/camlidl/caml/camlidlruntime.h
+- cp libcamlidl.a /home/opam/.opam/system/lib/camlidl/libcamlidl.a
+- cd /home/opam/.opam/system/lib/camlidl; ranlib libcamlidl.a
+- make[1]: Leaving directory `/home/opam/.opam/system/build/camlidl.1.05/runtime'
+- cd lib; make install
+- make[1]: Entering directory `/home/opam/.opam/system/build/camlidl.1.05/lib'
+- cp com.cmi com.cma com.cmxa com.a /home/opam/.opam/system/lib/camlidl
+- cd /home/opam/.opam/system/lib/camlidl; ranlib com.a
+- make[1]: Leaving directory `/home/opam/.opam/system/build/camlidl.1.05/lib'
+- cd tools; make install
+- make[1]: Entering directory `/home/opam/.opam/system/build/camlidl.1.05/tools'
+- make[1]: Nothing to be done for `install'.
+- make[1]: Leaving directory `/home/opam/.opam/system/build/camlidl.1.05/tools'
+-> installed camlidl.1.05
 + make "all" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
 - for p in findlib; do ( cd src/$p; make all ) || exit; done
 - make[1]: Entering directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
@@ -333,30 +354,6 @@ The following actions will be performed:
 - 	../../tools/patch '@SITELIB@' '/home/opam/.opam/system/lib' \
 -     	    >topfind
 - ocamlc -I +compiler-libs -c num_top_printers.mli
-- ocamlc -I +compiler-libs -g -c num_top_printers.ml
-- ocamlc -I +compiler-libs -c num_top.mli
-- ocamlc -I +compiler-libs -g -c num_top.ml
-- ocamlc -I +compiler-libs -a -o num_top.cma num_top_printers.cmo num_top.cmo
-- make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
-- make all-config
-- make[1]: Entering directory `/home/opam/.opam/system/build/ocamlfind.1.5.5'
-- USE_CYGPATH="0"; \
-- export USE_CYGPATH; \
-- cat findlib.conf.in | \
-- 	tools/patch '@SITELIB@' '/home/opam/.opam/system/lib' >findlib.conf
-- if ocamlc.opt >/dev/null 2>&1; then \
-- 	echo 'ocamlc="ocamlc.opt"' >>findlib.conf; \
-- fi
-- if ocamlopt.opt >/dev/null 2>&1; then \
-- 	echo 'ocamlopt="ocamlopt.opt"' >>findlib.conf; \
-- fi
-- if ocamldep.opt >/dev/null 2>&1; then \
-- 	echo 'ocamldep="ocamldep.opt"' >>findlib.conf; \
-- fi
-- if ocamldoc.opt >/dev/null 2>&1; then \
-- 	echo 'ocamldoc="ocamldoc.opt"' >>findlib.conf; \
-- fi
-- make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5'
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -410,28 +407,31 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- ocamlc -I +compiler-libs -g -c num_top_printers.ml
+- ocamlc -I +compiler-libs -c num_top.mli
+- ocamlc -I +compiler-libs -g -c num_top.ml
+- ocamlc -I +compiler-libs -a -o num_top.cma num_top_printers.cmo num_top.cmo
+- make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
+- make all-config
+- make[1]: Entering directory `/home/opam/.opam/system/build/ocamlfind.1.5.5'
+- USE_CYGPATH="0"; \
+- export USE_CYGPATH; \
+- cat findlib.conf.in | \
+- 	tools/patch '@SITELIB@' '/home/opam/.opam/system/lib' >findlib.conf
+- if ocamlc.opt >/dev/null 2>&1; then \
+- 	echo 'ocamlc="ocamlc.opt"' >>findlib.conf; \
+- fi
+- if ocamlopt.opt >/dev/null 2>&1; then \
+- 	echo 'ocamlopt="ocamlopt.opt"' >>findlib.conf; \
+- fi
+- if ocamldep.opt >/dev/null 2>&1; then \
+- 	echo 'ocamldep="ocamldep.opt"' >>findlib.conf; \
+- fi
+- if ocamldoc.opt >/dev/null 2>&1; then \
+- 	echo 'ocamldoc="ocamldoc.opt"' >>findlib.conf; \
+- fi
+- make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5'
 [ocamlfind: make opt] Command started
-+ make "install" "BINDIR=/home/opam/.opam/system/bin" "OCAMLLIB=/home/opam/.opam/system/lib/camlidl" (CWD=/home/opam/.opam/system/build/camlidl.1.05)
-- cd compiler; make install
-- make[1]: Entering directory `/home/opam/.opam/system/build/camlidl.1.05/compiler'
-- cp camlidl /home/opam/.opam/system/bin
-- make[1]: Leaving directory `/home/opam/.opam/system/build/camlidl.1.05/compiler'
-- cd runtime; make install
-- make[1]: Entering directory `/home/opam/.opam/system/build/camlidl.1.05/runtime'
-- cp camlidlruntime.h /home/opam/.opam/system/lib/camlidl/caml/camlidlruntime.h
-- cp libcamlidl.a /home/opam/.opam/system/lib/camlidl/libcamlidl.a
-- cd /home/opam/.opam/system/lib/camlidl; ranlib libcamlidl.a
-- make[1]: Leaving directory `/home/opam/.opam/system/build/camlidl.1.05/runtime'
-- cd lib; make install
-- make[1]: Entering directory `/home/opam/.opam/system/build/camlidl.1.05/lib'
-- cp com.cmi com.cma com.cmxa com.a /home/opam/.opam/system/lib/camlidl
-- cd /home/opam/.opam/system/lib/camlidl; ranlib com.a
-- make[1]: Leaving directory `/home/opam/.opam/system/build/camlidl.1.05/lib'
-- cd tools; make install
-- make[1]: Entering directory `/home/opam/.opam/system/build/camlidl.1.05/tools'
-- make[1]: Nothing to be done for `install'.
-- make[1]: Leaving directory `/home/opam/.opam/system/build/camlidl.1.05/tools'
--> installed camlidl.1.05
 + make "opt" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
 - for p in findlib; do ( cd src/$p; make opt ) || exit; done
 - make[1]: Entering directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
@@ -444,6 +444,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -488,7 +489,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -587,5 +587,5 @@ The following changes have been performed
    your system.
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150324105743.export"
+    opam switch import "~/.opam/system/backup/state-20150325084225.export"
 'opam install apron' failed.
