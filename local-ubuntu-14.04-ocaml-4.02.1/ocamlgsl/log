@@ -8,32 +8,32 @@
 #  - libgsl0-dev
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=ocamlgsl
-+ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
++ sudo apt-get update
+Ign http://download.opensuse.org  InRelease
+Hit http://download.opensuse.org  Release.gpg
+Hit http://download.opensuse.org  Release
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
+Hit http://download.opensuse.org  Packages
 Hit http://archive.ubuntu.com trusty Release.gpg
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
 Hit http://archive.ubuntu.com trusty Release
 Get:3 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
-Ign http://download.opensuse.org  InRelease
 Get:4 http://archive.ubuntu.com trusty-security Release [63.5 kB]
-Hit http://download.opensuse.org  Release.gpg
 Hit http://archive.ubuntu.com trusty/main Sources
-Hit http://download.opensuse.org  Release
 Hit http://archive.ubuntu.com trusty/restricted Sources
 Hit http://archive.ubuntu.com trusty/universe Sources
 Hit http://archive.ubuntu.com trusty/main amd64 Packages
 Hit http://archive.ubuntu.com trusty/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty/universe amd64 Packages
-Hit http://download.opensuse.org  Packages
 Get:5 http://archive.ubuntu.com trusty-updates/main Sources [260 kB]
 Get:6 http://archive.ubuntu.com trusty-updates/restricted Sources [3158 B]
 Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [147 kB]
-Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [665 kB]
+Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [664 kB]
 Get:9 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [18.1 kB]
 Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [366 kB]
 Get:11 http://archive.ubuntu.com trusty-security/main Sources [101 kB]
@@ -42,17 +42,16 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [28.4 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [346 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [134 kB]
-Fetched 2214 kB in 3s (572 kB/s)
+Fetched 2213 kB in 6s (328 kB/s)
 Reading package lists...
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 664676 664679
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages.gz is not what the server reported 365944 365952
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 664490 664680
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy gawk libgsl0-dev m4
 + sudo apt-get install -qq -yy gawk libgsl0-dev m4
 debconf: unable to initialize frontend: Dialog
-Selecting previously unselected package gawk.
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
+Selecting previously unselected package gawk.
 debconf: falling back to frontend: Readline
 debconf: unable to initialize frontend: Readline
 debconf: (This frontend requires a controlling tty.)
@@ -80,10 +79,10 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: from default] Command started
 [ocamlgsl: from default] Command started
-[ocamlfind: from default] Command started
 [ocamlgsl: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlgsl.0.6.0+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -116,8 +115,7 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) 
-- ok
+- Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib/ocaml
@@ -221,6 +219,13 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 		cp topfind.ml.in topfind.ml;                             \
+- 	else                                                             \
+- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 			> topfind.ml ;                                   \
+- 	fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -229,13 +234,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 		cp topfind.ml.in topfind.ml;                             \
-- 	else                                                             \
-- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 			> topfind.ml ;                                   \
-- 	fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -281,6 +279,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -325,7 +324,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -457,6 +455,15 @@ The following actions will be performed:
 - ocamlc -g  -c gsl_vector_complex_flat.ml
 - ocamlc gsl_matrix.mli
 - ocamlc -g  -c gsl_matrix.ml
+- ocamlc gsl_matrix_flat.mli
+- ocamlc -g  -c gsl_matrix_flat.ml
+- ocamlc gsl_matrix_complex.mli
+- ocamlc -g  -c gsl_matrix_complex.ml
+- ocamlc gsl_matrix_complex_flat.mli
+- ocamlc -g  -c gsl_matrix_complex_flat.ml
+- ocamlc gsl_vectmat.mli
+- ocamlc -g  -c gsl_vectmat.ml
+- ocamlc gsl_blas.mli
 - File "gsl_vector_flat.ml", line 21, characters 11-23:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
@@ -472,24 +479,6 @@ The following actions will be performed:
 - File "gsl_vector_complex_flat.ml", line 59, characters 13-25:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
-- ocamlc gsl_matrix_flat.mli
-- ocamlc -g  -c gsl_matrix_flat.ml
-- ocamlc gsl_matrix_complex.mli
-- ocamlc -g  -c gsl_matrix_complex.ml
-- ocamlc gsl_matrix_complex_flat.mli
-- ocamlc -g  -c gsl_matrix_complex_flat.ml
-- ocamlc gsl_vectmat.mli
-- ocamlc -g  -c gsl_vectmat.ml
-- ocamlc gsl_blas.mli
-- ocamlc -g  -c gsl_blas.ml
-- ocamlc gsl_blas_flat.mli
-- ocamlc -g  -c gsl_blas_flat.ml
-- ocamlc gsl_blas_gen.mli
-- ocamlc -g  -c gsl_blas_gen.ml
-- ocamlc gsl_fun.mli
-- ocamlc -g  -c gsl_fun.ml
-- ocamlc gsl_permut.mli
-- ocamlc -g  -c gsl_permut.ml
 - File "gsl_matrix_flat.ml", line 15, characters 11-23:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
@@ -505,6 +494,15 @@ The following actions will be performed:
 - File "gsl_matrix_complex_flat.ml", line 97, characters 14-26:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
+- ocamlc -g  -c gsl_blas.ml
+- ocamlc gsl_blas_flat.mli
+- ocamlc -g  -c gsl_blas_flat.ml
+- ocamlc gsl_blas_gen.mli
+- ocamlc -g  -c gsl_blas_gen.ml
+- ocamlc gsl_fun.mli
+- ocamlc -g  -c gsl_fun.ml
+- ocamlc gsl_permut.mli
+- ocamlc -g  -c gsl_permut.ml
 - ocamlc gsl_sort.mli
 - ocamlc -g  -c gsl_sort.ml
 - ocamlc gsl_linalg.mli
@@ -572,14 +570,14 @@ The following actions will be performed:
 - ocamlc -o do_sf str.cma do_sf.ml
 - ./do_sf < gsl_sf.mli.q > gsl_sf.ml
 - ./do_sf < gsl_sf.mli.q > gsl_sf.mli
-- ocamlc gsl_sf.mli
-- ocamlc -g  -c gsl_sf.ml
 - File "gsl_histo.ml", line 20, characters 20-32:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
 - File "gsl_histo.ml", line 20, characters 53-65:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
+- ocamlc gsl_sf.mli
+- ocamlc -g  -c gsl_sf.ml
 - ./do_cdf < /usr/include/gsl/gsl_cdf.h > gsl_cdf.ml
 - ./do_cdf < /usr/include/gsl/gsl_cdf.h > gsl_cdf.mli
 - ocamlc gsl_cdf.mli
@@ -613,14 +611,6 @@ The following actions will be performed:
 - ocamlopt  -c gsl_matrix_flat.ml
 - ocamlopt  -c gsl_matrix_complex.ml
 - ocamlopt  -c gsl_matrix_complex_flat.ml
-- ocamlopt  -c gsl_vectmat.ml
-- ocamlopt  -c gsl_blas.ml
-- ocamlopt  -c gsl_blas_flat.ml
-- ocamlopt  -c gsl_blas_gen.ml
-- ocamlopt  -c gsl_fun.ml
-- ocamlopt  -c gsl_permut.ml
-- ocamlopt  -c gsl_sort.ml
-- ocamlopt  -c gsl_linalg.ml
 - File "gsl_matrix_flat.ml", line 15, characters 11-23:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
@@ -630,14 +620,22 @@ The following actions will be performed:
 - File "gsl_matrix_complex.ml", line 158, characters 14-26:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
+- ocamlopt  -c gsl_vectmat.ml
+- ocamlopt  -c gsl_blas.ml
+- ocamlopt  -c gsl_blas_flat.ml
+- ocamlopt  -c gsl_blas_gen.ml
+- ocamlopt  -c gsl_fun.ml
+- ocamlopt  -c gsl_permut.ml
+- ocamlopt  -c gsl_sort.ml
+- ocamlopt  -c gsl_linalg.ml
+- ocamlopt  -c gsl_eigen.ml
+- ocamlopt  -c gsl_poly.ml
 - File "gsl_matrix_complex_flat.ml", line 18, characters 11-23:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
 - File "gsl_matrix_complex_flat.ml", line 97, characters 14-26:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
-- ocamlopt  -c gsl_eigen.ml
-- ocamlopt  -c gsl_poly.ml
 - ocamlopt  -c gsl_interp.ml
 - ocamlopt  -c gsl_rng.ml
 - ocamlopt  -c gsl_qrng.ml
@@ -664,13 +662,13 @@ The following actions will be performed:
 - ocamlopt  -c gsl_const.ml
 - ocamlopt  -c gsl_sf.ml
 - ocamlopt  -c gsl_cdf.ml
-- ocamlmklib -oc mlgsl -o gsl gsl_misc.cmx gsl_error.cmx gsl_ieee.cmx gsl_math.cmx gsl_complex.cmx gsl_vector.cmx gsl_vector_flat.cmx gsl_vector_complex.cmx gsl_vector_complex_flat.cmx gsl_matrix.cmx gsl_matrix_flat.cmx gsl_matrix_complex.cmx gsl_matrix_complex_flat.cmx gsl_vectmat.cmx gsl_blas.cmx gsl_blas_flat.cmx gsl_blas_gen.cmx gsl_fun.cmx gsl_permut.cmx gsl_sort.cmx gsl_linalg.cmx gsl_eigen.cmx gsl_poly.cmx gsl_interp.cmx gsl_rng.cmx gsl_qrng.cmx gsl_randist.cmx gsl_integration.cmx gsl_fit.cmx gsl_multifit.cmx gsl_multifit_nlin.cmx gsl_root.cmx gsl_multiroot.cmx gsl_min.cmx gsl_multimin.cmx gsl_diff.cmx gsl_cheb.cmx gsl_sum.cmx gsl_fft.cmx gsl_monte.cmx gsl_siman.cmx gsl_odeiv.cmx gsl_histo.cmx gsl_stats.cmx gsl_wavelet.cmx gsl_bspline.cmx gsl_const.cmx gsl_sf.cmx gsl_cdf.cmx -lgsl -lgslcblas -lm -L/usr/lib
 - File "gsl_histo.ml", line 20, characters 20-32:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
 - File "gsl_histo.ml", line 20, characters 53-65:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
+- ocamlmklib -oc mlgsl -o gsl gsl_misc.cmx gsl_error.cmx gsl_ieee.cmx gsl_math.cmx gsl_complex.cmx gsl_vector.cmx gsl_vector_flat.cmx gsl_vector_complex.cmx gsl_vector_complex_flat.cmx gsl_matrix.cmx gsl_matrix_flat.cmx gsl_matrix_complex.cmx gsl_matrix_complex_flat.cmx gsl_vectmat.cmx gsl_blas.cmx gsl_blas_flat.cmx gsl_blas_gen.cmx gsl_fun.cmx gsl_permut.cmx gsl_sort.cmx gsl_linalg.cmx gsl_eigen.cmx gsl_poly.cmx gsl_interp.cmx gsl_rng.cmx gsl_qrng.cmx gsl_randist.cmx gsl_integration.cmx gsl_fit.cmx gsl_multifit.cmx gsl_multifit_nlin.cmx gsl_root.cmx gsl_multiroot.cmx gsl_min.cmx gsl_multimin.cmx gsl_diff.cmx gsl_cheb.cmx gsl_sum.cmx gsl_fft.cmx gsl_monte.cmx gsl_siman.cmx gsl_odeiv.cmx gsl_histo.cmx gsl_stats.cmx gsl_wavelet.cmx gsl_bspline.cmx gsl_const.cmx gsl_sf.cmx gsl_cdf.cmx -lgsl -lgslcblas -lm -L/usr/lib
 [ocamlgsl: make install-findlib] Command started
 + make "install-findlib" (CWD=/home/opam/.opam/system/build/ocamlgsl.0.6.0)
 - export FINDLIBDIR=$(ocamlfind printconf destdir) ; \
