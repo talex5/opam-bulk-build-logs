@@ -4,14 +4,15 @@
 + lsb_release -i -s
 # Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=gen
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=gen
 # The following system packages are needed:
 #  - m4
-+ sudo apt-get update
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=gen
 Not running as root, system installation will be done through "sudo"
++ sudo apt-get update
 Ign http://download.opensuse.org  InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
++ sudo apt-get install -qq -yy m4
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
@@ -40,9 +41,8 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [21.0 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [320 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [118 kB]
-Fetched 2057 kB in 5s (368 kB/s)
+Fetched 2057 kB in 5s (362 kB/s)
 Reading package lists...
-+ sudo apt-get install -qq -yy m4
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
 # OS packages installation successful
@@ -56,8 +56,8 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [gen: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/gen.0.2.4+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -142,6 +142,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -187,11 +188,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -200,8 +202,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -486,7 +486,6 @@ The following actions will be performed:
 - qtest extract gen.ml > qtest/run_qtest.ml || true
 - make[1]: Leaving directory `/home/opam/.opam/system/build/gen.0.2.4'
 - /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
-- /bin/sh: 1: qtest: not found
 - File "_tags", line 20, characters 26-35:
 - Warning: the tag "pkg_oUnit" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
 - File "_tags", line 22, characters 20-29:
@@ -510,6 +509,7 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -w A -w -4 -w -44 -I qtest -o gen_intf.cmo gen_intf.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I qtest -o gen.cmi gen.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -modules gen.ml > gen.ml.depends
+- /bin/sh: 1: qtest: not found
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -modules genMList.mli > genMList.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I qtest -o genMList.cmi genMList.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -modules genLabels.mli > genLabels.mli.depends
