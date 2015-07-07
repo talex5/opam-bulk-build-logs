@@ -1,18 +1,16 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-+ opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=hdf
 # Detecting depexts using flags: x86_64 linux ubuntu
++ opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=hdf
 # The following system packages are needed:
 #  - hdf4-tools
 #  - libhdf4-dev
 #  - libpcre3-dev
 #  - m4
 #  - pkg-config
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=hdf
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
@@ -40,12 +38,14 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [23.3 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [329 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [128 kB]
-Fetched 2122 kB in 7s (290 kB/s)
+Fetched 2122 kB in 3s (531 kB/s)
 Reading package lists...
 # OS package update successful
-+ sudo apt-get install -qq -yy hdf4-tools libhdf4-dev libpcre3-dev m4 pkg-config
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy hdf4-tools libhdf4-dev libpcre3-dev m4 pkg-config
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=hdf
++ sudo apt-get update
++ sudo apt-get install -qq -yy hdf4-tools libhdf4-dev libpcre3-dev m4 pkg-config
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
@@ -116,12 +116,12 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [ocamlfind: from default] Command started
 [batteries: from default] Command started
+[default] http://opam-archive:8080/archives/batteries.2.3.1+opam.tar.gz downloaded
+[pcre: from default] Command started
 [hdf: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [pcre: from default] Command started
-[default] http://opam-archive:8080/archives/batteries.2.3.1+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/hdf.0.9.1+opam.tar.gz downloaded
-[pcre: from default] Command started
 [default] http://opam-archive:8080/archives/pcre.7.1.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -215,7 +215,10 @@ The following actions will be performed:
 - Configuration for camlp4 written to site-lib-src/camlp4/META
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
-- Detecting compiler arguments: (extractor built) ok
+- Detecting compiler arguments: 
+- File "itest-aux/ppx.ml", line 1, characters 0-25:
+- Error: Unbound value Toploop.preprocess_phrase
+- (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib/ocaml
@@ -239,8 +242,6 @@ The following actions will be performed:
 - Configuration has been written to Makefile.config
 - 
 - You can now do 'make all', and optionally 'make opt', to build ocamlfind.
-- File "itest-aux/ppx.ml", line 1, characters 0-25:
-- Error: Unbound value Toploop.preprocess_phrase
 [ocamlfind: make all] Command started
 + make "all" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
 - for p in findlib bytes; do ( cd src/$p; make all ) || exit; done
@@ -273,8 +274,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
-- Makefile:160: depend: No such file or directory
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- Makefile:160: depend: No such file or directory
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
 - if [ "false" = "true" ]; then                 \
@@ -755,6 +756,7 @@ The following actions will be performed:
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batScanf.ml > src/batScanf.ml.depends
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batSet.mli > src/batSet.mli.depends
 - ocamlfind ocamlc -c -g -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batSet.cmi src/batSet.mli
+- ocamlfind: Package `bisect' not found
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batSet.ml > src/batSet.ml.depends
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batSplay.mli > src/batSplay.mli.depends
 - ocamlfind ocamlc -c -g -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batSplay.cmi src/batSplay.mli
@@ -825,7 +827,6 @@ The following actions will be performed:
 - ocamlfind ocamlc -c -g -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batSeq.cmi src/batSeq.mli
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batSeq.ml > src/batSeq.ml.depends
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batSubstring.ml > src/batSubstring.ml.depends
-- ocamlfind: Package `bisect' not found
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batTuple.mli > src/batTuple.mli.depends
 - ocamlfind ocamlc -c -g -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batTuple.cmi src/batTuple.mli
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batTuple.ml > src/batTuple.ml.depends
