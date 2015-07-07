@@ -1,8 +1,9 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-+ opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=coccinelle
 # Detecting depexts using flags: x86_64 linux ubuntu
++ opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=coccinelle
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=coccinelle
 # The following system packages are needed:
 #  - autoconf
 #  - libpcre3-dev
@@ -10,7 +11,6 @@
 #  - pkg-config
 #  - python2.7
 #  - python2.7-dev
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=coccinelle
 Not running as root, the following command will be run through "sudo":
     apt-get update
 + sudo apt-get update
@@ -45,8 +45,12 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [24.5 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [341 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [130 kB]
-Fetched 2158 kB in 6s (345 kB/s)
+Fetched 2158 kB in 5s (415 kB/s)
 Reading package lists...
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_source_Sources.gz is not what the server reported 250787 250796
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 647958 647962
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_main_source_Sources.gz is not what the server reported 99929 99937
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_main_binary-amd64_Packages.gz is not what the server reported 340533 340536
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy autoconf libpcre3-dev m4 pkg-config python2.7 python2.7-dev
@@ -54,11 +58,11 @@ Not running as root, the following command will be run through "sudo":
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
-Selecting previously unselected package libpcrecpp0:amd64.
 debconf: unable to initialize frontend: Readline
 debconf: (This frontend requires a controlling tty.)
 debconf: falling back to frontend: Teletype
 dpkg-preconfigure: unable to re-open stdin: 
+Selecting previously unselected package libpcrecpp0:amd64.
 (Reading database ... 22842 files and directories currently installed.)
 Preparing to unpack .../libpcrecpp0_1%3a8.31-2ubuntu2_amd64.deb ...
 Unpacking libpcrecpp0:amd64 (1:8.31-2ubuntu2) ...
@@ -110,9 +114,9 @@ The following actions will be performed:
 [menhir: from default] Command started
 [ocamlfind: from default] Command started
 [ocamlfind: from default] Command started
+[menhir: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [pcre: from default] Command started
-[menhir: from default] Command started
 [default] http://opam-archive:8080/archives/menhir.20141215+opam.tar.gz downloaded
 [coccinelle: from default] Command started
 [pcre: from default] Command started
@@ -381,6 +385,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -425,7 +430,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -1514,7 +1518,7 @@ The following actions will be performed:
 - checking whether make supports nested variables... yes
 - configure: determining version suffix
 - checking for date... /bin/date
-- configure: version suffix set to Wed, 06 May 2015 08:24:12 +0000
+- configure: version suffix set to Wed, 06 May 2015 18:25:55 +0000
 - configure: this configure program uses pkg-config m4 macros
 - configure: this configure program uses ocaml m4 macros (see setup/ocaml.m4)
 - configure: this configure program uses custom m4 macros (see setup/cocci.m4)
@@ -1528,7 +1532,11 @@ The following actions will be performed:
 - checking whether we are cross compiling... no
 - checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
-- checking whether gcc accepts -g... yes
+- checking whether gcc accepts -g... 
+- /home/opam/.opam/system/build/coccinelle.1.0.0-rc21/setup/missing: Unknown '--is-lightweight' option
+- Try '/home/opam/.opam/system/build/coccinelle.1.0.0-rc21/setup/missing --help' for more information
+- configure: WARNING: 'missing' script is too old or missing
+- yes
 - checking for gcc option to accept ISO C89... none needed
 - checking dependency style of gcc... none
 - checking how to run the C preprocessor... gcc -E
@@ -1554,9 +1562,6 @@ The following actions will be performed:
 - checking that the OCaml version is at least 3.10... yes
 - checking that the OCaml version is at least 3.11... yes
 - checking for camlp4... /usr/bin/camlp4
-- /home/opam/.opam/system/build/coccinelle.1.0.0-rc21/setup/missing: Unknown '--is-lightweight' option
-- Try '/home/opam/.opam/system/build/coccinelle.1.0.0-rc21/setup/missing --help' for more information
-- configure: WARNING: 'missing' script is too old or missing
 - checking for camlp4boot... /usr/bin/camlp4boot
 - checking for camlp4o... /usr/bin/camlp4o
 - checking for camlp4of... /usr/bin/camlp4of
@@ -1932,6 +1937,7 @@ The following actions will be performed:
 - /usr/bin/ocamlopt.opt -unsafe -I ocamlextra -I ocollection   -c commands.ml
 - /usr/bin/ocamlc.opt -unsafe -I ocamlextra -I ocollection   -c common.mli
 - /usr/bin/ocamlopt.opt -unsafe -I ocamlextra -I ocollection   -c common.ml
+- /usr/bin/ocamlopt.opt -unsafe -I ocamlextra -I ocollection   -c common_extra.ml
 - File "ocamlextra/dumper.ml", line 81, characters 16-25:
 - Warning 3: deprecated: Obj.final_tag
 - Replaced by custom_tag.
@@ -1941,7 +1947,6 @@ The following actions will be performed:
 - File "common.ml", line 5534, characters 14-26:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
-- /usr/bin/ocamlopt.opt -unsafe -I ocamlextra -I ocollection   -c common_extra.ml
 - /usr/bin/ocamlopt.opt -unsafe -I ocamlextra -I ocollection   -c interfaces.ml
 - /usr/bin/ocamlc.opt -unsafe -I ocamlextra -I ocollection   -c objet.mli
 - /usr/bin/ocamlopt.opt -unsafe -I ocamlextra -I ocollection   -c objet.ml
@@ -1996,7 +2001,6 @@ The following actions will be performed:
 - make[4]: Entering directory `/home/opam/.opam/system/build/coccinelle.1.0.0-rc21/globals'
 - make[5]: Entering directory `/home/opam/.opam/system/build/coccinelle.1.0.0-rc21/globals'
 - /usr/bin/ocamlopt.opt -unsafe -I ../commons -I /home/opam/.opam/system/lib/pcre -c config.ml
-- /usr/bin/ocamlopt.opt -unsafe -I ../commons -I /home/opam/.opam/system/lib/pcre -c flag.ml
 - File "ocamlextra/suffix_tree.ml", line 52, characters 13-14:
 - Warning 3: deprecated: Pervasives.&
 - Use (&&) instead.
@@ -2027,6 +2031,7 @@ The following actions will be performed:
 - File "ocamlextra/suffix_tree_ext.ml", line 272, characters 24-25:
 - Warning 3: deprecated: Pervasives.&
 - Use (&&) instead.
+- /usr/bin/ocamlopt.opt -unsafe -I ../commons -I /home/opam/.opam/system/lib/pcre -c flag.ml
 - /usr/bin/ocamlc.opt -unsafe -I ../commons -I /home/opam/.opam/system/lib/pcre -c iteration.mli
 - /usr/bin/ocamlopt.opt -unsafe -I ../commons -I /home/opam/.opam/system/lib/pcre -c iteration.ml
 - /usr/bin/ocamlopt.opt -unsafe -I ../commons -I /home/opam/.opam/system/lib/pcre -c regexp_pcre.ml
@@ -2052,11 +2057,6 @@ The following actions will be performed:
 - make[4]: Leaving directory `/home/opam/.opam/system/build/coccinelle.1.0.0-rc21/ctl'
 - make[3]: Leaving directory `/home/opam/.opam/system/build/coccinelle.1.0.0-rc21'
 - make[3]: Entering directory `/home/opam/.opam/system/build/coccinelle.1.0.0-rc21'
-- make[4]: Entering directory `/home/opam/.opam/system/build/coccinelle.1.0.0-rc21/parsing_cocci'
-- make[5]: Entering directory `/home/opam/.opam/system/build/coccinelle.1.0.0-rc21/parsing_cocci'
-- /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c flag_parsing_cocci.ml
-- /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c type_cocci.mli
-- /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c type_cocci.ml
 - File "./iteration.ml", line 48, characters 48-50:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
@@ -2075,6 +2075,11 @@ The following actions will be performed:
 - File "./wrapper_ctl.ml", line 131, characters 20-22:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
+- make[4]: Entering directory `/home/opam/.opam/system/build/coccinelle.1.0.0-rc21/parsing_cocci'
+- make[5]: Entering directory `/home/opam/.opam/system/build/coccinelle.1.0.0-rc21/parsing_cocci'
+- /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c flag_parsing_cocci.ml
+- /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c type_cocci.mli
+- /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c type_cocci.ml
 - /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c ast_cocci.mli
 - /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c ast_cocci.ml
 - /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c ast0_cocci.mli
@@ -2096,19 +2101,15 @@ The following actions will be performed:
 - /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c compute_lines.ml
 - /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c comm_assoc.mli
 - /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c comm_assoc.ml
-- File "./comm_assoc.ml", line 18, characters 20-22:
-- Warning 3: deprecated: Pervasives.or
-- Use (||) instead.
 - /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c iso_pattern.mli
 - /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c iso_pattern.ml
 - /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c iso_compile.mli
 - /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c iso_compile.ml
 - /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c single_statement.mli
 - /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c single_statement.ml
-- /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c simple_assignments.mli
-- /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c simple_assignments.ml
-- /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c get_metas.mli
-- /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c get_metas.ml
+- File "./comm_assoc.ml", line 18, characters 20-22:
+- Warning 3: deprecated: Pervasives.or
+- Use (||) instead.
 - File "./iso_pattern.ml", line 250, characters 20-22:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
@@ -2205,6 +2206,10 @@ The following actions will be performed:
 - File "./single_statement.ml", line 204, characters 17-19:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
+- /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c simple_assignments.mli
+- /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c simple_assignments.ml
+- /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c get_metas.mli
+- /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c get_metas.ml
 - /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c ast0toast.mli
 - /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c ast0toast.ml
 - /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c check_meta.mli
@@ -2215,11 +2220,11 @@ The following actions will be performed:
 - /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c type_infer.ml
 - /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c test_exps.mli
 - /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c test_exps.ml
-- /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c unitary_ast0.mli
-- /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c unitary_ast0.ml
 - File "./ast0toast.ml", line 52, characters 8-10:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
+- /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c unitary_ast0.mli
+- /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c unitary_ast0.ml
 - /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c arity.mli
 - /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c arity.ml
 - /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c index.mli
@@ -2228,9 +2233,6 @@ The following actions will be performed:
 - /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c context_neg.ml
 - /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c adjust_pragmas.mli
 - /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c adjust_pragmas.ml
-- /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c insert_plus.mli
-- /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c insert_plus.ml
-[ERROR] The compilation of coccinelle failed at "make all.opt".
 - File "./context_neg.ml", line 1034, characters 23-25:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
@@ -2255,6 +2257,8 @@ The following actions will be performed:
 - File "./context_neg.ml", line 1116, characters 19-21:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
+- /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c insert_plus.mli
+- /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c insert_plus.ml
 - /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c function_prototypes.mli
 - /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c function_prototypes.ml
 - /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c unify_ast.mli
@@ -2268,7 +2272,6 @@ The following actions will be performed:
 - /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c safe_for_multi_decls.ml
 - /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c parse_printf.mli
 - /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c parse_printf.ml
-- /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c parse_aux.ml
 - File "./insert_plus.ml", line 872, characters 38-40:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
@@ -2299,6 +2302,20 @@ The following actions will be performed:
 - File "./parse_printf.ml", line 65, characters 49-51:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
+- /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c parse_aux.ml
+- /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c disjdistr.mli
+- /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c disjdistr.ml
+- skipped building semantic_cocci.cmo in optimizing mode: semantic_cocci.cmx will be build instead.
+- skipped building flag_parsing_cocci.cmo in optimizing mode: flag_parsing_cocci.cmx will be build instead.
+- skipped building parse_aux.cmo in optimizing mode: parse_aux.cmx will be build instead.
+- /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c parser_cocci_menhir.mli
+- /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c parser_cocci_menhir.ml
+- make[5]: Leaving directory `/home/opam/.opam/system/build/coccinelle.1.0.0-rc21/parsing_cocci'
+- make[4]: Leaving directory `/home/opam/.opam/system/build/coccinelle.1.0.0-rc21/parsing_cocci'
+- make[3]: Leaving directory `/home/opam/.opam/system/build/coccinelle.1.0.0-rc21'
+- make[2]: Leaving directory `/home/opam/.opam/system/build/coccinelle.1.0.0-rc21'
+- make[1]: Leaving directory `/home/opam/.opam/system/build/coccinelle.1.0.0-rc21'
+[ERROR] The compilation of coccinelle failed at "make all.opt".
 - File "./parse_aux.ml", line 265, characters 49-51:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
@@ -2314,18 +2331,6 @@ The following actions will be performed:
 - File "./parse_aux.ml", line 630, characters 11-13:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
-- /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c disjdistr.mli
-- /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c disjdistr.ml
-- skipped building semantic_cocci.cmo in optimizing mode: semantic_cocci.cmx will be build instead.
-- skipped building flag_parsing_cocci.cmo in optimizing mode: flag_parsing_cocci.cmx will be build instead.
-- skipped building parse_aux.cmo in optimizing mode: parse_aux.cmx will be build instead.
-- /usr/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c parser_cocci_menhir.mli
-- /usr/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/system/lib/menhirLib -c parser_cocci_menhir.ml
-- make[5]: Leaving directory `/home/opam/.opam/system/build/coccinelle.1.0.0-rc21/parsing_cocci'
-- make[4]: Leaving directory `/home/opam/.opam/system/build/coccinelle.1.0.0-rc21/parsing_cocci'
-- make[3]: Leaving directory `/home/opam/.opam/system/build/coccinelle.1.0.0-rc21'
-- make[2]: Leaving directory `/home/opam/.opam/system/build/coccinelle.1.0.0-rc21'
-- make[1]: Leaving directory `/home/opam/.opam/system/build/coccinelle.1.0.0-rc21'
 - File "parser_cocci_menhir.ml", line 1865, characters 8-321:
 - Error: The record field MenhirLib.EngineTypes.stack is not mutable
 - make[5]: *** [parser_cocci_menhir.cmx] Error 2
@@ -2343,19 +2348,6 @@ The following actions will be performed:
 - rm -f  /home/opam/.opam/system/share/man/man1/spatch.1
 - rm -f  /home/opam/.opam/system/share/man/man3/Coccilib.3cocci
 
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions failed
-  - install coccinelle 1.0.0-rc21
-The following changes have been performed
-  - install conf-libpcre        1       
-  - install conf-pkg-config     1.0     
-  - install conf-python-2-7     1.0     
-  - install conf-python-2-7-dev 1.0     
-  - install menhir              20141215
-  - install ocamlfind           1.5.5   
-  - install pcre                7.0.2   
-
 #=== ERROR while installing coccinelle.1.0.0-rc21 =============================#
 # opam-version         1.2.2 (391297300524717e1475deaea37bca287c7f5e36)
 # os                   linux
@@ -2363,9 +2355,9 @@ The following changes have been performed
 # path                 /home/opam/.opam/system/build/coccinelle.1.0.0-rc21
 # compiler             system (4.02.1)
 # exit-code            2
-# env-file             /home/opam/.opam/system/build/coccinelle.1.0.0-rc21/coccinelle-5-90b366.env
-# stdout-file          /home/opam/.opam/system/build/coccinelle.1.0.0-rc21/coccinelle-5-90b366.out
-# stderr-file          /home/opam/.opam/system/build/coccinelle.1.0.0-rc21/coccinelle-5-90b366.err
+# env-file             /home/opam/.opam/system/build/coccinelle.1.0.0-rc21/coccinelle-6-90b366.env
+# stdout-file          /home/opam/.opam/system/build/coccinelle.1.0.0-rc21/coccinelle-6-90b366.out
+# stderr-file          /home/opam/.opam/system/build/coccinelle.1.0.0-rc21/coccinelle-6-90b366.err
 ### stdout ###
 # [...]
 # skipped building semantic_cocci.cmo in optimizing mode: semantic_cocci.cmx will be build instead.
@@ -2392,6 +2384,19 @@ The following changes have been performed
 # make: *** [all.opt] Error 2
 
 
+
+=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+The following actions failed
+  - install coccinelle 1.0.0-rc21
+The following changes have been performed
+  - install conf-libpcre        1       
+  - install conf-pkg-config     1.0     
+  - install conf-python-2-7     1.0     
+  - install conf-python-2-7-dev 1.0     
+  - install menhir              20141215
+  - install ocamlfind           1.5.5   
+  - install pcre                7.0.2   
+
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150406082338.export"
+    opam switch import "~/.opam/system/backup/state-20150406182520.export"
 'opam install coccinelle' failed.
