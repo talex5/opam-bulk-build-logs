@@ -3,9 +3,9 @@
 + lsb_release -i -s
 # Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=cryptgps
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=cryptgps
 # The following system packages are needed:
 #  - m4
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=cryptgps
 Not running as root, the following command will be run through "sudo":
     apt-get update
 + sudo apt-get update
@@ -15,16 +15,16 @@ Hit http://httpredir.debian.org stable InRelease
 Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Get:2 http://security.debian.org stable/updates/main amd64 Packages [82.5 kB]
+Get:2 http://security.debian.org stable/updates/main amd64 Packages [83.0 kB]
 Get:3 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
-Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Get:5 http://download.opensuse.org  Packages [5783 B]
-Fetched 9237 kB in 5s (1668 kB/s)
+Get:4 http://download.opensuse.org  Packages [5783 B]
+Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
+Fetched 9238 kB in 13s (686 kB/s)
 Reading package lists...
-+ sudo apt-get install -qq -yy m4
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
++ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind 1.5.5                                     [required by cryptgps]
@@ -36,8 +36,8 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [cryptgps: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/cryptgps.0.2.1+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/cryptgps.0.2.1+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -230,6 +230,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -274,7 +275,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -352,6 +352,8 @@ The following actions will be performed:
 - ocamlc -g   -c crypt_blowfish.ml
 - ocamlc -g   -c crypt_des.mli
 - ocamlc -g   -c crypt_des.ml
+- ocamlc -g   -c crypt_3des.mli
+- ocamlc -g   -c crypt_3des.ml
 - Makefile:99: depend: No such file or directory
 - Makefile:100: depend.pkg: No such file or directory
 - File "cryptmodes_64.ml", line 55, characters 18-31:
@@ -575,11 +577,6 @@ The following actions will be performed:
 - File "crypt_des.ml", line 274, characters 16-28:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
-- ocamlc -g   -c crypt_3des.mli
-- ocamlc -g   -c crypt_3des.ml
-- ocamlc -g   -c crypt_blowfish32.mli
-- ocamlc -g   -c crypt_blowfish32.ml
-- ocamlc -g   -a -o cryptgps.cma crypt_aux.cmo cryptsystem_64.cmo cryptmodes_64.cmo crypt_blowfish.cmo crypt_des.cmo crypt_3des.cmo crypt_blowfish32.cmo 
 - File "crypt_des.ml", line 412, characters 15-27:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
@@ -615,6 +612,9 @@ The following actions will be performed:
 - Warning 26: unused variable s7.
 - File "crypt_des.ml", line 680, characters 10-12:
 - Warning 26: unused variable s8.
+- ocamlc -g   -c crypt_blowfish32.mli
+- ocamlc -g   -c crypt_blowfish32.ml
+- ocamlc -g   -a -o cryptgps.cma crypt_aux.cmo cryptsystem_64.cmo cryptmodes_64.cmo crypt_blowfish.cmo crypt_des.cmo crypt_3des.cmo crypt_blowfish32.cmo 
 - File "crypt_3des.ml", line 108, characters 48-50:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
@@ -792,10 +792,10 @@ The following actions will be performed:
 - File "crypt_blowfish.ml", line 120, characters 19-21:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
-- ocamlopt   -inline 10000 -unsafe -c crypt_des.ml
 - File "crypt_blowfish.ml", line 742, characters 26-27:
 - Warning 3: deprecated: Pervasives.&
 - Use (&&) instead.
+- ocamlopt   -inline 10000 -unsafe -c crypt_des.ml
 - File "crypt_des.ml", line 57, characters 13-24:
 - Warning 3: deprecated: String.copy
 - File "crypt_des.ml", line 60, characters 4-40:
