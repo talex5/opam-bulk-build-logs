@@ -1,12 +1,12 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-# Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=camlbz2
+# Detecting depexts using flags: x86_64 linux ubuntu
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=camlbz2
 # The following system packages are needed:
 #  - libbz2-dev
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=camlbz2
 Not running as root, the following command will be run through "sudo":
     apt-get update
 + sudo apt-get update
@@ -17,12 +17,12 @@ Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
 Hit http://archive.ubuntu.com trusty Release.gpg
-Hit http://download.opensuse.org  Packages
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
 Hit http://archive.ubuntu.com trusty Release
 Get:3 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
 Get:4 http://archive.ubuntu.com trusty-security Release [63.5 kB]
+Hit http://download.opensuse.org  Packages
 Hit http://archive.ubuntu.com trusty/main Sources
 Hit http://archive.ubuntu.com trusty/restricted Sources
 Hit http://archive.ubuntu.com trusty/universe Sources
@@ -35,14 +35,15 @@ Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [141 kB]
 Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [636 kB]
 Get:9 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [15.1 kB]
 Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [356 kB]
-Get:11 http://archive.ubuntu.com trusty-security/main Sources [97.7 kB]
+Get:11 http://archive.ubuntu.com trusty-security/main Sources [97.9 kB]
 Get:12 http://archive.ubuntu.com trusty-security/restricted Sources [1874 B]
 Get:13 http://archive.ubuntu.com trusty-security/universe Sources [23.3 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [329 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [128 kB]
-Fetched 2122 kB in 12s (165 kB/s)
+Fetched 2122 kB in 16s (126 kB/s)
 Reading package lists...
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_universe_binary-amd64_Packages.gz is not what the server reported 128174 128181
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libbz2-dev m4
@@ -68,8 +69,8 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlbz2: from default] Command started
 [ocamlfind: from default] Command started
-[camlbz2: from default] Command started
 [ocamlfind: from default] Command started
+[camlbz2: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/camlbz2.0.6.0+opam.tar.gz downloaded
 
@@ -135,6 +136,7 @@ The following actions will be performed:
 - for p in findlib; do ( cd src/$p; make all ) || exit; done
 - make[1]: Entering directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
 - ocamllex fl_meta.mll
+- Makefile:160: depend: No such file or directory
 - 22 states, 392 transitions, table size 1700 bytes
 - ocamldep *.ml *.mli >depend
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
@@ -156,8 +158,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_topo.mli
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
-- Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -202,6 +202,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
@@ -213,11 +214,11 @@ The following actions will be performed:
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -393,19 +394,21 @@ The following actions will be performed:
 - OCaml uses to compile C files
 - checking for ocamlfind... ocamlfind
 - checking for gcc... gcc
-- checking for C compiler default output file name... a.out
+- checking for C compiler default output file name... 
+- awk: line 1: regular expression compile failed (syntax error ^* or ^+)
+- ^+
+- a.out
 - checking whether the C compiler works... yes
 - checking whether we are cross compiling... no
 - checking for suffix of executables... 
 - checking for suffix of object files... o
-- checking whether we are using the GNU C compiler... 
-- awk: line 1: regular expression compile failed (syntax error ^* or ^+)
-- ^+
-- yes
+- checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
-- checking for gcc option to accept ISO C89... none needed
+- checking for gcc option to accept ISO C89... 
+- none needed
 - checking for a BSD-compatible install... /usr/bin/install -c
-- checking how to run the C preprocessor... gcc -E
+- checking how to run the C preprocessor... 
+- gcc -E
 - checking for grep that handles long lines and -e... /bin/grep
 - checking for egrep... /bin/grep -E
 - checking for ANSI C header files... 
@@ -416,7 +419,8 @@ The following actions will be performed:
 - checking for string.h... yes
 - checking for memory.h... yes
 - checking for strings.h... yes
-- checking for inttypes.h... yes
+- checking for inttypes.h... 
+- yes
 - checking for stdint.h... yes
 - checking for unistd.h... 
 - yes
