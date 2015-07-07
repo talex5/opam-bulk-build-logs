@@ -1,30 +1,63 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux centos
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=coccinelle
-+ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=coccinelle
+# Detecting depexts using flags: x86_64 linux centos
 # The following system packages are needed:
 #  - pcre-devel
++ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=coccinelle
 Not running as root, the following command will be run through "sudo":
     yum -y update
 + sudo yum -y update
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: mirror.sov.uk.goscomb.net
+ * base: centos.serverspace.co.uk
  * extras: anorien.csc.warwick.ac.uk
- * updates: mirror.sov.uk.goscomb.net
-No packages marked for update
-+ sudo yum install -y pcre-devel
+ * updates: mirrors.coreix.net
+Resolving Dependencies
+--> Running transaction check
+---> Package tzdata.noarch 0:2015c-1.el7 will be updated
+---> Package tzdata.noarch 0:2015d-1.el7 will be an update
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+================================================================================
+ Package         Arch            Version                 Repository        Size
+================================================================================
+Updating:
+ tzdata          noarch          2015d-1.el7             updates          431 k
+
+Transaction Summary
+================================================================================
+Upgrade  1 Package
+
+Total download size: 431 k
+Downloading packages:
+Delta RPMs disabled because /usr/bin/applydeltarpm not installed.
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  Updating   : tzdata-2015d-1.el7.noarch                                    1/2 
+  Cleanup    : tzdata-2015c-1.el7.noarch                                    2/2 
+  Verifying  : tzdata-2015d-1.el7.noarch                                    1/2 
+  Verifying  : tzdata-2015c-1.el7.noarch                                    2/2 
+
+Updated:
+  tzdata.noarch 0:2015d-1.el7                                                   
+
+Complete!
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     yum install -y pcre-devel
 Not running as root, the following command will be run through "sudo":
     rpm -q pcre-devel
++ sudo yum install -y pcre-devel
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: mirrors.coreix.net
+ * base: centos.serverspace.co.uk
  * extras: anorien.csc.warwick.ac.uk
- * updates: mirror.sov.uk.goscomb.net
+ * updates: mirror.econdc.com
 Resolving Dependencies
 --> Running transaction check
 ---> Package pcre-devel.x86_64 0:8.32-14.el7 will be installed
@@ -65,10 +98,11 @@ The following actions will be performed:
   - install conf-python-2-7-dev 1.0                             [required by coccinelle]
   - install ocamlfind           1.5.5                           [required by coccinelle]
   - install conf-libpcre        1                               [required by pcre]
+  - install parmap              1.0-rc6                         [required by coccinelle]
   - install menhir              20140422                        [required by coccinelle]
   - install pcre                7.1.1                           [required by coccinelle]
-  - install coccinelle          1.0.0-rc24
-===== 8 to install =====
+  - install coccinelle          1.0.0.1 
+===== 9 to install =====
 
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [coccinelle: from default] Command started
@@ -77,11 +111,14 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [menhir: from default] Command started
 [coccinelle: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[parmap: from default] Command started
 [default] http://opam-archive:8080/archives/menhir.20140422+opam.tar.gz downloaded
 [pcre: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/coccinelle.1.0.0-rc24+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/coccinelle.1.0.0.1+opam.tar.gz downloaded
+[parmap: from default] Command started
 [pcre: from default] Command started
+[default] http://opam-archive:8080/archives/parmap.1.0-rc6+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/pcre.7.1.1+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -169,8 +206,7 @@ The following actions will be performed:
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
 - Detecting compiler arguments: 
-- (extractor built) 
-- ok
+- (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib64/ocaml
@@ -199,7 +235,6 @@ The following actions will be performed:
 - for p in findlib; do ( cd src/$p; make all ) || exit; done
 - make[1]: Entering directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
 - ocamllex fl_meta.mll
-- Makefile:160: depend: No such file or directory
 - 22 states, 392 transitions, table size 1700 bytes
 - ocamldep *.ml *.mli >depend
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
@@ -219,6 +254,10 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_metascanner.mli
 - ocamlc -I +compiler-libs -g -c fl_metascanner.ml
 - ocamlc -I +compiler-libs -c fl_topo.mli
+- ocamlc -I +compiler-libs -g -c fl_topo.ml
+- ocamlc -I +compiler-libs -c fl_package_base.mli
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -263,9 +302,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c fl_topo.ml
-- ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
@@ -277,11 +313,11 @@ The following actions will be performed:
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -334,7 +370,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -379,6 +414,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -443,6 +479,139 @@ The following actions will be performed:
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5'
 -> installed ocamlfind.1.5.5
 [menhir: make] Command started
+[parmap: aclocal m4] Command started
++ aclocal "-I" "m4" (CWD=/home/opam/.opam/system/build/parmap.1.0-rc6)
+[parmap: autoconf] Command started
++ autoconf  (CWD=/home/opam/.opam/system/build/parmap.1.0-rc6)
+[parmap: autoheader] Command started
++ autoheader  (CWD=/home/opam/.opam/system/build/parmap.1.0-rc6)
+[parmap: ./configure] Command started
++ ./configure  (CWD=/home/opam/.opam/system/build/parmap.1.0-rc6)
+- checking for ocamlc... ocamlc
+- OCaml version is 4.02.1
+- OCaml library path is /usr/lib64/ocaml
+- checking for ocamlopt... ocamlopt
+- checking for ocamlc.opt... ocamlc.opt
+- checking for ocamlopt.opt... ocamlopt.opt
+- checking for ocaml... ocaml
+- checking for ocamldep... ocamldep
+- checking for ocamlmktop... ocamlmktop
+- checking for ocamlmklib... ocamlmklib
+- checking for ocamldoc... ocamldoc
+- checking for ocamlbuild... ocamlbuild
+- checking for ocamlfind... ocamlfind
+- checking for gcc... gcc
+- checking whether the C compiler works... yes
+- checking for C compiler default output file name... a.out
+- checking for suffix of executables... 
+- checking whether we are cross compiling... no
+- checking for suffix of object files... o
+- checking whether we are using the GNU C compiler... yes
+- checking whether gcc accepts -g... yes
+- checking for gcc option to accept ISO C89... none needed
+- checking how to run the C preprocessor... gcc -E
+- checking for grep that handles long lines and -e... /usr/bin/grep
+- checking for egrep... /usr/bin/grep -E
+- checking for ANSI C header files... yes
+- checking for sys/types.h... yes
+- checking for sys/stat.h... yes
+- checking for stdlib.h... yes
+- checking for string.h... yes
+- checking for memory.h... yes
+- checking for strings.h... yes
+- checking for inttypes.h... yes
+- checking for stdint.h... yes
+- checking for unistd.h... yes
+- checking sched.h usability... yes
+- checking sched.h presence... yes
+- checking for sched.h... yes
+- checking whether sched_setaffinity is declared... yes
+- checking mach/thread_policy.h usability... no
+- checking mach/thread_policy.h presence... no
+- checking for mach/thread_policy.h... no
+- checking whether thread_policy_set is declared... no
+- ocaml version 4.02.1. Use standard Makefile
+- configure: creating ./config.status
+- config.status: creating Makefile
+- config.status: creating config.h
+[parmap: make] Command started
++ make "DESTDIR=/home/opam/.opam/system" "OCAMLLIBDIR=lib" (CWD=/home/opam/.opam/system/build/parmap.1.0-rc6)
+- ocamlbuild -j 10 -use-ocamlfind  parmap.cma  parmap.cmxa  parmap.cmxs parmap.a
+- ocamlfind ocamlc -ccopt -D_GNU_SOURCE -ccopt -fPIC -c bytearray_stubs.c
+- ocamlfind ocamlc -ccopt -D_GNU_SOURCE -ccopt -fPIC -c setcore_stubs.c
+- ocamlfind ocamlmklib -o parmap_stubs bytearray_stubs.o setcore_stubs.o
+- ocamlfind ocamldep -package unix -package bigarray -modules parmap.mli > parmap.mli.depends
+- ocamlfind ocamlc -c -annot -package unix -package bigarray -w Ae -o parmap.cmi parmap.mli
+- ocamlfind ocamldep -package unix -package bigarray -modules parmap.ml > parmap.ml.depends
+- ocamlfind ocamldep -package unix -package bigarray -modules bytearray.mli > bytearray.mli.depends
+- ocamlfind ocamldep -package unix -package bigarray -modules parmap_utils.mli > parmap_utils.mli.depends
+- ocamlfind ocamldep -package unix -package bigarray -modules setcore.mli > setcore.mli.depends
+- ocamlfind ocamlc -c -annot -package unix -package bigarray -w Ae -o bytearray.cmi bytearray.mli
+- ocamlfind ocamlc -c -annot -package unix -package bigarray -w Ae -o parmap_utils.cmi parmap_utils.mli
+- ocamlfind ocamlc -c -annot -package unix -package bigarray -w Ae -o setcore.cmi setcore.mli
+- ocamlfind ocamldep -package unix -package bigarray -modules bytearray.ml > bytearray.ml.depends
+- ocamlfind ocamldep -package unix -package bigarray -modules parmap_utils.ml > parmap_utils.ml.depends
+- ocamlfind ocamlc -c -annot -package unix -package bigarray -w Ae -o parmap.cmo parmap.ml
+- ocamlfind ocamlc -c -annot -package unix -package bigarray -w Ae -o bytearray.cmo bytearray.ml
+- ocamlfind ocamlc -c -annot -package unix -package bigarray -w Ae -o parmap_utils.cmo parmap_utils.ml
+- + ocamlfind ocamlc -c -annot -package unix -package bigarray -w Ae -o bytearray.cmo bytearray.ml
+- File "bytearray.ml", line 47, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "bytearray.ml", line 69, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- + ocamlfind ocamlc -c -annot -package unix -package bigarray -w Ae -o parmap.cmo parmap.ml
+- File "parmap.ml", line 540, characters 12-24:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
+- ocamlfind ocamlc -a -dllib -lparmap_stubs bytearray.cmo parmap_utils.cmo parmap.cmo -o parmap.cma
+- ocamlfind ocamlopt -c -annot -package unix -package bigarray -w Ae -o bytearray.cmx bytearray.ml
+- ocamlfind ocamlopt -c -annot -package unix -package bigarray -w Ae -o parmap_utils.cmx parmap_utils.ml
+- + ocamlfind ocamlopt -c -annot -package unix -package bigarray -w Ae -o bytearray.cmx bytearray.ml
+- File "bytearray.ml", line 47, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "bytearray.ml", line 69, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- ocamlfind ocamlopt -c -annot -package unix -package bigarray -w Ae -o parmap.cmx parmap.ml
+- + ocamlfind ocamlopt -c -annot -package unix -package bigarray -w Ae -o parmap.cmx parmap.ml
+- File "parmap.ml", line 540, characters 12-24:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
+- ocamlfind ocamlopt -a -cclib -lparmap_stubs bytearray.cmx parmap_utils.cmx parmap.cmx -o parmap.cmxa
+- ocamlfind ocamlopt -shared libparmap_stubs.a bytearray.cmx parmap_utils.cmx parmap.cmx -o parmap.cmxs
+- # Parallel statistics: { count(total): 4(18), max: 3, min: 2, average(total): 2.500(1.333) }
+[parmap: make install] Command started
++ make "install" "DESTDIR=/home/opam/.opam/system" "OCAMLLIBDIR=lib" (CWD=/home/opam/.opam/system/build/parmap.1.0-rc6)
+- test -d /home/opam/.opam/system/lib || mkdir -p /home/opam/.opam/system/lib
+- test -d /home/opam/.opam/system/lib/stublibs || mkdir -p /home/opam/.opam/system/lib/stublibs
+- ocamlfind install -destdir /home/opam/.opam/system/lib -patch-version 1.0-rc5 parmap META  _build/parmap.cma _build/parmap.cmxa _build/parmap.cmxs _build/bytearray.mli _build/setcore.mli _build/parmap_utils.mli _build/parmap.mli _build/parmap.cmi _build/bytearray.cmi _build/setcore.cmi _build/parmap_utils.cmi _build/dllparmap_stubs.so _build/libparmap_stubs.a _build/parmap.a
+- (cd _build; ocamldoc -man -man-mini parmap.ml parmap.mli)
+- test -d /home/opam/.opam/system/man/man3 || mkdir -p /home/opam/.opam/system/man/man3
+- cp -a _build/Parmap.3o /home/opam/.opam/system/man/man3
+- Installed /home/opam/.opam/system/lib/parmap/parmap.a
+- Installed /home/opam/.opam/system/lib/parmap/libparmap_stubs.a
+- Installed /home/opam/.opam/system/lib/parmap/parmap_utils.cmi
+- Installed /home/opam/.opam/system/lib/parmap/setcore.cmi
+- Installed /home/opam/.opam/system/lib/parmap/bytearray.cmi
+- Installed /home/opam/.opam/system/lib/parmap/parmap.cmi
+- Installed /home/opam/.opam/system/lib/parmap/parmap.mli
+- Installed /home/opam/.opam/system/lib/parmap/parmap_utils.mli
+- Installed /home/opam/.opam/system/lib/parmap/setcore.mli
+- Installed /home/opam/.opam/system/lib/parmap/bytearray.mli
+- Installed /home/opam/.opam/system/lib/parmap/parmap.cmxs
+- Installed /home/opam/.opam/system/lib/parmap/parmap.cmxa
+- Installed /home/opam/.opam/system/lib/parmap/parmap.cma
+- Installed /home/opam/.opam/system/lib/parmap/META
+- Installed /home/opam/.opam/system/lib/stublibs/dllparmap_stubs.so
+- Installed /home/opam/.opam/system/lib/stublibs/dllparmap_stubs.so.owner
+- ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/system/lib/stublibs is not mentioned in ld.conf
+- File "parmap.ml", line 540, characters 12-24:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
+-> installed parmap.1.0-rc6
 [pcre: make] Command started
 + make  (CWD=/home/opam/.opam/system/build/pcre.7.1.1)
 - ocaml setup.ml -configure 
@@ -1714,9 +1883,9 @@ The following actions will be performed:
 # path                 /home/opam/.opam/system/build/conf-python-2-7-dev.1.0
 # compiler             system (4.02.1)
 # exit-code            1
-# env-file             /home/opam/.opam/system/build/conf-python-2-7-dev.1.0/conf-python-2-7-dev-1-a71bb4.env
-# stdout-file          /home/opam/.opam/system/build/conf-python-2-7-dev.1.0/conf-python-2-7-dev-1-a71bb4.out
-# stderr-file          /home/opam/.opam/system/build/conf-python-2-7-dev.1.0/conf-python-2-7-dev-1-a71bb4.err
+# env-file             /home/opam/.opam/system/build/conf-python-2-7-dev.1.0/conf-python-2-7-dev-1-6cc03f.env
+# stdout-file          /home/opam/.opam/system/build/conf-python-2-7-dev.1.0/conf-python-2-7-dev-1-6cc03f.out
+# stderr-file          /home/opam/.opam/system/build/conf-python-2-7-dev.1.0/conf-python-2-7-dev-1-6cc03f.err
 ### stderr ###
 # test.c:1:30: fatal error: python2.7/Python.h: No such file or directory
 #  #include "python2.7/Python.h"
@@ -1727,7 +1896,7 @@ The following actions will be performed:
 
 =-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 The following actions were aborted
-  - install coccinelle 1.0.0-rc24
+  - install coccinelle 1.0.0.1
 The following actions failed
   - install conf-python-2-7-dev 1.0
 The following changes have been performed
@@ -1736,6 +1905,7 @@ The following changes have been performed
   - install conf-python-2-7 1.0     
   - install menhir          20140422
   - install ocamlfind       1.5.5   
+  - install parmap          1.0-rc6 
   - install pcre            7.1.1   
 
 =-=- conf-python-2-7-dev.1.0 troobleshooting =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -1744,5 +1914,5 @@ The following changes have been performed
    installation for your system.
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150328011451.export"
+    opam switch import "~/.opam/system/backup/state-20150401112529.export"
 'opam install coccinelle' failed.
