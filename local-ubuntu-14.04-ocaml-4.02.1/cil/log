@@ -3,9 +3,9 @@
 + lsb_release -i -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=cil
 # Detecting depexts using flags: x86_64 linux ubuntu
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=cil
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=cil
 Not running as root, the following command will be run through "sudo":
     apt-get update
 + sudo apt-get update
@@ -39,10 +39,12 @@ Get:12 http://archive.ubuntu.com trusty-security/restricted Sources [1874 B]
 Get:13 http://archive.ubuntu.com trusty-security/universe Sources [28.4 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [346 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 664490 664680
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [134 kB]
-Fetched 2213 kB in 5s (394 kB/s)
+Fetched 2213 kB in 5s (375 kB/s)
 Reading package lists...
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_source_Sources.gz is not what the server reported 260326 260328
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages.gz is not what the server reported 365894 365896
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_universe_binary-amd64_Packages.gz is not what the server reported 133815 133816
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
@@ -145,7 +147,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -191,6 +192,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
@@ -256,6 +258,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -300,7 +303,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -375,7 +377,8 @@ The following actions will be performed:
 - checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
 - checking for gcc option to accept ISO C89... none needed
-- checking for a BSD-compatible install... /usr/bin/install -c
+- checking for a BSD-compatible install... 
+- /usr/bin/install -c
 - checking build system type... x86_64-unknown-linux-gnu
 - checking host system type... x86_64-unknown-linux-gnu
 - checking target system type... x86_64-unknown-linux-gnu
@@ -384,12 +387,7 @@ The following actions will be performed:
 - checking existence of related ocaml tools... ok
 - checking availability of native ocaml tools versions... ok
 - checking for Perl... found version 5.018002, port linux
-- checking for gcc version... checking how to run the C preprocessor... 
-- configure: WARNING: Your ocaml version is 4.02.1, but the latest version this program
--                    is known to work with is 3.12.  If you have
--                    trouble compiling, please try using an earlier version
--                    or see if there is a later version of this program.
-- gcc -E
+- checking for gcc version... checking how to run the C preprocessor... gcc -E
 - checking for grep that handles long lines and -e... /bin/grep
 - checking for egrep... /bin/grep -E
 - checking for ANSI C header files... yes
@@ -399,10 +397,14 @@ The following actions will be performed:
 - checking for string.h... yes
 - checking for memory.h... yes
 - checking for strings.h... yes
-- checking for inttypes.h... yes
-- checking for stdint.h... yes
-- checking for unistd.h... 
+- checking for inttypes.h... 
+- configure: WARNING: Your ocaml version is 4.02.1, but the latest version this program
+-                    is known to work with is 3.12.  If you have
+-                    trouble compiling, please try using an earlier version
+-                    or see if there is a later version of this program.
 - yes
+- checking for stdint.h... yes
+- checking for unistd.h... yes
 - checking for __builtin_va_list... yes
 - checking if __thread is a keyword... true
 - checking if gcc adds underscores to assembly labels.... false
@@ -690,15 +692,6 @@ The following actions will be performed:
 - Generating dependency information for obj/x86_LINUX/machdep.ml
 - Compiling interface ocamlutil/pretty.mli
 - Compiling           ocamlutil/pretty.ml to bytecode 
-- File "ocamlutil/pretty.ml", line 729, characters 5-15:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "ocamlutil/pretty.ml", line 739, characters 5-15:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "ocamlutil/pretty.ml", line 749, characters 5-15:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 - Compiling interface ocamlutil/inthash.mli
 - Compiling           ocamlutil/inthash.ml to bytecode 
 - Compiling interface ocamlutil/errormsg.mli
@@ -714,6 +707,30 @@ The following actions will be performed:
 - Compiling interface ocamlutil/clist.mli
 - Compiling           ocamlutil/clist.ml to bytecode 
 - Compiling           src/cilutil.ml to bytecode 
+- File "ocamlutil/pretty.ml", line 729, characters 5-15:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "ocamlutil/pretty.ml", line 739, characters 5-15:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "ocamlutil/pretty.ml", line 749, characters 5-15:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "ocamlutil/inthash.ml", line 37, characters 16-28:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
+- File "ocamlutil/errormsg.ml", line 220, characters 10-20:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "ocamlutil/errormsg.ml", line 222, characters 10-20:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "ocamlutil/util.ml", line 265, characters 14-26:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
+- File "ocamlutil/util.ml", line 293, characters 16-28:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
 - Compiling interface src/escape.mli
 - Compiling           src/escape.ml to bytecode 
 - Compiling interface ocamlutil/longarray.mli
@@ -735,28 +752,18 @@ The following actions will be performed:
 - Compiling interface src/frontc/clexer.mli
 - Compiling           obj/x86_LINUX/clexer.ml to bytecode 
 - Compiling           obj/x86_LINUX/cilversion.ml to bytecode 
-- File "ocamlutil/inthash.ml", line 37, characters 16-28:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
-- File "ocamlutil/errormsg.ml", line 220, characters 10-20:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "ocamlutil/errormsg.ml", line 222, characters 10-20:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "ocamlutil/util.ml", line 265, characters 14-26:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
-- File "ocamlutil/util.ml", line 293, characters 16-28:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
-- File "ocamlutil/longarray.ml", line 27, characters 3-15:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
 - Compiling interface src/cilint.mli
 - Compiling           src/cilint.ml to bytecode 
 - Compiling interface src/cil.mli
 - Compiling           src/cil.ml to bytecode 
+- File "ocamlutil/longarray.ml", line 27, characters 3-15:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
+- File "src/cil.ml", line 4990, characters 10-21:
+- Warning 3: deprecated: String.copy
+- File "src/cil.ml", line 5000, characters 6-16:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 - Compiling interface src/cillower.mli
 - Compiling           src/cillower.ml to bytecode 
 - Compiling interface obj/x86_LINUX/formatparse.mli
@@ -766,14 +773,12 @@ The following actions will be performed:
 - Compiling           src/formatcil.ml to bytecode 
 - Compiling interface src/frontc/cabs2cil.mli
 - Compiling           src/frontc/cabs2cil.ml to bytecode 
-- File "src/cil.ml", line 4990, characters 10-21:
-- Warning 3: deprecated: String.copy
-- File "src/cil.ml", line 5000, characters 6-16:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 - File "src/formatlex.mll", line 150, characters 4-26:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- File "src/frontc/cabs2cil.ml", line 1877, characters 26-38:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
 - Compiling interface src/frontc/patch.mli
 - Compiling           src/frontc/patch.ml to bytecode 
 - Compiling interface src/frontc/frontc.mli
@@ -792,9 +797,9 @@ The following actions will be performed:
 - Compiling           src/ext/ssa.ml to bytecode 
 - Compiling           src/ext/ciltools.ml to bytecode 
 - Compiling           src/ext/usedef.ml to bytecode 
-- File "src/frontc/cabs2cil.ml", line 1877, characters 26-38:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
+- Compiling interface src/ext/logcalls.mli
+- Compiling           src/ext/logcalls.ml to bytecode 
+- Compiling           src/ext/logwrites.ml to bytecode 
 - File "src/frontc/cabs2cil.ml", line 4973, characters 28-30:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
@@ -846,9 +851,6 @@ The following actions will be performed:
 - File "src/ext/ssa.ml", line 673, characters 21-33:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
-- Compiling interface src/ext/logcalls.mli
-- Compiling           src/ext/logcalls.ml to bytecode 
-- Compiling           src/ext/logwrites.ml to bytecode 
 - Compiling interface src/rmtmps.mli
 - Compiling           src/rmtmps.ml to bytecode 
 - Compiling interface src/ext/callgraph.mli
@@ -872,15 +874,15 @@ The following actions will be performed:
 - Compiling           src/ext/simplemem.ml to bytecode 
 - Compiling interface src/ext/simplify.mli
 - Compiling           src/ext/simplify.ml to bytecode 
-- Compiling interface src/ext/dataslicing.mli
-- Compiling           src/ext/dataslicing.ml to bytecode 
-- Compiling           src/ext/sfi.ml to bytecode 
 - File "src/ext/pta/ptranal.ml", line 286, characters 38-39:
 - Warning 3: deprecated: Pervasives.&
 - Use (&&) instead.
 - File "src/ext/heap.ml", line 12, characters 13-25:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
+- Compiling interface src/ext/dataslicing.mli
+- Compiling           src/ext/dataslicing.ml to bytecode 
+- Compiling           src/ext/sfi.ml to bytecode 
 - Compiling           src/ext/expcompare.ml to bytecode 
 - Compiling interface src/ext/cfg.mli
 - Compiling           src/ext/cfg.ml to bytecode 
@@ -896,7 +898,6 @@ The following actions will be performed:
 - Compiling           obj/x86_LINUX/feature_config.ml to bytecode 
 - Compiling           src/main.ml to bytecode 
 - Linking bytecode obj/x86_LINUX/cilly.byte.exe 
-- + gcc -o 'obj/x86_LINUX/cilly.byte.exe'   '-L/usr/lib/ocaml' -g '/tmp/camlprime9ab36.c' '-lnums' '-lcamlstr' '-lunix' '-lcamlrun' -I'/usr/lib/ocaml' -lm  -ldl -lcurses -lpthread
 - cp lib/Cilly.pm.in lib/Cilly.pm
 - if gcc -D_GNUCC -m32 src/machdep-ml.c -o obj/x86_LINUX/machdep-ml32.exe ;then \
 - 	  sed -e "s|nogcc32model|` obj/x86_LINUX/machdep-ml32.exe --env`|" lib/Cilly.pm > lib/Cilly.pm.tmp; \
@@ -921,9 +922,7 @@ The following actions will be performed:
 - Compiling           ocamlutil/util.ml to native code 
 - Compiling           ocamlutil/clist.ml to native code 
 - Compiling           src/cilutil.ml to native code 
-- Compiling           src/escape.ml to native code 
-- Compiling           ocamlutil/longarray.ml to native code 
-- Compiling           ocamlutil/growArray.ml to native code 
+- + gcc -o 'obj/x86_LINUX/cilly.byte.exe'   '-L/usr/lib/ocaml' -g '/tmp/camlprim85bbf4.c' '-lnums' '-lcamlstr' '-lunix' '-lcamlrun' -I'/usr/lib/ocaml' -lm  -ldl -lcurses -lpthread
 - In file included from /usr/include/stdio.h:27:0,
 -                  from src/machdep-ml.c:40:
 - /usr/include/features.h:374:25: fatal error: sys/cdefs.h: No such file or directory
@@ -986,9 +985,9 @@ The following actions will be performed:
 - File "ocamlutil/util.ml", line 293, characters 16-28:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
-- File "ocamlutil/longarray.ml", line 27, characters 3-15:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
+- Compiling           src/escape.ml to native code 
+- Compiling           ocamlutil/longarray.ml to native code 
+- Compiling           ocamlutil/growArray.ml to native code 
 - Compiling           src/frontc/cabs.ml to native code 
 - Compiling           src/frontc/cabshelper.ml to native code 
 - Compiling           src/frontc/cabsvisit.ml to native code 
@@ -1000,15 +999,18 @@ The following actions will be performed:
 - Compiling           obj/x86_LINUX/cparser.ml to native code 
 - Compiling           obj/x86_LINUX/clexer.ml to native code 
 - Compiling           obj/x86_LINUX/cilversion.ml to native code 
+- File "ocamlutil/longarray.ml", line 27, characters 3-15:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
 - Compiling           src/cilint.ml to native code 
 - Compiling           src/cil.ml to native code 
-- Compiling           src/cillower.ml to native code 
-- Compiling           obj/x86_LINUX/formatparse.ml to native code 
 - File "src/cil.ml", line 4990, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "src/cil.ml", line 5000, characters 6-16:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- Compiling           src/cillower.ml to native code 
+- Compiling           obj/x86_LINUX/formatparse.ml to native code 
 - Compiling           obj/x86_LINUX/formatlex.ml to native code 
 - Compiling           src/formatcil.ml to native code 
 - Compiling           src/frontc/cabs2cil.ml to native code 
@@ -1041,7 +1043,6 @@ The following actions will be performed:
 - Compiling           src/ext/epicenter.ml to native code 
 - Compiling           src/ext/heapify.ml to native code 
 - Compiling           src/ext/pta/setp.ml to native code 
-- Compiling           src/ext/pta/uref.ml to native code 
 - File "ocamlutil/bitmap.ml", line 13, characters 14-26:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
@@ -1087,6 +1088,7 @@ The following actions will be performed:
 - File "src/ext/ssa.ml", line 673, characters 21-33:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
+- Compiling           src/ext/pta/uref.ml to native code 
 - Compiling           src/ext/pta/olf.ml to native code 
 - Compiling           src/ext/pta/ptranal.ml to native code 
 - Compiling           src/ext/canonicalize.ml to native code 
@@ -1097,13 +1099,13 @@ The following actions will be performed:
 - Compiling           src/ext/simplify.ml to native code 
 - Compiling           src/ext/dataslicing.ml to native code 
 - Compiling           src/ext/sfi.ml to native code 
-- Compiling           src/ext/expcompare.ml to native code 
 - File "src/ext/pta/ptranal.ml", line 286, characters 38-39:
 - Warning 3: deprecated: Pervasives.&
 - Use (&&) instead.
 - File "src/ext/heap.ml", line 12, characters 13-25:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
+- Compiling           src/ext/expcompare.ml to native code 
 - Compiling           src/ext/cfg.ml to native code 
 - Compiling           src/ext/liveness.ml to native code 
 - Compiling           src/ext/reachingdefs.ml to native code 
@@ -1127,8 +1129,8 @@ The following actions will be performed:
 - ocamlopt.opt   -a -o obj/x86_LINUX/cil.cmxa -ccopt -L/home/opam/.opam/system/lib/cil/lib/cil \
 -                obj/x86_LINUX/pretty.cmx obj/x86_LINUX/inthash.cmx obj/x86_LINUX/errormsg.cmx obj/x86_LINUX/alpha.cmx obj/x86_LINUX/trace.cmx obj/x86_LINUX/stats.cmx obj/x86_LINUX/util.cmx obj/x86_LINUX/clist.cmx obj/x86_LINUX/cilutil.cmx obj/x86_LINUX/escape.cmx obj/x86_LINUX/longarray.cmx obj/x86_LINUX/growArray.cmx obj/x86_LINUX/cabs.cmx obj/x86_LINUX/cabshelper.cmx obj/x86_LINUX/cabsvisit.cmx obj/x86_LINUX/whitetrack.cmx obj/x86_LINUX/cprint.cmx obj/x86_LINUX/lexerhack.cmx obj/x86_LINUX/machdep.cmx obj/x86_LINUX/machdepenv.cmx obj/x86_LINUX/cparser.cmx obj/x86_LINUX/clexer.cmx obj/x86_LINUX/cilversion.cmx obj/x86_LINUX/cilint.cmx obj/x86_LINUX/cil.cmx obj/x86_LINUX/cillower.cmx obj/x86_LINUX/formatparse.cmx obj/x86_LINUX/formatlex.cmx obj/x86_LINUX/formatcil.cmx obj/x86_LINUX/cabs2cil.cmx obj/x86_LINUX/patch.cmx obj/x86_LINUX/frontc.cmx obj/x86_LINUX/check.cmx obj/x86_LINUX/mergecil.cmx obj/x86_LINUX/dataflow.cmx obj/x86_LINUX/dominators.cmx obj/x86_LINUX/bitmap.cmx obj/x86_LINUX/ssa.cmx obj/x86_LINUX/ciltools.cmx obj/x86_LINUX/usedef.cmx obj/x86_LINUX/logcalls.cmx obj/x86_LINUX/logwrites.cmx obj/x86_LINUX/rmtmps.cmx obj/x86_LINUX/callgraph.cmx obj/x86_LINUX/epicenter.cmx obj/x86_LINUX/heapify.cmx obj/x86_LINUX/setp.cmx obj/x86_LINUX/uref.cmx obj/x86_LINUX/olf.cmx obj/x86_LINUX/ptranal.cmx obj/x86_LINUX/canonicalize.cmx obj/x86_LINUX/heap.cmx obj/x86_LINUX/oneret.cmx obj/x86_LINUX/partial.cmx obj/x86_LINUX/simplemem.cmx obj/x86_LINUX/simplify.cmx obj/x86_LINUX/dataslicing.cmx obj/x86_LINUX/sfi.cmx obj/x86_LINUX/expcompare.cmx obj/x86_LINUX/cfg.cmx obj/x86_LINUX/liveness.cmx obj/x86_LINUX/reachingdefs.cmx obj/x86_LINUX/deadcodeelim.cmx obj/x86_LINUX/availexps.cmx obj/x86_LINUX/availexpslv.cmx obj/x86_LINUX/predabst.cmx obj/x86_LINUX/testcil.cmx obj/x86_LINUX/ciloptions.cmx obj/x86_LINUX/feature_config.cmx
 - make[1]: Leaving directory `/home/opam/.opam/system/build/cil.1.5.1'
-- + as -o '/tmp/camlstartup7ebef8.o' '/tmp/camlstartup2f5884.s'
-- + gcc -o 'obj/x86_LINUX/cilly.asm.exe'   '-L/usr/lib/ocaml'  '/tmp/camlstartup7ebef8.o' '/usr/lib/ocaml/std_exit.o' 'obj/x86_LINUX/main.o' 'obj/x86_LINUX/feature_config.o' 'obj/x86_LINUX/ciloptions.o' 'obj/x86_LINUX/testcil.o' 'obj/x86_LINUX/predabst.o' 'obj/x86_LINUX/availexpslv.o' 'obj/x86_LINUX/availexps.o' 'obj/x86_LINUX/deadcodeelim.o' 'obj/x86_LINUX/reachingdefs.o' 'obj/x86_LINUX/liveness.o' 'obj/x86_LINUX/cfg.o' 'obj/x86_LINUX/expcompare.o' 'obj/x86_LINUX/sfi.o' 'obj/x86_LINUX/dataslicing.o' 'obj/x86_LINUX/simplify.o' 'obj/x86_LINUX/simplemem.o' 'obj/x86_LINUX/partial.o' 'obj/x86_LINUX/oneret.o' 'obj/x86_LINUX/heap.o' 'obj/x86_LINUX/canonicalize.o' 'obj/x86_LINUX/ptranal.o' 'obj/x86_LINUX/olf.o' 'obj/x86_LINUX/uref.o' 'obj/x86_LINUX/setp.o' 'obj/x86_LINUX/heapify.o' 'obj/x86_LINUX/epicenter.o' 'obj/x86_LINUX/callgraph.o' 'obj/x86_LINUX/rmtmps.o' 'obj/x86_LINUX/logwrites.o' 'obj/x86_LINUX/logcalls.o' 'obj/x86_LINUX/usedef.o' 'obj/x86_LINUX/ciltools.o' 'obj/x86_LINUX/ssa.o' 'obj/x86_LINUX/bitmap.o' 'obj/x86_LINUX/dominators.o' 'obj/x86_LINUX/dataflow.o' 'obj/x86_LINUX/mergecil.o' 'obj/x86_LINUX/check.o' 'obj/x86_LINUX/frontc.o' 'obj/x86_LINUX/patch.o' 'obj/x86_LINUX/cabs2cil.o' 'obj/x86_LINUX/formatcil.o' 'obj/x86_LINUX/formatlex.o' 'obj/x86_LINUX/formatparse.o' 'obj/x86_LINUX/cillower.o' 'obj/x86_LINUX/cil.o' 'obj/x86_LINUX/cilint.o' 'obj/x86_LINUX/cilversion.o' 'obj/x86_LINUX/clexer.o' 'obj/x86_LINUX/cparser.o' 'obj/x86_LINUX/machdepenv.o' 'obj/x86_LINUX/machdep.o' 'obj/x86_LINUX/lexerhack.o' 'obj/x86_LINUX/cprint.o' 'obj/x86_LINUX/whitetrack.o' 'obj/x86_LINUX/cabsvisit.o' 'obj/x86_LINUX/cabshelper.o' 'obj/x86_LINUX/cabs.o' 'obj/x86_LINUX/growArray.o' 'obj/x86_LINUX/longarray.o' 'obj/x86_LINUX/escape.o' 'obj/x86_LINUX/cilutil.o' 'obj/x86_LINUX/clist.o' 'obj/x86_LINUX/util.o' 'obj/x86_LINUX/stats.o' 'obj/x86_LINUX/trace.o' 'obj/x86_LINUX/alpha.o' 'obj/x86_LINUX/errormsg.o' 'obj/x86_LINUX/inthash.o' 'obj/x86_LINUX/pretty.o' '/usr/lib/ocaml/nums.a' '/usr/lib/ocaml/str.a' '/usr/lib/ocaml/unix.a' '/usr/lib/ocaml/stdlib.a' '-lnums' '-lcamlstr' '-lunix' '/usr/lib/ocaml/libasmrun.a' -lm  -ldl
+- + as -o '/tmp/camlstartup891160.o' '/tmp/camlstartup6b8ad5.s'
+- + gcc -o 'obj/x86_LINUX/cilly.asm.exe'   '-L/usr/lib/ocaml'  '/tmp/camlstartup891160.o' '/usr/lib/ocaml/std_exit.o' 'obj/x86_LINUX/main.o' 'obj/x86_LINUX/feature_config.o' 'obj/x86_LINUX/ciloptions.o' 'obj/x86_LINUX/testcil.o' 'obj/x86_LINUX/predabst.o' 'obj/x86_LINUX/availexpslv.o' 'obj/x86_LINUX/availexps.o' 'obj/x86_LINUX/deadcodeelim.o' 'obj/x86_LINUX/reachingdefs.o' 'obj/x86_LINUX/liveness.o' 'obj/x86_LINUX/cfg.o' 'obj/x86_LINUX/expcompare.o' 'obj/x86_LINUX/sfi.o' 'obj/x86_LINUX/dataslicing.o' 'obj/x86_LINUX/simplify.o' 'obj/x86_LINUX/simplemem.o' 'obj/x86_LINUX/partial.o' 'obj/x86_LINUX/oneret.o' 'obj/x86_LINUX/heap.o' 'obj/x86_LINUX/canonicalize.o' 'obj/x86_LINUX/ptranal.o' 'obj/x86_LINUX/olf.o' 'obj/x86_LINUX/uref.o' 'obj/x86_LINUX/setp.o' 'obj/x86_LINUX/heapify.o' 'obj/x86_LINUX/epicenter.o' 'obj/x86_LINUX/callgraph.o' 'obj/x86_LINUX/rmtmps.o' 'obj/x86_LINUX/logwrites.o' 'obj/x86_LINUX/logcalls.o' 'obj/x86_LINUX/usedef.o' 'obj/x86_LINUX/ciltools.o' 'obj/x86_LINUX/ssa.o' 'obj/x86_LINUX/bitmap.o' 'obj/x86_LINUX/dominators.o' 'obj/x86_LINUX/dataflow.o' 'obj/x86_LINUX/mergecil.o' 'obj/x86_LINUX/check.o' 'obj/x86_LINUX/frontc.o' 'obj/x86_LINUX/patch.o' 'obj/x86_LINUX/cabs2cil.o' 'obj/x86_LINUX/formatcil.o' 'obj/x86_LINUX/formatlex.o' 'obj/x86_LINUX/formatparse.o' 'obj/x86_LINUX/cillower.o' 'obj/x86_LINUX/cil.o' 'obj/x86_LINUX/cilint.o' 'obj/x86_LINUX/cilversion.o' 'obj/x86_LINUX/clexer.o' 'obj/x86_LINUX/cparser.o' 'obj/x86_LINUX/machdepenv.o' 'obj/x86_LINUX/machdep.o' 'obj/x86_LINUX/lexerhack.o' 'obj/x86_LINUX/cprint.o' 'obj/x86_LINUX/whitetrack.o' 'obj/x86_LINUX/cabsvisit.o' 'obj/x86_LINUX/cabshelper.o' 'obj/x86_LINUX/cabs.o' 'obj/x86_LINUX/growArray.o' 'obj/x86_LINUX/longarray.o' 'obj/x86_LINUX/escape.o' 'obj/x86_LINUX/cilutil.o' 'obj/x86_LINUX/clist.o' 'obj/x86_LINUX/util.o' 'obj/x86_LINUX/stats.o' 'obj/x86_LINUX/trace.o' 'obj/x86_LINUX/alpha.o' 'obj/x86_LINUX/errormsg.o' 'obj/x86_LINUX/inthash.o' 'obj/x86_LINUX/pretty.o' '/usr/lib/ocaml/nums.a' '/usr/lib/ocaml/str.a' '/usr/lib/ocaml/unix.a' '/usr/lib/ocaml/stdlib.a' '-lnums' '-lcamlstr' '-lunix' '/usr/lib/ocaml/libasmrun.a' -lm  -ldl
 [cil: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/cil.1.5.1)
 - make cilly NATIVECAML= 
