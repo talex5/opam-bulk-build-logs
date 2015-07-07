@@ -3,14 +3,14 @@
 + lsb_release -i -s
 # Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=cryptodbm
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=cryptodbm
 # The following system packages are needed:
 #  - libgdbm-dev
 #  - m4
 #  - zlib1g-dev
-+ sudo apt-get update
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=cryptodbm
 Not running as root, the following command will be run through "sudo":
     apt-get update
++ sudo apt-get update
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
@@ -38,12 +38,12 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [23.3 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [329 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [128 kB]
-Fetched 2122 kB in 6s (348 kB/s)
+Fetched 2122 kB in 7s (297 kB/s)
 Reading package lists...
++ sudo apt-get install -qq -yy libgdbm-dev m4 zlib1g-dev
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libgdbm-dev m4 zlib1g-dev
-+ sudo apt-get install -qq -yy libgdbm-dev m4 zlib1g-dev
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
@@ -75,21 +75,21 @@ The following actions will be performed:
 [cryptodbm: from default] Command started
 [cryptokit: from default] Command started
 [dbm: from default] Command started
-[dbm: from default] Command started
-[cryptodbm: from default] Command started
 [cryptokit: from default] Command started
-[default] http://opam-archive:8080/archives/dbm.1.0+opam.tar.gz downloaded
+[cryptodbm: from default] Command started
+[dbm: from default] Command started
+[default] http://opam-archive:8080/archives/cryptokit.1.10+opam.tar.gz downloaded
 [exenum: from default] Command started
 [default] http://opam-archive:8080/archives/cryptodbm.0.8+opam.tar.gz downloaded
 [fileutils: from default] Command started
-[default] http://opam-archive:8080/archives/cryptokit.1.10+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/dbm.1.0+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [exenum: from default] Command started
 [fileutils: from default] Command started
 [default] http://opam-archive:8080/archives/exenum.0.6+opam.tar.gz downloaded
 [ounit: from default] Command started
-[default] http://opam-archive:8080/archives/fileutils.0.4.4+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/fileutils.0.4.4+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [ounit: from default] Command started
 [default] http://opam-archive:8080/archives/ounit.2.0.0+opam.tar.gz downloaded
@@ -125,10 +125,7 @@ The following actions will be performed:
 - Configuration for camlp4 written to site-lib-src/camlp4/META
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
-- Detecting compiler arguments: (extractor built) 
-- File "itest-aux/ppx.ml", line 1, characters 0-25:
-- Error: Unbound value Toploop.preprocess_phrase
-- ok
+- Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib/ocaml
@@ -152,11 +149,14 @@ The following actions will be performed:
 - Configuration has been written to Makefile.config
 - 
 - You can now do 'make all', and optionally 'make opt', to build ocamlfind.
+- File "itest-aux/ppx.ml", line 1, characters 0-25:
+- Error: Unbound value Toploop.preprocess_phrase
 [ocamlfind: make all] Command started
 + make "all" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
 - for p in findlib bytes; do ( cd src/$p; make all ) || exit; done
 - make[1]: Entering directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
 - ocamllex fl_meta.mll
+- Makefile:160: depend: No such file or directory
 - 22 states, 392 transitions, table size 1700 bytes
 - ocamldep *.ml *.mli >depend
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
@@ -184,7 +184,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
-- Makefile:160: depend: No such file or directory
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
@@ -701,8 +700,6 @@ The following actions will be performed:
 - 
 - ocaml setup.ml -build 
 - /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
-- W: Cannot find source file matching module 'OUnitLoggerHTMLData' in library oUnitAdvanced
-- W: Cannot find source file matching module 'OUnitLoggerHTMLData' in library oUnitAdvanced
 - ocamlfind ocamldep -package threads -package unix -modules src/oUnitUtils.ml > src/oUnitUtils.ml.depends
 - ocamlfind ocamldep -package threads -package unix -modules src/oUnitPropList.ml > src/oUnitPropList.ml.depends
 - ocamlfind ocamldep -package threads -package unix -modules src/oUnitPlugin.ml > src/oUnitPlugin.ml.depends
@@ -744,6 +741,8 @@ The following actions will be performed:
 - ocamlfind ocamlc -c -g -I src -I src -package threads -package unix -thread -I src -o src/oUnitAssert.cmo src/oUnitAssert.ml
 - ocamlfind ocamldep -package threads -package unix -modules src/oUnitDiff.mli > src/oUnitDiff.mli.depends
 - ocamlfind ocamlc -c -g -I src -I src -package threads -package unix -thread -I src -o src/oUnitDiff.cmi src/oUnitDiff.mli
+- W: Cannot find source file matching module 'OUnitLoggerHTMLData' in library oUnitAdvanced
+- W: Cannot find source file matching module 'OUnitLoggerHTMLData' in library oUnitAdvanced
 - ocamlfind ocamlc -c -g -I src -I src -package threads -package unix -thread -I src -o src/oUnitState.cmo src/oUnitState.ml
 - ocamlfind ocamlc -c -g -I src -I src -package threads -package unix -thread -I src -o src/oUnitCheckEnv.cmo src/oUnitCheckEnv.ml
 - ocamlfind ocamldep -package threads -package unix -modules src/oUnitRunnerProcesses.ml > src/oUnitRunnerProcesses.ml.depends
