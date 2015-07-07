@@ -4,13 +4,13 @@
 + lsb_release -i -s
 # Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=ocamlgsl
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=ocamlgsl
 # The following system packages are needed:
 #  - gawk
 #  - libgsl0-dev
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=ocamlgsl
-Not running as root, system installation will be done through "sudo"
 + sudo apt-get update
+Not running as root, system installation will be done through "sudo"
 Ign http://download.opensuse.org  InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
@@ -42,19 +42,19 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [21.0 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [320 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [118 kB]
-Fetched 2057 kB in 8s (229 kB/s)
+Fetched 2057 kB in 7s (289 kB/s)
 Reading package lists...
-# OS package update successful
 + sudo apt-get install -qq -yy gawk libgsl0-dev m4
+# OS package update successful
 Not running as root, system installation will be done through "sudo"
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
+Selecting previously unselected package gawk.
 debconf: unable to initialize frontend: Readline
 debconf: (This frontend requires a controlling tty.)
 debconf: falling back to frontend: Teletype
 dpkg-preconfigure: unable to re-open stdin: 
-Selecting previously unselected package gawk.
 (Reading database ... 21935 files and directories currently installed.)
 Preparing to unpack .../gawk_1%3a4.0.1+dfsg-2.1ubuntu2_amd64.deb ...
 Unpacking gawk (1:4.0.1+dfsg-2.1ubuntu2) ...
@@ -77,10 +77,10 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: from default] Command started
 [ocamlgsl: from default] Command started
-[ocamlgsl: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlgsl.0.6.0+opam.tar.gz downloaded
+[ocamlgsl: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlgsl.0.6.0+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -166,6 +166,9 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -211,9 +214,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c fl_args.ml
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
@@ -455,14 +455,6 @@ The following actions will be performed:
 - ocamlc -g  -c gsl_matrix.ml
 - ocamlc gsl_matrix_flat.mli
 - ocamlc -g  -c gsl_matrix_flat.ml
-- ocamlc gsl_matrix_complex.mli
-- ocamlc -g  -c gsl_matrix_complex.ml
-- ocamlc gsl_matrix_complex_flat.mli
-- ocamlc -g  -c gsl_matrix_complex_flat.ml
-- ocamlc gsl_vectmat.mli
-- ocamlc -g  -c gsl_vectmat.ml
-- ocamlc gsl_blas.mli
-- ocamlc -g  -c gsl_blas.ml
 - File "gsl_vector_flat.ml", line 21, characters 11-23:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
@@ -478,6 +470,28 @@ The following actions will be performed:
 - File "gsl_vector_complex_flat.ml", line 59, characters 13-25:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
+- ocamlc gsl_matrix_complex.mli
+- ocamlc -g  -c gsl_matrix_complex.ml
+- ocamlc gsl_matrix_complex_flat.mli
+- ocamlc -g  -c gsl_matrix_complex_flat.ml
+- ocamlc gsl_vectmat.mli
+- ocamlc -g  -c gsl_vectmat.ml
+- ocamlc gsl_blas.mli
+- ocamlc -g  -c gsl_blas.ml
+- ocamlc gsl_blas_flat.mli
+- ocamlc -g  -c gsl_blas_flat.ml
+- ocamlc gsl_blas_gen.mli
+- ocamlc -g  -c gsl_blas_gen.ml
+- ocamlc gsl_fun.mli
+- ocamlc -g  -c gsl_fun.ml
+- ocamlc gsl_permut.mli
+- ocamlc -g  -c gsl_permut.ml
+- ocamlc gsl_sort.mli
+- ocamlc -g  -c gsl_sort.ml
+- ocamlc gsl_linalg.mli
+- ocamlc -g  -c gsl_linalg.ml
+- ocamlc gsl_eigen.mli
+- ocamlc -g  -c gsl_eigen.ml
 - File "gsl_matrix_flat.ml", line 15, characters 11-23:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
@@ -493,20 +507,6 @@ The following actions will be performed:
 - File "gsl_matrix_complex_flat.ml", line 97, characters 14-26:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
-- ocamlc gsl_blas_flat.mli
-- ocamlc -g  -c gsl_blas_flat.ml
-- ocamlc gsl_blas_gen.mli
-- ocamlc -g  -c gsl_blas_gen.ml
-- ocamlc gsl_fun.mli
-- ocamlc -g  -c gsl_fun.ml
-- ocamlc gsl_permut.mli
-- ocamlc -g  -c gsl_permut.ml
-- ocamlc gsl_sort.mli
-- ocamlc -g  -c gsl_sort.ml
-- ocamlc gsl_linalg.mli
-- ocamlc -g  -c gsl_linalg.ml
-- ocamlc gsl_eigen.mli
-- ocamlc -g  -c gsl_eigen.ml
 - ocamlc gsl_poly.mli
 - ocamlc -g  -c gsl_poly.ml
 - ocamlc gsl_interp.mli
@@ -566,12 +566,6 @@ The following actions will be performed:
 - ocamlc gsl_const.mli
 - ocamlc -g  -c gsl_const.ml
 - ocamlc -o do_sf str.cma do_sf.ml
-- File "gsl_histo.ml", line 20, characters 20-32:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
-- File "gsl_histo.ml", line 20, characters 53-65:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
 - ./do_sf < gsl_sf.mli.q > gsl_sf.ml
 - ./do_sf < gsl_sf.mli.q > gsl_sf.mli
 - ocamlc gsl_sf.mli
@@ -583,12 +577,22 @@ The following actions will be performed:
 - ocamlmklib -oc mlgsl -o gsl gsl_misc.cmo gsl_error.cmo gsl_ieee.cmo gsl_math.cmo gsl_complex.cmo gsl_vector.cmo gsl_vector_flat.cmo gsl_vector_complex.cmo gsl_vector_complex_flat.cmo gsl_matrix.cmo gsl_matrix_flat.cmo gsl_matrix_complex.cmo gsl_matrix_complex_flat.cmo gsl_vectmat.cmo gsl_blas.cmo gsl_blas_flat.cmo gsl_blas_gen.cmo gsl_fun.cmo gsl_permut.cmo gsl_sort.cmo gsl_linalg.cmo gsl_eigen.cmo gsl_poly.cmo gsl_interp.cmo gsl_rng.cmo gsl_qrng.cmo gsl_randist.cmo gsl_integration.cmo gsl_fit.cmo gsl_multifit.cmo gsl_multifit_nlin.cmo gsl_root.cmo gsl_multiroot.cmo gsl_min.cmo gsl_multimin.cmo gsl_diff.cmo gsl_cheb.cmo gsl_sum.cmo gsl_fft.cmo gsl_monte.cmo gsl_siman.cmo gsl_odeiv.cmo gsl_histo.cmo gsl_stats.cmo gsl_wavelet.cmo gsl_bspline.cmo gsl_const.cmo gsl_sf.cmo gsl_cdf.cmo -lgsl -lgslcblas -lm -L/usr/lib
 - ocamlopt  -c gsl_misc.ml
 - ocamlopt  -c gsl_error.ml
+- File "gsl_histo.ml", line 20, characters 20-32:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
+- File "gsl_histo.ml", line 20, characters 53-65:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
 - ocamlopt  -c gsl_ieee.ml
 - ocamlopt  -c gsl_math.ml
 - ocamlopt  -c gsl_complex.ml
 - ocamlopt  -c gsl_vector.ml
 - ocamlopt  -c gsl_vector_flat.ml
 - ocamlopt  -c gsl_vector_complex.ml
+- ocamlopt  -c gsl_vector_complex_flat.ml
+- ocamlopt  -c gsl_matrix.ml
+- ocamlopt  -c gsl_matrix_flat.ml
+- ocamlopt  -c gsl_matrix_complex.ml
 - File "gsl_vector_flat.ml", line 21, characters 11-23:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
@@ -598,15 +602,6 @@ The following actions will be performed:
 - File "gsl_vector_complex.ml", line 118, characters 14-26:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
-- ocamlopt  -c gsl_vector_complex_flat.ml
-- ocamlopt  -c gsl_matrix.ml
-- ocamlopt  -c gsl_matrix_flat.ml
-- ocamlopt  -c gsl_matrix_complex.ml
-- ocamlopt  -c gsl_matrix_complex_flat.ml
-- ocamlopt  -c gsl_vectmat.ml
-- ocamlopt  -c gsl_blas.ml
-- ocamlopt  -c gsl_blas_flat.ml
-- ocamlopt  -c gsl_blas_gen.ml
 - File "gsl_vector_complex_flat.ml", line 15, characters 11-23:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
@@ -622,17 +617,22 @@ The following actions will be performed:
 - File "gsl_matrix_complex.ml", line 158, characters 14-26:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
+- ocamlopt  -c gsl_matrix_complex_flat.ml
+- ocamlopt  -c gsl_vectmat.ml
+- ocamlopt  -c gsl_blas.ml
+- ocamlopt  -c gsl_blas_flat.ml
+- ocamlopt  -c gsl_blas_gen.ml
+- ocamlopt  -c gsl_fun.ml
+- ocamlopt  -c gsl_permut.ml
+- ocamlopt  -c gsl_sort.ml
+- ocamlopt  -c gsl_linalg.ml
+- ocamlopt  -c gsl_eigen.ml
 - File "gsl_matrix_complex_flat.ml", line 18, characters 11-23:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
 - File "gsl_matrix_complex_flat.ml", line 97, characters 14-26:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
-- ocamlopt  -c gsl_fun.ml
-- ocamlopt  -c gsl_permut.ml
-- ocamlopt  -c gsl_sort.ml
-- ocamlopt  -c gsl_linalg.ml
-- ocamlopt  -c gsl_eigen.ml
 - ocamlopt  -c gsl_poly.ml
 - ocamlopt  -c gsl_interp.ml
 - ocamlopt  -c gsl_rng.ml
@@ -658,13 +658,13 @@ The following actions will be performed:
 - ocamlopt  -c gsl_wavelet.ml
 - ocamlopt  -c gsl_bspline.ml
 - ocamlopt  -c gsl_const.ml
+- ocamlopt  -c gsl_sf.ml
 - File "gsl_histo.ml", line 20, characters 20-32:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
 - File "gsl_histo.ml", line 20, characters 53-65:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
-- ocamlopt  -c gsl_sf.ml
 - ocamlopt  -c gsl_cdf.ml
 - ocamlmklib -oc mlgsl -o gsl gsl_misc.cmx gsl_error.cmx gsl_ieee.cmx gsl_math.cmx gsl_complex.cmx gsl_vector.cmx gsl_vector_flat.cmx gsl_vector_complex.cmx gsl_vector_complex_flat.cmx gsl_matrix.cmx gsl_matrix_flat.cmx gsl_matrix_complex.cmx gsl_matrix_complex_flat.cmx gsl_vectmat.cmx gsl_blas.cmx gsl_blas_flat.cmx gsl_blas_gen.cmx gsl_fun.cmx gsl_permut.cmx gsl_sort.cmx gsl_linalg.cmx gsl_eigen.cmx gsl_poly.cmx gsl_interp.cmx gsl_rng.cmx gsl_qrng.cmx gsl_randist.cmx gsl_integration.cmx gsl_fit.cmx gsl_multifit.cmx gsl_multifit_nlin.cmx gsl_root.cmx gsl_multiroot.cmx gsl_min.cmx gsl_multimin.cmx gsl_diff.cmx gsl_cheb.cmx gsl_sum.cmx gsl_fft.cmx gsl_monte.cmx gsl_siman.cmx gsl_odeiv.cmx gsl_histo.cmx gsl_stats.cmx gsl_wavelet.cmx gsl_bspline.cmx gsl_const.cmx gsl_sf.cmx gsl_cdf.cmx -lgsl -lgslcblas -lm -L/usr/lib
 [ocamlgsl: make install-findlib] Command started
