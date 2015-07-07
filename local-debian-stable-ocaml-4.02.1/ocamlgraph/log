@@ -11,17 +11,17 @@ Not running as root, the following command will be run through "sudo":
 + sudo apt-get update
 Hit http://security.debian.org stable/updates InRelease
 Ign http://download.opensuse.org  InRelease
+Hit http://httpredir.debian.org stable InRelease
+Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Get:1 http://security.debian.org stable/updates/main amd64 Packages [79.2 kB]
-Get:2 http://download.opensuse.org  Packages [5783 B]
-Hit http://httpredir.debian.org stable InRelease
-Get:3 http://httpredir.debian.org stable-updates InRelease [126 kB]
-Get:4 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
-Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9234 kB in 6s (1369 kB/s)
-Reading package lists...
+Get:2 http://security.debian.org stable/updates/main amd64 Packages [82.5 kB]
 + sudo apt-get install -qq -yy m4
+Get:3 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
+Get:4 http://download.opensuse.org  Packages [5783 B]
+Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
+Fetched 9237 kB in 3s (2581 kB/s)
+Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
@@ -36,8 +36,8 @@ The following actions will be performed:
 [ocamlgraph: from default] Command started
 [ocamlgraph: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlgraph.1.8.6+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -119,6 +119,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -164,19 +166,20 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -197,9 +200,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c num_top.ml
 - ocamlc -I +compiler-libs -a -o num_top.cma num_top_printers.cmo num_top.cmo
 - make[1]: Leaving directory '/home/opam/.opam/4.02.1/build/ocamlfind.1.5.5/src/findlib'
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - make all-config
 - make[1]: Entering directory '/home/opam/.opam/4.02.1/build/ocamlfind.1.5.5'
 - USE_CYGPATH="0"; \
@@ -444,12 +444,6 @@ The following actions will be performed:
 - ocamlc.opt -c -I src -I lib -g -dtypes src/minsep.mli
 - ocamlc.opt -c -I src -I lib -g -dtypes src/minsep.ml
 - ocamlc.opt -c -I src -I lib -g -dtypes src/cliquetree.mli
-- File "src/gml.ml", line 418, characters 27-39:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
-- File "src/gml.ml", line 455, characters 27-39:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
 - ocamlc.opt -c -I src -I lib -g -dtypes src/cliquetree.ml
 - ocamlc.opt -c -I src -I lib -g -dtypes src/mcs_m.mli
 - ocamlc.opt -c -I src -I lib -g -dtypes src/mcs_m.ml
@@ -463,6 +457,12 @@ The following actions will be performed:
 - ocamlc.opt -c -I src -I lib -g -dtypes src/leaderlist.ml
 - ocamlc.opt -c -I src -I lib -g -dtypes src/contraction.mli
 - ocamlc.opt -c -I src -I lib -g -dtypes src/contraction.ml
+- File "src/gml.ml", line 418, characters 27-39:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
+- File "src/gml.ml", line 455, characters 27-39:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
 - ocamlc.opt -c -I src -I lib -g -dtypes src/graphml.mli
 - ocamlc.opt -c -I src -I lib -g -dtypes src/graphml.ml
 - ocamlc.opt -c -I src -I lib -g -dtypes src/merge.mli
@@ -479,10 +479,10 @@ The following actions will be performed:
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/version.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/util.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/blocks.ml
+- ocamlopt.opt -c -I src -I lib -for-pack Graph src/persistent.ml
 - File "lib/bitv.ml", line 464, characters 27-39:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlopt.opt -c -I src -I lib -for-pack Graph src/persistent.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/imperative.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/delaunay.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/builder.ml
@@ -504,16 +504,16 @@ The following actions will be performed:
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/dot_parser.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/dot_lexer.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/dot.ml
+- ocamlopt.opt -c -I src -I lib -for-pack Graph src/pack.ml
+- ocamlopt.opt -c -I src -I lib -for-pack Graph src/gmap.ml
+- ocamlopt.opt -c -I src -I lib -for-pack Graph src/minsep.ml
+- ocamlopt.opt -c -I src -I lib -for-pack Graph src/cliquetree.ml
 - File "src/gml.ml", line 418, characters 27-39:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
 - File "src/gml.ml", line 455, characters 27-39:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
-- ocamlopt.opt -c -I src -I lib -for-pack Graph src/pack.ml
-- ocamlopt.opt -c -I src -I lib -for-pack Graph src/gmap.ml
-- ocamlopt.opt -c -I src -I lib -for-pack Graph src/minsep.ml
-- ocamlopt.opt -c -I src -I lib -for-pack Graph src/cliquetree.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/mcs_m.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/md.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/strat.ml
