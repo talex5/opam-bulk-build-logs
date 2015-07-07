@@ -1,21 +1,21 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-# Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=delimcc
+# Detecting depexts using flags: x86_64 linux debian
 # The following system packages are needed:
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=delimcc
 Not running as root, the following command will be run through "sudo":
     apt-get update
 + sudo apt-get update
-Hit http://security.debian.org stable/updates InRelease
+Get:1 http://security.debian.org stable/updates InRelease [63.1 kB]
 Hit http://httpredir.debian.org stable InRelease
-Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
-Get:2 http://security.debian.org stable/updates/main amd64 Packages [79.2 kB]
-Get:3 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
-Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9228 kB in 5s (1674 kB/s)
+Get:2 http://httpredir.debian.org stable-updates InRelease [126 kB]
+Get:3 http://security.debian.org stable/updates/main amd64 Packages [79.2 kB]
+Get:4 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
+Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
+Fetched 9291 kB in 4s (2124 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
@@ -30,10 +30,10 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [delimcc: from default] Command started
 [ocamlfind: from default] Command started
-[ocamlfind: from default] Command started
 [delimcc: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/delimcc.0+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -121,6 +121,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
+- Makefile:160: depend: No such file or directory
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
@@ -149,7 +150,6 @@ The following actions will be performed:
 - /home/opam/.opam/4.01.0/bin/ocamldep.opt -modules bytes.ml > bytes.ml.depends
 - /home/opam/.opam/4.01.0/bin/ocamlc.opt -c -o bytes.cmo bytes.ml
 - /home/opam/.opam/4.01.0/bin/ocamlc.opt -a bytes.cmo -o bytes.cma
-- Makefile:160: depend: No such file or directory
 - make[1]: Leaving directory '/home/opam/.opam/4.01.0/build/ocamlfind.1.5.5/src/bytes'
 - make all-config
 - make[1]: Entering directory '/home/opam/.opam/4.01.0/build/ocamlfind.1.5.5'
@@ -256,6 +256,11 @@ The following actions will be performed:
 [delimcc: make all] Command started
 + make "all" (CWD=/home/opam/.opam/4.01.0/build/delimcc.0)
 - gcc -fPIC -Wall -I./ocaml-byterun-3.11 -I/home/opam/.opam/4.01.0/lib/ocaml/caml -O2   -c -o stacks.o stacks.c
+- gcc -fPIC -Wall -I./ocaml-byterun-3.11 -I/home/opam/.opam/4.01.0/lib/ocaml/caml -O2   -c -o delim_serialize.o delim_serialize.c
+- ocamlmklib -oc delimcc -dllpath . stacks.o delim_serialize.o
+- ocamlc -c delimcc.mli
+- ocamlc -c delimcc.ml
+- ocamlmklib -o delimcc -oc delimcc -dllpath . delimcc.cmo
 - stacks.c: In function 'dbg_print_trapsp':
 - stacks.c:134:3: warning: format '%x' expects argument of type 'unsigned int', but argument 4 has type 'ptrdiff_t' [-Wformat=]
 -    fprintf(stderr, "captured k %p (%x)\n",captured_k,t);
@@ -264,11 +269,6 @@ The following actions will be performed:
 - stacks.c:144:3: warning: format '%x' expects argument of type 'unsigned int', but argument 5 has type 'ptrdiff_t' [-Wformat=]
 -    fprintf(stderr, "%s; k %p (%x)\n",String_val(title),captured_k,t);
 -    ^
-- gcc -fPIC -Wall -I./ocaml-byterun-3.11 -I/home/opam/.opam/4.01.0/lib/ocaml/caml -O2   -c -o delim_serialize.o delim_serialize.c
-- ocamlmklib -oc delimcc -dllpath . stacks.o delim_serialize.o
-- ocamlc -c delimcc.mli
-- ocamlc -c delimcc.ml
-- ocamlmklib -o delimcc -oc delimcc -dllpath . delimcc.cmo
 - File "delimcc.ml", line 614, characters 12-62:
 - Warning 21: this statement never returns (or has an unsound type.)
 [delimcc: make opt] Command started
