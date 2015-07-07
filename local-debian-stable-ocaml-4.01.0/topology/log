@@ -9,19 +9,19 @@
 Not running as root, the following command will be run through "sudo":
     apt-get update
 + sudo apt-get update
-Get:1 http://security.debian.org stable/updates Release.gpg [836 B]
-Get:2 http://security.debian.org stable/updates Release [102 kB]
+Hit http://security.debian.org stable/updates Release.gpg
 Hit http://http.debian.net stable Release.gpg
-Get:3 http://http.debian.net stable-updates Release.gpg [836 B]
-Hit http://http.debian.net stable Release
-Get:4 http://http.debian.net stable-updates Release [124 kB]
-Hit http://http.debian.net stable/main amd64 Packages
-Get:5 http://security.debian.org stable/updates/main amd64 Packages [382 kB]
-Get:6 http://http.debian.net stable-updates/main amd64 Packages [4369 B]
-Fetched 614 kB in 1s (486 kB/s)
+Hit http://security.debian.org stable/updates Release
+Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
+Get:2 http://http.debian.net stable Release [168 kB]
+Hit http://security.debian.org stable/updates/main amd64 Packages
+Get:3 http://http.debian.net stable-updates Release [124 kB]
+Get:4 http://http.debian.net stable-updates/main amd64 Packages [4369 B]
+Get:5 http://http.debian.net stable/main amd64 Packages [7625 kB]
+Fetched 7922 kB in 2s (3833 kB/s)
 Reading package lists...
-# OS package update successful
 + sudo apt-get install -qq -yy m4 time
+# OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4 time
 debconf: delaying package configuration, since apt-utils is not installed
@@ -40,12 +40,12 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [ocamlgraph: from default] Command started
 [topology: from default] Command started
+[ocamlfind: from default] Command started
 [ocamlgraph: from default] Command started
 [topology: from default] Command started
-[ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlgraph.1.8.6+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/topology.0.1.0+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -65,6 +65,8 @@ The following actions will be performed:
 - compiler-libs: found
 - dbm: not present (normal since OCaml-4.00)
 - bytes: not found, installing compat library
+- File "itest-aux/ppx.ml", line 1, characters 0-25:
+- Error: Unbound value Toploop.preprocess_phrase
 - Configuration for dynlink written to site-lib-src/dynlink/META
 - Configuration for graphics written to site-lib-src/graphics/META
 - Configuration for num written to site-lib-src/num/META
@@ -101,8 +103,6 @@ The following actions will be performed:
 - Configuration has been written to Makefile.config
 - 
 - You can now do 'make all', and optionally 'make opt', to build ocamlfind.
-- File "itest-aux/ppx.ml", line 1, characters 0-25:
-- Error: Unbound value Toploop.preprocess_phrase
 [ocamlfind: make all] Command started
 + make "all" (CWD=/home/opam/.opam/4.01.0/build/ocamlfind.1.5.5)
 - for p in findlib bytes; do ( cd src/$p; make all ) || exit; done
@@ -292,9 +292,9 @@ The following actions will be performed:
 - checking for /home/opam/.opam/4.01.0/lib/ocaml/lablgtk2/lablgtk.cmxa... no
 - checking Win32 platform... no
 - configure: creating ./config.status
+- config.status: creating Makefile
 - ocamlfind: Package `lablgtk2' not found
 - configure: WARNING: lablgnomecanvas not found: the graph editor and view_graph will not be compiled
-- config.status: creating Makefile
 [ocamlgraph: make] Command started
 + make  (CWD=/home/opam/.opam/4.01.0/build/ocamlgraph.1.8.6)
 - sed -e s/VERSION/1.8.6/ -e s/CMA/graph.cma/ -e s/CMXA/graph.cmxa/ \
@@ -568,6 +568,7 @@ The following actions will be performed:
 [topology: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-build" (CWD=/home/opam/.opam/4.01.0/build/topology.0.1.0)
 - /home/opam/.opam/4.01.0/bin/ocamlopt.opt unix.cmxa -I /home/opam/.opam/4.01.0/lib/ocaml/ocamlbuild /home/opam/.opam/4.01.0/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /home/opam/.opam/4.01.0/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
+[ERROR] The compilation of topology failed at "ocaml setup.ml -build".
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamldep -package ocamlgraph -package threads -modules lib/Network.mli > lib/Network.mli.depends
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -c -g -package ocamlgraph -package threads -thread -I lib -o lib/Network.cmi lib/Network.mli
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamldep -package ocamlgraph -package threads -modules lib/Network.ml > lib/Network.ml.depends
@@ -579,10 +580,17 @@ The following actions will be performed:
 -        The field `edge' is required but not provided
 - Command exited with code 2.
 - E: Failure("Command ''/home/opam/.opam/4.01.0/bin/ocamlbuild' lib/topology.cma lib/topology.cmxa lib/topology.a lib/topology.cmxs -tag debug' terminated with error code 10")
-[ERROR] The compilation of topology failed at "ocaml setup.ml -build".
 [topology: ocamlfind remove] Command started
 + ocamlfind "remove" "topology" (CWD=/home/opam/.opam/4.01.0/build/topology.0.1.0)
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/4.01.0/lib/topology
+
+
+=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+The following actions failed
+  - install topology 0.1.0
+The following changes have been performed
+  - install ocamlfind  1.5.5
+  - install ocamlgraph 1.8.6
 
 #=== ERROR while installing topology.0.1.0 ====================================#
 # opam-version         1.2.2 (96efec2011c66532520b3222536e4ebc9f7a6032)
@@ -591,9 +599,9 @@ The following actions will be performed:
 # path                 /home/opam/.opam/4.01.0/build/topology.0.1.0
 # compiler             4.01.0
 # exit-code            1
-# env-file             /home/opam/.opam/4.01.0/build/topology.0.1.0/topology-7-d6d332.env
-# stdout-file          /home/opam/.opam/4.01.0/build/topology.0.1.0/topology-7-d6d332.out
-# stderr-file          /home/opam/.opam/4.01.0/build/topology.0.1.0/topology-7-d6d332.err
+# env-file             /home/opam/.opam/4.01.0/build/topology.0.1.0/topology-5-d6d332.env
+# stdout-file          /home/opam/.opam/4.01.0/build/topology.0.1.0/topology-5-d6d332.out
+# stderr-file          /home/opam/.opam/4.01.0/build/topology.0.1.0/topology-5-d6d332.err
 ### stdout ###
 # [...]
 # /home/opam/.opam/4.01.0/bin/ocamlfind ocamldep -package ocamlgraph -package threads -modules lib/Network.mli > lib/Network.mli.depends
@@ -610,14 +618,6 @@ The following actions will be performed:
 # E: Failure("Command ''/home/opam/.opam/4.01.0/bin/ocamlbuild' lib/topology.cma lib/topology.cmxa lib/topology.a lib/topology.cmxs -tag debug' terminated with error code 10")
 
 
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions failed
-  - install topology 0.1.0
-The following changes have been performed
-  - install ocamlfind  1.5.5
-  - install ocamlgraph 1.8.6
-
 The former state can be restored with:
-    opam switch import "~/.opam/4.01.0/backup/state-20150322171654.export"
+    opam switch import "~/.opam/4.01.0/backup/state-20150323105302.export"
 'opam install topology' failed.
