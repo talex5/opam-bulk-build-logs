@@ -1,25 +1,24 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux debian
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=merlin-acme
+# Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=merlin-acme
 # The following system packages are needed:
 #  - m4
 + sudo apt-get update
 Not running as root, system installation will be done through "sudo"
-Hit http://http.debian.net stable Release.gpg
 Hit http://download.opensuse.org  Release.gpg
-Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
-Get:2 http://http.debian.net stable Release [168 kB]
+Hit http://http.debian.net stable Release.gpg
+Hit http://http.debian.net stable-updates Release.gpg
+Hit http://http.debian.net stable Release
 Hit http://download.opensuse.org  Release
-Get:3 http://http.debian.net stable-updates Release [124 kB]
+Hit http://http.debian.net stable-updates Release
 Hit http://download.opensuse.org  Packages
+Hit http://http.debian.net stable/main amd64 Packages
+Hit http://http.debian.net stable-updates/main amd64 Packages
 Hit http://security.debian.org stable/updates Release.gpg
-Get:4 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
-Get:5 http://http.debian.net stable/main amd64 Packages [7625 kB]
 Hit http://security.debian.org stable/updates Release
 Hit http://security.debian.org stable/updates/main amd64 Packages
-Fetched 7922 kB in 1s (4344 kB/s)
 Reading package lists...
 + sudo apt-get install -qq -yy m4
 # OS package update successful
@@ -51,19 +50,19 @@ The following actions will be performed:
 [cppo: from default] Command started
 [default] http://opam-archive:8080/archives/batteries.2.3.1+opam.tar.gz downloaded
 [merlin-acme: from default] Command started
+[easy-format: from default] Command started
 [default] http://opam-archive:8080/archives/cppo.1.1.2+opam.tar.gz downloaded
 [ocaml9p: from default] Command started
-[easy-format: from default] Command started
 [merlin-acme: from default] Command started
 [default] http://opam-archive:8080/archives/easy-format.1.0.2+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
+[ocaml9p: from default] Command started
 [default] http://opam-archive:8080/archives/merlin-acme.0.1+opam.tar.gz downloaded
 [yojson: from default] Command started
-[ocaml9p: from default] Command started
 [ocamlfind: from default] Command started
-[yojson: from default] Command started
 [default] http://opam-archive:8080/archives/ocaml9p.0.4+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[yojson: from default] Command started
 [default] http://opam-archive:8080/archives/yojson.1.2.0+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -97,8 +96,7 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) 
-- ok
+- Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /home/opam/.opam/4.02.1/lib/ocaml
@@ -149,6 +147,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -194,12 +194,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -208,8 +208,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -1605,7 +1603,6 @@ The following actions will be performed:
 - ocamlfind ocamlc -c -g -annot -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batTuple.cmo src/batTuple.ml
 - ocamlfind ocamlc -c -g -annot -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batUref.cmo src/batUref.ml
 - ocamlfind ocamlc -c -g -annot -w z -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batVect.cmo src/batVect.ml
-- ocamlfind: Package `bisect' not found
 - ocamlfind ocamlc -c -g -annot -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batAvlTree.cmo src/batAvlTree.ml
 - ocamlfind ocamlc -c -g -annot -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batISet.cmo src/batISet.ml
 - ocamlfind ocamlc -c -g -annot -w -9 -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batIMap.cmo src/batIMap.ml
@@ -1638,6 +1635,7 @@ The following actions will be performed:
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 - ocamlfind ocamldep -package bigarray,num,str -I +compiler-libs -package bytes -modules src/batteriesHelp.ml > src/batteriesHelp.ml.depends
 - ocamlfind ocamlc -c -g -annot -package bigarray,num,str -I +compiler-libs -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batteriesHelp.cmo src/batteriesHelp.ml
+- ocamlfind: Package `bisect' not found
 - + ocamlfind ocamlc -c -g -annot -package bigarray,num,str -I +compiler-libs -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batteriesHelp.cmo src/batteriesHelp.ml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batMutex.mli > src/batMutex.mli.depends
