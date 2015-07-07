@@ -3,12 +3,12 @@
 + lsb_release -i -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=fluent-logger
 # Detecting depexts using flags: x86_64 linux ubuntu
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=fluent-logger
 # The following system packages are needed:
 #  - m4
-+ sudo apt-get update
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=fluent-logger
 Not running as root, the following command will be run through "sudo":
     apt-get update
++ sudo apt-get update
 Ign http://download.opensuse.org  InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
@@ -40,13 +40,13 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [28.0 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [341 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [133 kB]
-Fetched 2187 kB in 5s (430 kB/s)
+Fetched 2187 kB in 5s (404 kB/s)
 Reading package lists...
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 654143 654279
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages.gz is not what the server reported 364827 364937
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 654277 654336
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages.gz is not what the server reported 364936 364970
 + sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
@@ -61,13 +61,13 @@ The following actions will be performed:
 [extlib-compat: from default] Command started
 [fluent-logger: from default] Command started
 [msgpack: from default] Command started
-[extlib-compat: from default] Command started
-[fluent-logger: from default] Command started
 [msgpack: from default] Command started
-[default] http://opam-archive:8080/archives/extlib-compat.1.6.1+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
+[fluent-logger: from default] Command started
+[extlib-compat: from default] Command started
 [default] http://opam-archive:8080/archives/fluent-logger.1.0.2+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/msgpack.1.0.0+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/extlib-compat.1.6.1+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
@@ -269,6 +269,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -313,7 +314,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -388,8 +388,6 @@ The following actions will be performed:
 - ocamlc -g -c extHashtbl.mli extHashtbl.ml
 - ocamlc -g -c extList.mli extList.ml
 - ocamlc -g -c extString.mli extString.ml
-- ocamlc -g -c global.mli global.ml
-- ocamlc -g -c IO.mli IO.ml
 - File "bitSet.ml", line 23, characters 40-53:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -423,8 +421,8 @@ The following actions will be performed:
 - File "extString.ml", line 231, characters 12-18:
 - Warning 3: deprecated: create
 - Use Bytes.create instead.
-- File "extString.ml", line 250, characters 28-39:
-- Warning 3: deprecated: String.copy
+- ocamlc -g -c global.mli global.ml
+- ocamlc -g -c IO.mli IO.ml
 - ocamlc -g -c option.mli option.ml
 - ocamlc -g -c pMap.mli pMap.ml
 - ocamlc -g -c std.mli std.ml
@@ -434,6 +432,8 @@ The following actions will be performed:
 - ocamlc -g -c unzip.mli unzip.ml
 - ocamlc -g -c refList.mli refList.ml
 - ocamlc -g -c optParse.mli optParse.ml
+- File "extString.ml", line 250, characters 28-39:
+- Warning 3: deprecated: String.copy
 - File "IO.ml", line 65, characters 9-22:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -488,18 +488,16 @@ The following actions will be performed:
 - ocamlopt -g -c enum.mli enum.ml
 - ocamlopt -g -c bitSet.mli bitSet.ml
 - ocamlopt -g -c dynArray.mli dynArray.ml
-- ocamlopt -g -c extArray.mli extArray.ml
 - File "bitSet.ml", line 23, characters 40-53:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
 - File "bitSet.ml", line 28, characters 64-75:
 - Warning 3: deprecated: String.fill
 - Use Bytes.fill instead.
+- ocamlopt -g -c extArray.mli extArray.ml
 - ocamlopt -g -c extHashtbl.mli extHashtbl.ml
 - ocamlopt -g -c extList.mli extList.ml
 - ocamlopt -g -c extString.mli extString.ml
-- ocamlopt -g -c global.mli global.ml
-- ocamlopt -g -c IO.mli IO.ml
 - File "extString.ml", line 28, characters 9-15:
 - Warning 3: deprecated: create
 - Use Bytes.create instead.
@@ -529,17 +527,17 @@ The following actions will be performed:
 - Use Bytes.create instead.
 - File "extString.ml", line 250, characters 28-39:
 - Warning 3: deprecated: String.copy
+- ocamlopt -g -c global.mli global.ml
+- ocamlopt -g -c IO.mli IO.ml
+- ocamlopt -g -c option.mli option.ml
+- ocamlopt -g -c pMap.mli pMap.ml
+- ocamlopt -g -c std.mli std.ml
 - File "IO.ml", line 65, characters 9-22:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
 - File "IO.ml", line 119, characters 9-22:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlopt -g -c option.mli option.ml
-- ocamlopt -g -c pMap.mli pMap.ml
-- ocamlopt -g -c std.mli std.ml
-- ocamlopt -g -c uChar.mli uChar.ml
-- ocamlopt -g -c uTF8.mli uTF8.ml
 - File "IO.ml", line 180, characters 13-26:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -555,6 +553,12 @@ The following actions will be performed:
 - Warning 3: deprecated: String.unsafe_set
 - File "IO.ml", line 788, characters 4-21:
 - Warning 3: deprecated: String.unsafe_set
+- ocamlopt -g -c uChar.mli uChar.ml
+- ocamlopt -g -c uTF8.mli uTF8.ml
+- ocamlopt -g -c base64.mli base64.ml
+- ocamlopt -g -c unzip.mli unzip.ml
+- ocamlopt -g -c refList.mli refList.ml
+- ocamlopt -g -c optParse.mli optParse.ml
 - File "std.ml", line 52, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -567,10 +571,6 @@ The following actions will be performed:
 - File "std.ml", line 162, characters 14-27:
 - Warning 3: deprecated: Obj.final_tag
 - Replaced by custom_tag.
-- ocamlopt -g -c base64.mli base64.ml
-- ocamlopt -g -c unzip.mli unzip.ml
-- ocamlopt -g -c refList.mli refList.ml
-- ocamlopt -g -c optParse.mli optParse.ml
 - File "base64.ml", line 98, characters 4-21:
 - Warning 3: deprecated: String.unsafe_set
 - File "unzip.ml", line 172, characters 12-25:
