@@ -3,22 +3,22 @@
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=conf-libuv
 # Detecting depexts using flags: x86_64 linux centos
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=conf-libuv
++ sudo yum -y update
 # The following scripts need to be run:
 #  - https://gist.githubusercontent.com/fdopen/cbfb14114f4ec423a1a4/raw/09d2f8139950447f3c6fccaaa8483cfddc1ccb24/install-libuv.sh
 Not running as root, the following command will be run through "sudo":
     yum -y update
 Loaded plugins: fastestmirror
-+ sudo yum -y update
 Loading mirror speeds from cached hostfile
  * base: mirror.sov.uk.goscomb.net
  * extras: mirror.econdc.com
  * updates: mirror.sov.uk.goscomb.net
 No packages marked for update
-+ curl -L "https://gist.githubusercontent.com/fdopen/cbfb14114f4ec423a1a4/raw/09d2f8139950447f3c6fccaaa8483cfddc1ccb24/install-libuv.sh" | bash -ex -
 # OS package update successful
++ curl -L "https://gist.githubusercontent.com/fdopen/cbfb14114f4ec423a1a4/raw/09d2f8139950447f3c6fccaaa8483cfddc1ccb24/install-libuv.sh" | bash -ex -
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   725  100   725    0     0    720      0  0:00:01  0:00:01 --:--:--   720
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   725  100   725    0     0    796      0 --:--:-- --:--:-- --:--:--   796
 + set -e
 + set -u
 + set -x
@@ -30,7 +30,7 @@ No packages marked for update
 + curl -OL http://libuv.org/dist/v1.4.2/libuv-v1.4.2.tar.gz
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0 95  988k   95  940k    0     0  2774k      0 --:--:-- --:--:-- --:--:-- 2775k100  988k  100  988k    0     0  2811k      0 --:--:-- --:--:-- --:--:-- 2809k
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  988k  100  988k    0     0  2900k      0 --:--:-- --:--:-- --:--:-- 2900k
 + tar -zxf libuv-v1.4.2.tar.gz
 + cd libuv-v1.4.2
 + which sudo
@@ -38,6 +38,7 @@ No packages marked for update
 + ./autogen.sh
 + libtoolize
 libtoolize: putting auxiliary files in `.'.
++ aclocal -I m4
 libtoolize: linking file `./ltmain.sh'
 libtoolize: putting macros in AC_CONFIG_MACRO_DIR, `m4'.
 libtoolize: linking file `m4/libtool.m4'
@@ -45,9 +46,8 @@ libtoolize: linking file `m4/ltoptions.m4'
 libtoolize: linking file `m4/ltsugar.m4'
 libtoolize: linking file `m4/ltversion.m4'
 libtoolize: linking file `m4/lt~obsolete.m4'
-+ aclocal -I m4
 + autoconf
-+ automake --add-missing --copy
+checking for a BSD-compatible install... + automake --add-missing --copy
 configure.ac:35: installing './ar-lib'
 configure.ac:26: installing './compile'
 configure.ac:22: installing './config.guess'
@@ -56,7 +56,7 @@ configure.ac:21: installing './install-sh'
 configure.ac:21: installing './missing'
 Makefile.am: installing './depcomp'
 + ./configure
-checking for a BSD-compatible install... /usr/bin/install -c
+/usr/bin/install -c
 checking whether build environment is sane... yes
 checking for a thread-safe mkdir -p... /usr/bin/mkdir -p
 checking for gawk... gawk
@@ -155,10 +155,10 @@ checking for pkg-config... yes
 checking that generated files are newer than configure... done
 configure: creating ./config.status
 config.status: creating libuv.pc
-+ make
 config.status: creating Makefile
 config.status: executing depfiles commands
 config.status: executing libtool commands
++ make
   CC       src/libuv_la-fs-poll.lo
   CC       src/libuv_la-inet.lo
   CC       src/libuv_la-threadpool.lo
@@ -227,10 +227,22 @@ The following actions will be performed:
   - install conf-libuv 1
 
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
-=-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ERROR] The compilation of conf-libuv failed at "pkg-config libuv
         --atleast-version=1".
+
+=-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+[conf-libuv: pkg-config libuv] Command started
++ pkg-config "libuv" "--atleast-version=1" (CWD=/home/opam/.opam/system/build/conf-libuv.1)
+
+
+=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+The following actions failed
+  - install conf-libuv 1
+No changes have been performed
+
+=-=- conf-libuv.1 troubleshooting -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+=> This package requires libuv 1.x development packages installed on your
+   system
 
 #=== ERROR while installing conf-libuv.1 ======================================#
 # opam-version         1.2.2 (391297300524717e1475deaea37bca287c7f5e36)
@@ -244,15 +256,3 @@ The following actions will be performed:
 # stderr-file          /home/opam/.opam/system/build/conf-libuv.1/conf-libuv-1-dd682e.err
 
 'opam install conf-libuv' failed.
-[conf-libuv: pkg-config libuv] Command started
-+ pkg-config "libuv" "--atleast-version=1" (CWD=/home/opam/.opam/system/build/conf-libuv.1)
-
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions failed
-  - install conf-libuv 1
-No changes have been performed
-
-=-=- conf-libuv.1 troubleshooting -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-=> This package requires libuv 1.x development packages installed on your
-   system
