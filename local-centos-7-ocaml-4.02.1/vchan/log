@@ -1,5 +1,5 @@
-# Detecting depexts using flags: x86_64 linux centos
 + uname -m
+# Detecting depexts using flags: x86_64 linux centos
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=vchan
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=vchan
@@ -28,11 +28,11 @@ The following actions will be performed:
 [io-page: from default] Command started
 [ipaddr: from default] Command started
 [io-page: from default] Command started
-[cstruct: from default] Command started
 [ipaddr: from default] Command started
-[default] http://opam-archive:8080/archives/io-page.1.5.1+opam.tar.gz downloaded
-[lwt: from default] Command started
+[cstruct: from default] Command started
 [default] http://opam-archive:8080/archives/cstruct.1.6.0+opam.tar.gz downloaded
+[lwt: from default] Command started
+[default] http://opam-archive:8080/archives/io-page.1.5.1+opam.tar.gz downloaded
 [mirage-types: from default] Command started
 [default] http://opam-archive:8080/archives/ipaddr.2.5.0+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
@@ -40,32 +40,32 @@ The following actions will be performed:
 [mirage-types: from default] Command started
 [default] http://opam-archive:8080/archives/lwt.2.4.5+opam.tar.gz downloaded
 [ocplib-endian: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/mirage-types.2.3.0+opam.tar.gz downloaded
 [optcomp: from default] Command started
 [ocplib-endian: from default] Command started
-[optcomp: from default] Command started
-[default] http://opam-archive:8080/archives/ocplib-endian.0.4+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [ounit: from default] Command started
-[ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/optcomp.1.6+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocplib-endian.0.4+opam.tar.gz downloaded
 [sexplib: from default] Command started
 [ounit: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[optcomp: from default] Command started
+[default] http://opam-archive:8080/archives/ounit.2.0.0+opam.tar.gz downloaded
 [type_conv: from default] Command started
 [sexplib: from default] Command started
-[default] http://opam-archive:8080/archives/ounit.2.0.0+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/optcomp.1.6+opam.tar.gz downloaded
 [vchan: from default] Command started
+[type_conv: from default] Command started
 [default] http://opam-archive:8080/archives/sexplib.112.24.01+opam.tar.gz downloaded
 [xenstore: from default] Command started
-[vchan: from default] Command started
-[default] http://opam-archive:8080/archives/vchan.2.0.2+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
 [xenstore_transport: from default] Command started
 [xenstore: from default] Command started
 [default] http://opam-archive:8080/archives/xenstore.1.2.5+opam.tar.gz downloaded
 [xenstore_transport: from default] Command started
 [default] http://opam-archive:8080/archives/xenstore_transport.0.9.4+opam.tar.gz downloaded
-[type_conv: from default] Command started
-[default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
+[vchan: from default] Command started
+[default] http://opam-archive:8080/archives/vchan.2.0.2+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlp4: sh] Command started
@@ -206,6 +206,14 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -220,14 +228,6 @@ The following actions will be performed:
 - cat topfind_rd1.p | \
 - 	../../tools/patch '@SITELIB@' '/home/opam/.opam/system/lib' \
 -     	    >topfind
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -c num_top_printers.mli
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
 - ocamlc -I +compiler-libs -c num_top.mli
@@ -3102,13 +3102,13 @@ The following actions will be performed:
 - ocamlfind ocamldep -package lwt -package cstruct.syntax -package cstruct -modules server/trie.mli > server/trie.mli.depends
 - ocamlfind ocamlc -c -g -annot -I core -package lwt -package cstruct.syntax -package cstruct -I server -I core -I client_unix -I client_lwt -o server/trie.cmi server/trie.mli
 - ocamlfind ocamldep -package lwt -package cstruct.syntax -package cstruct -modules server/call.mli > server/call.mli.depends
+- ocamlfind ocamlc -c -g -annot -I core -package lwt.syntax -package lwt -package cstruct.syntax -package cstruct -syntax camlp4o -I server -I core -I client_unix -I client_lwt -o server/connection.cmo server/connection.ml
 - File "setup.ml", line 213, characters 8-26:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
 - File "setup.ml", line 1793, characters 6-24:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
-- ocamlfind ocamlc -c -g -annot -I core -package lwt.syntax -package lwt -package cstruct.syntax -package cstruct -syntax camlp4o -I server -I core -I client_unix -I client_lwt -o server/connection.cmo server/connection.ml
 - ocamlfind ocamlc -c -g -annot -I core -package lwt -package cstruct.syntax -package cstruct -I server -I core -I client_unix -I client_lwt -o server/call.cmi server/call.mli
 - ocamlfind ocamldep -package lwt.syntax -package lwt -package cstruct.syntax -package cstruct -syntax camlp4o -modules server/call.ml > server/call.ml.depends
 - ocamlfind ocamldep -package lwt.syntax -package lwt -package cstruct.syntax -package cstruct -syntax camlp4o -modules server/heap_debug_interface.ml > server/heap_debug_interface.ml.depends
@@ -3248,6 +3248,12 @@ The following actions will be performed:
 -> installed xenstore.1.2.5
 [xenstore_transport: make all] Command started
 + make "all" (CWD=/home/opam/.opam/system/build/xenstore_transport.0.9.4)
+- File "setup.ml", line 213, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "setup.ml", line 1793, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
 - 
 - Configuration: 
 - ocamlfind: ..................................... /home/opam/.opam/system/bin/ocamlfind
@@ -3307,12 +3313,6 @@ The following actions will be performed:
 - pkg_xenstore_client: ........................... /home/opam/.opam/system/lib/xenstore
 - pkg_unix: ...................................... /usr/lib64/ocaml
 - 
-- File "setup.ml", line 213, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "setup.ml", line 1793, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
 - /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib64/ocaml/ocamlbuild /usr/lib64/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib64/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
 - ocamlfind ocamldep -package xenstore.client -package xenstore -package unix -package lwt.unix -package lwt.syntax -package lwt -syntax camlp4o -modules lib/xs_transport.ml > lib/xs_transport.ml.depends
 - ocamlfind ocamlc -c -g -annot -I lib -package xenstore.client -package xenstore -package unix -package lwt.unix -package lwt.syntax -package lwt -syntax camlp4o -I lib -o lib/xs_transport.cmo lib/xs_transport.ml
@@ -3458,8 +3458,8 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlmklib -o lib/vchan_stubs lib/vchan_stubs.o
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -syntax camlp4o -package xenstore.client -package sexplib.syntax -package sexplib -package mirage-types.lwt -package mirage-types -package lwt -package io-page -package cstruct.syntax -package cstruct -modules lib/endpoint.mli > lib/endpoint.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -syntax camlp4o -package sexplib.syntax -syntax camlp4o -syntax camlp4o -package xenstore.client -package sexplib.syntax -package sexplib -package mirage-types.lwt -package mirage-types -package lwt -package io-page -package cstruct.syntax -package cstruct -modules lib/port.mli > lib/port.mli.depends
-- W: Cannot find source file matching module 'vchan' in library vchan
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -syntax camlp4o -package sexplib.syntax -syntax camlp4o -syntax camlp4o -package xenstore.client -package sexplib.syntax -package sexplib -package mirage-types.lwt -package mirage-types -package lwt -package io-page -package cstruct.syntax -package cstruct -modules lib/s.mli > lib/s.mli.depends
+- W: Cannot find source file matching module 'vchan' in library vchan
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package sexplib.syntax -syntax camlp4o -syntax camlp4o -package xenstore.client -package sexplib.syntax -package sexplib -package mirage-types.lwt -package mirage-types -package lwt -package io-page -package cstruct.syntax -package cstruct -I lib -o lib/port.cmi lib/port.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package sexplib.syntax -syntax camlp4o -syntax camlp4o -package xenstore.client -package sexplib.syntax -package sexplib -package mirage-types.lwt -package mirage-types -package lwt -package io-page -package cstruct.syntax -package cstruct -I lib -o lib/s.cmi lib/s.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package xenstore.client -package sexplib.syntax -package sexplib -package mirage-types.lwt -package mirage-types -package lwt -package io-page -package cstruct.syntax -package cstruct -I lib -o lib/endpoint.cmi lib/endpoint.mli
