@@ -9,19 +9,19 @@
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=labltk
 + sudo apt-get update
 Not running as root, system installation will be done through "sudo"
-Hit http://http.debian.net stable Release.gpg
 Hit http://download.opensuse.org  Release.gpg
-Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
 Hit http://download.opensuse.org  Release
-Get:2 http://http.debian.net stable Release [168 kB]
-Get:3 http://http.debian.net stable-updates Release [124 kB]
+Hit http://http.debian.net stable Release.gpg
+Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
+Hit http://http.debian.net stable Release
+Hit http://security.debian.org stable/updates Release.gpg
+Get:2 http://http.debian.net stable-updates Release [124 kB]
 Hit http://download.opensuse.org  Packages
-Get:4 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
-Get:5 http://http.debian.net stable/main amd64 Packages [7625 kB]
-Get:6 http://security.debian.org stable/updates Release.gpg [836 B]
-Get:7 http://security.debian.org stable/updates Release [102 kB]
-Get:8 http://security.debian.org stable/updates/main amd64 Packages [382 kB]
-Fetched 8408 kB in 3s (2436 kB/s)
+Hit http://security.debian.org stable/updates Release
+Hit http://security.debian.org stable/updates/main amd64 Packages
+Hit http://http.debian.net stable/main amd64 Packages
+Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
+Fetched 129 kB in 1s (111 kB/s)
 Reading package lists...
 + sudo apt-get install -qq -yy m4 tcl-dev tk-dev
 # OS package update successful
@@ -100,8 +100,8 @@ The following actions will be performed:
 [labltk: from default] Command started
 [ocamlfind: from default] Command started
 [ocamlfind: from default] Command started
-[labltk: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[labltk: from default] Command started
 [default] http://opam-archive:8080/archives/labltk.8.06.0+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -177,6 +177,7 @@ The following actions will be performed:
 - 		    -e 's;@SYSTEM@;linux;g' \
 - 		     >findlib_config.ml
 - ocamlc -I +compiler-libs -g -c findlib_config.ml
+- Makefile:160: depend: No such file or directory
 - ocamlc -I +compiler-libs -g -c fl_split.ml
 - ocamlc -I +compiler-libs -g -c fl_metatoken.ml
 - ocamlc -I +compiler-libs -g -c fl_meta.ml
@@ -188,7 +189,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
-- Makefile:160: depend: No such file or directory
+- ocamlc -I +compiler-libs -g -c fl_args.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -233,10 +234,11 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -245,8 +247,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -296,9 +296,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c findlib_config.ml
 - ocamlopt -I +compiler-libs -c fl_split.ml
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
-- ocamlopt -I +compiler-libs -c fl_meta.ml
-- ocamlopt -I +compiler-libs -c fl_metascanner.ml
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -328,6 +325,9 @@ The following actions will be performed:
 - File "fl_split.ml", line 140, characters 1-19:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlopt -I +compiler-libs -c fl_meta.ml
+- ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_meta.mll", line 57, characters 13-26:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -449,9 +449,6 @@ The following actions will be performed:
 - gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -I/home/opam/.opam/4.02.1/lib/ocaml/caml -I/usr/include/tcl8.5 -I/usr/include/tk8.5  -fPIC -c cltkEvent.c
 - gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -I/home/opam/.opam/4.02.1/lib/ocaml/caml -I/usr/include/tcl8.5 -I/usr/include/tk8.5  -fPIC -c cltkFile.c
 - gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -I/home/opam/.opam/4.02.1/lib/ocaml/caml -I/usr/include/tcl8.5 -I/usr/include/tk8.5  -fPIC -c cltkMain.c
-- gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -I/home/opam/.opam/4.02.1/lib/ocaml/caml -I/usr/include/tcl8.5 -I/usr/include/tk8.5  -fPIC -c cltkMisc.c
-- gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -I/home/opam/.opam/4.02.1/lib/ocaml/caml -I/usr/include/tcl8.5 -I/usr/include/tk8.5  -fPIC -c cltkTimer.c
-- gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -I/home/opam/.opam/4.02.1/lib/ocaml/caml -I/usr/include/tcl8.5 -I/usr/include/tk8.5  -fPIC -c cltkVar.c
 - cltkEval.c: In function 'camltk_tcl_eval':
 - cltkEval.c:78:5: warning: passing argument 1 of 'tcl_string_to_caml' discards 'const' qualifier from pointer target type [enabled by default]
 - In file included from cltkEval.c:30:0:
@@ -479,51 +476,16 @@ The following actions will be performed:
 - cltkMain.c:168:11: warning: passing argument 1 of 'tk_error' discards 'const' qualifier from pointer target type [enabled by default]
 - In file included from cltkMain.c:31:0:
 - camltk.h:56:19: note: expected 'char *' but argument is of type 'const char *'
+- gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -I/home/opam/.opam/4.02.1/lib/ocaml/caml -I/usr/include/tcl8.5 -I/usr/include/tk8.5  -fPIC -c cltkMisc.c
+- gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -I/home/opam/.opam/4.02.1/lib/ocaml/caml -I/usr/include/tcl8.5 -I/usr/include/tk8.5  -fPIC -c cltkTimer.c
+- gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -I/home/opam/.opam/4.02.1/lib/ocaml/caml -I/usr/include/tcl8.5 -I/usr/include/tk8.5  -fPIC -c cltkVar.c
+- gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -I/home/opam/.opam/4.02.1/lib/ocaml/caml -I/usr/include/tcl8.5 -I/usr/include/tk8.5  -fPIC -c cltkWait.c
+- gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -I/home/opam/.opam/4.02.1/lib/ocaml/caml -I/usr/include/tcl8.5 -I/usr/include/tk8.5  -fPIC -c cltkImg.c
+- /home/opam/.opam/4.02.1/bin/ocamlmklib -o labltk cltkCaml.o cltkUtf.o cltkEval.o cltkEvent.o cltkFile.o cltkMain.o cltkMisc.o cltkTimer.o cltkVar.o cltkWait.o cltkImg.o -ldopt "-ltk8.5" -ldopt "-ltcl8.5" -ldopt "-lX11"
 - cltkMisc.c: In function 'camltk_splitlist':
 - cltkMisc.c:50:5: warning: passing argument 1 of 'tk_error' discards 'const' qualifier from pointer target type [enabled by default]
 - In file included from cltkMisc.c:24:0:
 - camltk.h:56:19: note: expected 'char *' but argument is of type 'const char *'
-- gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -I/home/opam/.opam/4.02.1/lib/ocaml/caml -I/usr/include/tcl8.5 -I/usr/include/tk8.5  -fPIC -c cltkWait.c
-- gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -I/home/opam/.opam/4.02.1/lib/ocaml/caml -I/usr/include/tcl8.5 -I/usr/include/tk8.5  -fPIC -c cltkImg.c
-- /home/opam/.opam/4.02.1/bin/ocamlmklib -o labltk cltkCaml.o cltkUtf.o cltkEval.o cltkEvent.o cltkFile.o cltkMain.o cltkMisc.o cltkTimer.o cltkVar.o cltkWait.o cltkImg.o -ldopt "-ltk8.5" -ldopt "-ltcl8.5" -ldopt "-lX11"
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/support'
-- cd compiler; make
-- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/compiler'
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support flags.ml
-- (echo "let copyright=\"\\"; \
-- 	sed -e 's/$/\\n\\/' copyright; \
-- 	echo "\""; \
-- 	echo "let write ~w = w copyright;;") > copyright.ml
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support copyright.ml
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support tsort.ml
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support tables.ml
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support printer.ml
-- /home/opam/.opam/4.02.1/bin/ocamllex lexer.mll
-- 45 states, 921 transitions, table size 3954 bytes
-- /home/opam/.opam/4.02.1/bin/ocamlyacc -v -v parser.mly
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support parser.mli
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support lexer.ml
-- /home/opam/.opam/4.02.1/bin/ocamllex pplex.mll
-- 44 states, 754 transitions, table size 3280 bytes
-- /home/opam/.opam/4.02.1/bin/ocamlyacc -v -v ppyac.mly
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support code.mli
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support ppyac.mli
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support pplex.mli
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support pplex.ml
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support ppyac.ml
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support ppexec.ml
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support ppparse.ml
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support parser.ml
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support compile.ml
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support intf.ml
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support maincompile.ml
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -g  -o tkcompiler ../support/support.cmo flags.cmo copyright.cmo tsort.cmo tables.cmo printer.cmo lexer.cmo pplex.cmo ppyac.cmo ppexec.cmo ppparse.cmo parser.cmo compile.cmo intf.cmo maincompile.cmo
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support pp.ml
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -g  -o pp pplex.cmo ppyac.cmo ppexec.cmo ppparse.cmo pp.cmo
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/compiler'
-- cd labltk; make -f Makefile.gen
-- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/labltk'
-- cd ..; /home/opam/.opam/4.02.1/bin/ocamlrun compiler/tkcompiler -outdir labltk
 - cltkVar.c: In function 'camltk_getvar':
 - cltkVar.c:41:5: warning: passing argument 1 of 'tk_error' discards 'const' qualifier from pointer target type [enabled by default]
 - In file included from cltkVar.c:27:0:
@@ -546,6 +508,22 @@ The following actions will be performed:
 - camltk.h:56:19: note: expected 'char *' but argument is of type 'const char *'
 - cltkImg.c: In function 'camltk_getimgdata':
 - cltkImg.c:38:7: warning: variable 'code' set but not used [-Wunused-but-set-variable]
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/support'
+- cd compiler; make
+- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/compiler'
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support flags.ml
+- (echo "let copyright=\"\\"; \
+- 	sed -e 's/$/\\n\\/' copyright; \
+- 	echo "\""; \
+- 	echo "let write ~w = w copyright;;") > copyright.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support copyright.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support tsort.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support tables.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support printer.ml
+- /home/opam/.opam/4.02.1/bin/ocamllex lexer.mll
+- 45 states, 921 transitions, table size 3954 bytes
+- /home/opam/.opam/4.02.1/bin/ocamlyacc -v -v parser.mly
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support parser.mli
 - File "tables.ml", line 130, characters 12-78:
 - Warning 3: deprecated: StdLabels.String.set
 - Use BytesLabels.set instead.
@@ -562,15 +540,28 @@ The following actions will be performed:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
 - 3 shift/reduce conflicts.
-- File "lexer.mll", line 57, characters 28-41:
-- Warning 3: deprecated: StdLabels.String.create
-- Use BytesLabels.create instead.
-- File "lexer.mll", line 68, characters 19-32:
-- Warning 3: deprecated: StdLabels.String.create
-- Use BytesLabels.create instead.
-- File "lexer.mll", line 73, characters 2-12:
-- Warning 3: deprecated: StdLabels.String.set
-- Use BytesLabels.set instead.
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support lexer.ml
+- /home/opam/.opam/4.02.1/bin/ocamllex pplex.mll
+- 44 states, 754 transitions, table size 3280 bytes
+- /home/opam/.opam/4.02.1/bin/ocamlyacc -v -v ppyac.mly
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support code.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support ppyac.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support pplex.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support pplex.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support ppyac.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support ppexec.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support ppparse.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support parser.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support compile.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support intf.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support maincompile.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -g  -o tkcompiler ../support/support.cmo flags.cmo copyright.cmo tsort.cmo tables.cmo printer.cmo lexer.cmo pplex.cmo ppyac.cmo ppexec.cmo ppparse.cmo parser.cmo compile.cmo intf.cmo maincompile.cmo
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -g -I ../support pp.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -g  -o pp pplex.cmo ppyac.cmo ppexec.cmo ppparse.cmo pp.cmo
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/compiler'
+- cd labltk; make -f Makefile.gen
+- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/labltk'
+- cd ..; /home/opam/.opam/4.02.1/bin/ocamlrun compiler/tkcompiler -outdir labltk
 - (echo 'open StdLabels'; \
 - 	 echo 'open Widget'; \
 - 	 echo 'open Protocol'; \
@@ -597,6 +588,15 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlrun ../compiler/pp < _tk.ml > tk.ml
 - rm -f _tk.ml
 - /home/opam/.opam/4.02.1/bin/ocamldep -slash -I ../support [a-z]*.mli [a-z]*.ml > .depend
+- File "lexer.mll", line 57, characters 28-41:
+- Warning 3: deprecated: StdLabels.String.create
+- Use BytesLabels.create instead.
+- File "lexer.mll", line 68, characters 19-32:
+- Warning 3: deprecated: StdLabels.String.create
+- Use BytesLabels.create instead.
+- File "lexer.mll", line 73, characters 2-12:
+- Warning 3: deprecated: StdLabels.String.set
+- Use BytesLabels.set instead.
 - make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/labltk'
 - cd labltk; make
 - make[1]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/labltk'
@@ -655,6 +655,13 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support focus.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support pack.mli
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support pack.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support imagebitmap.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support imagebitmap.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support encoding.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support encoding.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support optionmenu.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support optionmenu.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support checkbutton.mli
 - File "pixmap.ml", line 49, characters 18-31:
 - Warning 3: deprecated: StdLabels.String.create
 - Use BytesLabels.create instead.
@@ -673,13 +680,6 @@ The following actions will be performed:
 - File "pixmap.ml", line 101, characters 2-21:
 - Warning 3: deprecated: StdLabels.String.set
 - Use BytesLabels.set instead.
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support imagebitmap.mli
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support imagebitmap.ml
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support encoding.mli
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support encoding.ml
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support optionmenu.mli
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support optionmenu.ml
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support checkbutton.mli
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support checkbutton.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support tkvars.mli
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support tkvars.ml
@@ -787,6 +787,24 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support cFocus.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support cPack.mli
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support cPack.ml
+- File "cPixmap.ml", line 48, characters 18-31:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "cPixmap.ml", line 70, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "cPixmap.ml", line 97, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "cPixmap.ml", line 98, characters 2-21:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "cPixmap.ml", line 99, characters 2-21:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "cPixmap.ml", line 100, characters 2-21:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support cImagebitmap.mli
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support cImagebitmap.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support cEncoding.mli
@@ -808,24 +826,6 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support cGrid.mli
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support cGrid.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../support camltk.ml
-- File "cPixmap.ml", line 48, characters 18-31:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "cPixmap.ml", line 70, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "cPixmap.ml", line 97, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "cPixmap.ml", line 98, characters 2-21:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "cPixmap.ml", line 99, characters 2-21:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "cPixmap.ml", line 100, characters 2-21:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 - make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/camltk'
 - cd lib; make
 - make[1]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/lib'
@@ -870,6 +870,9 @@ The following actions will be performed:
 - cd frx; make
 - make[1]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/frx'
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../camltk -I ../support frx_misc.mli
+- File "jpf_font.ml", line 173, characters 2-11:
+- Warning 3: deprecated: Sort.list
+- Use List.sort instead.
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../camltk -I ../support frx_misc.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../camltk -I ../support frx_widget.mli
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../camltk -I ../support frx_widget.ml
@@ -897,9 +900,6 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../camltk -I ../support frx_synth.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../camltk -I ../support frx_selection.mli
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../camltk -I ../support frx_selection.ml
-- File "jpf_font.ml", line 173, characters 2-11:
-- Warning 3: deprecated: Sort.list
-- Use List.sort instead.
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../camltk -I ../support frx_after.mli
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../camltk -I ../support frx_after.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../camltk -I ../support frx_fit.mli
@@ -947,6 +947,9 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../labltk -I ../lib -I ../support -I +compiler-libs searchpos.mli
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../labltk -I ../lib -I ../support -I +compiler-libs searchpos.ml
 - cp dummyUnix.mli dummy.mli
+- File "fileselect.ml", line 134, characters 8-18:
+- Warning 3: deprecated: Sort.merge
+- Use List.merge instead.
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../labltk -I ../lib -I ../support -I +compiler-libs dummy.mli
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../labltk -I ../lib -I ../support -I +compiler-libs shell.mli
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../labltk -I ../lib -I ../support -I +compiler-libs shell.ml
@@ -955,15 +958,6 @@ The following actions will be performed:
 - echo '";;' >> help.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../labltk -I ../lib -I ../support -I +compiler-libs help.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../labltk -I ../lib -I ../support -I +compiler-libs mytypes.mli
-- File "fileselect.ml", line 134, characters 8-18:
-- Warning 3: deprecated: Sort.merge
-- Use List.merge instead.
-- File "shell.ml", line 115, characters 16-29:
-- Warning 3: deprecated: StdLabels.String.create
-- Use BytesLabels.create instead.
-- File "shell.ml", line 195, characters 18-31:
-- Warning 3: deprecated: StdLabels.String.create
-- Use BytesLabels.create instead.
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../labltk -I ../lib -I ../support -I +compiler-libs viewer.mli
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../labltk -I ../lib -I ../support -I +compiler-libs viewer.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -warn-error A-3 -I ../labltk -I ../lib -I ../support -I +compiler-libs typecheck.mli
@@ -975,6 +969,18 @@ The following actions will be performed:
 - 		ocamlcommon.cma \
 - 		unix.cma str.cma  labltk.cma jglib.cma \
 - 	        list2.cmo	useunix.cmo	setpath.cmo	lexical.cmo fileselect.cmo	searchid.cmo	searchpos.cmo	shell.cmo help.cmo viewer.cmo	typecheck.cmo	editor.cmo	main.cmo 
+- File "shell.ml", line 115, characters 16-29:
+- Warning 3: deprecated: StdLabels.String.create
+- Use BytesLabels.create instead.
+- File "shell.ml", line 195, characters 18-31:
+- Warning 3: deprecated: StdLabels.String.create
+- Use BytesLabels.create instead.
+- File "viewer.ml", line 47, characters 17-26:
+- Warning 3: deprecated: Sort.list
+- Use List.sort instead.
+- File "editor.ml", line 467, characters 16-29:
+- Warning 3: deprecated: StdLabels.String.create
+- Use BytesLabels.create instead.
 - make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/browser'
 - cd support; make opt
 - make[1]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/support'
@@ -997,12 +1003,6 @@ The following actions will be performed:
 - cd labltk; make opt
 - make[1]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/labltk'
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support tk.ml
-- File "viewer.ml", line 47, characters 17-26:
-- Warning 3: deprecated: Sort.list
-- Use List.sort instead.
-- File "editor.ml", line 467, characters 16-29:
-- Warning 3: deprecated: StdLabels.String.create
-- Use BytesLabels.create instead.
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support bell.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support scale.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support winfo.ml
@@ -1029,14 +1029,6 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support menubutton.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support radiobutton.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support focus.ml
-- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support pack.ml
-- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support imagebitmap.ml
-- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support encoding.ml
-- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support optionmenu.ml
-- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support checkbutton.ml
-- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support tkvars.ml
-- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support palette.ml
-- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support menu.ml
 - File "pixmap.ml", line 49, characters 18-31:
 - Warning 3: deprecated: StdLabels.String.create
 - Use BytesLabels.create instead.
@@ -1055,6 +1047,14 @@ The following actions will be performed:
 - File "pixmap.ml", line 101, characters 2-21:
 - Warning 3: deprecated: StdLabels.String.set
 - Use BytesLabels.set instead.
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support pack.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support imagebitmap.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support encoding.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support optionmenu.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support checkbutton.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support tkvars.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support palette.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support menu.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support button.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support toplevel.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support grid.ml
@@ -1094,6 +1094,24 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support cMenubutton.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support cRadiobutton.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support cFocus.ml
+- File "cPixmap.ml", line 48, characters 18-31:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "cPixmap.ml", line 70, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "cPixmap.ml", line 97, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "cPixmap.ml", line 98, characters 2-21:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "cPixmap.ml", line 99, characters 2-21:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "cPixmap.ml", line 100, characters 2-21:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support cPack.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support cImagebitmap.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../support cEncoding.ml
@@ -1131,28 +1149,13 @@ The following actions will be performed:
 - cd jpf; make opt
 - make[1]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/jpf'
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../labltk -I ../support fileselect.ml
-- File "cPixmap.ml", line 48, characters 18-31:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "cPixmap.ml", line 70, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "cPixmap.ml", line 97, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "cPixmap.ml", line 98, characters 2-21:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "cPixmap.ml", line 99, characters 2-21:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "cPixmap.ml", line 100, characters 2-21:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../labltk -I ../support balloon.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../labltk -I ../support shell.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../labltk -I ../support jpf_font.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -a -o jpflib.cmxa fileselect.cmx balloon.cmx shell.cmx jpf_font.cmx
+- File "jpf_font.ml", line 173, characters 2-11:
+- Warning 3: deprecated: Sort.list
+- Use List.sort instead.
 - make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/jpf'
 - cd frx; make opt
 - make[1]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/frx'
@@ -1161,9 +1164,6 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../camltk -I ../support frx_font.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../camltk -I ../support frx_entry.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../camltk -I ../support frx_text.ml
-- File "jpf_font.ml", line 173, characters 2-11:
-- Warning 3: deprecated: Sort.list
-- Use List.sort instead.
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../camltk -I ../support frx_listbox.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../camltk -I ../support frx_req.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -I ../camltk -I ../support frx_fillbox.ml
@@ -1207,59 +1207,6 @@ The following actions will be performed:
 - make[1]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/camltk'
 - ocamlfind install labltk -add \
 - 	  cBell.cmi cScale.cmi cWinfo.cmi cScrollbar.cmi cEntry.cmi cListbox.cmi cWm.cmi cTkwait.cmi cGrab.cmi cFont.cmi cCanvas.cmi cImage.cmi cClipboard.cmi cLabel.cmi cResource.cmi cMessage.cmi cText.cmi cImagephoto.cmi cOption.cmi cFrame.cmi cSelection.cmi cDialog.cmi cPlace.cmi cPixmap.cmi cMenubutton.cmi cRadiobutton.cmi cFocus.cmi cPack.cmi cImagebitmap.cmi cEncoding.cmi cOptionmenu.cmi cCheckbutton.cmi cTkvars.cmi cPalette.cmi cMenu.cmi cButton.cmi cToplevel.cmi cGrid.cmi cTk.cmi camltk.cmi cBell.mli cScale.mli cWinfo.mli cScrollbar.mli cEntry.mli cListbox.mli cWm.mli cTkwait.mli cGrab.mli cFont.mli cCanvas.mli cImage.mli cClipboard.mli cLabel.mli cResource.mli cMessage.mli cText.mli cImagephoto.mli cOption.mli cFrame.mli cSelection.mli cDialog.mli cPlace.mli cPixmap.mli cMenubutton.mli cRadiobutton.mli cFocus.mli cPack.mli cImagebitmap.mli cEncoding.mli cOptionmenu.mli cCheckbutton.mli cTkvars.mli cPalette.mli cMenu.mli cButton.mli cToplevel.mli cGrid.mli
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/camltk'
-- cd compiler; make install
-- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/compiler'
-- cp tkcompiler /home/opam/.opam/4.02.1/lib/labltk
-- cp pp /home/opam/.opam/4.02.1/lib/labltk
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/compiler'
-- cd jpf; make install
-- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/jpf'
-- ocamlfind install labltk -add \
-- 	  fileselect.cmi balloon.cmi shell.cmi jpf_font.cmi fileselect.mli balloon.mli shell.mli jpf_font.mli jpflib.cma
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/jpf'
-- cd frx; make install
-- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/frx'
-- ocamlfind install labltk -add *.cmi *.mli frxlib.cma
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/frx'
-- cd browser; make install
-- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/browser'
-- cp ocamlbrowser /home/opam/.opam/4.02.1/bin
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/browser'
-- if test -f lib/labltk.cmxa; then make installopt; else :; fi
-- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0'
-- cd support; make installopt
-- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/support'
-- ocamlfind install labltk -add \
-- 	  fileevent.cmx protocol.cmx textvariable.cmx timer.cmx rawwidget.cmx widget.cmx -optional tkthread.cmx tkthread.o
-- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/support'
-- cd lib; make installopt
-- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/lib'
-- cp labltk.cmxa labltk.a /home/opam/.opam/4.02.1/lib/labltk
-- cd /home/opam/.opam/4.02.1/lib/labltk; ranlib labltk.a
-- chmod 644 /home/opam/.opam/4.02.1/lib/labltk/labltk.cmxa
-- chmod 644 /home/opam/.opam/4.02.1/lib/labltk/labltk.a
-- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/lib'
-- cd labltk; make installopt
-- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/labltk'
-- ocamlfind install labltk -add bell.cmx scale.cmx winfo.cmx scrollbar.cmx entry.cmx listbox.cmx wm.cmx tkwait.cmx grab.cmx font.cmx canvas.cmx image.cmx clipboard.cmx label.cmx message.cmx text.cmx imagephoto.cmx option.cmx frame.cmx selection.cmx dialog.cmx place.cmx pixmap.cmx menubutton.cmx radiobutton.cmx focus.cmx pack.cmx imagebitmap.cmx encoding.cmx optionmenu.cmx checkbutton.cmx tkvars.cmx palette.cmx menu.cmx button.cmx toplevel.cmx grid.cmx tk.cmx labltk.cmx
-- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/labltk'
-- cd camltk; make installopt
-- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/camltk'
-- ocamlfind install labltk -add cBell.cmx cScale.cmx cWinfo.cmx cScrollbar.cmx cEntry.cmx cListbox.cmx cWm.cmx cTkwait.cmx cGrab.cmx cFont.cmx cCanvas.cmx cImage.cmx cClipboard.cmx cLabel.cmx cResource.cmx cMessage.cmx cText.cmx cImagephoto.cmx cOption.cmx cFrame.cmx cSelection.cmx cDialog.cmx cPlace.cmx cPixmap.cmx cMenubutton.cmx cRadiobutton.cmx cFocus.cmx cPack.cmx cImagebitmap.cmx cEncoding.cmx cOptionmenu.cmx cCheckbutton.cmx cTkvars.cmx cPalette.cmx cMenu.cmx cButton.cmx cToplevel.cmx cGrid.cmx cTk.cmx camltk.cmx
-- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/camltk'
-- cd jpf; make installopt
-- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/jpf'
-- ocamlfind install labltk -add \
-- 	  jpflib.cmxa jpflib.a fileselect.cmx balloon.cmx shell.cmx jpf_font.cmx
-- cd /home/opam/.opam/4.02.1/lib/labltk; ranlib jpflib.a
-- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/jpf'
-- cd frx; make installopt
-- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/frx'
-- ocamlfind install labltk -add frxlib.cmxa frxlib.a *.cmx
-- cd /home/opam/.opam/4.02.1/lib/labltk; ranlib frxlib.a
-- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/frx'
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0'
 - Installed /home/opam/.opam/4.02.1/lib/labltk/liblabltk.a
 - Installed /home/opam/.opam/4.02.1/lib/labltk/tkthread.cmo
 - Installed /home/opam/.opam/4.02.1/lib/labltk/tkthread.cmi
@@ -1356,6 +1303,59 @@ The following actions will be performed:
 - Installed /home/opam/.opam/4.02.1/lib/labltk/winfo.cmi
 - Installed /home/opam/.opam/4.02.1/lib/labltk/scale.cmi
 - Installed /home/opam/.opam/4.02.1/lib/labltk/bell.cmi
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/camltk'
+- cd compiler; make install
+- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/compiler'
+- cp tkcompiler /home/opam/.opam/4.02.1/lib/labltk
+- cp pp /home/opam/.opam/4.02.1/lib/labltk
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/compiler'
+- cd jpf; make install
+- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/jpf'
+- ocamlfind install labltk -add \
+- 	  fileselect.cmi balloon.cmi shell.cmi jpf_font.cmi fileselect.mli balloon.mli shell.mli jpf_font.mli jpflib.cma
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/jpf'
+- cd frx; make install
+- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/frx'
+- ocamlfind install labltk -add *.cmi *.mli frxlib.cma
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/frx'
+- cd browser; make install
+- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/browser'
+- cp ocamlbrowser /home/opam/.opam/4.02.1/bin
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/browser'
+- if test -f lib/labltk.cmxa; then make installopt; else :; fi
+- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0'
+- cd support; make installopt
+- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/support'
+- ocamlfind install labltk -add \
+- 	  fileevent.cmx protocol.cmx textvariable.cmx timer.cmx rawwidget.cmx widget.cmx -optional tkthread.cmx tkthread.o
+- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/support'
+- cd lib; make installopt
+- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/lib'
+- cp labltk.cmxa labltk.a /home/opam/.opam/4.02.1/lib/labltk
+- cd /home/opam/.opam/4.02.1/lib/labltk; ranlib labltk.a
+- chmod 644 /home/opam/.opam/4.02.1/lib/labltk/labltk.cmxa
+- chmod 644 /home/opam/.opam/4.02.1/lib/labltk/labltk.a
+- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/lib'
+- cd labltk; make installopt
+- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/labltk'
+- ocamlfind install labltk -add bell.cmx scale.cmx winfo.cmx scrollbar.cmx entry.cmx listbox.cmx wm.cmx tkwait.cmx grab.cmx font.cmx canvas.cmx image.cmx clipboard.cmx label.cmx message.cmx text.cmx imagephoto.cmx option.cmx frame.cmx selection.cmx dialog.cmx place.cmx pixmap.cmx menubutton.cmx radiobutton.cmx focus.cmx pack.cmx imagebitmap.cmx encoding.cmx optionmenu.cmx checkbutton.cmx tkvars.cmx palette.cmx menu.cmx button.cmx toplevel.cmx grid.cmx tk.cmx labltk.cmx
+- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/labltk'
+- cd camltk; make installopt
+- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/camltk'
+- ocamlfind install labltk -add cBell.cmx cScale.cmx cWinfo.cmx cScrollbar.cmx cEntry.cmx cListbox.cmx cWm.cmx cTkwait.cmx cGrab.cmx cFont.cmx cCanvas.cmx cImage.cmx cClipboard.cmx cLabel.cmx cResource.cmx cMessage.cmx cText.cmx cImagephoto.cmx cOption.cmx cFrame.cmx cSelection.cmx cDialog.cmx cPlace.cmx cPixmap.cmx cMenubutton.cmx cRadiobutton.cmx cFocus.cmx cPack.cmx cImagebitmap.cmx cEncoding.cmx cOptionmenu.cmx cCheckbutton.cmx cTkvars.cmx cPalette.cmx cMenu.cmx cButton.cmx cToplevel.cmx cGrid.cmx cTk.cmx camltk.cmx
+- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/camltk'
+- cd jpf; make installopt
+- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/jpf'
+- ocamlfind install labltk -add \
+- 	  jpflib.cmxa jpflib.a fileselect.cmx balloon.cmx shell.cmx jpf_font.cmx
+- cd /home/opam/.opam/4.02.1/lib/labltk; ranlib jpflib.a
+- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/jpf'
+- cd frx; make installopt
+- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/frx'
+- ocamlfind install labltk -add frxlib.cmxa frxlib.a *.cmx
+- cd /home/opam/.opam/4.02.1/lib/labltk; ranlib frxlib.a
+- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0/frx'
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/labltk.8.06.0'
 - Installed /home/opam/.opam/4.02.1/lib/labltk/cGrid.mli
 - Installed /home/opam/.opam/4.02.1/lib/labltk/cToplevel.mli
 - Installed /home/opam/.opam/4.02.1/lib/labltk/cButton.mli
