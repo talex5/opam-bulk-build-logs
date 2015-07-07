@@ -1,14 +1,14 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-+ opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=pulseaudio
 # Detecting depexts using flags: x86_64 linux ubuntu
++ opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=pulseaudio
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=pulseaudio
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=pulseaudio
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
@@ -32,16 +32,18 @@ Get:9 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [15.1 k
 Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [356 kB]
 Get:11 http://archive.ubuntu.com trusty-security/main Sources [97.7 kB]
 Get:12 http://archive.ubuntu.com trusty-security/restricted Sources [1874 B]
-+ sudo apt-get install -qq -yy m4
 Get:13 http://archive.ubuntu.com trusty-security/universe Sources [23.3 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [329 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [128 kB]
-Fetched 2122 kB in 6s (328 kB/s)
+Fetched 2122 kB in 4s (476 kB/s)
 Reading package lists...
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 635587 635616
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages.gz is not what the server reported 356350 356387
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
++ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind  1.5.5                                    [required by pulseaudio]
@@ -51,8 +53,8 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: from default] Command started
 [pulseaudio: from default] Command started
-[pulseaudio: from default] Command started
 [ocamlfind: from default] Command started
+[pulseaudio: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/pulseaudio.0.1.2+opam.tar.gz downloaded
 
@@ -70,6 +72,8 @@ The following actions will be performed:
 - native dynlink: found
 - labltk: found
 - ocamlbuild: found
+- File "itest-aux/ppx.ml", line 1, characters 0-25:
+- Error: Unbound value Toploop.preprocess_phrase
 - camlp4: using camlp4, style 310
 - compiler-libs: found
 - dbm: not present (normal since OCaml-4.00)
@@ -88,8 +92,6 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Detecting compiler arguments: (extractor built) 
-- File "itest-aux/ppx.ml", line 1, characters 0-25:
-- Error: Unbound value Toploop.preprocess_phrase
 - ok
 - 
 - About the OCAML core installation:
@@ -121,7 +123,6 @@ The following actions will be performed:
 - ocamllex fl_meta.mll
 - 22 states, 392 transitions, table size 1700 bytes
 - ocamldep *.ml *.mli >depend
-- Makefile:160: depend: No such file or directory
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
 - make[1]: Entering directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
 - USE_CYGPATH="0"; \
@@ -132,6 +133,7 @@ The following actions will be performed:
 - 		sed -e 's;@AUTOLINK@;true;g' \
 - 		    -e 's;@SYSTEM@;linux;g' \
 - 		     >findlib_config.ml
+- Makefile:160: depend: No such file or directory
 - ocamlc -I +compiler-libs -g -c findlib_config.ml
 - ocamlc -I +compiler-libs -g -c fl_split.ml
 - ocamlc -I +compiler-libs -g -c fl_metatoken.ml
@@ -217,8 +219,6 @@ The following actions will be performed:
 - 	fi
 - ocamlopt -I +compiler-libs -c ocaml_args.ml
 - ocamlopt -I +compiler-libs -c frontend.ml
-[ERROR] The compilation of pulseaudio failed at "./configure --prefix
-        /home/opam/.opam/system".
 - ocamlopt -I +compiler-libs -o ocamlfind_opt findlib.cmxa unix.cmxa \
 - 		   ocaml_args.cmx frontend.cmx
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
@@ -319,7 +319,8 @@ The following actions will be performed:
 - checking for camlp4oof... camlp4oof
 - checking for camlp4orf... camlp4orf
 - checking for camlp4prof... camlp4prof
-- checking for camlp4r... camlp4r
+- checking for camlp4r... 
+- camlp4r
 - checking for camlp4rf... camlp4rf
 - checking for ocamlfind... ocamlfind
 - checking for caml/threads.h... yes
@@ -331,6 +332,8 @@ The following actions will be performed:
 - checking for pkg-config... /usr/bin/pkg-config
 - checking pkg-config is at least version 0.9.0... yes
 - configure: error: libpulse not found
+[ERROR] The compilation of pulseaudio failed at "./configure --prefix
+        /home/opam/.opam/system".
 [pulseaudio: ocamlfind remove] Command started
 + ocamlfind "remove" "pulseaudio" (CWD=/home/opam/.opam/system/build/pulseaudio.0.1.2)
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/pulseaudio
@@ -369,5 +372,5 @@ The following changes have been performed
 
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150323221749.export"
+    opam switch import "~/.opam/system/backup/state-20150324185248.export"
 'opam install pulseaudio' failed.
