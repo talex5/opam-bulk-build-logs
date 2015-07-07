@@ -1,6 +1,6 @@
 + uname -m
-+ uname -s
 # Detecting depexts using flags: x86_64 linux centos
++ uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=missinglib
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=missinglib
 # No extra OS packages requirements found.
@@ -16,11 +16,11 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [ounit: from default] Command started
 [ounit: from default] Command started
+[missinglib: from default] Command started
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ounit.2.0.0+opam.tar.gz downloaded
-[missinglib: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/missinglib.0.4.1+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlp4: sh] Command started
@@ -110,7 +110,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -156,11 +155,19 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 	cp topfind.ml.in topfind.ml;                             \
+- else                                                             \
+- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 		> topfind.ml ;                                   \
+- fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -169,13 +176,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 	cp topfind.ml.in topfind.ml;                             \
-- else                                                             \
-- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 		> topfind.ml ;                                   \
-- fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -405,6 +405,8 @@ The following actions will be performed:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
 - /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib64/ocaml/ocamlbuild /usr/lib64/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib64/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
+- W: Cannot find source file matching module 'OUnitLoggerHTMLData' in library oUnitAdvanced
+- W: Cannot find source file matching module 'OUnitLoggerHTMLData' in library oUnitAdvanced
 - ocamlfind ocamldep -package threads -package unix -modules src/oUnitUtils.ml > src/oUnitUtils.ml.depends
 - ocamlfind ocamldep -package threads -package unix -modules src/oUnitPropList.ml > src/oUnitPropList.ml.depends
 - ocamlfind ocamldep -package threads -package unix -modules src/oUnitPlugin.ml > src/oUnitPlugin.ml.depends
@@ -417,8 +419,6 @@ The following actions will be performed:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
 - ocamlfind ocamldep -package threads -package unix -modules src/oUnitChooser.ml > src/oUnitChooser.ml.depends
-- W: Cannot find source file matching module 'OUnitLoggerHTMLData' in library oUnitAdvanced
-- W: Cannot find source file matching module 'OUnitLoggerHTMLData' in library oUnitAdvanced
 - ocamlfind ocamldep -package threads -package unix -modules src/oUnitCache.ml > src/oUnitCache.ml.depends
 - ocamlfind ocamldep -package threads -package unix -modules src/oUnitTest.ml > src/oUnitTest.ml.depends
 - ocamlfind ocamldep -package threads -package unix -modules src/oUnitLogger.ml > src/oUnitLogger.ml.depends
@@ -758,8 +758,8 @@ The following actions will be performed:
 - ocamlopt -c -w -a -I compose/ -I configParser/ -I fileutil/ -I hashtblutil/ -I indexed/ -I lexingutil/ -I listutil/ -I slice/ -I streamutil/ -I strutil/ -I unixutil/ slice/slice.ml
 - ocamlopt -c -w -a -I compose/ -I configParser/ -I fileutil/ -I hashtblutil/ -I indexed/ -I lexingutil/ -I listutil/ -I slice/ -I streamutil/ -I strutil/ -I unixutil/ slice/sliceoper.ml
 - ocamlopt -c -w -a -I compose/ -I configParser/ -I fileutil/ -I hashtblutil/ -I indexed/ -I lexingutil/ -I listutil/ -I slice/ -I streamutil/ -I strutil/ -I unixutil/ indexed/indexed.ml
-- make[3]: Circular hashtblutil/hashtbloper.cmx <- hashtblutil/hashtblutil.cmx dependency dropped.
 - ocamlopt -c -pp "camlp4o " -w -a -I compose/ -I configParser/ -I fileutil/ -I hashtblutil/ -I indexed/ -I lexingutil/ -I listutil/ -I slice/ -I streamutil/ -I strutil/ -I unixutil/ streamutil/streamutil.ml
+- make[3]: Circular hashtblutil/hashtbloper.cmx <- hashtblutil/hashtblutil.cmx dependency dropped.
 - ocamlopt -c -w -a -I compose/ -I configParser/ -I fileutil/ -I hashtblutil/ -I indexed/ -I lexingutil/ -I listutil/ -I slice/ -I streamutil/ -I strutil/ -I unixutil/ fileutil/fileutil.ml
 - ocamlopt -c -pp "camlp4o " -w -a -I compose/ -I configParser/ -I fileutil/ -I hashtblutil/ -I indexed/ -I lexingutil/ -I listutil/ -I slice/ -I streamutil/ -I strutil/ -I unixutil/ unixutil/unixutil.ml
 - ocamlopt -c -w -a -I compose/ -I configParser/ -I fileutil/ -I hashtblutil/ -I indexed/ -I lexingutil/ -I listutil/ -I slice/ -I streamutil/ -I strutil/ -I unixutil/ configParser/configParser_types.ml
