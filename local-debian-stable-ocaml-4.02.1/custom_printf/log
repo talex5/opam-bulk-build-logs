@@ -3,23 +3,23 @@
 + uname -s
 + lsb_release -i -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=custom_printf
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=custom_printf
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=custom_printf
-+ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-Hit http://security.debian.org stable/updates InRelease
++ sudo apt-get update
+Get:1 http://security.debian.org stable/updates InRelease [63.1 kB]
 Ign http://download.opensuse.org  InRelease
 Hit http://httpredir.debian.org stable InRelease
-Hit http://httpredir.debian.org stable-updates InRelease
+Get:2 http://httpredir.debian.org stable-updates InRelease [126 kB]
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Get:1 http://security.debian.org stable/updates/main amd64 Packages [78.7 kB]
-Get:2 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
-Get:3 http://download.opensuse.org  Packages [5783 B]
-Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9108 kB in 5s (1746 kB/s)
+Get:3 http://security.debian.org stable/updates/main amd64 Packages [79.2 kB]
+Get:4 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
+Get:5 http://download.opensuse.org  Packages [5783 B]
+Get:6 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
+Fetched 9297 kB in 5s (1828 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
@@ -43,16 +43,16 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [custom_printf: from default] Command started
 [camlp4: from default] Command started
-[default] http://opam-archive:8080/archives/custom_printf.112.24.00+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
 [ounit: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [pa_ounit: from default] Command started
-[default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/custom_printf.112.24.00+opam.tar.gz downloaded
 [sexplib: from default] Command started
 [ounit: from default] Command started
-[pa_ounit: from default] Command started
 [default] http://opam-archive:8080/archives/ounit.2.0.0+opam.tar.gz downloaded
 [type_conv: from default] Command started
+[pa_ounit: from default] Command started
 [sexplib: from default] Command started
 [default] http://opam-archive:8080/archives/pa_ounit.112.24.00+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/sexplib.112.24.01+opam.tar.gz downloaded
@@ -139,6 +139,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -184,8 +186,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
@@ -1657,6 +1657,9 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -modules lib/conv_error.ml > lib/conv_error.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -modules lib/exn_magic.mli > lib/exn_magic.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package bigarray -I lib -o lib/exn_magic.cmi lib/exn_magic.mli
+- W: Cannot find source file matching module 'sexplib_unix' in library sexplib_unix
+- W: Cannot find source file matching module 'sexplib_num' in library sexplib_num
+- W: Cannot find source file matching module 'sexplib' in library sexplib
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -modules lib/exn_magic.ml > lib/exn_magic.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -modules lib/macro.mli > lib/macro.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package bigarray -I lib -o lib/macro.cmi lib/macro.mli
@@ -1704,9 +1707,6 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package bigarray -I lib -o lib/std.cmo lib/std.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package bigarray -I lib -o lib/type_with_layout.cmo lib/type_with_layout.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package bigarray -I lib -o lib/parser.cmo lib/parser.ml
-- W: Cannot find source file matching module 'sexplib_unix' in library sexplib_unix
-- W: Cannot find source file matching module 'sexplib_num' in library sexplib_num
-- W: Cannot find source file matching module 'sexplib' in library sexplib
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package bigarray -I lib -o lib/parser_with_layout.cmo lib/parser_with_layout.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package bigarray -I lib -o lib/lexer.cmo lib/lexer.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -pack -g -annot -bin-annot lib/type.cmo lib/parser.cmo lib/src_pos.cmo lib/type_with_layout.cmo lib/parser_with_layout.cmo lib/lexer.cmo lib/pre_sexp.cmo lib/sexp_intf.cmo lib/sexp_with_layout.cmo lib/sexp.cmo lib/conv.cmo lib/conv_error.cmo lib/exn_magic.cmo lib/macro.cmo lib/path.cmo lib/std.cmo -o lib/sexplib.cmo
