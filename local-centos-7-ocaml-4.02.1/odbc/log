@@ -1,6 +1,6 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux centos
 + uname -s
+# Detecting depexts using flags: x86_64 linux centos
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=odbc
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=odbc
 # No extra OS packages requirements found.
@@ -12,10 +12,10 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: from default] Command started
 [odbc: from default] Command started
-[odbc: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/odbc.3.0+opam.tar.gz downloaded
+[odbc: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/odbc.3.0+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -152,14 +152,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -175,6 +167,14 @@ The following actions will be performed:
 - 	../../tools/patch '@SITELIB@' '/home/opam/.opam/system/lib' \
 -     	    >topfind
 - ocamlc -I +compiler-libs -c num_top_printers.mli
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
 - ocamlc -I +compiler-libs -c num_top.mli
 - ocamlc -I +compiler-libs -g -c num_top.ml
@@ -345,11 +345,11 @@ The following actions will be performed:
 - checking whether gcc accepts -g... yes
 - checking for gcc option to accept ISO C89... none needed
 - ======== configure PostgreSQL ========
-- checking how to run the C preprocessor... gcc -E
+- checking how to run the C preprocessor... 
+- gcc -E
 - checking for grep that handles long lines and -e... /usr/bin/grep
 - checking for egrep... /usr/bin/grep -E
-- checking for ANSI C header files... 
-- yes
+- checking for ANSI C header files... yes
 - checking for sys/types.h... yes
 - checking for sys/stat.h... yes
 - checking for stdlib.h... yes
@@ -359,8 +359,7 @@ The following actions will be performed:
 - checking for inttypes.h... yes
 - checking for stdint.h... yes
 - checking for unistd.h... yes
-- checking iodbc.h usability... 
-- no
+- checking iodbc.h usability... no
 - checking iodbc.h presence... no
 - checking for iodbc.h... no
 - checking isql.h usability... no
@@ -378,14 +377,14 @@ The following actions will be performed:
 - MySQL ODBC headers not found
 - No MySQL ODBC support
 - ======== configure unixODBC ========
-- checking odbcinst.h usability... no
+- checking odbcinst.h usability... 
+- no
 - checking odbcinst.h presence... no
 - checking for odbcinst.h... no
 - checking sql.h usability... no
 - checking sql.h presence... no
 - checking for sql.h... no
-- checking sqlext.h usability... 
-- no
+- checking sqlext.h usability... no
 - checking sqlext.h presence... no
 - checking for sqlext.h... no
 - unixODBC headers not found
@@ -409,10 +408,20 @@ The following actions will be performed:
 - checking for ocamlfind... ocamlfind
 - checking for OCaml findlib package lablgtk2... not found
 - configure: creating ./config.status
+- configure: WARNING: Biniki will not be compiled.
 - config.status: creating META
 - config.status: creating Makefile.master
 - config.status: creating opam/opam
-- configure: WARNING: Biniki will not be compiled.
+[odbc: make] Command started
++ make  (CWD=/home/opam/.opam/system/build/odbc.3.0)
+- rm -f .depend
+- ocamldep  odbc.ml ocamlodbc.ml ocamlodbc_lowlevel.ml odbc.mli ocamlodbc.mli > .depend
+- for d in ; do \
+-   make BASE=$d library; \
+- done
+- Makefile:144: .depend: No such file or directory
+[odbc: make findlib_install] Command started
++ make "findlib_install" (CWD=/home/opam/.opam/system/build/odbc.3.0)
 [ERROR] The compilation of odbc failed at "make findlib_install".
 
 #=== ERROR while installing odbc.3.0 ==========================================#
@@ -435,16 +444,6 @@ The following actions will be performed:
 # ocamlfind: odbc.cmxa: No such file or directory
 # make: *** [findlib_install] Error 2
 
-[odbc: make] Command started
-+ make  (CWD=/home/opam/.opam/system/build/odbc.3.0)
-- rm -f .depend
-- ocamldep  odbc.ml ocamlodbc.ml ocamlodbc_lowlevel.ml odbc.mli ocamlodbc.mli > .depend
-- for d in ; do \
--   make BASE=$d library; \
-- done
-- Makefile:144: .depend: No such file or directory
-[odbc: make findlib_install] Command started
-+ make "findlib_install" (CWD=/home/opam/.opam/system/build/odbc.3.0)
 - for d in ; do \
 -   make BASE=$d library; \
 - done
@@ -464,5 +463,5 @@ The following changes have been performed
   - install ocamlfind 1.5.5
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150304213236.export"
+    opam switch import "~/.opam/system/backup/state-20150305043530.export"
 'opam install odbc' failed.
