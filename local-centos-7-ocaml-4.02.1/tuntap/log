@@ -20,11 +20,11 @@ The following actions will be performed:
 [lwt: from default] Command started
 [ocamlfind: from default] Command started
 [ipaddr: from default] Command started
-[lwt: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[ounit: from default] Command started
+[lwt: from default] Command started
 [default] http://opam-archive:8080/archives/ipaddr.2.5.0+opam.tar.gz downloaded
+[ounit: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [sexplib: from default] Command started
 [default] http://opam-archive:8080/archives/lwt.2.4.5+opam.tar.gz downloaded
 [tuntap: from default] Command started
@@ -34,8 +34,8 @@ The following actions will be performed:
 [type_conv: from default] Command started
 [tuntap: from default] Command started
 [default] http://opam-archive:8080/archives/sexplib.112.24.01+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/tuntap.1.0.0+opam.tar.gz downloaded
 [type_conv: from default] Command started
+[default] http://opam-archive:8080/archives/tuntap.1.0.0+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -120,6 +120,17 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_metatoken.ml
 - ocamlc -I +compiler-libs -g -c fl_meta.ml
 - ocamlc -I +compiler-libs -c fl_metascanner.mli
+- ocamlc -I +compiler-libs -g -c fl_metascanner.ml
+- ocamlc -I +compiler-libs -c fl_topo.mli
+- ocamlc -I +compiler-libs -g -c fl_topo.ml
+- ocamlc -I +compiler-libs -c fl_package_base.mli
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
+- ocamlc -I +compiler-libs -g -c frontend.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -159,28 +170,12 @@ The following actions will be performed:
 - File "fl_meta.mll", line 62, characters 11-22:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc -I +compiler-libs -g -c fl_metascanner.ml
 - File "fl_metascanner.ml", line 111, characters 23-32:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c fl_topo.mli
-- ocamlc -I +compiler-libs -g -c fl_topo.ml
-- ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
-- ocamlc -I +compiler-libs -g -c frontend.ml
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
@@ -197,10 +192,15 @@ The following actions will be performed:
 - cat topfind_rd1.p | \
 - 	../../tools/patch '@SITELIB@' '/home/opam/.opam/system/lib' \
 -     	    >topfind
+- ocamlc -I +compiler-libs -c num_top_printers.mli
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -c num_top_printers.mli
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
 - ocamlc -I +compiler-libs -c num_top.mli
 - ocamlc -I +compiler-libs -g -c num_top.ml
@@ -2045,6 +2045,13 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -I src/core -I src/logger -I src/unix -I src/preemptive -package bigarray -package camlp4 -package threads -package unix -syntax camlp4o -thread -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -ppopt syntax/pa_optcomp.cmo -I src/extra -I src/core -I src/preemptive -o src/extra/lwt_lib.cmo src/extra/lwt_lib.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -a src/extra/lwt_lib.cmo -o src/extra/lwt-extra.cma
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -I src/core -I src/logger -I src/unix -I src/preemptive -package bigarray -package camlp4 -package threads -package unix -syntax camlp4o -thread -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -ppopt syntax/pa_optcomp.cmo -I src/extra -I src/core -I src/preemptive -o src/extra/lwt_lib.cmx src/extra/lwt_lib.ml
+- File "setup.ml", line 254, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "setup.ml", line 2419, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
+- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -a src/extra/lwt_lib.cmx -o src/extra/lwt-extra.cmxa
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared src/extra/lwt-extra.cmxa src/extra/lwt_lib.cmx -o src/extra/lwt-extra.cmxs
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -a syntax/pa_lwt.cmo -o syntax/lwt-syntax.cma
@@ -2071,13 +2078,6 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -I src/core -I src/logger -I src/unix -I syntax -package bigarray -package camlp4 -syntax camlp4o -package camlp4.extend -syntax camlp4o -package camlp4.quotations.o -package unix -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -ppopt syntax/pa_optcomp.cmo -I examples/unix -I src/unix -I syntax -o examples/unix/parallelize.cmo examples/unix/parallelize.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -I src/core -I src/logger -I src/unix -I syntax -package bigarray -package camlp4 -syntax camlp4o -package camlp4.extend -syntax camlp4o -package camlp4.quotations.o -package unix -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -ppopt syntax/pa_optcomp.cmo -I examples/unix -I src/unix -I syntax -o examples/unix/parallelize.cmx examples/unix/parallelize.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -I src/unix -linkpkg -package bigarray -package camlp4 -package camlp4.extend -package camlp4.quotations.o -package unix syntax/lwt-syntax.cmxa src/core/lwt.cmxa src/logger/lwt-log.cmxa src/unix/lwt-unix.cmxa examples/unix/parallelize.cmx -o examples/unix/parallelize.native
-- File "setup.ml", line 254, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "setup.ml", line 2419, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
-- ocamlfind: Package `wikidoc' not found
 [lwt: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/lwt.2.4.5)
 - ./setup.exe -install 
