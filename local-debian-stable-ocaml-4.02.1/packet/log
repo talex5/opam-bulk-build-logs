@@ -1,25 +1,24 @@
 + uname -m
 + uname -s
-# Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=packet
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=packet
+# Detecting depexts using flags: x86_64 linux debian
 # The following system packages are needed:
 #  - m4
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=packet
 Not running as root, system installation will be done through "sudo"
 + sudo apt-get update
 Hit http://download.opensuse.org  Release.gpg
 Hit http://http.debian.net stable Release.gpg
-Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
-Hit http://http.debian.net stable Release
+Hit http://http.debian.net stable-updates Release.gpg
 Hit http://download.opensuse.org  Release
-Get:2 http://http.debian.net stable-updates Release [124 kB]
+Hit http://http.debian.net stable Release
+Hit http://http.debian.net stable-updates Release
 Hit http://download.opensuse.org  Packages
 Hit http://http.debian.net stable/main amd64 Packages
-Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
+Hit http://http.debian.net stable-updates/main amd64 Packages
 Hit http://security.debian.org stable/updates Release.gpg
 Hit http://security.debian.org stable/updates Release
 Hit http://security.debian.org stable/updates/main amd64 Packages
-Fetched 129 kB in 1s (111 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
@@ -76,14 +75,14 @@ The following actions will be performed:
 [mirage-net-unix: from default] Command started
 [default] http://opam-archive:8080/archives/mirage-console.2.1.3+opam.tar.gz downloaded
 [mirage-unix: from default] Command started
+[mirage-types: from default] Command started
 [default] http://opam-archive:8080/archives/mirage-net-unix.2.2.0+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
-[mirage-types: from default] Command started
 [mirage-unix: from default] Command started
-[default] http://opam-archive:8080/archives/mirage-unix.2.0.1+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/mirage-types.2.1.1+opam.tar.gz downloaded
 [ocplib-endian: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/mirage-types.2.1.1+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/mirage-unix.2.0.1+opam.tar.gz downloaded
 [optcomp: from default] Command started
 [ocplib-endian: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
@@ -100,19 +99,19 @@ The following actions will be performed:
 [quickcheck: from default] Command started
 [default] http://opam-archive:8080/archives/packet.0.4.0+opam.tar.gz downloaded
 [shared-memory-ring: from default] Command started
-[sexplib: from default] Command started
 [default] http://opam-archive:8080/archives/quickcheck.1.0.2+opam.tar.gz downloaded
 [tcpip: from default] Command started
+[sexplib: from default] Command started
 [shared-memory-ring: from default] Command started
 [default] http://opam-archive:8080/archives/sexplib.112.24.01+opam.tar.gz downloaded
 [tuntap: from default] Command started
-[tcpip: from default] Command started
 [default] http://opam-archive:8080/archives/shared-memory-ring.1.1.0+opam.tar.gz downloaded
 [type_conv: from default] Command started
-[tuntap: from default] Command started
+[tcpip: from default] Command started
 [default] http://opam-archive:8080/archives/tcpip.2.0.3+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/tuntap.1.0.0+opam.tar.gz downloaded
+[tuntap: from default] Command started
 [type_conv: from default] Command started
+[default] http://opam-archive:8080/archives/tuntap.1.0.0+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -197,6 +196,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -242,12 +243,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -256,8 +257,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -3068,75 +3067,6 @@ The following actions will be performed:
 -> installed sexplib.112.24.01
 [cstruct: ./configure] Command started
 [ipaddr: ocaml setup.ml] Command started
-+ ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/4.02.1" (CWD=/home/opam/.opam/4.02.1/build/ipaddr.2.5.0)
-- 
-- Configuration: 
-- ocamlfind: ........................................... /home/opam/.opam/4.02.1/bin/ocamlfind
-- ocamlc: .............................................. /home/opam/.opam/4.02.1/bin/ocamlc.opt
-- ocamlopt: ............................................ /home/opam/.opam/4.02.1/bin/ocamlopt.opt
-- ocamlbuild: .......................................... /home/opam/.opam/4.02.1/bin/ocamlbuild
-- Package name: ........................................ ipaddr
-- Package version: ..................................... 2.5.0
-- os_type: ............................................. Unix
-- system: .............................................. linux
-- architecture: ........................................ amd64
-- ccomp_type: .......................................... cc
-- ocaml_version: ....................................... 4.02.1
-- standard_library_default: ............................ /home/opam/.opam/4.02.1/lib/ocaml
-- standard_library: .................................... /home/opam/.opam/4.02.1/lib/ocaml
-- standard_runtime: .................................... /home/opam/.opam/4.02.1/bin/ocamlrun
-- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
-- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
-- model: ............................................... default
-- ext_obj: ............................................. .o
-- ext_asm: ............................................. .s
-- ext_lib: ............................................. .a
-- ext_dll: ............................................. .so
-- default_executable_name: ............................. a.out
-- systhread_supported: ................................. true
-- Install architecture-independent files dir: .......... /home/opam/.opam/4.02.1
-- Install architecture-dependent files in dir: ......... $prefix
-- User executables: .................................... $exec_prefix/bin
-- System admin executables: ............................ $exec_prefix/sbin
-- Program executables: ................................. $exec_prefix/libexec
-- Read-only single-machine data: ....................... $prefix/etc
-- Modifiable architecture-independent data: ............ $prefix/com
-- Modifiable single-machine data: ...................... $prefix/var
-- Object code libraries: ............................... $exec_prefix/lib
-- Read-only arch-independent data root: ................ $prefix/share
-- Read-only architecture-independent data: ............. $datarootdir
-- Info documentation: .................................. $datarootdir/info
-- Locale-dependent data: ............................... $datarootdir/locale
-- Man documentation: ................................... $datarootdir/man
-- Documentation root: .................................. $datarootdir/doc/$pkg_name
-- HTML documentation: .................................. $docdir
-- DVI documentation: ................................... $docdir
-- PDF documentation: ................................... $docdir
-- PS documentation: .................................... $docdir
-- findlib_version: ..................................... 1.5.5
-- is_native: ........................................... true
-- suffix_program: ...................................... 
-- Remove a file.: ...................................... rm -f
-- Remove a directory.: ................................. rm -rf
-- Turn ocaml debug flag on: ............................ true
-- Turn ocaml profile flag on: .......................... false
-- Compiler support generation of .cmxs.: ............... true
-- OCamlbuild additional flags: ......................... 
-- build the Unix library: .............................. true
-- build the toplevel printers: ......................... true
-- Create documentations: ............................... true
-- Compile tests executable and library and run them: ... false
-- pkg_sexplib: ......................................... /home/opam/.opam/4.02.1/lib/sexplib
-- pkg_sexplib_syntax: .................................. /home/opam/.opam/4.02.1/lib/sexplib
-- pkg_unix: ............................................ /home/opam/.opam/4.02.1/lib/ocaml
-- 
-- File "setup.ml", line 247, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "setup.ml", line 2502, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
-[ipaddr: make build] Command started
 + ./configure "--prefix" "/home/opam/.opam/4.02.1" "--enable-lwt" "--enable-camlp4" "--disable-async" "--enable-unix" (CWD=/home/opam/.opam/4.02.1/build/cstruct.1.5.0)
 - 
 - Configuration: 
@@ -3210,67 +3140,75 @@ The following actions will be performed:
 - ocamldoc: ............................................ /home/opam/.opam/4.02.1/bin/ocamldoc
 - 
 [cstruct: make] Command started
-+ make  (CWD=/home/opam/.opam/4.02.1/build/cstruct.1.5.0)
-- ocaml setup.ml -build 
-- /home/opam/.opam/4.02.1/bin/ocamlopt.opt unix.cmxa -I /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
-- File "_tags", line 36, characters 20-29:
-- Warning: the tag "pkg_async" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
-- File "_tags", line 87, characters 48-66:
-- Warning: the tag "pkg_cstruct.syntax" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -ccopt -O3 -ccopt -Wall -c lib/cstruct_stubs.c
-- mv cstruct_stubs.o lib/cstruct_stubs.o
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlmklib -o lib/cstruct_stubs lib/cstruct_stubs.o
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -modules lib/cstruct.mli > lib/cstruct.mli.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -ccopt -O3 -ccopt -Wall -package bigarray -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -I lib -I unix -I lwt -I async -o lib/cstruct.cmi lib/cstruct.mli
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -modules lib/cstruct.ml > lib/cstruct.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -ccopt -O3 -ccopt -Wall -package bigarray -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -I lib -I unix -I lwt -I async -o lib/cstruct.cmo lib/cstruct.ml
-- + /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -ccopt -O3 -ccopt -Wall -package bigarray -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -I lib -I unix -I lwt -I async -o lib/cstruct.cmo lib/cstruct.ml
-- File "lib/cstruct.ml", line 124, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "lib/cstruct.ml", line 225, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "lib/cstruct.ml", line 236, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a -dllib -lcstruct_stubs -cclib -lcstruct_stubs lib/cstruct.cmo -o lib/cstruct.cma
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -ccopt -O3 -ccopt -Wall -package bigarray -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -inline 10 -I lib -I unix -I lwt -I async -o lib/cstruct.cmx lib/cstruct.ml
-- + /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -ccopt -O3 -ccopt -Wall -package bigarray -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -inline 10 -I lib -I unix -I lwt -I async -o lib/cstruct.cmx lib/cstruct.ml
-- File "lib/cstruct.ml", line 124, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "lib/cstruct.ml", line 225, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "lib/cstruct.ml", line 236, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a -cclib -lcstruct_stubs lib/cstruct.cmx -o lib/cstruct.cmxa
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared -I lib/ lib/cstruct.cmxa lib/cstruct.cmx -o lib/cstruct.cmxs
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -package lwt.unix -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -modules lwt/lwt_cstruct.mli > lwt/lwt_cstruct.mli.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -package bigarray -package lwt.unix -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -I lwt -I lib -I unix -I async -o lwt/lwt_cstruct.cmi lwt/lwt_cstruct.mli
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -package lwt.unix -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -modules lwt/lwt_cstruct.ml > lwt/lwt_cstruct.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -package bigarray -package lwt.unix -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -I lwt -I lib -I unix -I async -o lwt/lwt_cstruct.cmo lwt/lwt_cstruct.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a lwt/lwt_cstruct.cmo -o lwt/lwt_cstruct.cma
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -package bigarray -package lwt.unix -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -inline 10 -I lwt -I lib -I unix -I async -o lwt/lwt_cstruct.cmx lwt/lwt_cstruct.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a lwt/lwt_cstruct.cmx -o lwt/lwt_cstruct.cmxa
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared lwt/lwt_cstruct.cmxa lwt/lwt_cstruct.cmx -o lwt/lwt_cstruct.cmxs
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -package unix -modules unix/unix_cstruct.mli > unix/unix_cstruct.mli.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -package bigarray -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -package unix -I unix -I lib -I lwt -I async -o unix/unix_cstruct.cmi unix/unix_cstruct.mli
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -package unix -modules unix/unix_cstruct.ml > unix/unix_cstruct.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -package bigarray -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -package unix -I unix -I lib -I lwt -I async -o unix/unix_cstruct.cmo unix/unix_cstruct.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a unix/unix_cstruct.cmo -o unix/unix_cstruct.cma
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -package bigarray -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -package unix -inline 10 -I unix -I lib -I lwt -I async -o unix/unix_cstruct.cmx unix/unix_cstruct.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a unix/unix_cstruct.cmx -o unix/unix_cstruct.cmxa
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared unix/unix_cstruct.cmxa unix/unix_cstruct.cmx -o unix/unix_cstruct.cmxs
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -package camlp4 -syntax camlp4o -package camlp4.extend -package camlp4.lib -syntax camlp4o -package camlp4.quotations.r -syntax camlp4o -modules syntax/pa_cstruct.ml > syntax/pa_cstruct.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package bigarray -package camlp4 -syntax camlp4o -package camlp4.extend -package camlp4.lib -syntax camlp4o -package camlp4.quotations.r -syntax camlp4o -I syntax -I unix -I lwt -I lib -I async -o syntax/pa_cstruct.cmo syntax/pa_cstruct.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a syntax/pa_cstruct.cmo -o syntax/cstruct-syntax.cma
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package bigarray -package camlp4 -syntax camlp4o -package camlp4.extend -package camlp4.lib -syntax camlp4o -package camlp4.quotations.r -syntax camlp4o -inline 10 -I syntax -I unix -I lwt -I lib -I async -o syntax/pa_cstruct.cmx syntax/pa_cstruct.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a syntax/pa_cstruct.cmx -o syntax/cstruct-syntax.cmxa
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared syntax/cstruct-syntax.cmxa syntax/pa_cstruct.cmx -o syntax/cstruct-syntax.cmxs
-[cstruct: make install] Command started
++ ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/4.02.1" (CWD=/home/opam/.opam/4.02.1/build/ipaddr.2.5.0)
+- 
+- Configuration: 
+- ocamlfind: ........................................... /home/opam/.opam/4.02.1/bin/ocamlfind
+- ocamlc: .............................................. /home/opam/.opam/4.02.1/bin/ocamlc.opt
+- ocamlopt: ............................................ /home/opam/.opam/4.02.1/bin/ocamlopt.opt
+- ocamlbuild: .......................................... /home/opam/.opam/4.02.1/bin/ocamlbuild
+- Package name: ........................................ ipaddr
+- Package version: ..................................... 2.5.0
+- os_type: ............................................. Unix
+- system: .............................................. linux
+- architecture: ........................................ amd64
+- ccomp_type: .......................................... cc
+- ocaml_version: ....................................... 4.02.1
+- standard_library_default: ............................ /home/opam/.opam/4.02.1/lib/ocaml
+- standard_library: .................................... /home/opam/.opam/4.02.1/lib/ocaml
+- standard_runtime: .................................... /home/opam/.opam/4.02.1/bin/ocamlrun
+- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
+- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
+- model: ............................................... default
+- ext_obj: ............................................. .o
+- ext_asm: ............................................. .s
+- ext_lib: ............................................. .a
+- ext_dll: ............................................. .so
+- default_executable_name: ............................. a.out
+- systhread_supported: ................................. true
+- Install architecture-independent files dir: .......... /home/opam/.opam/4.02.1
+- Install architecture-dependent files in dir: ......... $prefix
+- User executables: .................................... $exec_prefix/bin
+- System admin executables: ............................ $exec_prefix/sbin
+- Program executables: ................................. $exec_prefix/libexec
+- Read-only single-machine data: ....................... $prefix/etc
+- Modifiable architecture-independent data: ............ $prefix/com
+- Modifiable single-machine data: ...................... $prefix/var
+- Object code libraries: ............................... $exec_prefix/lib
+- Read-only arch-independent data root: ................ $prefix/share
+- Read-only architecture-independent data: ............. $datarootdir
+- Info documentation: .................................. $datarootdir/info
+- Locale-dependent data: ............................... $datarootdir/locale
+- Man documentation: ................................... $datarootdir/man
+- Documentation root: .................................. $datarootdir/doc/$pkg_name
+- HTML documentation: .................................. $docdir
+- DVI documentation: ................................... $docdir
+- PDF documentation: ................................... $docdir
+- PS documentation: .................................... $docdir
+- findlib_version: ..................................... 1.5.5
+- is_native: ........................................... true
+- suffix_program: ...................................... 
+- Remove a file.: ...................................... rm -f
+- Remove a directory.: ................................. rm -rf
+- Turn ocaml debug flag on: ............................ true
+- Turn ocaml profile flag on: .......................... false
+- Compiler support generation of .cmxs.: ............... true
+- OCamlbuild additional flags: ......................... 
+- build the Unix library: .............................. true
+- build the toplevel printers: ......................... true
+- Create documentations: ............................... true
+- Compile tests executable and library and run them: ... false
+- pkg_sexplib: ......................................... /home/opam/.opam/4.02.1/lib/sexplib
+- pkg_sexplib_syntax: .................................. /home/opam/.opam/4.02.1/lib/sexplib
+- pkg_unix: ............................................ /home/opam/.opam/4.02.1/lib/ocaml
+- 
+- File "setup.ml", line 247, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "setup.ml", line 2502, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
+[ipaddr: make build] Command started
 + make "build" (CWD=/home/opam/.opam/4.02.1/build/ipaddr.2.5.0)
 - ocaml setup.ml -build 
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt unix.cmxa -I /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
@@ -3400,6 +3338,67 @@ The following actions will be performed:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
 [ipaddr: make install] Command started
++ make  (CWD=/home/opam/.opam/4.02.1/build/cstruct.1.5.0)
+- ocaml setup.ml -build 
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt unix.cmxa -I /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
+- File "_tags", line 36, characters 20-29:
+- Warning: the tag "pkg_async" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
+- File "_tags", line 87, characters 48-66:
+- Warning: the tag "pkg_cstruct.syntax" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -ccopt -O3 -ccopt -Wall -c lib/cstruct_stubs.c
+- mv cstruct_stubs.o lib/cstruct_stubs.o
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlmklib -o lib/cstruct_stubs lib/cstruct_stubs.o
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -modules lib/cstruct.mli > lib/cstruct.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -ccopt -O3 -ccopt -Wall -package bigarray -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -I lib -I unix -I lwt -I async -o lib/cstruct.cmi lib/cstruct.mli
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -modules lib/cstruct.ml > lib/cstruct.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -ccopt -O3 -ccopt -Wall -package bigarray -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -I lib -I unix -I lwt -I async -o lib/cstruct.cmo lib/cstruct.ml
+- + /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -ccopt -O3 -ccopt -Wall -package bigarray -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -I lib -I unix -I lwt -I async -o lib/cstruct.cmo lib/cstruct.ml
+- File "lib/cstruct.ml", line 124, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "lib/cstruct.ml", line 225, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "lib/cstruct.ml", line 236, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a -dllib -lcstruct_stubs -cclib -lcstruct_stubs lib/cstruct.cmo -o lib/cstruct.cma
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -ccopt -O3 -ccopt -Wall -package bigarray -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -inline 10 -I lib -I unix -I lwt -I async -o lib/cstruct.cmx lib/cstruct.ml
+- + /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -ccopt -O3 -ccopt -Wall -package bigarray -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -inline 10 -I lib -I unix -I lwt -I async -o lib/cstruct.cmx lib/cstruct.ml
+- File "lib/cstruct.ml", line 124, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "lib/cstruct.ml", line 225, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "lib/cstruct.ml", line 236, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a -cclib -lcstruct_stubs lib/cstruct.cmx -o lib/cstruct.cmxa
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared -I lib/ lib/cstruct.cmxa lib/cstruct.cmx -o lib/cstruct.cmxs
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -package lwt.unix -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -modules lwt/lwt_cstruct.mli > lwt/lwt_cstruct.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -package bigarray -package lwt.unix -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -I lwt -I lib -I unix -I async -o lwt/lwt_cstruct.cmi lwt/lwt_cstruct.mli
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -package lwt.unix -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -modules lwt/lwt_cstruct.ml > lwt/lwt_cstruct.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -package bigarray -package lwt.unix -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -I lwt -I lib -I unix -I async -o lwt/lwt_cstruct.cmo lwt/lwt_cstruct.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a lwt/lwt_cstruct.cmo -o lwt/lwt_cstruct.cma
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -package bigarray -package lwt.unix -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -inline 10 -I lwt -I lib -I unix -I async -o lwt/lwt_cstruct.cmx lwt/lwt_cstruct.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a lwt/lwt_cstruct.cmx -o lwt/lwt_cstruct.cmxa
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared lwt/lwt_cstruct.cmxa lwt/lwt_cstruct.cmx -o lwt/lwt_cstruct.cmxs
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -package unix -modules unix/unix_cstruct.mli > unix/unix_cstruct.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -package bigarray -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -package unix -I unix -I lib -I lwt -I async -o unix/unix_cstruct.cmi unix/unix_cstruct.mli
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -package unix -modules unix/unix_cstruct.ml > unix/unix_cstruct.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -package bigarray -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -package unix -I unix -I lib -I lwt -I async -o unix/unix_cstruct.cmo unix/unix_cstruct.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a unix/unix_cstruct.cmo -o unix/unix_cstruct.cma
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -package bigarray -package ocplib-endian -package ocplib-endian.bigstring -package sexplib -syntax camlp4o -package sexplib.syntax -package unix -inline 10 -I unix -I lib -I lwt -I async -o unix/unix_cstruct.cmx unix/unix_cstruct.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a unix/unix_cstruct.cmx -o unix/unix_cstruct.cmxa
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared unix/unix_cstruct.cmxa unix/unix_cstruct.cmx -o unix/unix_cstruct.cmxs
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -package camlp4 -syntax camlp4o -package camlp4.extend -package camlp4.lib -syntax camlp4o -package camlp4.quotations.r -syntax camlp4o -modules syntax/pa_cstruct.ml > syntax/pa_cstruct.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package bigarray -package camlp4 -syntax camlp4o -package camlp4.extend -package camlp4.lib -syntax camlp4o -package camlp4.quotations.r -syntax camlp4o -I syntax -I unix -I lwt -I lib -I async -o syntax/pa_cstruct.cmo syntax/pa_cstruct.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a syntax/pa_cstruct.cmo -o syntax/cstruct-syntax.cma
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package bigarray -package camlp4 -syntax camlp4o -package camlp4.extend -package camlp4.lib -syntax camlp4o -package camlp4.quotations.r -syntax camlp4o -inline 10 -I syntax -I unix -I lwt -I lib -I async -o syntax/pa_cstruct.cmx syntax/pa_cstruct.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a syntax/pa_cstruct.cmx -o syntax/cstruct-syntax.cmxa
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared syntax/cstruct-syntax.cmxa syntax/pa_cstruct.cmx -o syntax/cstruct-syntax.cmxs
+[cstruct: make install] Command started
 + make "install" (CWD=/home/opam/.opam/4.02.1/build/ipaddr.2.5.0)
 - ocaml setup.ml -install 
 - File "setup.ml", line 247, characters 8-26:
@@ -3613,127 +3612,6 @@ The following actions will be performed:
 - ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/4.02.1/lib/stublibs is not mentioned in ld.conf
 -> installed io-page.1.2.0
 [mirage-types: make install-types] Command started
-+ make "PREFIX=/home/opam/.opam/4.02.1" (CWD=/home/opam/.opam/4.02.1/build/tuntap.1.0.0)
-- ocaml setup.ml -configure 
-- 
-- Configuration: 
-- ocamlfind: ........................................... /home/opam/.opam/4.02.1/bin/ocamlfind
-- ocamlc: .............................................. /home/opam/.opam/4.02.1/bin/ocamlc.opt
-- ocamlopt: ............................................ /home/opam/.opam/4.02.1/bin/ocamlopt.opt
-- ocamlbuild: .......................................... /home/opam/.opam/4.02.1/bin/ocamlbuild
-- Package name: ........................................ tuntap
-- Package version: ..................................... 1.0.0
-- os_type: ............................................. Unix
-- system: .............................................. linux
-- architecture: ........................................ amd64
-- ccomp_type: .......................................... cc
-- ocaml_version: ....................................... 4.02.1
-- standard_library_default: ............................ /home/opam/.opam/4.02.1/lib/ocaml
-- standard_library: .................................... /home/opam/.opam/4.02.1/lib/ocaml
-- standard_runtime: .................................... /home/opam/.opam/4.02.1/bin/ocamlrun
-- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
-- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
-- model: ............................................... default
-- ext_obj: ............................................. .o
-- ext_asm: ............................................. .s
-- ext_lib: ............................................. .a
-- ext_dll: ............................................. .so
-- default_executable_name: ............................. a.out
-- systhread_supported: ................................. true
-- Install architecture-independent files dir: .......... /usr/local
-- Install architecture-dependent files in dir: ......... $prefix
-- User executables: .................................... $exec_prefix/bin
-- System admin executables: ............................ $exec_prefix/sbin
-- Program executables: ................................. $exec_prefix/libexec
-- Read-only single-machine data: ....................... $prefix/etc
-- Modifiable architecture-independent data: ............ $prefix/com
-- Modifiable single-machine data: ...................... $prefix/var
-- Object code libraries: ............................... $exec_prefix/lib
-- Read-only arch-independent data root: ................ $prefix/share
-- Read-only architecture-independent data: ............. $datarootdir
-- Info documentation: .................................. $datarootdir/info
-- Locale-dependent data: ............................... $datarootdir/locale
-- Man documentation: ................................... $datarootdir/man
-- Documentation root: .................................. $datarootdir/doc/$pkg_name
-- HTML documentation: .................................. $docdir
-- DVI documentation: ................................... $docdir
-- PDF documentation: ................................... $docdir
-- PS documentation: .................................... $docdir
-- findlib_version: ..................................... 1.5.5
-- is_native: ........................................... true
-- suffix_program: ...................................... 
-- Remove a file.: ...................................... rm -f
-- Remove a directory.: ................................. rm -rf
-- Turn ocaml debug flag on: ............................ true
-- Turn ocaml profile flag on: .......................... false
-- Compiler support generation of .cmxs.: ............... true
-- OCamlbuild additional flags: ......................... 
-- Create documentations: ............................... true
-- Compile tests executable and library and run them: ... false
-- pkg_ipaddr: .......................................... /home/opam/.opam/4.02.1/lib/ipaddr
-- pkg_cmdliner: ........................................ /home/opam/.opam/4.02.1/lib/cmdliner
-- pkg_lwt_unix: ........................................ /home/opam/.opam/4.02.1/lib/lwt
-- pkg_ounit: ........................................... /home/opam/.opam/4.02.1/lib/oUnit
-- ocamldoc: ............................................ /home/opam/.opam/4.02.1/bin/ocamldoc
-- 
-- ocaml setup.ml -build 
-- /home/opam/.opam/4.02.1/bin/ocamlopt.opt unix.cmxa -I /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -ccopt -O3 -c lib/tuntap_stubs.c
-- mv tuntap_stubs.o lib/tuntap_stubs.o
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlmklib -o lib/tuntap_stubs lib/tuntap_stubs.o
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package ipaddr -modules lib/tuntap.mli > lib/tuntap.mli.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -ccopt -O3 -bin-annot -package ipaddr -I lib -o lib/tuntap.cmi lib/tuntap.mli
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package ipaddr -modules lib/tuntap.ml > lib/tuntap.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -ccopt -O3 -bin-annot -package ipaddr -I lib -o lib/tuntap.cmo lib/tuntap.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a -dllib -ltuntap_stubs -cclib -ltuntap_stubs -bin-annot lib/tuntap.cmo -o lib/tuntap.cma
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -ccopt -O3 -bin-annot -package ipaddr -I lib -o lib/tuntap.cmx lib/tuntap.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a -cclib -ltuntap_stubs -bin-annot lib/tuntap.cmx -o lib/tuntap.cmxa
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared -I lib lib/tuntap.cmxa lib/tuntap.cmx -o lib/tuntap.cmxs
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package cmdliner -package ipaddr -modules bin/otunctl.ml > bin/otunctl.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -package cmdliner -package ipaddr -I bin -I lib -o bin/otunctl.cmo bin/otunctl.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -package cmdliner -package ipaddr -I bin -I lib -o bin/otunctl.cmx bin/otunctl.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -g -I lib -linkpkg -package cmdliner -package ipaddr lib/tuntap.cmxa bin/otunctl.cmx -o bin/otunctl.native
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package ipaddr -package lwt.unix -package oUnit -modules test/sendfd_test.ml > test/sendfd_test.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -package ipaddr -package lwt.unix -package oUnit -I test -I lib -o test/sendfd_test.cmo test/sendfd_test.ml
-- + /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -package ipaddr -package lwt.unix -package oUnit -I test -I lib -o test/sendfd_test.cmo test/sendfd_test.ml
-- File "test/sendfd_test.ml", line 7, characters 15-28:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -package ipaddr -package lwt.unix -package oUnit -I test -I lib -o test/sendfd_test.cmx test/sendfd_test.ml
-- + /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -package ipaddr -package lwt.unix -package oUnit -I test -I lib -o test/sendfd_test.cmx test/sendfd_test.ml
-- File "test/sendfd_test.ml", line 7, characters 15-28:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -g -I lib -linkpkg -package ipaddr -package lwt.unix lib/tuntap.cmxa test/sendfd_test.cmx -o test/sendfd_test.native
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package ipaddr -package lwt.unix -package oUnit -modules test/nonblock_test.ml > test/nonblock_test.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -package ipaddr -package lwt.unix -package oUnit -I test -I lib -o test/nonblock_test.cmo test/nonblock_test.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -package ipaddr -package lwt.unix -package oUnit -I test -I lib -o test/nonblock_test.cmx test/nonblock_test.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -g -I lib -linkpkg -package ipaddr -package lwt.unix lib/tuntap.cmxa test/nonblock_test.cmx -o test/nonblock_test.native
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package ipaddr -package lwt.unix -package oUnit -modules test/nonblock_read.ml > test/nonblock_read.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -package ipaddr -package lwt.unix -package oUnit -I test -I lib -o test/nonblock_read.cmo test/nonblock_read.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -package ipaddr -package lwt.unix -package oUnit -I test -I lib -o test/nonblock_read.cmx test/nonblock_read.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -g -I lib -linkpkg -package ipaddr -package lwt.unix lib/tuntap.cmxa test/nonblock_read.cmx -o test/nonblock_read.native
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package ipaddr -package lwt.unix -package oUnit -modules test/getifaddrs_test.ml > test/getifaddrs_test.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -package ipaddr -package lwt.unix -package oUnit -I test -I lib -o test/getifaddrs_test.cmo test/getifaddrs_test.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -package ipaddr -package lwt.unix -package oUnit -I test -I lib -o test/getifaddrs_test.cmx test/getifaddrs_test.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -g -I lib -linkpkg -package ipaddr lib/tuntap.cmxa test/getifaddrs_test.cmx -o test/getifaddrs_test.native
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package ipaddr -package lwt.unix -package oUnit -modules test/set_ipv4_test.ml > test/set_ipv4_test.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -package ipaddr -package lwt.unix -package oUnit -I test -I lib -o test/set_ipv4_test.cmo test/set_ipv4_test.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -package ipaddr -package lwt.unix -package oUnit -I test -I lib -o test/set_ipv4_test.cmx test/set_ipv4_test.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -g -I lib -linkpkg -package ipaddr -package oUnit lib/tuntap.cmxa test/set_ipv4_test.cmx -o test/set_ipv4_test.native
-- File "setup.ml", line 247, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "setup.ml", line 2412, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
-- File "setup.ml", line 247, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "setup.ml", line 2412, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
-[tuntap: make install] Command started
 + make "install-types" (CWD=/home/opam/.opam/4.02.1/build/mirage-types.2.1.1)
 - ./build true
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt unix.cmxa -I /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
@@ -3855,6 +3733,127 @@ The following actions will be performed:
 - Installed /home/opam/.opam/4.02.1/lib/mirage-types/META
 -> installed mirage-types.2.1.1
 [mirage-clock-unix: make unix-build] Command started
++ make "PREFIX=/home/opam/.opam/4.02.1" (CWD=/home/opam/.opam/4.02.1/build/tuntap.1.0.0)
+- ocaml setup.ml -configure 
+- 
+- Configuration: 
+- ocamlfind: ........................................... /home/opam/.opam/4.02.1/bin/ocamlfind
+- ocamlc: .............................................. /home/opam/.opam/4.02.1/bin/ocamlc.opt
+- ocamlopt: ............................................ /home/opam/.opam/4.02.1/bin/ocamlopt.opt
+- ocamlbuild: .......................................... /home/opam/.opam/4.02.1/bin/ocamlbuild
+- Package name: ........................................ tuntap
+- Package version: ..................................... 1.0.0
+- os_type: ............................................. Unix
+- system: .............................................. linux
+- architecture: ........................................ amd64
+- ccomp_type: .......................................... cc
+- ocaml_version: ....................................... 4.02.1
+- standard_library_default: ............................ /home/opam/.opam/4.02.1/lib/ocaml
+- standard_library: .................................... /home/opam/.opam/4.02.1/lib/ocaml
+- standard_runtime: .................................... /home/opam/.opam/4.02.1/bin/ocamlrun
+- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
+- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
+- model: ............................................... default
+- ext_obj: ............................................. .o
+- ext_asm: ............................................. .s
+- ext_lib: ............................................. .a
+- ext_dll: ............................................. .so
+- default_executable_name: ............................. a.out
+- systhread_supported: ................................. true
+- Install architecture-independent files dir: .......... /usr/local
+- Install architecture-dependent files in dir: ......... $prefix
+- User executables: .................................... $exec_prefix/bin
+- System admin executables: ............................ $exec_prefix/sbin
+- Program executables: ................................. $exec_prefix/libexec
+- Read-only single-machine data: ....................... $prefix/etc
+- Modifiable architecture-independent data: ............ $prefix/com
+- Modifiable single-machine data: ...................... $prefix/var
+- Object code libraries: ............................... $exec_prefix/lib
+- Read-only arch-independent data root: ................ $prefix/share
+- Read-only architecture-independent data: ............. $datarootdir
+- Info documentation: .................................. $datarootdir/info
+- Locale-dependent data: ............................... $datarootdir/locale
+- Man documentation: ................................... $datarootdir/man
+- Documentation root: .................................. $datarootdir/doc/$pkg_name
+- HTML documentation: .................................. $docdir
+- DVI documentation: ................................... $docdir
+- PDF documentation: ................................... $docdir
+- PS documentation: .................................... $docdir
+- findlib_version: ..................................... 1.5.5
+- is_native: ........................................... true
+- suffix_program: ...................................... 
+- Remove a file.: ...................................... rm -f
+- Remove a directory.: ................................. rm -rf
+- Turn ocaml debug flag on: ............................ true
+- Turn ocaml profile flag on: .......................... false
+- Compiler support generation of .cmxs.: ............... true
+- OCamlbuild additional flags: ......................... 
+- Create documentations: ............................... true
+- Compile tests executable and library and run them: ... false
+- pkg_ipaddr: .......................................... /home/opam/.opam/4.02.1/lib/ipaddr
+- pkg_cmdliner: ........................................ /home/opam/.opam/4.02.1/lib/cmdliner
+- pkg_lwt_unix: ........................................ /home/opam/.opam/4.02.1/lib/lwt
+- pkg_ounit: ........................................... /home/opam/.opam/4.02.1/lib/oUnit
+- ocamldoc: ............................................ /home/opam/.opam/4.02.1/bin/ocamldoc
+- 
+- ocaml setup.ml -build 
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt unix.cmxa -I /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -ccopt -O3 -c lib/tuntap_stubs.c
+- mv tuntap_stubs.o lib/tuntap_stubs.o
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlmklib -o lib/tuntap_stubs lib/tuntap_stubs.o
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package ipaddr -modules lib/tuntap.mli > lib/tuntap.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -ccopt -O3 -bin-annot -package ipaddr -I lib -o lib/tuntap.cmi lib/tuntap.mli
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package ipaddr -modules lib/tuntap.ml > lib/tuntap.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -ccopt -O3 -bin-annot -package ipaddr -I lib -o lib/tuntap.cmo lib/tuntap.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a -dllib -ltuntap_stubs -cclib -ltuntap_stubs -bin-annot lib/tuntap.cmo -o lib/tuntap.cma
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -ccopt -O3 -bin-annot -package ipaddr -I lib -o lib/tuntap.cmx lib/tuntap.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a -cclib -ltuntap_stubs -bin-annot lib/tuntap.cmx -o lib/tuntap.cmxa
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared -I lib lib/tuntap.cmxa lib/tuntap.cmx -o lib/tuntap.cmxs
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package cmdliner -package ipaddr -modules bin/otunctl.ml > bin/otunctl.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -package cmdliner -package ipaddr -I bin -I lib -o bin/otunctl.cmo bin/otunctl.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -package cmdliner -package ipaddr -I bin -I lib -o bin/otunctl.cmx bin/otunctl.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -g -I lib -linkpkg -package cmdliner -package ipaddr lib/tuntap.cmxa bin/otunctl.cmx -o bin/otunctl.native
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package ipaddr -package lwt.unix -package oUnit -modules test/sendfd_test.ml > test/sendfd_test.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -package ipaddr -package lwt.unix -package oUnit -I test -I lib -o test/sendfd_test.cmo test/sendfd_test.ml
+- + /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -package ipaddr -package lwt.unix -package oUnit -I test -I lib -o test/sendfd_test.cmo test/sendfd_test.ml
+- File "test/sendfd_test.ml", line 7, characters 15-28:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -package ipaddr -package lwt.unix -package oUnit -I test -I lib -o test/sendfd_test.cmx test/sendfd_test.ml
+- + /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -package ipaddr -package lwt.unix -package oUnit -I test -I lib -o test/sendfd_test.cmx test/sendfd_test.ml
+- File "test/sendfd_test.ml", line 7, characters 15-28:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -g -I lib -linkpkg -package ipaddr -package lwt.unix lib/tuntap.cmxa test/sendfd_test.cmx -o test/sendfd_test.native
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package ipaddr -package lwt.unix -package oUnit -modules test/nonblock_test.ml > test/nonblock_test.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -package ipaddr -package lwt.unix -package oUnit -I test -I lib -o test/nonblock_test.cmo test/nonblock_test.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -package ipaddr -package lwt.unix -package oUnit -I test -I lib -o test/nonblock_test.cmx test/nonblock_test.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -g -I lib -linkpkg -package ipaddr -package lwt.unix lib/tuntap.cmxa test/nonblock_test.cmx -o test/nonblock_test.native
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package ipaddr -package lwt.unix -package oUnit -modules test/nonblock_read.ml > test/nonblock_read.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -package ipaddr -package lwt.unix -package oUnit -I test -I lib -o test/nonblock_read.cmo test/nonblock_read.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -package ipaddr -package lwt.unix -package oUnit -I test -I lib -o test/nonblock_read.cmx test/nonblock_read.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -g -I lib -linkpkg -package ipaddr -package lwt.unix lib/tuntap.cmxa test/nonblock_read.cmx -o test/nonblock_read.native
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package ipaddr -package lwt.unix -package oUnit -modules test/getifaddrs_test.ml > test/getifaddrs_test.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -package ipaddr -package lwt.unix -package oUnit -I test -I lib -o test/getifaddrs_test.cmo test/getifaddrs_test.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -package ipaddr -package lwt.unix -package oUnit -I test -I lib -o test/getifaddrs_test.cmx test/getifaddrs_test.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -g -I lib -linkpkg -package ipaddr lib/tuntap.cmxa test/getifaddrs_test.cmx -o test/getifaddrs_test.native
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package ipaddr -package lwt.unix -package oUnit -modules test/set_ipv4_test.ml > test/set_ipv4_test.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -package ipaddr -package lwt.unix -package oUnit -I test -I lib -o test/set_ipv4_test.cmo test/set_ipv4_test.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -package ipaddr -package lwt.unix -package oUnit -I test -I lib -o test/set_ipv4_test.cmx test/set_ipv4_test.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -g -I lib -linkpkg -package ipaddr -package oUnit lib/tuntap.cmxa test/set_ipv4_test.cmx -o test/set_ipv4_test.native
+- File "setup.ml", line 247, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "setup.ml", line 2412, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
+- File "setup.ml", line 247, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "setup.ml", line 2412, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
+[tuntap: make install] Command started
 + make "unix-build" (CWD=/home/opam/.opam/4.02.1/build/mirage-clock-unix.1.0.0)
 - OS=unix ./build
 - ocamlfind ocamldep -modules unix/clock.mli > unix/clock.mli.depends
@@ -4098,14 +4097,14 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a lwt/lwt_ring.cmo -o lwt/lwt_shared_memory_ring.cma
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -I lib -package cstruct -syntax camlp4o -package cstruct.syntax -package lwt -syntax camlp4o -package lwt.syntax -syntax camlp4o -I lwt -I lib -I xen -o lwt/lwt_ring.cmx lwt/lwt_ring.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a lwt/lwt_ring.cmx -o lwt/lwt_shared_memory_ring.cmxa
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared -linkall lwt/lwt_shared_memory_ring.cmxa -o lwt/lwt_shared_memory_ring.cmxs
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package cstruct -syntax camlp4o -package cstruct.syntax -package lwt -package lwt.unix -package oUnit -syntax camlp4o -modules lib_test/ring_test.ml > lib_test/ring_test.ml.depends
 - File "setup.ml", line 247, characters 8-26:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
 - File "setup.ml", line 2502, characters 6-24:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared -linkall lwt/lwt_shared_memory_ring.cmxa -o lwt/lwt_shared_memory_ring.cmxs
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package cstruct -syntax camlp4o -package cstruct.syntax -package lwt -package lwt.unix -package oUnit -syntax camlp4o -modules lib_test/ring_test.ml > lib_test/ring_test.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package cstruct -syntax camlp4o -package cstruct.syntax -package lwt -package lwt.unix -package oUnit -syntax camlp4o -modules lib_test/old_ring.mli > lib_test/old_ring.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -I lib -I xen -I xen -package cstruct -syntax camlp4o -package cstruct.syntax -package lwt -package lwt.unix -package oUnit -syntax camlp4o -I lib_test -I lib -I xen -I lwt -o lib_test/old_ring.cmi lib_test/old_ring.mli
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -I lib -I xen -I xen -package cstruct -syntax camlp4o -package cstruct.syntax -package lwt -package lwt.unix -package oUnit -syntax camlp4o -I lib_test -I lib -I xen -I lwt -o lib_test/ring_test.cmo lib_test/ring_test.ml
@@ -4485,11 +4484,11 @@ The following actions will be performed:
 - 
 - ocaml setup.ml -build 
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt unix.cmxa -I /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
-- W: Cannot find source file matching module 'tcpv4' in library tcpv4
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -ccopt -O2 -ccopt -fno-stack-protector -ccopt -mno-red-zone -c lib/checksum_stubs.c
 - mv checksum_stubs.o lib/checksum_stubs.o
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlmklib -o lib/tcpip_stubs lib/checksum_stubs.o
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package cstruct -syntax camlp4o -package cstruct.syntax -package io-page -package ipaddr -package lwt -package mirage-types -modules lib/wire_structs.ml > lib/wire_structs.ml.depends
+- W: Cannot find source file matching module 'tcpv4' in library tcpv4
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package cstruct -package io-page -package ipaddr -package lwt -package mirage-types -modules lib/tcpip_checksum.mli > lib/tcpip_checksum.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -principal -strict-sequence -I lib -I lib -I lib -I lib -I tcp -I dhcp -ccopt -O2 -ccopt -fno-stack-protector -ccopt -mno-red-zone -package cstruct -package io-page -package ipaddr -package lwt -package mirage-types -I lib -I dhcp -I tcp -o lib/tcpip_checksum.cmi lib/tcpip_checksum.mli
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package cstruct -package io-page -package ipaddr -package lwt -package mirage-types -modules lib/tcpip_checksum.ml > lib/tcpip_checksum.ml.depends
