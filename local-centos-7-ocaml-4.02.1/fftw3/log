@@ -1,7 +1,7 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux centos
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=fftw3
+# Detecting depexts using flags: x86_64 linux centos
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=fftw3
 # The following system packages are needed:
 #  - fftw-devel
@@ -10,20 +10,20 @@ Not running as root, the following command will be run through "sudo":
 + sudo yum -y update
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: mirrors.coreix.net
- * extras: mirrors.coreix.net
+ * base: mirror.econdc.com
+ * extras: mirror.econdc.com
  * updates: anorien.csc.warwick.ac.uk
++ sudo yum install -y fftw-devel
 No packages marked for update
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     yum install -y fftw-devel
 Not running as root, the following command will be run through "sudo":
     rpm -q fftw-devel
-+ sudo yum install -y fftw-devel
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: mirror.mhd.uk.as44574.net
- * extras: mirrors.melbourne.co.uk
+ * base: mirror.econdc.com
+ * extras: mirror.econdc.com
  * updates: anorien.csc.warwick.ac.uk
 Resolving Dependencies
 --> Running transaction check
@@ -69,7 +69,7 @@ Total download size: 2.1 M
 Installed size: 6.8 M
 Downloading packages:
 --------------------------------------------------------------------------------
-Total                                              3.6 MB/s | 2.1 MB  00:00     
+Total                                              3.1 MB/s | 2.1 MB  00:00     
 Running transaction check
 Running transaction test
 Transaction test succeeded
@@ -84,7 +84,8 @@ Running transaction
   Verifying  : fftw-libs-double-3.3.3-8.el7.x86_64                          2/6 
   Verifying  : fftw-libs-single-3.3.3-8.el7.x86_64                          3/6 
   Verifying  : fftw-libs-long-3.3.3-8.el7.x86_64                            4/6 
-  Verifying  : fftw-3.3.3-8.el7.x86_64                                      5/6 
+  Verifying  : fftw-3.3.3-8.el7.x86_64                                      5/6+ sudo rpm -q fftw-devel
+ 
   Verifying  : fftw-libs-3.3.3-8.el7.x86_64                                 6/6 
 
 Installed:
@@ -96,7 +97,6 @@ Dependency Installed:
   fftw-libs-single.x86_64 0:3.3.3-8.el7  
 
 Complete!
-+ sudo rpm -q fftw-devel
 fftw-devel-3.3.3-8.el7.x86_64
 # OS packages installation successful
 The following actions will be performed:
@@ -109,8 +109,8 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [fftw3: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/fftw3.0.7.1+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/fftw3.0.7.1+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -143,7 +143,8 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) ok
+- Detecting compiler arguments: (extractor built) 
+- ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib64/ocaml
@@ -247,6 +248,14 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -262,14 +271,6 @@ The following actions will be performed:
 - 	../../tools/patch '@SITELIB@' '/home/opam/.opam/system/lib' \
 -     	    >topfind
 - ocamlc -I +compiler-libs -c num_top_printers.mli
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
 - ocamlc -I +compiler-libs -c num_top.mli
 - ocamlc -I +compiler-libs -g -c num_top.ml
@@ -307,7 +308,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -352,6 +352,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -432,19 +433,19 @@ The following actions will be performed:
 - checking for ocamldoc... /usr/bin/ocamldoc
 - checking for ocamlfind... /home/opam/.opam/system/bin/ocamlfind
 - checking for gcc... gcc
-- checking whether the C compiler works... 
-- yes
+- checking whether the C compiler works... yes
 - checking for C compiler default output file name... a.out
 - checking for suffix of executables... 
-- checking whether we are cross compiling... no
+- checking whether we are cross compiling... 
+- no
 - checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
-- checking for gcc option to accept ISO C89... 
-- none needed
+- checking for gcc option to accept ISO C89... none needed
 - checking for libfftw3 (double precision)... ok
 - checking for libfftw3f (single precision)... ok
-- checking for OCaml library lacaml... not found; use --with-lacaml=PATH to indicate its location (Some examples will not be compiled.)
+- checking for OCaml library lacaml... 
+- not found; use --with-lacaml=PATH to indicate its location (Some examples will not be compiled.)
 - checking for OCaml library archimedes... not found; use --with-archimedes=PATH to indicate its location (Examples will not produce graphics.)
 - configure: creating ./config.status
 - config.status: creating opam
@@ -471,11 +472,11 @@ The following actions will be performed:
 - /usr/bin/ocamlc.opt -c -cc "cc" -ccopt "-fPIC -g -O2 -DFFTW3F_EXISTS -DHASH_EXISTS \
 - 			-DPIC   \
 - 			    -o fftw3_stubs.o " fftw3_stubs.c
+- ar rcs libfftw3_stubs.a  fftw3_stubs.o
+- /usr/bin/ocamlc.opt -c -dtypes fftw3_utils.ml
 - File "make_prec_dep.ml", line 12, characters 10-23:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ar rcs libfftw3_stubs.a  fftw3_stubs.o
-- /usr/bin/ocamlc.opt -c -dtypes fftw3_utils.ml
 - /usr/bin/ocamlc.opt -c -dtypes fftw3_geomC.ml
 - /usr/bin/ocamlc.opt -c -dtypes fftw3_geomF.ml
 - /usr/bin/ocamlc.opt -c -dtypes fftw3D.ml
