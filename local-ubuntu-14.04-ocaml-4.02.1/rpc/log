@@ -2,11 +2,11 @@
 + uname -s
 /usr/bin/lsb_release
 + lsb_release -i -s
-# Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=rpc
+# Detecting depexts using flags: x86_64 linux ubuntu
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=rpc
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=rpc
 Not running as root, system installation will be done through "sudo"
 + sudo apt-get update
 Ign http://download.opensuse.org  InRelease
@@ -36,13 +36,13 @@ Get:9 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [15.1 k
 Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [343 kB]
 Get:11 http://archive.ubuntu.com trusty-security/main Sources [94.3 kB]
 Get:12 http://archive.ubuntu.com trusty-security/restricted Sources [1874 B]
-Get:13 http://archive.ubuntu.com trusty-security/universe Sources [21.0 kB]
+Get:13 http://archive.ubuntu.com trusty-security/universe Sources [21.5 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [320 kB]
-+ sudo apt-get install -qq -yy m4
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
-Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [118 kB]
-Fetched 2057 kB in 5s (373 kB/s)
+Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [119 kB]
+Fetched 2059 kB in 5s (359 kB/s)
 Reading package lists...
++ sudo apt-get install -qq -yy m4
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
 # OS packages installation successful
@@ -59,14 +59,14 @@ The following actions will be performed:
 [lwt: from default] Command started
 [ocamlfind: from default] Command started
 [rpc: from default] Command started
-[ocamlfind: from default] Command started
-[lwt: from default] Command started
 [rpc: from default] Command started
+[lwt: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/rpc.1.5.1+opam.tar.gz downloaded
 [type_conv: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[xmlm: from default] Command started
 [default] http://opam-archive:8080/archives/lwt.2.4.5+opam.tar.gz downloaded
+[xmlm: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [type_conv: from default] Command started
 [xmlm: from default] Command started
 [default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
@@ -160,7 +160,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -206,17 +205,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
-- if [ "true" = "true" ]; then                 \
-- 		cp topfind.ml.in topfind.ml;                             \
-- 	else                                                             \
-- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 			> topfind.ml ;                                   \
-- 	fi
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -225,6 +219,12 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- if [ "true" = "true" ]; then                 \
+- 		cp topfind.ml.in topfind.ml;                             \
+- 	else                                                             \
+- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 			> topfind.ml ;                                   \
+- 	fi
 - ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
@@ -270,8 +270,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
-- ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -316,6 +314,8 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -1258,7 +1258,6 @@ The following actions will be performed:
 - ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o jsonrpc.o jsonrpc.ml
 - ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o rpc_client.cmi rpc_client.mli
 - ocamlfind ocamlc -annot -g -package xmlm,lwt -c -o rpc_client.cmo rpc_client.ml
-- ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o rpc_client.o rpc_client.ml
 - File "p4_idl.ml", line 112, characters 5-143:
 - Warning 8: this pattern-matching is not exhaustive.
 - Here is an example of a value that is not matched:
@@ -1283,6 +1282,7 @@ The following actions will be performed:
 - File "jsonrpc.ml", line 207, characters 6-16:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o rpc_client.o rpc_client.ml
 - make[1]: Leaving directory `/home/opam/.opam/system/build/rpc.1.5.1/lib'
 [rpc: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/rpc.1.5.1)
