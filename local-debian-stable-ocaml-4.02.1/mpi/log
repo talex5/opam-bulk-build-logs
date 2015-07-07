@@ -1,27 +1,28 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux debian
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=mpi
+# Detecting depexts using flags: x86_64 linux debian
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=mpi
 # The following system packages are needed:
 #  - m4
 #  - mpi-default-dev
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=mpi
 Not running as root, system installation will be done through "sudo"
 + sudo apt-get update
-Hit http://security.debian.org stable/updates Release.gpg
 Hit http://download.opensuse.org  Release.gpg
-Hit http://security.debian.org stable/updates Release
-Hit http://download.opensuse.org  Release
-Hit http://security.debian.org stable/updates/main amd64 Packages
-Hit http://download.opensuse.org  Packages
+Hit http://security.debian.org stable/updates Release.gpg
 Hit http://http.debian.net stable Release.gpg
-Hit http://http.debian.net stable-updates Release.gpg
+Hit http://download.opensuse.org  Release
+Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
+Hit http://security.debian.org stable/updates Release
 Hit http://http.debian.net stable Release
-Hit http://http.debian.net stable-updates Release
+Get:2 http://http.debian.net stable-updates Release [124 kB]
+Hit http://download.opensuse.org  Packages
+Hit http://security.debian.org stable/updates/main amd64 Packages
 Hit http://http.debian.net stable/main amd64 Packages
-Hit http://http.debian.net stable-updates/main amd64 Packages
-Reading package lists...
-+ sudo apt-get install -qq -yy m4 mpi-default-dev
+Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
+Fetched 129 kB in 1s (99.8 kB/s)
+Reading package lists...+ sudo apt-get install -qq -yy m4 mpi-default-dev
+
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
 debconf: delaying package configuration, since apt-utils is not installed
@@ -63,10 +64,10 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [mpi: from default] Command started
 [ocamlfind: from default] Command started
-[ocamlfind: from default] Command started
 [mpi: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/mpi.1.01+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -150,8 +151,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -197,6 +196,8 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
@@ -383,6 +384,7 @@ The following actions will be performed:
 - ar rc libcamlmpi.a init.o comm.o msgs.o collcomm.o groups.o utils.o
 - ocamlc -c mpi.mli
 - ocamlc -c mpi.ml
+- ocamlc -a -o mpi.cma -custom mpi.cmo -cclib -lcamlmpi -ccopt -L/usr/lib/openmpi/lib -cclib -lmpi
 - collcomm.c: In function 'caml_mpi_scatter_float':
 - collcomm.c:123:12: warning: unused variable 'len' [-Wunused-variable]
 - collcomm.c: In function 'caml_mpi_scatter_floatarray':
@@ -391,7 +393,6 @@ The following actions will be performed:
 - collcomm.c:197:12: warning: unused variable 'reslen' [-Wunused-variable]
 - collcomm.c: In function 'caml_mpi_allgather_float':
 - collcomm.c:245:12: warning: unused variable 'reslen' [-Wunused-variable]
-- ocamlc -a -o mpi.cma -custom mpi.cmo -cclib -lcamlmpi -ccopt -L/usr/lib/openmpi/lib -cclib -lmpi
 - File "mpi.ml", line 200, characters 15-28:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
