@@ -6,20 +6,20 @@
 # The following system packages are needed:
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=frama-c-base
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
 Hit http://security.debian.org stable/updates InRelease
 Ign http://download.opensuse.org  InRelease
 Hit http://httpredir.debian.org stable InRelease
-Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
+Hit http://httpredir.debian.org stable-updates InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Get:2 http://security.debian.org stable/updates/main amd64 Packages [88.8 kB]
-Get:3 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Get:4 http://download.opensuse.org  Packages [5783 B]
-Get:5 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
-Fetched 9243 kB in 9s (1021 kB/s)
+Get:1 http://security.debian.org stable/updates/main amd64 Packages [88.8 kB]
+Get:2 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
+Get:3 http://download.opensuse.org  Packages [5783 B]
+Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
+Fetched 9118 kB in 3s (2522 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
@@ -36,8 +36,8 @@ The following actions will be performed:
 [frama-c-base: from default] Command started
 [ocamlfind: from default] Command started
 [ocamlgraph: from default] Command started
-[ocamlgraph: from default] Command started
 [ocamlfind: from default] Command started
+[ocamlgraph: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlgraph.1.8.6+opam.tar.gz downloaded
 [frama-c-base: from default] Command started
@@ -74,8 +74,7 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) 
-- ok
+- Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /home/opam/.opam/4.02.1/lib/ocaml
@@ -122,6 +121,11 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_metascanner.ml
 - ocamlc -I +compiler-libs -c fl_topo.mli
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
+- ocamlc -I +compiler-libs -c fl_package_base.mli
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -167,21 +171,19 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -191,9 +193,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - USE_CYGPATH="0"; \
 - export USE_CYGPATH; \
 - cat topfind_rd1.p | \
@@ -231,6 +230,10 @@ The following actions will be performed:
 - ocamldep *.ml *.mli >depend
 - ocamlopt -I +compiler-libs -c findlib_config.ml
 - ocamlopt -I +compiler-libs -c fl_split.ml
+- ocamlopt -I +compiler-libs -c fl_metatoken.ml
+- ocamlopt -I +compiler-libs -c fl_meta.ml
+- ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -260,10 +263,6 @@ The following actions will be performed:
 - File "fl_split.ml", line 140, characters 1-19:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlopt -I +compiler-libs -c fl_metatoken.ml
-- ocamlopt -I +compiler-libs -c fl_meta.ml
-- ocamlopt -I +compiler-libs -c fl_metascanner.ml
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_meta.mll", line 57, characters 13-26:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -396,9 +395,6 @@ The following actions will be performed:
 - ocamlc.opt -c -I src -I lib -g -dtypes src/util.mli
 - ocamlc.opt -c -I src -I lib -g -dtypes src/util.ml
 - ocamlc.opt -c -I src -I lib -g -dtypes src/blocks.ml
-- File "lib/bitv.ml", line 464, characters 27-39:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 - ocamlc.opt -c -I src -I lib -g -dtypes src/persistent.mli
 - ocamlc.opt -c -I src -I lib -g -dtypes src/persistent.ml
 - ocamlc.opt -c -I src -I lib -g -dtypes src/imperative.mli
@@ -414,6 +410,9 @@ The following actions will be performed:
 - ocamlc.opt -c -I src -I lib -g -dtypes src/oper.mli
 - ocamlc.opt -c -I src -I lib -g -dtypes src/oper.ml
 - ocamlc.opt -c -I src -I lib -g -dtypes src/components.mli
+- File "lib/bitv.ml", line 464, characters 27-39:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 - ocamlc.opt -c -I src -I lib -g -dtypes src/components.ml
 - ocamlc.opt -c -I src -I lib -g -dtypes src/path.mli
 - ocamlc.opt -c -I src -I lib -g -dtypes src/path.ml
@@ -481,12 +480,12 @@ The following actions will be performed:
 - ocamlopt.opt -c -I src -I lib -for-pack Graph lib/unionfind.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph lib/heap.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph lib/bitv.ml
-- File "lib/bitv.ml", line 464, characters 27-39:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/version.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/util.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/blocks.ml
+- File "lib/bitv.ml", line 464, characters 27-39:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/persistent.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/imperative.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/delaunay.ml
@@ -512,16 +511,16 @@ The following actions will be performed:
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/pack.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/gmap.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/minsep.ml
-- ocamlopt.opt -c -I src -I lib -for-pack Graph src/cliquetree.ml
-- ocamlopt.opt -c -I src -I lib -for-pack Graph src/mcs_m.ml
-- ocamlopt.opt -c -I src -I lib -for-pack Graph src/md.ml
-- ocamlopt.opt -c -I src -I lib -for-pack Graph src/strat.ml
 - File "src/gml.ml", line 418, characters 27-39:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
 - File "src/gml.ml", line 455, characters 27-39:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
+- ocamlopt.opt -c -I src -I lib -for-pack Graph src/cliquetree.ml
+- ocamlopt.opt -c -I src -I lib -for-pack Graph src/mcs_m.ml
+- ocamlopt.opt -c -I src -I lib -for-pack Graph src/md.ml
+- ocamlopt.opt -c -I src -I lib -for-pack Graph src/strat.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/fixpoint.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/leaderlist.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/contraction.ml
@@ -642,11 +641,11 @@ The following actions will be performed:
 - checking platform... Unix
 - checking OCaml native threads... ok.
 - checking for gcc... gcc
-- checking whether the C compiler works... 
-- configure: WARNING: Zarith not found: will use the default less efficient library instead
-- yes
+- checking whether the C compiler works... yes
 - checking for C compiler default output file name... a.out
 - checking for suffix of executables... 
+- configure: WARNING: Zarith not found: will use the default less efficient library instead
+- 
 - checking whether we are cross compiling... no
 - checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
@@ -655,21 +654,20 @@ The following actions will be performed:
 - checking how to run the C preprocessor... gcc -E
 - checking for grep that handles long lines and -e... /bin/grep
 - checking for egrep... /bin/grep -E
-- checking for ANSI C header files... 
-- yes
-- checking for sys/types.h... 
-- yes
+- checking for ANSI C header files... yes
+- checking for sys/types.h... yes
 - checking for sys/stat.h... yes
 - checking for stdlib.h... yes
 - checking for string.h... yes
-- checking for memory.h... yes
+- checking for memory.h... 
+- yes
 - checking for strings.h... yes
 - checking for inttypes.h... yes
 - checking for stdint.h... yes
-- checking for unistd.h... yes
-- checking for stdlib.h... (cached) yes
-- checking assert.h usability... 
+- checking for unistd.h... 
 - yes
+- checking for stdlib.h... (cached) yes
+- checking assert.h usability... yes
 - checking assert.h presence... yes
 - checking for assert.h... yes
 - checking float.h usability... yes
@@ -678,8 +676,7 @@ The following actions will be performed:
 - checking math.h usability... yes
 - checking math.h presence... yes
 - checking for math.h... yes
-- checking signal.h usability... 
-- yes
+- checking signal.h usability... yes
 - checking signal.h presence... yes
 - checking for signal.h... yes
 - checking for unistd.h... (cached) yes
@@ -761,10 +758,10 @@ The following actions will be performed:
 - configure: WARNING: slicing only partially enabled because gui not enabled.
 - configure: WARNING: value_analysis only partially enabled because gui not enabled.
 - configure: WARNING: wp only partially enabled because gui not enabled.
+- configure: WARNING: syntactic_callgraph partially enabled because gui not enabled.
 - configure: *********************
 - configure: * CREATING MAKEFILE *
 - configure: *********************
-- configure: WARNING: syntactic_callgraph partially enabled because gui not enabled.
 - configure: creating ./config.status
 - config.status: creating src/obfuscator/Makefile
 - config.status: creating src/report/Makefile
@@ -805,13 +802,6 @@ The following actions will be performed:
 - 376 states, 4398 transitions, table size 19848 bytes
 - 3299 additional bytes used for bindings
 - Ocamlyacc    cil/src/frontc/cparser.ml
-- /home/opam/.opam/4.02.1/build/frama-c-base.20150201/share/Makefile.dynamic:187: share/Makefile.kernel: No such file or directory
-- /home/opam/.opam/4.02.1/build/frama-c-base.20150201/share/Makefile.dynamic:187: share/Makefile.kernel: No such file or directory
-- /home/opam/.opam/4.02.1/build/frama-c-base.20150201/share/Makefile.dynamic:187: share/Makefile.kernel: No such file or directory
-- /home/opam/.opam/4.02.1/build/frama-c-base.20150201/share/Makefile.dynamic:187: share/Makefile.kernel: No such file or directory
-- /home/opam/.opam/4.02.1/build/frama-c-base.20150201/share/Makefile.dynamic:187: share/Makefile.kernel: No such file or directory
-- Makefile:2304: .depend: No such file or directory
-- 1 shift/reduce conflict.
 - Ocamllex     cil/src/logic/logic_lexer.ml
 - 145 states, 1840 transitions, table size 8230 bytes
 - 1915 additional bytes used for bindings
@@ -834,6 +824,13 @@ The following actions will be performed:
 - Ocamldep     src/occurrence/.depend
 - Generating   /home/opam/.opam/4.02.1/build/frama-c-base.20150201/lib/plugins/RteGen.mli
 - Ocamldep     src/rte/.depend
+- /home/opam/.opam/4.02.1/build/frama-c-base.20150201/share/Makefile.dynamic:187: share/Makefile.kernel: No such file or directory
+- /home/opam/.opam/4.02.1/build/frama-c-base.20150201/share/Makefile.dynamic:187: share/Makefile.kernel: No such file or directory
+- /home/opam/.opam/4.02.1/build/frama-c-base.20150201/share/Makefile.dynamic:187: share/Makefile.kernel: No such file or directory
+- /home/opam/.opam/4.02.1/build/frama-c-base.20150201/share/Makefile.dynamic:187: share/Makefile.kernel: No such file or directory
+- /home/opam/.opam/4.02.1/build/frama-c-base.20150201/share/Makefile.dynamic:187: share/Makefile.kernel: No such file or directory
+- Makefile:2304: .depend: No such file or directory
+- 1 shift/reduce conflict.
 - Generating   /home/opam/.opam/4.02.1/build/frama-c-base.20150201/lib/plugins/From.mli
 - Ocamldep     src/from/.depend
 - Generating   /home/opam/.opam/4.02.1/build/frama-c-base.20150201/lib/plugins/Users.mli
@@ -863,6 +860,7 @@ The following actions will be performed:
 - Ocamlyacc    src/aorai/promelaparser.ml
 - Ocamllex     src/aorai/ltllexer.ml
 - 82 states, 3369 transitions, table size 13968 bytes
+- 4 shift/reduce conflicts.
 - Ocamlyacc    src/aorai/ltlparser.ml
 - Ocamllex     src/aorai/yalexer.ml
 - 73 states, 2302 transitions, table size 9646 bytes
@@ -871,8 +869,6 @@ The following actions will be performed:
 - Ocamldep     src/aorai/.depend
 - Generating   /home/opam/.opam/4.02.1/build/frama-c-base.20150201/lib/plugins/Obfuscator.mli
 - Ocamldep     src/obfuscator/.depend
-- 4 shift/reduce conflicts.
-- 7 shift/reduce conflicts.
 - Generating   /home/opam/.opam/4.02.1/build/frama-c-base.20150201/lib/plugins/Report.mli
 - Ocamldep     src/report/.depend
 - Ocamllex     src/wp/script.ml
@@ -891,6 +887,7 @@ The following actions will be performed:
 - 4689 additional bytes used for bindings
 - Generating   /home/opam/.opam/4.02.1/build/frama-c-base.20150201/lib/plugins/Wp.mli
 - Ocamldep     src/wp/.depend
+- 7 shift/reduce conflicts.
 - Generating   .depend
 - Ocamlc       src/aorai/bool3.cmi
 - Ocamlc       src/aorai/bool3.cmo
@@ -1195,9 +1192,6 @@ The following actions will be performed:
 - Ocamlc       src/type/structural_descr.cmo
 - Ocamlc       src/type/type.cmo
 - Ocamlc       src/type/descr.cmo
-- File "src/wp/share/install.ml", line 44, characters 17-30:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - Ocamlc       src/lib/FCSet.cmo
 - Ocamlc       src/lib/FCMap.cmo
 - Ocamlc       src/lib/FCHashtbl.cmo
@@ -1207,6 +1201,9 @@ The following actions will be performed:
 - Ocamlc       src/lib/bag.cmo
 - Ocamlc       src/lib/indexer.cmi
 - Ocamlc       src/lib/indexer.cmo
+- File "src/wp/share/install.ml", line 44, characters 17-30:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - Ocamlc       src/lib/vector.cmo
 - Ocamlc       src/lib/bitvector.cmo
 - Ocamlc       src/lib/qstack.cmi
