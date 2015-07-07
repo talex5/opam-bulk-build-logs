@@ -1,14 +1,14 @@
 + uname -m
-/usr/bin/lsb_release
 # Detecting depexts using flags: x86_64 linux ubuntu
 + uname -s
 + lsb_release -i -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=ocamlfuse
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=ocamlfuse
 # The following system packages are needed:
 #  - libfuse-dev
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=ocamlfuse
-Not running as root, system installation will be done through "sudo"
+Not running as root, the following command will be run through "sudo":
+    apt-get update
 + sudo apt-get update
 Ign http://download.opensuse.org  InRelease
 Hit http://download.opensuse.org  Release.gpg
@@ -36,25 +36,26 @@ Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [635 kB]
 Get:9 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [15.1 kB]
 Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [351 kB]
 Get:11 http://archive.ubuntu.com trusty-security/main Sources [97.2 kB]
-+ sudo apt-get install -qq -yy libfuse-dev m4
 Get:12 http://archive.ubuntu.com trusty-security/restricted Sources [1874 B]
 Get:13 http://archive.ubuntu.com trusty-security/universe Sources [22.5 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [329 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [123 kB]
-Fetched 2109 kB in 5s (390 kB/s)
+Fetched 2109 kB in 5s (370 kB/s)
 Reading package lists...
++ sudo apt-get install -qq -yy libfuse-dev m4
 # OS package update successful
-Not running as root, system installation will be done through "sudo"
-Selecting previously unselected package libfuse2:amd64.
+Not running as root, the following command will be run through "sudo":
+    apt-get install -qq -yy libfuse-dev m4
 debconf: unable to initialize frontend: Dialog
+Selecting previously unselected package libfuse2:amd64.
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
 debconf: unable to initialize frontend: Readline
 debconf: (This frontend requires a controlling tty.)
 debconf: falling back to frontend: Teletype
 dpkg-preconfigure: unable to re-open stdin: 
-(Reading database ... 21935 files and directories currently installed.)
+(Reading database ... 21936 files and directories currently installed.)
 Preparing to unpack .../libfuse2_2.9.2-4ubuntu4_amd64.deb ...
 Unpacking libfuse2:amd64 (2.9.2-4ubuntu4) ...
 Selecting previously unselected package libpcrecpp0:amd64.
@@ -81,21 +82,21 @@ Setting up libfuse-dev (2.9.2-4ubuntu4) ...
 Processing triggers for libc-bin (2.19-0ubuntu6.6) ...
 # OS packages installation successful
 The following actions will be performed:
-  - install ocamlfind 1.5.5                                     [required by ocamlfuse]
   - install camlidl   1.05                                      [required by ocamlfuse]
+  - install ocamlfind 1.5.5                                     [required by ocamlfuse]
   - install ocamlfuse 2.7.1-cvs2
 ===== 3 to install =====
 
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-[camlidl: http] Command started
+[camlidl: from default] Command started
 [ocamlfind: from default] Command started
 [ocamlfuse: from default] Command started
-[ocamlfuse: from default] Command started
+[camlidl: from default] Command started
 [ocamlfind: from default] Command started
+[ocamlfuse: from default] Command started
+[default] http://opam-archive:8080/archives/camlidl.1.05+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfuse.2.7.1-cvs2+opam.tar.gz downloaded
-[camlidl: http] Command started
-[camlidl.1.05] http://caml.inria.fr/pub/old_caml_site/distrib/bazar-ocaml/camlidl-1.05.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlidl: mv] Command started
@@ -457,8 +458,6 @@ The following actions will be performed:
 - if [ 1 -gt 0 ]; then \
 - 	    ocamlopt -I +compiler-libs -shared -o findlib.cmxs findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx; \
 - 	fi
-- ocamlopt -I +compiler-libs -c ocaml_args.ml
-- ocamlopt -I +compiler-libs -c frontend.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -503,6 +502,8 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c ocaml_args.ml
+- ocamlopt -I +compiler-libs -c frontend.ml
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -587,6 +588,20 @@ The following actions will be performed:
 - ocamlc -c -thread -I /home/opam/.opam/system/lib/camlidl Fuse_bindings.mli
 - ocamlopt -c -thread -I /home/opam/.opam/system/lib/camlidl Fuse_bindings.ml
 - ocamlopt -c -thread -I /home/opam/.opam/system/lib/camlidl Fuse_lib.ml
+- In file included from Fuse_util.c:30:0:
+- Fuse_util.c: In function 'gm281_ops_init':
+- /usr/lib/ocaml/caml/memory.h:226:28: warning: initialization makes pointer from integer without a cast [enabled by default]
+-    type caml__temp_result = (result); \
+-                             ^
+- Fuse_util.c:614:3: note: in expansion of macro 'CAMLreturnT'
+-    CAMLreturnT(OPNAME##_RTYPE, res); \
+-    ^
+- Fuse_util.c:296:5: note: in expansion of macro 'CALLBACK'
+-      MACRO(init) \
+-      ^
+- Fuse_util.c:625:1: note: in expansion of macro 'FOR_ALL_OPS'
+-  FOR_ALL_OPS(CALLBACK)
+-  ^
 - ocamlc -c -thread -I /home/opam/.opam/system/lib/camlidl Fuse.mli
 - ocamlopt -c -thread -I /home/opam/.opam/system/lib/camlidl Fuse.ml
 - ocamlopt -a -thread     -I /home/opam/.opam/system/lib/camlidl -linkall        -cclib -lFuse_stubs -cclib -lfuse -cclib -lcamlidl \
@@ -602,20 +617,6 @@ The following actions will be performed:
 - ocamlc -c -thread -I /home/opam/.opam/system/lib/camlidl Fuse_bindings.ml
 - ocamlc -c -thread -I /home/opam/.opam/system/lib/camlidl Fuse_lib.ml
 - ocamlc -c -thread -I /home/opam/.opam/system/lib/camlidl Fuse.ml
-- In file included from Fuse_util.c:30:0:
-- Fuse_util.c: In function 'gm281_ops_init':
-- /usr/lib/ocaml/caml/memory.h:226:28: warning: initialization makes pointer from integer without a cast [enabled by default]
--    type caml__temp_result = (result); \
--                             ^
-- Fuse_util.c:614:3: note: in expansion of macro 'CAMLreturnT'
--    CAMLreturnT(OPNAME##_RTYPE, res); \
--    ^
-- Fuse_util.c:296:5: note: in expansion of macro 'CALLBACK'
--      MACRO(init) \
--      ^
-- Fuse_util.c:625:1: note: in expansion of macro 'FOR_ALL_OPS'
--  FOR_ALL_OPS(CALLBACK)
--  ^
 - ocamlmklib    -I /home/opam/.opam/system/lib/camlidl      \
 - 				-o Fuse_stubs Fuse_bindings_stubs.o Unix_util_stubs.o Fuse_util.o -lfuse \
 - 				
