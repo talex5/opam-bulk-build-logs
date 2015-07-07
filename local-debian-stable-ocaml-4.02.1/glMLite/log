@@ -5,25 +5,25 @@
 # The following system packages are needed:
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=glMLite
-+ sudo apt-get update
 Not running as root, system installation will be done through "sudo"
-Get:1 http://security.debian.org stable/updates Release.gpg [836 B]
-Hit http://download.opensuse.org  Release.gpg
++ sudo apt-get update
 Hit http://http.debian.net stable Release.gpg
-Get:2 http://security.debian.org stable/updates Release [102 kB]
-Get:3 http://http.debian.net stable-updates Release.gpg [836 B]
-Hit http://download.opensuse.org  Release
+Hit http://security.debian.org stable/updates Release.gpg
+Hit http://download.opensuse.org  Release.gpg
+Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
 Hit http://http.debian.net stable Release
-Get:4 http://http.debian.net stable-updates Release [124 kB]
-Hit http://download.opensuse.org  Packages
+Hit http://security.debian.org stable/updates Release
+Hit http://download.opensuse.org  Release
+Get:2 http://http.debian.net stable-updates Release [124 kB]
 Hit http://http.debian.net stable/main amd64 Packages
-Get:5 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
-Get:6 http://security.debian.org stable/updates/main amd64 Packages [373 kB]
-Fetched 605 kB in 1s (505 kB/s)
-Reading package lists...
+Hit http://security.debian.org stable/updates/main amd64 Packages
+Hit http://download.opensuse.org  Packages
+Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
+Fetched 129 kB in 1s (105 kB/s)
+Reading package lists...+ sudo apt-get install -qq -yy m4
+
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
-+ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind 1.5.5                                     [required by glMLite]
@@ -34,8 +34,8 @@ The following actions will be performed:
 [glMLite: from default] Command started
 [ocamlfind: from default] Command started
 [ocamlfind: from default] Command started
-[glMLite: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[glMLite: from default] Command started
 [default] http://opam-archive:8080/archives/glMLite.0.03.51+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -113,6 +113,14 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c findlib_config.ml
 - ocamlc -I +compiler-libs -g -c fl_split.ml
 - ocamlc -I +compiler-libs -g -c fl_metatoken.ml
+- ocamlc -I +compiler-libs -g -c fl_meta.ml
+- ocamlc -I +compiler-libs -c fl_metascanner.mli
+- ocamlc -I +compiler-libs -g -c fl_metascanner.ml
+- ocamlc -I +compiler-libs -c fl_topo.mli
+- ocamlc -I +compiler-libs -g -c fl_topo.ml
+- ocamlc -I +compiler-libs -c fl_package_base.mli
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -143,19 +151,6 @@ The following actions will be performed:
 - File "fl_split.ml", line 140, characters 1-19:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc -I +compiler-libs -g -c fl_meta.ml
-- ocamlc -I +compiler-libs -c fl_metascanner.mli
-- ocamlc -I +compiler-libs -g -c fl_metascanner.ml
-- ocamlc -I +compiler-libs -c fl_topo.mli
-- ocamlc -I +compiler-libs -g -c fl_topo.ml
-- ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
-- ocamlc -I +compiler-libs -g -c frontend.ml
 - File "fl_meta.mll", line 57, characters 13-26:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -171,8 +166,11 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
+- ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
+- ocamlc -I +compiler-libs -g -c frontend.ml
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -181,6 +179,8 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -284,6 +284,7 @@ The following actions will be performed:
 - if [ 1 -gt 0 ]; then \
 - 	    ocamlopt -I +compiler-libs -shared -o findlib.cmxs findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx; \
 - 	fi
+[ERROR] The compilation of glMLite failed at "make".
 - ocamlopt -I +compiler-libs -c ocaml_args.ml
 - ocamlopt -I +compiler-libs -c frontend.ml
 - File "frontend.ml", line 32, characters 9-20:
@@ -367,7 +368,6 @@ The following actions will be performed:
 - compilation terminated.
 - make[1]: *** [configure.o] Error 2
 - make: *** [all] Error 2
-[ERROR] The compilation of glMLite failed at "make".
 [glMLite: ocamlfind remove] Command started
 + ocamlfind "remove" "glMLite" (CWD=/home/opam/.opam/4.02.1/build/glMLite.0.03.51)
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/4.02.1/lib/glMLite
@@ -416,5 +416,5 @@ The following changes have been performed
 
 
 The former state can be restored with:
-    opam switch import "~/.opam/4.02.1/backup/state-20150306182226.export"
+    opam switch import "~/.opam/4.02.1/backup/state-20150307111416.export"
 'opam install glMLite' failed.
