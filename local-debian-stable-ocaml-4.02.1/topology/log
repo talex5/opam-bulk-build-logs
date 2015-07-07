@@ -1,23 +1,29 @@
 # Detecting depexts using flags: x86_64 linux debian
++ uname -m
++ uname -s
++ opam list --safe --recursive --external=x86_64,linux,debian --required-by=topology
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=topology
 # The following system packages are needed:
 #  - m4
++ sudo apt-get update
 Not running as root, system installation will be done through "sudo"
 Hit http://security.debian.org stable/updates Release.gpg
 Hit http://download.opensuse.org  Release.gpg
 Hit http://http.debian.net stable Release.gpg
 Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
-Hit http://http.debian.net stable Release
 Hit http://security.debian.org stable/updates Release
+Hit http://http.debian.net stable Release
 Hit http://download.opensuse.org  Release
 Get:2 http://http.debian.net stable-updates Release [124 kB]
 Hit http://security.debian.org stable/updates/main amd64 Packages
-Hit http://http.debian.net stable/main amd64 Packages
 Hit http://download.opensuse.org  Packages
+Hit http://http.debian.net stable/main amd64 Packages
 Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
-Fetched 129 kB in 1s (119 kB/s)
+Fetched 129 kB in 1s (105 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
++ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind     1.5.5                                 [required by topology]
@@ -56,9 +62,9 @@ The following actions will be performed:
 [camlp4: from default] Command started
 [default] http://opam-archive:8080/archives/comparelib.109.60.00+opam.tar.gz downloaded
 [cstruct: http] Command started
+[core_kernel: from default] Command started
 [default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
 [enumerate: from default] Command started
-[core_kernel: from default] Command started
 [default] http://opam-archive:8080/archives/core_kernel.112.17.00+opam.tar.gz downloaded
 [fieldslib: from default] Command started
 [enumerate: from default] Command started
@@ -68,10 +74,10 @@ The following actions will be performed:
 [default] http://opam-archive:8080/archives/fieldslib.109.20.03+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [herelib: from default] Command started
-[default] http://opam-archive:8080/archives/herelib.109.35.02+opam.tar.gz downloaded
-[ocamlgraph: from default] Command started
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[ocamlgraph: from default] Command started
+[default] http://opam-archive:8080/archives/herelib.109.35.02+opam.tar.gz downloaded
 [ocplib-endian: from default] Command started
 [ocamlgraph: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlgraph.1.8.6+opam.tar.gz downloaded
@@ -111,10 +117,10 @@ The following actions will be performed:
 [variantslib: from default] Command started
 [typerep: from default] Command started
 [default] http://opam-archive:8080/archives/typerep.112.17.00+opam.tar.gz downloaded
-[variantslib: from default] Command started
-[default] http://opam-archive:8080/archives/variantslib.109.15.03+opam.tar.gz downloaded
 [cstruct: http] Command started
 [cstruct.1.5.0] https://github.com/mirage/ocaml-cstruct/archive/v1.5.0.tar.gz downloaded
+[variantslib: from default] Command started
+[default] http://opam-archive:8080/archives/variantslib.109.15.03+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -199,7 +205,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -245,12 +250,11 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -259,6 +263,8 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -2268,73 +2274,6 @@ The following actions will be performed:
 - Installed /home/opam/.opam/4.02.1/lib/comparelib/META
 -> installed comparelib.109.60.00
 [enumerate: ocaml setup.ml] Command started
-+ ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/4.02.1" (CWD=/home/opam/.opam/4.02.1/build/enumerate.111.08.00)
-- 
-- Configuration: 
-- ocamlfind: ........................................... /home/opam/.opam/4.02.1/bin/ocamlfind
-- ocamlc: .............................................. /home/opam/.opam/4.02.1/bin/ocamlc.opt
-- ocamlopt: ............................................ /home/opam/.opam/4.02.1/bin/ocamlopt.opt
-- ocamlbuild: .......................................... /home/opam/.opam/4.02.1/bin/ocamlbuild
-- Package name: ........................................ enumerate
-- Package version: ..................................... 111.08.00
-- os_type: ............................................. Unix
-- system: .............................................. linux
-- architecture: ........................................ amd64
-- ccomp_type: .......................................... cc
-- ocaml_version: ....................................... 4.02.1
-- standard_library_default: ............................ /home/opam/.opam/4.02.1/lib/ocaml
-- standard_library: .................................... /home/opam/.opam/4.02.1/lib/ocaml
-- standard_runtime: .................................... /home/opam/.opam/4.02.1/bin/ocamlrun
-- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
-- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
-- model: ............................................... default
-- ext_obj: ............................................. .o
-- ext_asm: ............................................. .s
-- ext_lib: ............................................. .a
-- ext_dll: ............................................. .so
-- default_executable_name: ............................. a.out
-- systhread_supported: ................................. true
-- Install architecture-independent files dir: .......... /home/opam/.opam/4.02.1
-- Install architecture-dependent files in dir: ......... $prefix
-- User executables: .................................... $exec_prefix/bin
-- System admin executables: ............................ $exec_prefix/sbin
-- Program executables: ................................. $exec_prefix/libexec
-- Read-only single-machine data: ....................... $prefix/etc
-- Modifiable architecture-independent data: ............ $prefix/com
-- Modifiable single-machine data: ...................... $prefix/var
-- Object code libraries: ............................... $exec_prefix/lib
-- Read-only arch-independent data root: ................ $prefix/share
-- Read-only architecture-independent data: ............. $datarootdir
-- Info documentation: .................................. $datarootdir/info
-- Locale-dependent data: ............................... $datarootdir/locale
-- Man documentation: ................................... $datarootdir/man
-- Documentation root: .................................. $datarootdir/doc/$pkg_name
-- HTML documentation: .................................. $docdir
-- DVI documentation: ................................... $docdir
-- PDF documentation: ................................... $docdir
-- PS documentation: .................................... $docdir
-- findlib_version: ..................................... 1.5.5
-- is_native: ........................................... true
-- suffix_program: ...................................... 
-- Remove a file.: ...................................... rm -f
-- Remove a directory.: ................................. rm -rf
-- Turn ocaml debug flag on: ............................ true
-- Turn ocaml profile flag on: .......................... false
-- Compiler support generation of .cmxs.: ............... true
-- OCamlbuild additional flags: ......................... 
-- Create documentations: ............................... true
-- Compile tests executable and library and run them: ... false
-- camlp4o: ............................................. /home/opam/.opam/4.02.1/bin/camlp4o
-- pkg_camlp4_quotations: ............................... /home/opam/.opam/4.02.1/lib/ocaml/camlp4
-- pkg_type_conv: ....................................... /home/opam/.opam/4.02.1/lib/type_conv
-- 
-- File "setup.ml", line 232, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "setup.ml", line 2391, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
-[enumerate: make] Command started
 + make  (CWD=/home/opam/.opam/4.02.1/build/bin_prot.112.17.00)
 - ocamlopt.opt -o setup.exe setup.ml || ocamlopt -o setup.exe setup.ml || ocamlc -o setup.exe setup.ml
 - rm -f setup.cmx setup.cmi setup.o setup.obj setup.cmo
@@ -2492,6 +2431,73 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared syntax/pa_bin_prot.cmxa syntax/pa_bin_prot.cmx -o syntax/pa_bin_prot.cmxs
 - W: Cannot find source file matching module 'bin_prot' in library bin_prot
 [bin_prot: make install] Command started
++ ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/4.02.1" (CWD=/home/opam/.opam/4.02.1/build/enumerate.111.08.00)
+- 
+- Configuration: 
+- ocamlfind: ........................................... /home/opam/.opam/4.02.1/bin/ocamlfind
+- ocamlc: .............................................. /home/opam/.opam/4.02.1/bin/ocamlc.opt
+- ocamlopt: ............................................ /home/opam/.opam/4.02.1/bin/ocamlopt.opt
+- ocamlbuild: .......................................... /home/opam/.opam/4.02.1/bin/ocamlbuild
+- Package name: ........................................ enumerate
+- Package version: ..................................... 111.08.00
+- os_type: ............................................. Unix
+- system: .............................................. linux
+- architecture: ........................................ amd64
+- ccomp_type: .......................................... cc
+- ocaml_version: ....................................... 4.02.1
+- standard_library_default: ............................ /home/opam/.opam/4.02.1/lib/ocaml
+- standard_library: .................................... /home/opam/.opam/4.02.1/lib/ocaml
+- standard_runtime: .................................... /home/opam/.opam/4.02.1/bin/ocamlrun
+- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
+- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
+- model: ............................................... default
+- ext_obj: ............................................. .o
+- ext_asm: ............................................. .s
+- ext_lib: ............................................. .a
+- ext_dll: ............................................. .so
+- default_executable_name: ............................. a.out
+- systhread_supported: ................................. true
+- Install architecture-independent files dir: .......... /home/opam/.opam/4.02.1
+- Install architecture-dependent files in dir: ......... $prefix
+- User executables: .................................... $exec_prefix/bin
+- System admin executables: ............................ $exec_prefix/sbin
+- Program executables: ................................. $exec_prefix/libexec
+- Read-only single-machine data: ....................... $prefix/etc
+- Modifiable architecture-independent data: ............ $prefix/com
+- Modifiable single-machine data: ...................... $prefix/var
+- Object code libraries: ............................... $exec_prefix/lib
+- Read-only arch-independent data root: ................ $prefix/share
+- Read-only architecture-independent data: ............. $datarootdir
+- Info documentation: .................................. $datarootdir/info
+- Locale-dependent data: ............................... $datarootdir/locale
+- Man documentation: ................................... $datarootdir/man
+- Documentation root: .................................. $datarootdir/doc/$pkg_name
+- HTML documentation: .................................. $docdir
+- DVI documentation: ................................... $docdir
+- PDF documentation: ................................... $docdir
+- PS documentation: .................................... $docdir
+- findlib_version: ..................................... 1.5.5
+- is_native: ........................................... true
+- suffix_program: ...................................... 
+- Remove a file.: ...................................... rm -f
+- Remove a directory.: ................................. rm -rf
+- Turn ocaml debug flag on: ............................ true
+- Turn ocaml profile flag on: .......................... false
+- Compiler support generation of .cmxs.: ............... true
+- OCamlbuild additional flags: ......................... 
+- Create documentations: ............................... true
+- Compile tests executable and library and run them: ... false
+- camlp4o: ............................................. /home/opam/.opam/4.02.1/bin/camlp4o
+- pkg_camlp4_quotations: ............................... /home/opam/.opam/4.02.1/lib/ocaml/camlp4
+- pkg_type_conv: ....................................... /home/opam/.opam/4.02.1/lib/type_conv
+- 
+- File "setup.ml", line 232, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "setup.ml", line 2391, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
+[enumerate: make] Command started
 + make "install" (CWD=/home/opam/.opam/4.02.1/build/bin_prot.112.17.00)
 - ./setup.exe -install 
 - Installed /home/opam/.opam/4.02.1/lib/bin_prot/binable.ml
@@ -3456,10 +3462,10 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package type_conv -package camlp4.quotations -package camlp4.extend -modules syntax/pa_sexp_conv.mli > syntax/pa_sexp_conv.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -package type_conv -package camlp4.quotations -package camlp4.extend -I syntax -o syntax/pa_sexp_conv.cmi syntax/pa_sexp_conv.mli
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -syntax camlp4o -package type_conv -package camlp4.quotations -package camlp4.extend -modules syntax/pa_sexp_conv.ml > syntax/pa_sexp_conv.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package type_conv -package camlp4.quotations -package camlp4.extend -I syntax -o syntax/pa_sexp_conv.cmo syntax/pa_sexp_conv.ml
 - W: Cannot find source file matching module 'sexplib_unix' in library sexplib_unix
 - W: Cannot find source file matching module 'sexplib_num' in library sexplib_num
 - W: Cannot find source file matching module 'sexplib' in library sexplib
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package type_conv -package camlp4.quotations -package camlp4.extend -I syntax -o syntax/pa_sexp_conv.cmo syntax/pa_sexp_conv.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a syntax/pa_sexp_conv.cmo -o syntax/pa_sexp_conv.cma
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package type_conv -package camlp4.quotations -package camlp4.extend -I syntax -o syntax/pa_sexp_conv.cmx syntax/pa_sexp_conv.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a syntax/pa_sexp_conv.cmx -o syntax/pa_sexp_conv.cmxa
@@ -4390,6 +4396,8 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -package variantslib.syntax -package variantslib -package unix -package typerep_lib.syntax -package typerep_lib -package sexplib.syntax -package sexplib -package pa_test.syntax -package pa_test -package pa_pipebang -package pa_ounit.syntax -package pa_ounit -package pa_bench.syntax -package pa_bench -package herelib.syntax -package herelib -package fieldslib.syntax -package fieldslib -package enumerate.syntax -package enumerate -package comparelib.syntax -package bin_prot.syntax -package bin_prot -package bigarray -ppopt -pa-ounit-lib -ppopt core_kernel -modules lib/with_return.mli > lib/with_return.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -package variantslib.syntax -package variantslib -package unix -package typerep_lib.syntax -package typerep_lib -package sexplib.syntax -package sexplib -package pa_test.syntax -package pa_test -package pa_pipebang -package pa_ounit.syntax -package pa_ounit -package pa_bench.syntax -package pa_bench -package herelib.syntax -package herelib -package fieldslib.syntax -package fieldslib -package enumerate.syntax -package enumerate -package comparelib.syntax -package bin_prot.syntax -package bin_prot -package bigarray -ppopt -pa-ounit-lib -ppopt core_kernel -I lib -o lib/commutative_group.cmo lib/commutative_group.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -package variantslib.syntax -package variantslib -package unix -package typerep_lib.syntax -package typerep_lib -package sexplib.syntax -package sexplib -package pa_test.syntax -package pa_test -package pa_pipebang -package pa_ounit.syntax -package pa_ounit -package pa_bench.syntax -package pa_bench -package herelib.syntax -package herelib -package fieldslib.syntax -package fieldslib -package enumerate.syntax -package enumerate -package comparelib.syntax -package bin_prot.syntax -package bin_prot -package bigarray -ppopt -pa-ounit-lib -ppopt core_kernel -I lib -o lib/perms.cmi lib/perms.mli
+- W: Cannot find source file matching module 'check_caml_modify' in library check_caml_modify
+- W: Cannot find source file matching module 'core_kernel' in library core_kernel
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -package variantslib.syntax -package variantslib -package unix -package typerep_lib.syntax -package typerep_lib -package sexplib.syntax -package sexplib -package pa_test.syntax -package pa_test -package pa_pipebang -package pa_ounit.syntax -package pa_ounit -package pa_bench.syntax -package pa_bench -package herelib.syntax -package herelib -package fieldslib.syntax -package fieldslib -package enumerate.syntax -package enumerate -package comparelib.syntax -package bin_prot.syntax -package bin_prot -package bigarray -ppopt -pa-ounit-lib -ppopt core_kernel -I lib -o lib/t.cmo lib/t.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -package variantslib.syntax -package variantslib -package unix -package typerep_lib.syntax -package typerep_lib -package sexplib.syntax -package sexplib -package pa_test.syntax -package pa_test -package pa_pipebang -package pa_ounit.syntax -package pa_ounit -package pa_bench.syntax -package pa_bench -package herelib.syntax -package herelib -package fieldslib.syntax -package fieldslib -package enumerate.syntax -package enumerate -package comparelib.syntax -package bin_prot.syntax -package bin_prot -package bigarray -ppopt -pa-ounit-lib -ppopt core_kernel -I lib -o lib/with_return.cmi lib/with_return.mli
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -package variantslib.syntax -package variantslib -package unix -package typerep_lib.syntax -package typerep_lib -package sexplib.syntax -package sexplib -package pa_test.syntax -package pa_test -package pa_pipebang -package pa_ounit.syntax -package pa_ounit -package pa_bench.syntax -package pa_bench -package herelib.syntax -package herelib -package fieldslib.syntax -package fieldslib -package enumerate.syntax -package enumerate -package comparelib.syntax -package bin_prot.syntax -package bin_prot -package bigarray -ppopt -pa-ounit-lib -ppopt core_kernel -modules lib/error.mli > lib/error.mli.depends
@@ -4403,8 +4411,6 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -package variantslib.syntax -package variantslib -package unix -package typerep_lib.syntax -package typerep_lib -package sexplib.syntax -package sexplib -package pa_test.syntax -package pa_test -package pa_pipebang -package pa_ounit.syntax -package pa_ounit -package pa_bench.syntax -package pa_bench -package herelib.syntax -package herelib -package fieldslib.syntax -package fieldslib -package enumerate.syntax -package enumerate -package comparelib.syntax -package bin_prot.syntax -package bin_prot -package bigarray -ppopt -pa-ounit-lib -ppopt core_kernel -I lib -o lib/info.cmi lib/info.mli
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -package variantslib.syntax -package variantslib -package unix -package typerep_lib.syntax -package typerep_lib -package sexplib.syntax -package sexplib -package pa_test.syntax -package pa_test -package pa_pipebang -package pa_ounit.syntax -package pa_ounit -package pa_bench.syntax -package pa_bench -package herelib.syntax -package herelib -package fieldslib.syntax -package fieldslib -package enumerate.syntax -package enumerate -package comparelib.syntax -package bin_prot.syntax -package bin_prot -package bigarray -ppopt -pa-ounit-lib -ppopt core_kernel -modules lib/invariant.mli > lib/invariant.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -package variantslib.syntax -package variantslib -package unix -package typerep_lib.syntax -package typerep_lib -package sexplib.syntax -package sexplib -package pa_test.syntax -package pa_test -package pa_pipebang -package pa_ounit.syntax -package pa_ounit -package pa_bench.syntax -package pa_bench -package herelib.syntax -package herelib -package fieldslib.syntax -package fieldslib -package enumerate.syntax -package enumerate -package comparelib.syntax -package bin_prot.syntax -package bin_prot -package bigarray -ppopt -pa-ounit-lib -ppopt core_kernel -modules lib/monad.ml > lib/monad.ml.depends
-- W: Cannot find source file matching module 'check_caml_modify' in library check_caml_modify
-- W: Cannot find source file matching module 'core_kernel' in library core_kernel
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -package variantslib.syntax -package variantslib -package unix -package typerep_lib.syntax -package typerep_lib -package sexplib.syntax -package sexplib -package pa_test.syntax -package pa_test -package pa_pipebang -package pa_ounit.syntax -package pa_ounit -package pa_bench.syntax -package pa_bench -package herelib.syntax -package herelib -package fieldslib.syntax -package fieldslib -package enumerate.syntax -package enumerate -package comparelib.syntax -package bin_prot.syntax -package bin_prot -package bigarray -ppopt -pa-ounit-lib -ppopt core_kernel -modules lib/validate.mli > lib/validate.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -package variantslib.syntax -package variantslib -package unix -package typerep_lib.syntax -package typerep_lib -package sexplib.syntax -package sexplib -package pa_test.syntax -package pa_test -package pa_pipebang -package pa_ounit.syntax -package pa_ounit -package pa_bench.syntax -package pa_bench -package herelib.syntax -package herelib -package fieldslib.syntax -package fieldslib -package enumerate.syntax -package enumerate -package comparelib.syntax -package bin_prot.syntax -package bin_prot -package bigarray -ppopt -pa-ounit-lib -ppopt core_kernel -modules lib/or_error.mli > lib/or_error.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -syntax camlp4o -package variantslib.syntax -package variantslib -package unix -package typerep_lib.syntax -package typerep_lib -package sexplib.syntax -package sexplib -package pa_test.syntax -package pa_test -package pa_pipebang -package pa_ounit.syntax -package pa_ounit -package pa_bench.syntax -package pa_bench -package herelib.syntax -package herelib -package fieldslib.syntax -package fieldslib -package enumerate.syntax -package enumerate -package comparelib.syntax -package bin_prot.syntax -package bin_prot -package bigarray -ppopt -pa-ounit-lib -ppopt core_kernel -I lib -o lib/error.cmi lib/error.mli
