@@ -2,15 +2,15 @@
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=opasswd
 # Detecting depexts using flags: x86_64 linux centos
++ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=opasswd
 # The following system packages are needed:
 #  - libffi-devel
-+ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=opasswd
-+ sudo yum -y update
 Not running as root, the following command will be run through "sudo":
     yum -y update
++ sudo yum -y update
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: mirror.sov.uk.goscomb.net
+ * base: anorien.csc.warwick.ac.uk
  * extras: mirror.vorboss.net
  * updates: mirror.sov.uk.goscomb.net
 Resolving Dependencies
@@ -55,9 +55,9 @@ Not running as root, the following command will be run through "sudo":
 + sudo yum install -y libffi-devel
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: repo.bigstepcloud.com
- * extras: mirror.vorboss.net
- * updates: mirror.vorboss.net
+ * base: mirrors.coreix.net
+ * extras: centos.serverspace.co.uk
+ * updates: mirror.sov.uk.goscomb.net
 Resolving Dependencies
 --> Running transaction check
 ---> Package libffi-devel.x86_64 0:3.0.13-11.el7 will be installed
@@ -85,16 +85,16 @@ Running transaction
   Installing : libffi-devel-3.0.13-11.el7.x86_64                            1/1 
 install-info: No such file or directory for /usr/share/info/libffi.info.gz
 warning: %post(libffi-devel-3.0.13-11.el7.x86_64) scriptlet failed, exit status 1
-Non-fatal POSTIN scriptlet failure in rpm package libffi-devel-3.0.13-11.el7.x86_64  Verifying  : libffi-devel-3.0.13-11.el7.x86_64                            1/1
- 
+Non-fatal POSTIN scriptlet failure in rpm package libffi-devel-3.0.13-11.el7.x86_64  Verifying  : libffi-devel-3.0.13-11.el7.x86_64                            1/1 
 
 Installed:
   libffi-devel.x86_64 0:3.0.13-11.el7                                           
 
 Complete!
-+ sudo rpm -q libffi-devel
 libffi-devel-3.0.13-11.el7.x86_64
 # OS packages installation successful
+
++ sudo rpm -q libffi-devel
 The following actions will be performed:
   - install ctypes-foreign 0.4.0                                [required by opasswd]
   - install ocamlfind      1.5.5                                [required by opasswd]
@@ -107,10 +107,10 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [opasswd: from default] Command started
 [ctypes: from default] Command started
-[opasswd: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ctypes.0.2.3+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[opasswd: from default] Command started
 [default] http://opam-archive:8080/archives/opasswd.0.9.3+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -145,9 +145,7 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: 
-- (extractor built) 
-- ok
+- Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib64/ocaml
@@ -198,6 +196,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -243,19 +243,17 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -311,6 +309,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -355,7 +354,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -424,8 +422,7 @@ The following actions will be performed:
 - ocaml src/discover/discover.ml -ocamlc "ocamlfind ocamlc"
 - testing for brew: .............................. unavailable
 - testing for pkg-config: ........................ available
-- testing for libffi:
--  ............................ available
+- testing for libffi: ............................ available
 - ocamlfind opt -c -o _build/src/configure/make_primitive_details.cmx     -I _build/src/configure  src/configure/make_primitive_details.ml
 - cd _build/src/configure && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -o make_primitive_details_stubs.o ../../../src/configure/make_primitive_details_stubs.c
 - ocamlfind opt -I _build -linkpkg      -o _build/configure.native _build/src/configure/make_primitive_details.cmx _build/src/configure/make_primitive_details_stubs.o
@@ -456,6 +453,10 @@ The following actions will be performed:
 - ocamlfind ocamlc -package bigarray    -c -o _build/src/ctypes/std_views.cmo -I _build/src/ctypes  src/ctypes/std_views.ml
 - ocamlfind ocamlc -package bigarray    -c -o _build/src/ctypes/value_printing.cmo -I _build/src/ctypes  src/ctypes/value_printing.ml
 - ocamlfind ocamlc -c -o _build/src/ctypes/ctypes.cmi -I _build/src/ctypes  src/ctypes/ctypes.mli
+- ocamlfind ocamlc -package bigarray    -c -o _build/src/ctypes/ctypes.cmo -I _build/src/ctypes  src/ctypes/ctypes.ml
+- ocamlfind ocamlc -c -o _build/src/ctypes/posixTypes.cmi -I _build/src/ctypes  src/ctypes/posixTypes.mli
+- ocamlfind ocamlc -package bigarray    -c -o _build/src/ctypes/posixTypes.cmo -I _build/src/ctypes  src/ctypes/posixTypes.ml
+- ocamlfind ocamlc -a  -cclib -lctypes_stubs -dllib -lctypes_stubs -package bigarray   -o _build/ctypes.cma _build/src/ctypes/common.cmo _build/src/ctypes/unsigned.cmo _build/src/ctypes/signed.cmo _build/src/ctypes/primitives.cmo _build/src/ctypes/ctypes_primitives.cmo _build/src/ctypes/ctypes_raw.cmo _build/src/ctypes/memory_stubs.cmo _build/src/ctypes/std_view_stubs.cmo _build/src/ctypes/value_printing_stubs.cmo _build/src/ctypes/bigarray_stubs.cmo _build/src/ctypes/ctypes_bigarray.cmo _build/src/ctypes/static.cmo _build/src/ctypes/structs.cmo _build/src/ctypes/structs_computed.cmo _build/src/ctypes/type_printing.cmo _build/src/ctypes/memory.cmo _build/src/ctypes/coerce.cmo _build/src/ctypes/std_views.cmo _build/src/ctypes/value_printing.cmo _build/src/ctypes/ctypes.cmo _build/src/ctypes/posixTypes.cmo
 - File "src/ctypes/structs_computed.ml", line 28, characters 2-591:
 - Warning 8: this pattern-matching is not exhaustive.
 - Here is an example of a value that is not matched:
@@ -480,22 +481,18 @@ The following actions will be performed:
 - Warning 8: this pattern-matching is not exhaustive.
 - Here is an example of a value that is not matched:
 - {structured={reftype=Primitive _}}
-- ocamlfind ocamlc -package bigarray    -c -o _build/src/ctypes/ctypes.cmo -I _build/src/ctypes  src/ctypes/ctypes.ml
-- ocamlfind ocamlc -c -o _build/src/ctypes/posixTypes.cmi -I _build/src/ctypes  src/ctypes/posixTypes.mli
-- ocamlfind ocamlc -package bigarray    -c -o _build/src/ctypes/posixTypes.cmo -I _build/src/ctypes  src/ctypes/posixTypes.ml
-- ocamlfind ocamlc -a  -cclib -lctypes_stubs -dllib -lctypes_stubs -package bigarray   -o _build/ctypes.cma _build/src/ctypes/common.cmo _build/src/ctypes/unsigned.cmo _build/src/ctypes/signed.cmo _build/src/ctypes/primitives.cmo _build/src/ctypes/ctypes_primitives.cmo _build/src/ctypes/ctypes_raw.cmo _build/src/ctypes/memory_stubs.cmo _build/src/ctypes/std_view_stubs.cmo _build/src/ctypes/value_printing_stubs.cmo _build/src/ctypes/bigarray_stubs.cmo _build/src/ctypes/ctypes_bigarray.cmo _build/src/ctypes/static.cmo _build/src/ctypes/structs.cmo _build/src/ctypes/structs_computed.cmo _build/src/ctypes/type_printing.cmo _build/src/ctypes/memory.cmo _build/src/ctypes/coerce.cmo _build/src/ctypes/std_views.cmo _build/src/ctypes/value_printing.cmo _build/src/ctypes/ctypes.cmo _build/src/ctypes/posixTypes.cmo
 - cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -o managed_buffer_stubs.o ../../../src/ctypes/managed_buffer_stubs.c
 - cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -o ctypes_bigarray_stubs.o ../../../src/ctypes/ctypes_bigarray_stubs.c
 - cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -o type_info_stubs.o ../../../src/ctypes/type_info_stubs.c
 - cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -o raw_pointer_stubs.o ../../../src/ctypes/raw_pointer_stubs.c
 - cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -o posix_types_stubs.o ../../../src/ctypes/posix_types_stubs.c
+- cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -o unsigned_stubs.o ../../../src/ctypes/unsigned_stubs.c
+- ocamlmklib -o _build/ctypes_stubs _build/src/ctypes/managed_buffer_stubs.o _build/src/ctypes/ctypes_bigarray_stubs.o _build/src/ctypes/type_info_stubs.o _build/src/ctypes/raw_pointer_stubs.o _build/src/ctypes/posix_types_stubs.o _build/src/ctypes/unsigned_stubs.o 
 - ../../../src/ctypes/type_info_stubs.c: In function 'ctypes_string_of_prim':
 - ../../../src/ctypes/type_info_stubs.c:146:3: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'int64' [-Wformat=]
 -    case Int64_t: snprintf(buf, sizeof buf, "%" PRId64, Int64_val(v)); break;
 -    ^
 - ../../../src/ctypes/type_info_stubs.c:146:3: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'int64' [-Wformat=]
-- cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -o unsigned_stubs.o ../../../src/ctypes/unsigned_stubs.c
-- ocamlmklib -o _build/ctypes_stubs _build/src/ctypes/managed_buffer_stubs.o _build/src/ctypes/ctypes_bigarray_stubs.o _build/src/ctypes/type_info_stubs.o _build/src/ctypes/raw_pointer_stubs.o _build/src/ctypes/posix_types_stubs.o _build/src/ctypes/unsigned_stubs.o 
 - ocamlfind opt -c -o _build/src/ctypes/common.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/common.ml
 - ocamlfind opt -c -o _build/src/ctypes/unsigned.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/unsigned.ml
 - ocamlfind opt -c -o _build/src/ctypes/signed.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/signed.ml
@@ -513,6 +510,22 @@ The following actions will be performed:
 - ocamlfind opt -c -o _build/src/ctypes/type_printing.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/type_printing.ml
 - ocamlfind opt -c -o _build/src/ctypes/memory.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/memory.ml
 - ocamlfind opt -c -o _build/src/ctypes/coerce.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/coerce.ml
+- File "src/ctypes/structs_computed.ml", line 28, characters 2-591:
+- Warning 8: this pattern-matching is not exhaustive.
+- Here is an example of a value that is not matched:
+- Primitive _
+- File "src/ctypes/structs_computed.ml", line 44, characters 61-820:
+- Warning 8: this pattern-matching is not exhaustive.
+- Here is an example of a value that is not matched:
+- Primitive _
+- File "src/ctypes/memory.ml", line 302, characters 15-72:
+- Warning 8: this pattern-matching is not exhaustive.
+- Here is an example of a value that is not matched:
+- {reftype=Primitive _}
+- File "src/ctypes/memory.ml", line 303, characters 15-101:
+- Warning 8: this pattern-matching is not exhaustive.
+- Here is an example of a value that is not matched:
+- {reftype=Array (Primitive _, _)}
 - ocamlfind opt -c -o _build/src/ctypes/std_views.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/std_views.ml
 - ocamlfind opt -c -o _build/src/ctypes/value_printing.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/value_printing.ml
 - ocamlfind opt -c -o _build/src/ctypes/ctypes.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/ctypes.ml
@@ -531,22 +544,6 @@ The following actions will be performed:
 - ocamlfind ocamlc     -c -o _build/src/ctypes-foreign-base/foreign_basis.cmo -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/foreign_basis.ml
 - ocamlfind ocamlc -a  -cclib -lctypes-foreign-base_stubs -dllib -lctypes-foreign-base_stubs   -cclib -lffi -o _build/ctypes-foreign-base.cma _build/src/ctypes-foreign-base/closure_properties.cmo _build/src/ctypes-foreign-base/dl.cmo _build/src/ctypes-foreign-base/ffi_stubs.cmo _build/src/ctypes-foreign-base/weakRef.cmo _build/src/ctypes-foreign-base/ffi.cmo _build/src/ctypes-foreign-base/foreign_basis.cmo
 - cd _build/src/ctypes-foreign-base && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -o ffi_call_stubs.o ../../../src/ctypes-foreign-base/ffi_call_stubs.c
-- File "src/ctypes/structs_computed.ml", line 28, characters 2-591:
-- Warning 8: this pattern-matching is not exhaustive.
-- Here is an example of a value that is not matched:
-- Primitive _
-- File "src/ctypes/structs_computed.ml", line 44, characters 61-820:
-- Warning 8: this pattern-matching is not exhaustive.
-- Here is an example of a value that is not matched:
-- Primitive _
-- File "src/ctypes/memory.ml", line 302, characters 15-72:
-- Warning 8: this pattern-matching is not exhaustive.
-- Here is an example of a value that is not matched:
-- {reftype=Primitive _}
-- File "src/ctypes/memory.ml", line 303, characters 15-101:
-- Warning 8: this pattern-matching is not exhaustive.
-- Here is an example of a value that is not matched:
-- {reftype=Array (Primitive _, _)}
 - File "src/ctypes/value_printing.ml", line 25, characters 12-182:
 - Warning 8: this pattern-matching is not exhaustive.
 - Here is an example of a value that is not matched:
@@ -572,10 +569,10 @@ The following actions will be performed:
 - ocamlfind ocamlc  -package threads -thread  -c -o _build/src/ctypes-foreign-threaded/foreign.cmo -I _build/src/ctypes-foreign-threaded -I _build/src/ctypes -I _build/src/ctypes-foreign-base src/ctypes-foreign-threaded/foreign.ml
 - ocamlfind ocamlc -a -thread   -package threads -cclib -lffi -o _build/ctypes-foreign-threaded.cma _build/src/ctypes-foreign-threaded/foreign.cmo
 - ocamlfind opt -c -o _build/src/ctypes-foreign-threaded/foreign.cmx -thread  -package threads  -I _build/src/ctypes-foreign-threaded -I _build/src/ctypes -I _build/src/ctypes-foreign-base src/ctypes-foreign-threaded/foreign.ml
-- ocamlfind opt -a -linkall -thread  -package threads  -cclib -lffi -o _build/ctypes-foreign-threaded.cmxa _build/src/ctypes-foreign-threaded/foreign.cmx
-- ocamlfind opt -shared -linkall -thread  -package threads -cclib -lffi -o _build/ctypes-foreign-threaded.cmxs _build/src/ctypes-foreign-threaded/foreign.cmx
 - File "src/ctypes-foreign-base/ffi.ml", line 135, characters 41-43:
 - Warning 10: this expression should have type unit.
+- ocamlfind opt -a -linkall -thread  -package threads  -cclib -lffi -o _build/ctypes-foreign-threaded.cmxa _build/src/ctypes-foreign-threaded/foreign.cmx
+- ocamlfind opt -shared -linkall -thread  -package threads -cclib -lffi -o _build/ctypes-foreign-threaded.cmxs _build/src/ctypes-foreign-threaded/foreign.cmx
 - ocamlfind ocamlc     -c -o _build/src/ctypes-foreign-unthreaded/gc_mutex.cmo -I _build/src/ctypes-foreign-unthreaded -I _build/src/ctypes -I _build/src/ctypes-foreign-base src/ctypes-foreign-unthreaded/gc_mutex.ml
 - ocamlfind ocamlc -c -o _build/src/ctypes-foreign-unthreaded/foreign.cmi -I _build/src/ctypes-foreign-unthreaded -I _build/src/ctypes -I _build/src/ctypes-foreign-base src/ctypes-foreign-unthreaded/foreign.mli
 - ocamlfind ocamlc     -c -o _build/src/ctypes-foreign-unthreaded/foreign.cmo -I _build/src/ctypes-foreign-unthreaded -I _build/src/ctypes -I _build/src/ctypes-foreign-base src/ctypes-foreign-unthreaded/foreign.ml
@@ -691,6 +688,9 @@ The following actions will be performed:
 - File "setup.ml", line 213, characters 8-26:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- File "setup.ml", line 1793, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
 - 
 - Configuration: 
 - ocamlfind: ........................................... /home/opam/.opam/system/bin/ocamlfind
@@ -751,18 +751,15 @@ The following actions will be performed:
 - pkg_ctypes: .......................................... /home/opam/.opam/system/lib/ctypes
 - pkg_ctypes_foreign: .................................. /home/opam/.opam/system/lib/ctypes
 - 
-- File "setup.ml", line 1793, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
 [opasswd: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-build" (CWD=/home/opam/.opam/system/build/opasswd.0.9.3)
-- /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib64/ocaml/ocamlbuild /usr/lib64/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib64/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
 - File "setup.ml", line 213, characters 8-26:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
 - File "setup.ml", line 1793, characters 6-24:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
+- /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib64/ocaml/ocamlbuild /usr/lib64/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib64/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
 - ocamlfind ocamldep -package unix -package ctypes.foreign -package ctypes -modules lib/passwd.mli > lib/passwd.mli.depends
 - ocamlfind ocamlc -c -g -warn-error +a -bin-annot -short-paths -package unix -package ctypes.foreign -package ctypes -I lib -o lib/passwd.cmi lib/passwd.mli
 - ocamlfind ocamldep -package unix -package ctypes.foreign -package ctypes -modules lib/passwd.ml > lib/passwd.ml.depends
