@@ -1,8 +1,8 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux ubuntu
 + uname -s
 + lsb_release -i -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=ocamlfuse
+# Detecting depexts using flags: x86_64 linux ubuntu
 # The following system packages are needed:
 #  - libfuse-dev
 #  - m4
@@ -17,12 +17,12 @@ Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
 Hit http://archive.ubuntu.com trusty Release.gpg
-Hit http://download.opensuse.org  Packages
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
 Hit http://archive.ubuntu.com trusty Release
 Get:3 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
 Get:4 http://archive.ubuntu.com trusty-security Release [63.5 kB]
+Hit http://download.opensuse.org  Packages
 Hit http://archive.ubuntu.com trusty/main Sources
 Hit http://archive.ubuntu.com trusty/restricted Sources
 Hit http://archive.ubuntu.com trusty/universe Sources
@@ -41,10 +41,8 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [23.3 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [329 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [128 kB]
-Fetched 2122 kB in 12s (170 kB/s)
+Fetched 2122 kB in 7s (296 kB/s)
 Reading package lists...
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 635587 635616
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages.gz is not what the server reported 356350 356387
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libfuse-dev m4
@@ -96,9 +94,9 @@ The following actions will be performed:
 [camlidl: from default] Command started
 [ocamlfind: from default] Command started
 [ocamlfuse: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfuse.2.7.1-cvs2+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/camlidl.1.05+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/ocamlfuse.2.7.1-cvs2+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlidl: mv] Command started
@@ -454,6 +452,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
+- ocamlopt -I +compiler-libs -c findlib.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -498,7 +497,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
 - if [ 1 -gt 0 ]; then \
@@ -584,6 +582,8 @@ The following actions will be performed:
 - ocamlc -c -cc "cc" -ccopt "-fPIC -D_FILE_OFFSET_BITS=64 -I. -pthread \
 - 				-DPIC -DNATIVE_CODE   \
 - 				  -I/home/opam/.opam/system/lib/camlidl  -o Fuse_util.o " Fuse_util.c 
+- ar rcs libFuse_stubs.a Fuse_bindings_stubs.o Unix_util_stubs.o Fuse_util.o
+- ocamlopt -c -thread -I /home/opam/.opam/system/lib/camlidl Result.ml
 - In file included from Fuse_util.c:30:0:
 - Fuse_util.c: In function 'gm281_ops_init':
 - /usr/lib/ocaml/caml/memory.h:226:28: warning: initialization makes pointer from integer without a cast [enabled by default]
@@ -598,8 +598,6 @@ The following actions will be performed:
 - Fuse_util.c:625:1: note: in expansion of macro 'FOR_ALL_OPS'
 -  FOR_ALL_OPS(CALLBACK)
 -  ^
-- ar rcs libFuse_stubs.a Fuse_bindings_stubs.o Unix_util_stubs.o Fuse_util.o
-- ocamlopt -c -thread -I /home/opam/.opam/system/lib/camlidl Result.ml
 - ocamlopt -c -thread -I /home/opam/.opam/system/lib/camlidl Unix_util.ml
 - ocamlc -c -thread -I /home/opam/.opam/system/lib/camlidl Fuse_bindings.mli
 - ocamlopt -c -thread -I /home/opam/.opam/system/lib/camlidl Fuse_bindings.ml
