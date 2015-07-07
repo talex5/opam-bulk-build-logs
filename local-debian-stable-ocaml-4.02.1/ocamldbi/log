@@ -1,32 +1,32 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-+ opam list --safe --recursive --external=x86_64,linux,debian --required-by=ocamldbi
 # Detecting depexts using flags: x86_64 linux debian
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=ocamldbi
++ opam list --safe --recursive --external=x86_64,linux,debian --required-by=ocamldbi
 # The following system packages are needed:
 #  - libpcre3-dev
 #  - m4
 #  - pkg-config
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=ocamldbi
 Not running as root, the following command will be run through "sudo":
     apt-get update
 + sudo apt-get update
-Ign http://download.opensuse.org  InRelease
 Hit http://security.debian.org stable/updates InRelease
+Ign http://download.opensuse.org  InRelease
+Hit http://httpredir.debian.org stable InRelease
+Hit http://httpredir.debian.org stable-updates InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Get:1 http://httpredir.debian.org stable InRelease [128 kB]
-Get:2 http://httpredir.debian.org stable-updates InRelease [126 kB]
-Get:3 http://security.debian.org stable/updates/main amd64 Packages [51.7 kB]
-Get:4 http://download.opensuse.org  Packages [5783 B]
-Get:5 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
-Get:6 http://httpredir.debian.org stable-updates/main amd64 Packages [3618 B]
-Fetched 9334 kB in 4s (2097 kB/s)
+Get:1 http://security.debian.org stable/updates/main amd64 Packages [53.7 kB]
+Get:2 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
+Get:3 http://download.opensuse.org  Packages [5783 B]
+Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3618 B]
+Fetched 9083 kB in 5s (1669 kB/s)
 Reading package lists...
 # OS package update successful
++ sudo apt-get install -qq -yy libpcre3-dev m4 pkg-config
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libpcre3-dev m4 pkg-config
-+ sudo apt-get install -qq -yy libpcre3-dev m4 pkg-config
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
@@ -59,10 +59,10 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [pcre: from default] Command started
 [pcre: from default] Command started
-[ocamlfind: from default] Command started
 [ocamldbi: from default] Command started
-[default] http://opam-archive:8080/archives/ocamldbi.0.9.11+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/pcre.7.1.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamldbi.0.9.11+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -184,6 +184,11 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_metascanner.mli
 - ocamlc -I +compiler-libs -g -c fl_metascanner.ml
 - ocamlc -I +compiler-libs -c fl_topo.mli
+- ocamlc -I +compiler-libs -g -c fl_topo.ml
+- ocamlc -I +compiler-libs -c fl_package_base.mli
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -229,11 +234,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c fl_topo.ml
-- ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
@@ -298,7 +298,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -343,6 +342,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -532,105 +532,105 @@ The following actions will be performed:
 - ocamlc -g -I /home/opam/.opam/4.02.1/lib/pcre -a dbi.cmo -o dbi.cma
 - ocamlopt -w s -I /home/opam/.opam/4.02.1/lib/pcre -c dbi.ml
 - ocamlopt -w s -I /home/opam/.opam/4.02.1/lib/pcre -a dbi.cmx -o dbi.cmxa
-- File "dbi.ml", line 188, characters 13-26:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "dbi.ml", line 189, characters 4-21:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 195, characters 14-31:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 196, characters 7-24:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 198, characters 14-31:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 199, characters 7-24:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 201, characters 14-31:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 202, characters 7-24:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 204, characters 14-31:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 205, characters 7-24:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 208, characters 2-19:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 211, characters 2-19:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 212, characters 2-19:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 213, characters 2-19:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 215, characters 2-19:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 220, characters 4-21:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 226, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "dbi.ml", line 227, characters 2-14:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "dbi.ml", line 230, characters 4-21:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "dbi.ml", line 231, characters 4-21:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "dbi.ml", line 233, characters 2-16:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "dbi.ml", line 188, characters 13-26:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "dbi.ml", line 189, characters 4-21:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 195, characters 14-31:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 196, characters 7-24:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 198, characters 14-31:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 199, characters 7-24:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 201, characters 14-31:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 202, characters 7-24:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 204, characters 14-31:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 205, characters 7-24:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 208, characters 2-19:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 211, characters 2-19:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 212, characters 2-19:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 213, characters 2-19:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 215, characters 2-19:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 220, characters 4-21:
-- Warning 3: deprecated: String.unsafe_set
-- File "dbi.ml", line 226, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "dbi.ml", line 227, characters 2-14:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "dbi.ml", line 230, characters 4-21:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "dbi.ml", line 231, characters 4-21:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "dbi.ml", line 233, characters 2-16:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 - rm -rf html
 - mkdir -p html
 - ocamldoc -html -stars -sort -colorize-code -I /home/opam/.opam/4.02.1/lib/pcre -d html dbi.mli 
+- File "dbi.ml", line 188, characters 13-26:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "dbi.ml", line 189, characters 4-21:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 195, characters 14-31:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 196, characters 7-24:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 198, characters 14-31:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 199, characters 7-24:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 201, characters 14-31:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 202, characters 7-24:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 204, characters 14-31:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 205, characters 7-24:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 208, characters 2-19:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 211, characters 2-19:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 212, characters 2-19:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 213, characters 2-19:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 215, characters 2-19:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 220, characters 4-21:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 226, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "dbi.ml", line 227, characters 2-14:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "dbi.ml", line 230, characters 4-21:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "dbi.ml", line 231, characters 4-21:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "dbi.ml", line 233, characters 2-16:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "dbi.ml", line 188, characters 13-26:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "dbi.ml", line 189, characters 4-21:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 195, characters 14-31:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 196, characters 7-24:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 198, characters 14-31:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 199, characters 7-24:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 201, characters 14-31:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 202, characters 7-24:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 204, characters 14-31:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 205, characters 7-24:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 208, characters 2-19:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 211, characters 2-19:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 212, characters 2-19:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 213, characters 2-19:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 215, characters 2-19:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 220, characters 4-21:
+- Warning 3: deprecated: String.unsafe_set
+- File "dbi.ml", line 226, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "dbi.ml", line 227, characters 2-14:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "dbi.ml", line 230, characters 4-21:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "dbi.ml", line 231, characters 4-21:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "dbi.ml", line 233, characters 2-16:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 [ocamldbi: make install] Command started
 + make "install" "OCAMLDBIDIR=/home/opam/.opam/4.02.1/lib/ocamldbi" "DOCDIR=/home/opam/.opam/4.02.1/doc/ocamldbi" (CWD=/home/opam/.opam/4.02.1/build/ocamldbi.0.9.11)
 - install -c -m 0755 -d /home/opam/.opam/4.02.1/lib/ocamldbi
