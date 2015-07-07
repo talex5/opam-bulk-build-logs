@@ -19,19 +19,19 @@ Not running as root, the following command will be run through "sudo":
 Hit http://security.debian.org stable/updates InRelease
 Ign http://download.opensuse.org  InRelease
 Hit http://httpredir.debian.org stable InRelease
-Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
+Hit http://httpredir.debian.org stable-updates InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Get:2 http://security.debian.org stable/updates/main amd64 Packages [108 kB]
-Get:3 http://httpredir.debian.org stable/main amd64 Packages [9038 kB]
-Get:4 http://download.opensuse.org  Packages [5783 B]
-Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9281 kB in 5s (1816 kB/s)
+Get:1 http://security.debian.org stable/updates/main amd64 Packages [108 kB]
+Get:2 http://httpredir.debian.org stable/main amd64 Packages [9038 kB]
+Get:3 http://download.opensuse.org  Packages [5783 B]
+Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
+Fetched 9155 kB in 5s (1615 kB/s)
 Reading package lists...
 # OS package update successful
++ sudo apt-get install -qq -yy binutils-dev clang-3.4 libboost-dev libclang-3.4-dev libgmp-dev libmpfr-dev llvm-3.4-dev m4
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy binutils-dev clang-3.4 libboost-dev libclang-3.4-dev libgmp-dev libmpfr-dev llvm-3.4-dev m4
-+ sudo apt-get install -qq -yy binutils-dev clang-3.4 libboost-dev libclang-3.4-dev libgmp-dev libmpfr-dev llvm-3.4-dev m4
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
@@ -160,15 +160,15 @@ The following actions will be performed:
 [default] http://opam-archive:8080/archives/ANSITerminal.0.6.5+opam.tar.gz downloaded
 [camlidl: from default] Command started
 [batteries: from default] Command started
+[apron: from default] Command started
 [default] http://opam-archive:8080/archives/batteries.2.3.1+opam.tar.gz downloaded
 [camlp4: from default] Command started
-[apron: from default] Command started
+[camlidl: from default] Command started
 [default] http://opam-archive:8080/archives/apron.20150518+opam.tar.gz downloaded
 [clangml: from default] Command started
-[camlidl: from default] Command started
-[camlp4: from default] Command started
 [default] http://opam-archive:8080/archives/camlidl.1.05+opam.tar.gz downloaded
 [clangml-transforms: from default] Command started
+[camlp4: from default] Command started
 [clangml: from default] Command started
 [default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
 [deriving: from default] Command started
@@ -178,16 +178,16 @@ The following actions will be performed:
 [default] http://opam-archive:8080/archives/clangml-transforms.0.19+opam.tar.gz downloaded
 [obuild: from default] Command started
 [deriving: from default] Command started
+[dolog: from default] Command started
 [default] http://opam-archive:8080/archives/deriving.0.7+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
-[dolog: from default] Command started
+[obuild: from default] Command started
 [default] http://opam-archive:8080/archives/dolog.1.0+opam.tar.gz downloaded
 [optcomp: from default] Command started
-[obuild: from default] Command started
-[default] http://opam-archive:8080/archives/obuild.0.1.3+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
-[optcomp: from default] Command started
+[default] http://opam-archive:8080/archives/obuild.0.1.3+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[optcomp: from default] Command started
 [default] http://opam-archive:8080/archives/optcomp.1.6+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -515,8 +515,8 @@ The following actions will be performed:
 - [50 of 55] Linking executable dist/build/obuild-simple/obuild-simple
 - [51 of 55] Compiling Main                          
 - [52 of 55] Checking dist/build/obuild-from-oasis
-- [53 of 55] Checking dist/build/obuild-simple
-- [54 of 55] Linking executable dist/build/obuild/obuild
+- [53 of 55] Linking executable dist/build/obuild/obuild
+- [54 of 55] Checking dist/build/obuild-simple
 - [55 of 55] Checking dist/build/obuild
 - File "dag.ml", line 194, characters 23-34:
 - Warning 3: deprecated: String.copy
@@ -779,9 +779,9 @@ The following actions will be performed:
 - Warning 27: unused variable isSnapshot.
 - 
 - 
-- real	0m3.716s
-- user	0m2.696s
-- sys	0m1.633s
+- real	0m4.037s
+- user	0m3.082s
+- sys	0m1.979s
 -> installed obuild.0.1.3
 + make "all" (CWD=/home/opam/.opam/4.02.1/build/ocamlfind.1.5.5)
 - for p in findlib; do ( cd src/$p; make all ) || exit; done
@@ -815,6 +815,14 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 	cp topfind.ml.in topfind.ml;                             \
+- else                                                             \
+- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 		> topfind.ml ;                                   \
+- fi
+- ocamlc -I +compiler-libs -c topfind.mli
+- ocamlc -I +compiler-libs -g -c topfind.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -868,14 +876,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 	cp topfind.ml.in topfind.ml;                             \
-- else                                                             \
-- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 		> topfind.ml ;                                   \
-- fi
-- ocamlc -I +compiler-libs -c topfind.mli
-- ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
 - export USE_CYGPATH; \
@@ -4256,327 +4256,6 @@ The following actions will be performed:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
 [deriving: make] Command started
-+ make  (CWD=/home/opam/.opam/4.02.1/build/deriving.0.7)
-- ocamlfind ocamlopt -o setup.exe setup.ml || ocamlfind ocamlc -o setup.exe setup.ml || true
-- rm -f setup.cmi setup.cmo setup.cmx setup.o
-- ./setup.exe -configure 
-- 
-- Configuration: 
-- ocamlfind: ........................................... /home/opam/.opam/4.02.1/bin/ocamlfind
-- ocamlc: .............................................. /home/opam/.opam/4.02.1/bin/ocamlc.opt
-- ocamlopt: ............................................ /home/opam/.opam/4.02.1/bin/ocamlopt.opt
-- ocamlbuild: .......................................... /home/opam/.opam/4.02.1/bin/ocamlbuild
-- Package name: ........................................ deriving
-- Package version: ..................................... 0.7
-- os_type: ............................................. Unix
-- system: .............................................. linux
-- architecture: ........................................ amd64
-- ccomp_type: .......................................... cc
-- ocaml_version: ....................................... 4.02.1
-- standard_library_default: ............................ /home/opam/.opam/4.02.1/lib/ocaml
-- standard_library: .................................... /home/opam/.opam/4.02.1/lib/ocaml
-- standard_runtime: .................................... /home/opam/.opam/4.02.1/bin/ocamlrun
-- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
-- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
-- model: ............................................... default
-- ext_obj: ............................................. .o
-- ext_asm: ............................................. .s
-- ext_lib: ............................................. .a
-- ext_dll: ............................................. .so
-- default_executable_name: ............................. a.out
-- systhread_supported: ................................. true
-- Install architecture-independent files dir: .......... /home/opam/.opam/4.02.1
-- Install architecture-dependent files in dir: ......... $prefix
-- User executables: .................................... $exec_prefix/bin
-- System admin executables: ............................ $exec_prefix/sbin
-- Program executables: ................................. $exec_prefix/libexec
-- Read-only single-machine data: ....................... $prefix/etc
-- Modifiable architecture-independent data: ............ $prefix/com
-- Modifiable single-machine data: ...................... $prefix/var
-- Object code libraries: ............................... $exec_prefix/lib
-- Read-only arch-independent data root: ................ $prefix/share
-- Read-only architecture-independent data: ............. $datarootdir
-- Info documentation: .................................. $datarootdir/info
-- Locale-dependent data: ............................... $datarootdir/locale
-- Man documentation: ................................... $datarootdir/man
-- Documentation root: .................................. $datarootdir/doc/$pkg_name
-- HTML documentation: .................................. $docdir
-- DVI documentation: ................................... $docdir
-- PDF documentation: ................................... $docdir
-- PS documentation: .................................... $docdir
-- findlib_version: ..................................... 1.5.5
-- is_native: ........................................... true
-- suffix_program: ...................................... 
-- Remove a file.: ...................................... rm -f
-- Remove a directory.: ................................. rm -rf
-- Turn ocaml debug flag on: ............................ true
-- Turn ocaml profile flag on: .......................... false
-- Compiler support generation of .cmxs.: ............... true
-- OCamlbuild additional flags: ......................... 
-- type-conv support: ................................... false
-- Create documentations: ............................... true
-- Compile tests executable and library and run them: ... false
-- pkg_camlp4: .......................................... /home/opam/.opam/4.02.1/lib/ocaml/camlp4
-- pkg_camlp4_extend: ................................... /home/opam/.opam/4.02.1/lib/ocaml/camlp4
-- pkg_camlp4_quotations_o: ............................. /home/opam/.opam/4.02.1/lib/ocaml/camlp4
-- pkg_optcomp: ......................................... /home/opam/.opam/4.02.1/lib/optcomp
-- pkg_bytes: ........................................... /home/opam/.opam/4.02.1/lib/bytes
-- ocamldoc: ............................................ /home/opam/.opam/4.02.1/bin/ocamldoc
-- 
-- ./setup.exe -build 
-- ocamlfind ocamlopt unix.cmxa -I /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa -linkpkg myocamlbuild.ml /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/id.ml > syntax/common/id.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/utils.mli > syntax/common/utils.mli.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/utils.cmi syntax/common/utils.mli
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/utils.ml > syntax/common/utils.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package camlp4.quotations.r -syntax camlp4o -package optcomp -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/type.mli > syntax/common/type.mli.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -package camlp4.quotations.r -syntax camlp4o -package optcomp -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/type.cmi syntax/common/type.mli
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package camlp4.quotations.r -syntax camlp4o -package optcomp -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/type.ml > syntax/common/type.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/defs.mli > syntax/common/defs.mli.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/defs.cmi syntax/common/defs.mli
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/defs.ml > syntax/common/defs.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/clusters.mli > syntax/common/clusters.mli.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/clusters.cmi syntax/common/clusters.mli
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/clusters.ml > syntax/common/clusters.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/base.mli > syntax/common/base.mli.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/base.cmi syntax/common/base.mli
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/base.ml > syntax/common/base.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/extend.mli > syntax/common/extend.mli.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/extend.cmi syntax/common/extend.mli
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/extend.ml > syntax/common/extend.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/id.cmo syntax/common/id.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/utils.cmo syntax/common/utils.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -package camlp4.quotations.r -syntax camlp4o -package optcomp -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/type.cmo syntax/common/type.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/defs.cmo syntax/common/defs.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/clusters.cmo syntax/common/clusters.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/base.cmo syntax/common/base.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/extend.cmo syntax/common/extend.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -pack -g syntax/common/id.cmo syntax/common/utils.cmo syntax/common/type.cmo syntax/common/defs.cmo syntax/common/clusters.cmo syntax/common/base.cmo syntax/common/extend.cmo -o syntax/common/pa_deriving_common.cmo
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a syntax/common/pa_deriving_common.cmo -o syntax/common/pa_deriving_common.cma
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -for-pack Pa_deriving_common -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/utils.cmx syntax/common/utils.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -for-pack Pa_deriving_common -package camlp4.quotations.r -syntax camlp4o -package optcomp -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/type.cmx syntax/common/type.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -for-pack Pa_deriving_common -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/clusters.cmx syntax/common/clusters.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -for-pack Pa_deriving_common -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/defs.cmx syntax/common/defs.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -for-pack Pa_deriving_common -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/base.cmx syntax/common/base.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -for-pack Pa_deriving_common -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/id.cmx syntax/common/id.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -for-pack Pa_deriving_common -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/extend.cmx syntax/common/extend.ml
-- touch syntax/common/pa_deriving_common.mli  ; if  /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -pack -g -I syntax/common syntax/common/id.cmx syntax/common/utils.cmx syntax/common/type.cmx syntax/common/defs.cmx syntax/common/clusters.cmx syntax/common/base.cmx syntax/common/extend.cmx -o syntax/common/pa_deriving_common.cmx  ; then  rm -f syntax/common/pa_deriving_common.mli  ; else  rm -f syntax/common/pa_deriving_common.mli  ; exit 1; fi
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a syntax/common/pa_deriving_common.cmx -o syntax/common/pa_deriving_common.cmxa
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared syntax/common/pa_deriving_common.cmxa syntax/common/pa_deriving_common.cmx -o syntax/common/pa_deriving_common.cmxs
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/std/pa_deriving_std.ml > syntax/std/pa_deriving_std.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -ppopt syntax/common/pa_deriving_common.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/std -I syntax/common -o syntax/std/pa_deriving_std.cmo syntax/std/pa_deriving_std.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a syntax/std/pa_deriving_std.cmo -o syntax/std/pa_deriving_std.cma
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -ppopt syntax/common/pa_deriving_common.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/std -I syntax/common -o syntax/std/pa_deriving_std.cmx syntax/std/pa_deriving_std.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a syntax/std/pa_deriving_std.cmx -o syntax/std/pa_deriving_std.cmxa
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared syntax/std/pa_deriving_std.cmxa syntax/std/pa_deriving_std.cmx -o syntax/std/pa_deriving_std.cmxs
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/show_class.ml > syntax/classes/show_class.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/dump_class.ml > syntax/classes/dump_class.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/enum_class.ml > syntax/classes/enum_class.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/bounded_class.ml > syntax/classes/bounded_class.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/eq_class.ml > syntax/classes/eq_class.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/typeable_class.ml > syntax/classes/typeable_class.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/pickle_class.ml > syntax/classes/pickle_class.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/eq_class.cmo syntax/classes/eq_class.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/typeable_class.cmo syntax/classes/typeable_class.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/functor_class.ml > syntax/classes/functor_class.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/default_class.ml > syntax/classes/default_class.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/show_class.cmo syntax/classes/show_class.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/dump_class.cmo syntax/classes/dump_class.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/enum_class.cmo syntax/classes/enum_class.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/bounded_class.cmo syntax/classes/bounded_class.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/pickle_class.cmo syntax/classes/pickle_class.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/functor_class.cmo syntax/classes/functor_class.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/default_class.cmo syntax/classes/default_class.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a syntax/classes/show_class.cmo syntax/classes/dump_class.cmo syntax/classes/enum_class.cmo syntax/classes/bounded_class.cmo syntax/classes/eq_class.cmo syntax/classes/typeable_class.cmo syntax/classes/pickle_class.cmo syntax/classes/functor_class.cmo syntax/classes/default_class.cmo -o syntax/classes/pa_deriving_classes.cma
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/eq_class.cmx syntax/classes/eq_class.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/typeable_class.cmx syntax/classes/typeable_class.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/show_class.cmx syntax/classes/show_class.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/dump_class.cmx syntax/classes/dump_class.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/enum_class.cmx syntax/classes/enum_class.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/bounded_class.cmx syntax/classes/bounded_class.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/pickle_class.cmx syntax/classes/pickle_class.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/functor_class.cmx syntax/classes/functor_class.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/default_class.cmx syntax/classes/default_class.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a syntax/classes/show_class.cmx syntax/classes/dump_class.cmx syntax/classes/enum_class.cmx syntax/classes/bounded_class.cmx syntax/classes/eq_class.cmx syntax/classes/typeable_class.cmx syntax/classes/pickle_class.cmx syntax/classes/functor_class.cmx syntax/classes/default_class.cmx -o syntax/classes/pa_deriving_classes.cmxa
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared syntax/classes/pa_deriving_classes.cmxa syntax/classes/show_class.cmx syntax/classes/dump_class.cmx syntax/classes/enum_class.cmx syntax/classes/bounded_class.cmx syntax/classes/eq_class.cmx syntax/classes/typeable_class.cmx syntax/classes/pickle_class.cmx syntax/classes/functor_class.cmx syntax/classes/default_class.cmx -o syntax/classes/pa_deriving_classes.cmxs
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Show.mli > lib/deriving_Show.mli.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Show.cmi lib/deriving_Show.mli
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Show.ml > lib/deriving_Show.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Eq.mli > lib/deriving_Eq.mli.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Eq.cmi lib/deriving_Eq.mli
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Eq.ml > lib/deriving_Eq.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Bounded.mli > lib/deriving_Bounded.mli.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Bounded.cmi lib/deriving_Bounded.mli
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Bounded.ml > lib/deriving_Bounded.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Enum.mli > lib/deriving_Enum.mli.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Enum.cmi lib/deriving_Enum.mli
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Enum.ml > lib/deriving_Enum.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_monad.mli > lib/deriving_monad.mli.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_monad.cmi lib/deriving_monad.mli
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_monad.ml > lib/deriving_monad.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Dump.mli > lib/deriving_Dump.mli.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Dump.cmi lib/deriving_Dump.mli
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Dump.ml > lib/deriving_Dump.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Typeable.mli > lib/deriving_Typeable.mli.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Typeable.cmi lib/deriving_Typeable.mli
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Typeable.ml > lib/deriving_Typeable.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_interned.mli > lib/deriving_interned.mli.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_interned.cmi lib/deriving_interned.mli
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Pickle.mli > lib/deriving_Pickle.mli.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Pickle.cmi lib/deriving_Pickle.mli
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Pickle.ml > lib/deriving_Pickle.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_dynmap.mli > lib/deriving_dynmap.mli.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_dynmap.cmi lib/deriving_dynmap.mli
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Functor.mli > lib/deriving_Functor.mli.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Functor.cmi lib/deriving_Functor.mli
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Functor.ml > lib/deriving_Functor.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Default.mli > lib/deriving_Default.mli.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Default.cmi lib/deriving_Default.mli
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Default.ml > lib/deriving_Default.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_interned.ml > lib/deriving_interned.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_dynmap.ml > lib/deriving_dynmap.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Show.cmo lib/deriving_Show.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Eq.cmo lib/deriving_Eq.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Bounded.cmo lib/deriving_Bounded.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Enum.cmo lib/deriving_Enum.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_monad.cmo lib/deriving_monad.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Dump.cmo lib/deriving_Dump.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Typeable.cmo lib/deriving_Typeable.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Pickle.cmo lib/deriving_Pickle.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Functor.cmo lib/deriving_Functor.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Default.cmo lib/deriving_Default.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_interned.cmo lib/deriving_interned.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_dynmap.cmo lib/deriving_dynmap.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a lib/deriving_Show.cmo lib/deriving_Eq.cmo lib/deriving_Bounded.cmo lib/deriving_Enum.cmo lib/deriving_monad.cmo lib/deriving_Dump.cmo lib/deriving_interned.cmo lib/deriving_Typeable.cmo lib/deriving_dynmap.cmo lib/deriving_Pickle.cmo lib/deriving_Functor.cmo lib/deriving_Default.cmo -o lib/deriving.cma
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Bounded.cmx lib/deriving_Bounded.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Show.cmx lib/deriving_Show.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_interned.cmx lib/deriving_interned.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Dump.cmx lib/deriving_Dump.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Eq.cmx lib/deriving_Eq.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Typeable.cmx lib/deriving_Typeable.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_monad.cmx lib/deriving_monad.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_dynmap.cmx lib/deriving_dynmap.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Enum.cmx lib/deriving_Enum.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Pickle.cmx lib/deriving_Pickle.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Functor.cmx lib/deriving_Functor.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Default.cmx lib/deriving_Default.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a lib/deriving_Show.cmx lib/deriving_Eq.cmx lib/deriving_Bounded.cmx lib/deriving_Enum.cmx lib/deriving_monad.cmx lib/deriving_Dump.cmx lib/deriving_interned.cmx lib/deriving_Typeable.cmx lib/deriving_dynmap.cmx lib/deriving_Pickle.cmx lib/deriving_Functor.cmx lib/deriving_Default.cmx -o lib/deriving.cmxa
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared lib/deriving.cmxa lib/deriving_Show.cmx lib/deriving_Eq.cmx lib/deriving_Bounded.cmx lib/deriving_Enum.cmx lib/deriving_monad.cmx lib/deriving_Dump.cmx lib/deriving_interned.cmx lib/deriving_Typeable.cmx lib/deriving_dynmap.cmx lib/deriving_Pickle.cmx lib/deriving_Functor.cmx lib/deriving_Default.cmx -o lib/deriving.cmxs
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_num.mli > lib/deriving_num.mli.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_num.cmi lib/deriving_num.mli
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_num.ml > lib/deriving_num.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_num.cmo lib/deriving_num.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a lib/deriving_num.cmo -o lib/deriving_num.cma
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_num.cmx lib/deriving_num.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a lib/deriving_num.cmx -o lib/deriving_num.cmxa
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared lib/deriving_num.cmxa lib/deriving_num.cmx -o lib/deriving_num.cmxs
-- File "setup.ml", line 246, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "setup.ml", line 2501, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
-- W: Cannot find source file matching module 'pa_deriving_common' in library pa_deriving_common
-- ocamlfind: Package `wikidoc' not found
-[deriving: make install] Command started
-+ make "install" (CWD=/home/opam/.opam/4.02.1/build/deriving.0.7)
-- ./setup.exe -install 
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Show.mli
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Eq.mli
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Bounded.mli
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Enum.mli
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_monad.mli
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Dump.mli
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Typeable.mli
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Pickle.mli
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Functor.mli
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Default.mli
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving.cma
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving.cmxa
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving.a
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving.cmxs
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Default.cmi
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Functor.cmi
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Pickle.cmi
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Typeable.cmi
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Dump.cmi
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_monad.cmi
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Enum.cmi
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Bounded.cmi
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Eq.cmi
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Show.cmi
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_dynmap.cmx
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_interned.cmx
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Default.cmx
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Functor.cmx
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Pickle.cmx
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Typeable.cmx
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Dump.cmx
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_monad.cmx
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Enum.cmx
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Bounded.cmx
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Eq.cmx
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Show.cmx
-- Installed /home/opam/.opam/4.02.1/lib/deriving/show_class.ml
-- Installed /home/opam/.opam/4.02.1/lib/deriving/dump_class.ml
-- Installed /home/opam/.opam/4.02.1/lib/deriving/enum_class.ml
-- Installed /home/opam/.opam/4.02.1/lib/deriving/bounded_class.ml
-- Installed /home/opam/.opam/4.02.1/lib/deriving/eq_class.ml
-- Installed /home/opam/.opam/4.02.1/lib/deriving/typeable_class.ml
-- Installed /home/opam/.opam/4.02.1/lib/deriving/pickle_class.ml
-- Installed /home/opam/.opam/4.02.1/lib/deriving/functor_class.ml
-- Installed /home/opam/.opam/4.02.1/lib/deriving/default_class.ml
-- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_classes.cma
-- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_classes.cmxa
-- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_classes.a
-- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_classes.cmxs
-- Installed /home/opam/.opam/4.02.1/lib/deriving/default_class.cmi
-- Installed /home/opam/.opam/4.02.1/lib/deriving/functor_class.cmi
-- Installed /home/opam/.opam/4.02.1/lib/deriving/pickle_class.cmi
-- Installed /home/opam/.opam/4.02.1/lib/deriving/typeable_class.cmi
-- Installed /home/opam/.opam/4.02.1/lib/deriving/eq_class.cmi
-- Installed /home/opam/.opam/4.02.1/lib/deriving/bounded_class.cmi
-- Installed /home/opam/.opam/4.02.1/lib/deriving/enum_class.cmi
-- Installed /home/opam/.opam/4.02.1/lib/deriving/dump_class.cmi
-- Installed /home/opam/.opam/4.02.1/lib/deriving/show_class.cmi
-- Installed /home/opam/.opam/4.02.1/lib/deriving/default_class.cmx
-- Installed /home/opam/.opam/4.02.1/lib/deriving/functor_class.cmx
-- Installed /home/opam/.opam/4.02.1/lib/deriving/pickle_class.cmx
-- Installed /home/opam/.opam/4.02.1/lib/deriving/typeable_class.cmx
-- Installed /home/opam/.opam/4.02.1/lib/deriving/eq_class.cmx
-- Installed /home/opam/.opam/4.02.1/lib/deriving/bounded_class.cmx
-- Installed /home/opam/.opam/4.02.1/lib/deriving/enum_class.cmx
-- Installed /home/opam/.opam/4.02.1/lib/deriving/dump_class.cmx
-- Installed /home/opam/.opam/4.02.1/lib/deriving/show_class.cmx
-- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_std.ml
-- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_std.cma
-- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_std.cmxa
-- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_std.a
-- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_std.cmxs
-- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_std.cmi
-- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_std.cmx
-- Installed /home/opam/.opam/4.02.1/lib/deriving/id.ml
-- Installed /home/opam/.opam/4.02.1/lib/deriving/utils.mli
-- Installed /home/opam/.opam/4.02.1/lib/deriving/type.mli
-- Installed /home/opam/.opam/4.02.1/lib/deriving/defs.mli
-- Installed /home/opam/.opam/4.02.1/lib/deriving/clusters.mli
-- Installed /home/opam/.opam/4.02.1/lib/deriving/base.mli
-- Installed /home/opam/.opam/4.02.1/lib/deriving/extend.mli
-- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_common.cmi
-- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_common.cma
-- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_common.cmxa
-- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_common.a
-- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_common.cmxs
-- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_common.cmx
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_num.mli
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_num.cma
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_num.cmxa
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_num.a
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_num.cmxs
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_num.cmi
-- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_num.cmx
-- Installed /home/opam/.opam/4.02.1/lib/deriving/META
--> installed deriving.0.7
 + make  (CWD=/home/opam/.opam/4.02.1/build/apron.20150518)
 - (cd mlgmpidl; make all install)
 - make[1]: Entering directory '/home/opam/.opam/4.02.1/build/apron.20150518/mlgmpidl'
@@ -5156,6 +4835,173 @@ The following actions will be performed:
 - cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99  -U__STRICT_ANSI__ -fPIC -g -O0 -UNDEBUG -I/home/opam/.opam/4.02.1/lib/gmp -I../apron -I/usr/include -I/usr/include -I/home/opam/.opam/4.02.1/lib/ocaml -I/home/opam/.opam/4.02.1/lib/camlidl -fPIC -c -o texpr1_caml_debug.o texpr1_caml.c
 - cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99  -U__STRICT_ANSI__ -fPIC -g -O0 -UNDEBUG -I/home/opam/.opam/4.02.1/lib/gmp -I../apron -I/usr/include -I/usr/include -I/home/opam/.opam/4.02.1/lib/ocaml -I/home/opam/.opam/4.02.1/lib/camlidl -fPIC -c -o tcons1_caml_debug.o tcons1_caml.c
 - cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99  -U__STRICT_ANSI__ -fPIC -g -O0 -UNDEBUG -I/home/opam/.opam/4.02.1/lib/gmp -I../apron -I/usr/include -I/usr/include -I/home/opam/.opam/4.02.1/lib/ocaml -I/home/opam/.opam/4.02.1/lib/camlidl -fPIC -c -o abstract1_caml_debug.o abstract1_caml.c
+- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99  -U__STRICT_ANSI__ -fPIC -g -O0 -UNDEBUG -I/home/opam/.opam/4.02.1/lib/gmp -I../apron -I/usr/include -I/usr/include -I/home/opam/.opam/4.02.1/lib/ocaml -I/home/opam/.opam/4.02.1/lib/camlidl -fPIC -c -o policy_caml_debug.o policy_caml.c
+- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99  -U__STRICT_ANSI__ -fPIC -g -O0 -UNDEBUG -I/home/opam/.opam/4.02.1/lib/gmp -I../apron -I/usr/include -I/usr/include -I/home/opam/.opam/4.02.1/lib/ocaml -I/home/opam/.opam/4.02.1/lib/camlidl -fPIC -c -o disjunction_caml_debug.o disjunction_caml.c
+- ar rc libapron_caml_debug.a apron_caml_debug.o scalar_caml_debug.o interval_caml_debug.o coeff_caml_debug.o dim_caml_debug.o linexpr0_caml_debug.o lincons0_caml_debug.o generator0_caml_debug.o texpr0_caml_debug.o tcons0_caml_debug.o manager_caml_debug.o abstract0_caml_debug.o var_caml_debug.o environment_caml_debug.o linexpr1_caml_debug.o lincons1_caml_debug.o generator1_caml_debug.o texpr1_caml_debug.o tcons1_caml_debug.o abstract1_caml_debug.o policy_caml_debug.o disjunction_caml_debug.o
+- ranlib libapron_caml_debug.a
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c scalar.ml
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c interval.ml
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c coeff.ml
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c dim.ml
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c linexpr0.ml
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c lincons0.ml
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c generator0.ml
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c texpr0.ml
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c tcons0.ml
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c manager.ml
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c abstract0.ml
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c var.ml
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c environment.ml
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c linexpr1.ml
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c lincons1.ml
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c generator1.ml
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c texpr1.ml
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c tcons1.ml
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c abstract1.ml
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c policy.ml
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c disjunction.ml
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c apron_parser.ml
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c apron_lexer.ml
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c parser.ml
+- ocamlopt.opt -inline 20 -pack -o apron.cmx scalar.cmx interval.cmx coeff.cmx dim.cmx linexpr0.cmx lincons0.cmx generator0.cmx texpr0.cmx tcons0.cmx manager.cmx abstract0.cmx var.cmx environment.cmx linexpr1.cmx lincons1.cmx generator1.cmx texpr1.cmx tcons1.cmx abstract1.cmx policy.cmx disjunction.cmx apron_parser.cmx apron_lexer.cmx parser.cmx
+- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o apron -oc apron_caml apron.cmx -L/home/opam/.opam/4.02.1/share/apron/lib -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm -L../apron
+- + ocamlopt.opt -a -o apron.cmxa  apron.cmx -cclib -lapron_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron/lib:/usr/lib -cclib -L../apron -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron/lib -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
+- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o apron.d -oc apron_caml_debug apron.cmx -L/home/opam/.opam/4.02.1/share/apron/lib -lapron_debug -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm -L../apron
+- + ocamlopt.opt -a -o apron.d.cmxa  apron.cmx -cclib -lapron_caml_debug  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron/lib:/usr/lib -cclib -L../apron -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron/lib -cclib -lapron_debug -cclib -lmpfr -cclib -lgmp -cclib -lm 
+- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dllapron_caml.so apron_caml.o scalar_caml.o interval_caml.o coeff_caml.o dim_caml.o linexpr0_caml.o lincons0_caml.o generator0_caml.o texpr0_caml.o tcons0_caml.o manager_caml.o abstract0_caml.o var_caml.o environment_caml.o linexpr1_caml.o lincons1_caml.o generator1_caml.o texpr1_caml.o tcons1_caml.o abstract1_caml.o policy_caml.o disjunction_caml.o -L/home/opam/.opam/4.02.1/share/apron/lib -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm -L../apron
+- make[2]: Leaving directory '/home/opam/.opam/4.02.1/build/apron.20150518/apron/mlapronidl'
+- (cd newpolka; make ml)
+- make[2]: Entering directory '/home/opam/.opam/4.02.1/build/apron.20150518/apron/newpolka'
+- ocamlc.opt -g -I /home/opam/.opam/4.02.1/lib/gmp -I ../mlapronidl -c polka.mli
+- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -I/home/opam/.opam/4.02.1/lib/gmp -I../apron -I../num -I../itv -I../mlapronidl -I/usr/include -I/usr/include -I/home/opam/.opam/4.02.1/lib/camlidl -I/home/opam/.opam/4.02.1/lib/ocaml -DNUMINT_MPQ -c -o polka_caml.o polka_caml.c
+- ar rcs libpolkaMPQ_caml.a polka_caml.o
+- ranlib libpolkaMPQ_caml.a
+- ocamlc.opt -g -I /home/opam/.opam/4.02.1/lib/gmp -I ../mlapronidl -c polka.ml
+- ocamlmklib -ocamlc "ocamlc.opt" -verbose -o polkaMPQ -oc polkaMPQ_caml polka.cmo -L. -lpolkaMPQ -L../apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm
+- + ocamlc.opt -a  -o polkaMPQ.cma  polka.cmo -dllib -lpolkaMPQ_caml -cclib -lpolkaMPQ_caml  -ccopt -Wl,-rpath,/usr/lib -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L../apron -cclib -L. -cclib -lpolkaMPQ -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
+- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99  -U__STRICT_ANSI__ -fPIC -g -O0 -UNDEBUG -I/home/opam/.opam/4.02.1/lib/gmp -I../apron -I../num -I../itv -I../mlapronidl -I/usr/include -I/usr/include -I/home/opam/.opam/4.02.1/lib/camlidl -I/home/opam/.opam/4.02.1/lib/ocaml -DNUMINT_MPQ -c -o polka_caml_debug.o polka_caml.c
+- ar rcs libpolkaMPQ_caml_debug.a polka_caml_debug.o
+- ranlib libpolkaMPQ_caml_debug.a
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -I ../mlapronidl -c polka.ml
+- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o polkaMPQ -oc polkaMPQ_caml polka.cmx -L. -lpolkaMPQ -L../apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm
+- + ocamlopt.opt -a -o polkaMPQ.cmxa  polka.cmx -cclib -lpolkaMPQ_caml  -ccopt -Wl,-rpath,/usr/lib -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L../apron -cclib -L. -cclib -lpolkaMPQ -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
+- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o polkaMPQ.d -oc polkaMPQ_caml_debug polka.cmx -L. -lpolkaMPQ_debug -L../apron -lapron_debug -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm
+- + ocamlopt.opt -a -o polkaMPQ.d.cmxa  polka.cmx -cclib -lpolkaMPQ_caml_debug  -ccopt -Wl,-rpath,/usr/lib -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L../apron -cclib -L. -cclib -lpolkaMPQ_debug -cclib -lapron_debug -cclib -lmpfr -cclib -lgmp -cclib -lm 
+- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dllpolkaMPQ_caml.so polka_caml.o -L. -lpolkaMPQ -L../apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm
+- ar rcs libpolkaRll_caml.a polka_caml.o
+- ranlib libpolkaRll_caml.a
+- ocamlmklib -ocamlc "ocamlc.opt" -verbose -o polkaRll -oc polkaRll_caml polka.cmo -L. -lpolkaRll -L../apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm
+- + ocamlc.opt -a  -o polkaRll.cma  polka.cmo -dllib -lpolkaRll_caml -cclib -lpolkaRll_caml  -ccopt -Wl,-rpath,/usr/lib -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L../apron -cclib -L. -cclib -lpolkaRll -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
+- ar rcs libpolkaRll_caml_debug.a polka_caml_debug.o
+- ranlib libpolkaRll_caml_debug.a
+- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o polkaRll -oc polkaRll_caml polka.cmx -L. -lpolkaRll -L../apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm
+- + ocamlopt.opt -a -o polkaRll.cmxa  polka.cmx -cclib -lpolkaRll_caml  -ccopt -Wl,-rpath,/usr/lib -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L../apron -cclib -L. -cclib -lpolkaRll -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
+- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o polkaRll.d -oc polkaRll_caml_debug polka.cmx -L. -lpolkaRll_debug -L../apron -lapron_debug -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm
+- + ocamlopt.opt -a -o polkaRll.d.cmxa  polka.cmx -cclib -lpolkaRll_caml_debug  -ccopt -Wl,-rpath,/usr/lib -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L../apron -cclib -L. -cclib -lpolkaRll_debug -cclib -lapron_debug -cclib -lmpfr -cclib -lgmp -cclib -lm 
+- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dllpolkaRll_caml.so polka_caml.o -L. -lpolkaRll -L../apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm
+- rm polka_caml_debug.o polka_caml.o
+- make[2]: Leaving directory '/home/opam/.opam/4.02.1/build/apron.20150518/apron/newpolka'
+- (cd box; make ml)
+- make[2]: Entering directory '/home/opam/.opam/4.02.1/build/apron.20150518/apron/box'
+- ocamlc.opt -g -I /home/opam/.opam/4.02.1/lib/gmp -I ../mlapronidl -c box.mli
+- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -I/home/opam/.opam/4.02.1/lib/gmp -I../num -I../itv -I../apron -I../mlapronidl -I/usr/include -I/usr/include -I/home/opam/.opam/4.02.1/lib/camlidl -I/home/opam/.opam/4.02.1/lib/ocaml -I../apron -DNUM_MPQ -c -o box_caml.o box_caml.c
+- ar rcs libboxMPQ_caml.a box_caml.o
+- ranlib libboxMPQ_caml.a
+- ocamlc.opt -g -I /home/opam/.opam/4.02.1/lib/gmp -I ../mlapronidl -c box.ml
+- ocamlmklib -ocamlc "ocamlc.opt" -verbose -o boxMPQ -oc boxMPQ_caml box.cmo -L. -lboxMPQ -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm  -L../apron
+- + ocamlc.opt -a  -o boxMPQ.cma  box.cmo -dllib -lboxMPQ_caml -cclib -lboxMPQ_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L../apron -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L. -cclib -lboxMPQ -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
+- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99  -U__STRICT_ANSI__ -fPIC -g -O0 -UNDEBUG -I/home/opam/.opam/4.02.1/lib/gmp -I../num -I../itv -I../apron -I../mlapronidl -I/usr/include -I/usr/include -I/home/opam/.opam/4.02.1/lib/camlidl -I/home/opam/.opam/4.02.1/lib/ocaml -I../apron -DNUM_MPQ -c -o box_caml_debug.o box_caml.c
+- ar rcs libboxMPQ_caml_debug.a box_caml_debug.o
+- ranlib libboxMPQ_caml_debug.a
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -I ../mlapronidl -c box.ml
+- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o boxMPQ -oc boxMPQ_caml box.cmx -L/home/opam/.opam/4.02.1/share/apron/lib -L. -lboxMPQ -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm  -L../apron
+- + ocamlopt.opt -a -o boxMPQ.cmxa  box.cmx -cclib -lboxMPQ_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron/lib:/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L../apron -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L. -cclib -L/home/opam/.opam/4.02.1/share/apron/lib -cclib -lboxMPQ -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
+- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dllboxMPQ_caml.so box_caml.o -L. -lboxMPQ -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm  -L../apron
+- ar rcs libboxD_caml.a box_caml.o
+- ranlib libboxD_caml.a
+- ocamlmklib -ocamlc "ocamlc.opt" -verbose -o boxD -oc boxD_caml box.cmo -L. -lboxD -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm  -L../apron
+- + ocamlc.opt -a  -o boxD.cma  box.cmo -dllib -lboxD_caml -cclib -lboxD_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L../apron -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L. -cclib -lboxD -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
+- ar rcs libboxD_caml_debug.a box_caml_debug.o
+- ranlib libboxD_caml_debug.a
+- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o boxD -oc boxD_caml box.cmx -L/home/opam/.opam/4.02.1/share/apron/lib -L. -lboxD -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm  -L../apron
+- + ocamlopt.opt -a -o boxD.cmxa  box.cmx -cclib -lboxD_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron/lib:/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L../apron -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L. -cclib -L/home/opam/.opam/4.02.1/share/apron/lib -cclib -lboxD -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
+- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dllboxD_caml.so box_caml.o -L. -lboxD -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm  -L../apron
+- ar rcs libboxMPFR_caml.a box_caml.o
+- ranlib libboxMPFR_caml.a
+- ocamlmklib -ocamlc "ocamlc.opt" -verbose -o boxMPFR -oc boxMPFR_caml box.cmo -L. -lboxMPFR -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm  -L../apron
+- + ocamlc.opt -a  -o boxMPFR.cma  box.cmo -dllib -lboxMPFR_caml -cclib -lboxMPFR_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L../apron -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L. -cclib -lboxMPFR -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
+- ar rcs libboxMPFR_caml_debug.a box_caml_debug.o
+- ranlib libboxMPFR_caml_debug.a
+- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o boxMPFR -oc boxMPFR_caml box.cmx -L/home/opam/.opam/4.02.1/share/apron/lib -L. -lboxMPFR -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm  -L../apron
+- + ocamlopt.opt -a -o boxMPFR.cmxa  box.cmx -cclib -lboxMPFR_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron/lib:/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L../apron -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L. -cclib -L/home/opam/.opam/4.02.1/share/apron/lib -cclib -lboxMPFR -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
+- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dllboxMPFR_caml.so box_caml.o -L. -lboxMPFR -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm  -L../apron
+- make[2]: Leaving directory '/home/opam/.opam/4.02.1/build/apron.20150518/apron/box'
+- (cd octagons; make mlMPQ mlD)
+- make[2]: Entering directory '/home/opam/.opam/4.02.1/build/apron.20150518/apron/octagons'
+- ocamlc.opt -g -I /home/opam/.opam/4.02.1/lib/gmp -I ../mlapronidl -c oct.mli
+- ocamlc.opt -g -I /home/opam/.opam/4.02.1/lib/gmp -I ../mlapronidl -c oct.ml
+- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -I/home/opam/.opam/4.02.1/lib/gmp -I../newpolka -I../apron -I../mlapronidl -I../num -I../itv -I/usr/include -I/usr/include -I/home/opam/.opam/4.02.1/lib/ocaml -I/home/opam/.opam/4.02.1/lib/camlidl -c -o oct_caml.o oct_caml.c
+- ar rcs liboctMPQ_caml.a oct_caml.o
+- ranlib liboctMPQ_caml.a
+- ocamlmklib -ocamlc "ocamlc.opt" -verbose -o octMPQ -oc octMPQ_caml oct.cmo -L. -loctMPQ -L../apron -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm  -L../apron
+- + ocamlc.opt -a  -o octMPQ.cma  oct.cmo -dllib -loctMPQ_caml -cclib -loctMPQ_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L../apron -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L../apron -cclib -L. -cclib -loctMPQ -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
+- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99  -U__STRICT_ANSI__ -fPIC -g -O0 -UNDEBUG -I/home/opam/.opam/4.02.1/lib/gmp -I../newpolka -I../apron -I../mlapronidl -I../num -I../itv -I/usr/include -I/usr/include -I/home/opam/.opam/4.02.1/lib/ocaml -I/home/opam/.opam/4.02.1/lib/camlidl -c -o oct_caml_debug.o oct_caml.c
+- ar rcs liboctMPQ_caml_debug.a oct_caml_debug.o
+- ranlib liboctMPQ_caml_debug.a
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -I ../mlapronidl -c oct.ml
+- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o octMPQ -oc octMPQ_caml oct.cmx -L. -loctMPQ -L../apron -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm  -L../apron
+- + ocamlopt.opt -a -o octMPQ.cmxa  oct.cmx -cclib -loctMPQ_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L../apron -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L../apron -cclib -L. -cclib -loctMPQ -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
+- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dlloctMPQ_caml.so oct_caml.o -L. -loctMPQ -L../apron -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm 
+- ar rcs liboctD_caml.a oct_caml.o
+- ranlib liboctD_caml.a
+- ocamlmklib -ocamlc "ocamlc.opt" -verbose -o octD -oc octD_caml oct.cmo -L. -loctD -L../apron -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm  -L../apron
+- + ocamlc.opt -a  -o octD.cma  oct.cmo -dllib -loctD_caml -cclib -loctD_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L../apron -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L../apron -cclib -L. -cclib -loctD -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
+- ar rcs liboctD_caml_debug.a oct_caml_debug.o
+- ranlib liboctD_caml_debug.a
+- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o octD -oc octD_caml oct.cmx -L. -loctD -L../apron -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm  -L../apron
+- + ocamlopt.opt -a -o octD.cmxa  oct.cmx -cclib -loctD_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L../apron -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L../apron -cclib -L. -cclib -loctD -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
+- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dlloctD_caml.so oct_caml.o -L. -loctD -L../apron -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm 
+- rm oct_caml_debug.o oct_caml.o
+- make[2]: Leaving directory '/home/opam/.opam/4.02.1/build/apron.20150518/apron/octagons'
+- (cd taylor1plus; make ml)
+- make[2]: Entering directory '/home/opam/.opam/4.02.1/build/apron.20150518/apron/taylor1plus'
+- ocamlc.opt -g -I /home/opam/.opam/4.02.1/lib/gmp -I ../mlapronidl -c t1p.mli
+- cc  -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -I/home/opam/.opam/4.02.1/lib/gmp -I../num -I../itv -I../apron -I../mlapronidl -I/usr/include -I/usr/include -I/home/opam/.opam/4.02.1/lib/camlidl -I/home/opam/.opam/4.02.1/lib/ocaml -DNUM_MPQ -c -o t1p_caml.o t1p_caml.c
+- ar rcs libt1pMPQ_caml.a t1p_caml.o
+- ranlib libt1pMPQ_caml.a
+- ocamlc.opt -g -I /home/opam/.opam/4.02.1/lib/gmp -I ../mlapronidl -c t1p.ml
+- ocamlmklib -ocamlc "ocamlc.opt" -verbose -o t1pMPQ -oc t1pMPQ_caml t1p.cmo -L. -lt1pMPQ -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lgmpxx -lgmp -L/usr/lib -lmpfr -lstdc++ -lm 
+- + ocamlc.opt -a  -o t1pMPQ.cma  t1p.cmo -dllib -lt1pMPQ_caml -cclib -lt1pMPQ_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L. -cclib -lt1pMPQ -cclib -lapron -cclib -lgmpxx -cclib -lgmp -cclib -lmpfr -cclib -lstdc++ -cclib -lm 
+- cc  -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99  -U__STRICT_ANSI__ -fPIC -g -O0 -UNDEBUG -D_GET_CPU_TIME -D_T1P_DEBUG  -I/home/opam/.opam/4.02.1/lib/gmp -I../num -I../itv -I../apron -I../mlapronidl -I/usr/include -I/usr/include -I/home/opam/.opam/4.02.1/lib/camlidl -I/home/opam/.opam/4.02.1/lib/ocaml -DNUM_MPQ -c -o t1p_caml_debug.o t1p_caml.c
+- ar rcs libt1pMPQ_caml_debug.a t1p_caml_debug.o
+- ranlib libt1pMPQ_caml_debug.a
+- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -I ../mlapronidl -c t1p.ml
+- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o t1pMPQ -oc t1pMPQ_caml t1p.cmx -L/home/opam/.opam/4.02.1/share/apron/lib -L. -lt1pMPQ -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lgmpxx -lgmp -L/usr/lib -lmpfr -lstdc++ -lm 
+- + ocamlopt.opt -a -o t1pMPQ.cmxa  t1p.cmx -cclib -lt1pMPQ_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron/lib:/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L. -cclib -L/home/opam/.opam/4.02.1/share/apron/lib -cclib -lt1pMPQ -cclib -lapron -cclib -lgmpxx -cclib -lgmp -cclib -lmpfr -cclib -lstdc++ -cclib -lm 
+- cc  -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dllt1pMPQ_caml.so t1p_caml.o  -L. -lt1pMPQ -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lgmpxx -lgmp -L/usr/lib -lmpfr -lstdc++ -lm -L../apron
+- cc  -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dllt1pMPQ_caml_debug.so t1p_caml_debug.o -L. -lt1pMPQ_debug -L/home/opam/.opam/4.02.1/share/apron -lapron_debug -L/usr/lib -lgmpxx -lgmp -L/usr/lib -lmpfr -lstdc++ -lm -L../apron
+- ar rcs libt1pD_caml.a t1p_caml.o
+- ranlib libt1pD_caml.a
+- ocamlmklib -ocamlc "ocamlc.opt" -verbose -o t1pD -oc t1pD_caml t1p.cmo -L. -lt1pD -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lgmpxx -lgmp -L/usr/lib -lmpfr -lstdc++ -lm 
+- + ocamlc.opt -a  -o t1pD.cma  t1p.cmo -dllib -lt1pD_caml -cclib -lt1pD_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L. -cclib -lt1pD -cclib -lapron -cclib -lgmpxx -cclib -lgmp -cclib -lmpfr -cclib -lstdc++ -cclib -lm 
+- ar rcs libt1pD_caml_debug.a t1p_caml_debug.o
+- ranlib libt1pD_caml_debug.a
+- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o t1pD -oc t1pD_caml t1p.cmx -L/home/opam/.opam/4.02.1/share/apron/lib -L. -lt1pD -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lgmpxx -lgmp -L/usr/lib -lmpfr -lstdc++ -lm 
+- + ocamlopt.opt -a -o t1pD.cmxa  t1p.cmx -cclib -lt1pD_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron/lib:/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L. -cclib -L/home/opam/.opam/4.02.1/share/apron/lib -cclib -lt1pD -cclib -lapron -cclib -lgmpxx -cclib -lgmp -cclib -lmpfr -cclib -lstdc++ -cclib -lm 
+- cc  -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dllt1pD_caml.so t1p_caml.o  -L. -lt1pD -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lgmpxx -lgmp -L/usr/lib -lmpfr -lstdc++ -lm -L../apron
+- cc  -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dllt1pD_caml_debug.so t1p_caml_debug.o -L. -lt1pD_debug -L/home/opam/.opam/4.02.1/share/apron -lapron_debug -L/usr/lib -lgmpxx -lgmp -L/usr/lib -lmpfr -lstdc++ -lm -L../apron
+- ar rcs libt1pMPFR_caml.a t1p_caml.o
+- ranlib libt1pMPFR_caml.a
+- ocamlmklib -ocamlc "ocamlc.opt" -verbose -o t1pMPFR -oc t1pMPFR_caml t1p.cmo -L. -lt1pMPFR -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lgmpxx -lgmp -L/usr/lib -lmpfr -lstdc++ -lm 
+- + ocamlc.opt -a  -o t1pMPFR.cma  t1p.cmo -dllib -lt1pMPFR_caml -cclib -lt1pMPFR_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L. -cclib -lt1pMPFR -cclib -lapron -cclib -lgmpxx -cclib -lgmp -cclib -lmpfr -cclib -lstdc++ -cclib -lm 
+- ar rcs libt1pMPFR_caml_debug.a t1p_caml_debug.o
+- ranlib libt1pMPFR_caml_debug.a
+- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o t1pMPFR -oc t1pMPFR_caml t1p.cmx -L/home/opam/.opam/4.02.1/share/apron/lib -L. -lt1pMPFR -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lgmpxx -lgmp -L/usr/lib -lmpfr -lstdc++ -lm 
+- + ocamlopt.opt -a -o t1pMPFR.cmxa  t1p.cmx -cclib -lt1pMPFR_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron/lib:/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L. -cclib -L/home/opam/.opam/4.02.1/share/apron/lib -cclib -lt1pMPFR -cclib -lapron -cclib -lgmpxx -cclib -lgmp -cclib -lmpfr -cclib -lstdc++ -cclib -lm 
+- cc  -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dllt1pMPFR_caml.so t1p_caml.o  -L. -lt1pMPFR -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lgmpxx -lgmp -L/usr/lib -lmpfr -lstdc++ -lm -L../apron
+- cc  -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dllt1pMPFR_caml_debug.so t1p_caml_debug.o -L. -lt1pMPFR_debug -L/home/opam/.opam/4.02.1/share/apron -lapron_debug -L/usr/lib -lgmpxx -lgmp -L/usr/lib -lmpfr -lstdc++ -lm -L../apron
+- make[2]: Leaving directory '/home/opam/.opam/4.02.1/build/apron.20150518/apron/taylor1plus'
+- make[1]: Leaving directory '/home/opam/.opam/4.02.1/build/apron.20150518/apron'
 - Removed /home/opam/.opam/4.02.1/lib/stublibs/dllgmp_caml.so
 - Removed /home/opam/.opam/4.02.1/lib/stublibs/dllgmp_caml.so.owner
 - Removed /home/opam/.opam/4.02.1/lib/gmp
@@ -13640,24 +13486,6 @@ The following actions will be performed:
 - abstract1_caml.c:245:93: warning: unused parameter '_ctx' [-Wunused-parameter]
 -  value camlidl_c2ml_abstract1_struct_ap_abstract1_t(struct ap_abstract1_t * _c1, camlidl_ctx _ctx)
 -                                                                                              ^
-- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99  -U__STRICT_ANSI__ -fPIC -g -O0 -UNDEBUG -I/home/opam/.opam/4.02.1/lib/gmp -I../apron -I/usr/include -I/usr/include -I/home/opam/.opam/4.02.1/lib/ocaml -I/home/opam/.opam/4.02.1/lib/camlidl -fPIC -c -o policy_caml_debug.o policy_caml.c
-- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99  -U__STRICT_ANSI__ -fPIC -g -O0 -UNDEBUG -I/home/opam/.opam/4.02.1/lib/gmp -I../apron -I/usr/include -I/usr/include -I/home/opam/.opam/4.02.1/lib/ocaml -I/home/opam/.opam/4.02.1/lib/camlidl -fPIC -c -o disjunction_caml_debug.o disjunction_caml.c
-- ar rc libapron_caml_debug.a apron_caml_debug.o scalar_caml_debug.o interval_caml_debug.o coeff_caml_debug.o dim_caml_debug.o linexpr0_caml_debug.o lincons0_caml_debug.o generator0_caml_debug.o texpr0_caml_debug.o tcons0_caml_debug.o manager_caml_debug.o abstract0_caml_debug.o var_caml_debug.o environment_caml_debug.o linexpr1_caml_debug.o lincons1_caml_debug.o generator1_caml_debug.o texpr1_caml_debug.o tcons1_caml_debug.o abstract1_caml_debug.o policy_caml_debug.o disjunction_caml_debug.o
-- ranlib libapron_caml_debug.a
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c scalar.ml
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c interval.ml
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c coeff.ml
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c dim.ml
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c linexpr0.ml
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c lincons0.ml
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c generator0.ml
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c texpr0.ml
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c tcons0.ml
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c manager.ml
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c abstract0.ml
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c var.ml
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c environment.ml
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c linexpr1.ml
 - In file included from policy_caml.c:22:0:
 - ../apron/ap_policy.h: In function 'ap_policy_cons':
 - ../apron/ap_policy.h:177:69: warning: unused parameter 'oldpolicy' [-Wunused-parameter]
@@ -13669,67 +13497,6 @@ The following actions will be performed:
 - ../apron/ap_policy.h:177:69: warning: unused parameter 'oldpolicy' [-Wunused-parameter]
 -  ap_policy_t* ap_policy_cons(ap_policy_manager_t* pman, ap_policy_t* oldpolicy, void* newvalue)
 -                                                                      ^
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c lincons1.ml
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c generator1.ml
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c texpr1.ml
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c tcons1.ml
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c abstract1.ml
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c policy.ml
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c disjunction.ml
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c apron_parser.ml
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c apron_lexer.ml
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -for-pack Apron -c parser.ml
-- ocamlopt.opt -inline 20 -pack -o apron.cmx scalar.cmx interval.cmx coeff.cmx dim.cmx linexpr0.cmx lincons0.cmx generator0.cmx texpr0.cmx tcons0.cmx manager.cmx abstract0.cmx var.cmx environment.cmx linexpr1.cmx lincons1.cmx generator1.cmx texpr1.cmx tcons1.cmx abstract1.cmx policy.cmx disjunction.cmx apron_parser.cmx apron_lexer.cmx parser.cmx
-- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o apron -oc apron_caml apron.cmx -L/home/opam/.opam/4.02.1/share/apron/lib -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm -L../apron
-- + ocamlopt.opt -a -o apron.cmxa  apron.cmx -cclib -lapron_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron/lib:/usr/lib -cclib -L../apron -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron/lib -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
-- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o apron.d -oc apron_caml_debug apron.cmx -L/home/opam/.opam/4.02.1/share/apron/lib -lapron_debug -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm -L../apron
-- + ocamlopt.opt -a -o apron.d.cmxa  apron.cmx -cclib -lapron_caml_debug  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron/lib:/usr/lib -cclib -L../apron -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron/lib -cclib -lapron_debug -cclib -lmpfr -cclib -lgmp -cclib -lm 
-- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dllapron_caml.so apron_caml.o scalar_caml.o interval_caml.o coeff_caml.o dim_caml.o linexpr0_caml.o lincons0_caml.o generator0_caml.o texpr0_caml.o tcons0_caml.o manager_caml.o abstract0_caml.o var_caml.o environment_caml.o linexpr1_caml.o lincons1_caml.o generator1_caml.o texpr1_caml.o tcons1_caml.o abstract1_caml.o policy_caml.o disjunction_caml.o -L/home/opam/.opam/4.02.1/share/apron/lib -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm -L../apron
-- make[2]: Leaving directory '/home/opam/.opam/4.02.1/build/apron.20150518/apron/mlapronidl'
-- (cd newpolka; make ml)
-- make[2]: Entering directory '/home/opam/.opam/4.02.1/build/apron.20150518/apron/newpolka'
-- ocamlc.opt -g -I /home/opam/.opam/4.02.1/lib/gmp -I ../mlapronidl -c polka.mli
-- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -I/home/opam/.opam/4.02.1/lib/gmp -I../apron -I../num -I../itv -I../mlapronidl -I/usr/include -I/usr/include -I/home/opam/.opam/4.02.1/lib/camlidl -I/home/opam/.opam/4.02.1/lib/ocaml -DNUMINT_MPQ -c -o polka_caml.o polka_caml.c
-- ar rcs libpolkaMPQ_caml.a polka_caml.o
-- ranlib libpolkaMPQ_caml.a
-- ocamlc.opt -g -I /home/opam/.opam/4.02.1/lib/gmp -I ../mlapronidl -c polka.ml
-- ocamlmklib -ocamlc "ocamlc.opt" -verbose -o polkaMPQ -oc polkaMPQ_caml polka.cmo -L. -lpolkaMPQ -L../apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm
-- + ocamlc.opt -a  -o polkaMPQ.cma  polka.cmo -dllib -lpolkaMPQ_caml -cclib -lpolkaMPQ_caml  -ccopt -Wl,-rpath,/usr/lib -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L../apron -cclib -L. -cclib -lpolkaMPQ -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
-- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99  -U__STRICT_ANSI__ -fPIC -g -O0 -UNDEBUG -I/home/opam/.opam/4.02.1/lib/gmp -I../apron -I../num -I../itv -I../mlapronidl -I/usr/include -I/usr/include -I/home/opam/.opam/4.02.1/lib/camlidl -I/home/opam/.opam/4.02.1/lib/ocaml -DNUMINT_MPQ -c -o polka_caml_debug.o polka_caml.c
-- ar rcs libpolkaMPQ_caml_debug.a polka_caml_debug.o
-- ranlib libpolkaMPQ_caml_debug.a
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -I ../mlapronidl -c polka.ml
-- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o polkaMPQ -oc polkaMPQ_caml polka.cmx -L. -lpolkaMPQ -L../apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm
-- + ocamlopt.opt -a -o polkaMPQ.cmxa  polka.cmx -cclib -lpolkaMPQ_caml  -ccopt -Wl,-rpath,/usr/lib -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L../apron -cclib -L. -cclib -lpolkaMPQ -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
-- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o polkaMPQ.d -oc polkaMPQ_caml_debug polka.cmx -L. -lpolkaMPQ_debug -L../apron -lapron_debug -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm
-- + ocamlopt.opt -a -o polkaMPQ.d.cmxa  polka.cmx -cclib -lpolkaMPQ_caml_debug  -ccopt -Wl,-rpath,/usr/lib -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L../apron -cclib -L. -cclib -lpolkaMPQ_debug -cclib -lapron_debug -cclib -lmpfr -cclib -lgmp -cclib -lm 
-- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dllpolkaMPQ_caml.so polka_caml.o -L. -lpolkaMPQ -L../apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm
-- ar rcs libpolkaRll_caml.a polka_caml.o
-- ranlib libpolkaRll_caml.a
-- ocamlmklib -ocamlc "ocamlc.opt" -verbose -o polkaRll -oc polkaRll_caml polka.cmo -L. -lpolkaRll -L../apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm
-- + ocamlc.opt -a  -o polkaRll.cma  polka.cmo -dllib -lpolkaRll_caml -cclib -lpolkaRll_caml  -ccopt -Wl,-rpath,/usr/lib -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L../apron -cclib -L. -cclib -lpolkaRll -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
-- ar rcs libpolkaRll_caml_debug.a polka_caml_debug.o
-- ranlib libpolkaRll_caml_debug.a
-- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o polkaRll -oc polkaRll_caml polka.cmx -L. -lpolkaRll -L../apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm
-- + ocamlopt.opt -a -o polkaRll.cmxa  polka.cmx -cclib -lpolkaRll_caml  -ccopt -Wl,-rpath,/usr/lib -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L../apron -cclib -L. -cclib -lpolkaRll -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
-- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o polkaRll.d -oc polkaRll_caml_debug polka.cmx -L. -lpolkaRll_debug -L../apron -lapron_debug -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm
-- + ocamlopt.opt -a -o polkaRll.d.cmxa  polka.cmx -cclib -lpolkaRll_caml_debug  -ccopt -Wl,-rpath,/usr/lib -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L../apron -cclib -L. -cclib -lpolkaRll_debug -cclib -lapron_debug -cclib -lmpfr -cclib -lgmp -cclib -lm 
-- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dllpolkaRll_caml.so polka_caml.o -L. -lpolkaRll -L../apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm
-- rm polka_caml_debug.o polka_caml.o
-- make[2]: Leaving directory '/home/opam/.opam/4.02.1/build/apron.20150518/apron/newpolka'
-- (cd box; make ml)
-- make[2]: Entering directory '/home/opam/.opam/4.02.1/build/apron.20150518/apron/box'
-- ocamlc.opt -g -I /home/opam/.opam/4.02.1/lib/gmp -I ../mlapronidl -c box.mli
-- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -I/home/opam/.opam/4.02.1/lib/gmp -I../num -I../itv -I../apron -I../mlapronidl -I/usr/include -I/usr/include -I/home/opam/.opam/4.02.1/lib/camlidl -I/home/opam/.opam/4.02.1/lib/ocaml -I../apron -DNUM_MPQ -c -o box_caml.o box_caml.c
-- ar rcs libboxMPQ_caml.a box_caml.o
-- ranlib libboxMPQ_caml.a
-- ocamlc.opt -g -I /home/opam/.opam/4.02.1/lib/gmp -I ../mlapronidl -c box.ml
-- ocamlmklib -ocamlc "ocamlc.opt" -verbose -o boxMPQ -oc boxMPQ_caml box.cmo -L. -lboxMPQ -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm  -L../apron
-- + ocamlc.opt -a  -o boxMPQ.cma  box.cmo -dllib -lboxMPQ_caml -cclib -lboxMPQ_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L../apron -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L. -cclib -lboxMPQ -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
-- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99  -U__STRICT_ANSI__ -fPIC -g -O0 -UNDEBUG -I/home/opam/.opam/4.02.1/lib/gmp -I../num -I../itv -I../apron -I../mlapronidl -I/usr/include -I/usr/include -I/home/opam/.opam/4.02.1/lib/camlidl -I/home/opam/.opam/4.02.1/lib/ocaml -I../apron -DNUM_MPQ -c -o box_caml_debug.o box_caml.c
-- ar rcs libboxMPQ_caml_debug.a box_caml_debug.o
-- ranlib libboxMPQ_caml_debug.a
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -I ../mlapronidl -c box.ml
 - In file included from ../mlapronidl/apron_caml.h:336:0,
 -                  from polka_caml.c:19:
 - ../apron/ap_policy.h: In function 'ap_policy_cons':
@@ -13800,44 +13567,6 @@ The following actions will be performed:
 - box_caml.c:258:43: warning: unused parameter '_unit' [-Wunused-parameter]
 -  value camlidl_box_box_manager_alloc(value _unit)
 -                                            ^
-- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o boxMPQ -oc boxMPQ_caml box.cmx -L/home/opam/.opam/4.02.1/share/apron/lib -L. -lboxMPQ -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm  -L../apron
-- + ocamlopt.opt -a -o boxMPQ.cmxa  box.cmx -cclib -lboxMPQ_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron/lib:/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L../apron -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L. -cclib -L/home/opam/.opam/4.02.1/share/apron/lib -cclib -lboxMPQ -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
-- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dllboxMPQ_caml.so box_caml.o -L. -lboxMPQ -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm  -L../apron
-- ar rcs libboxD_caml.a box_caml.o
-- ranlib libboxD_caml.a
-- ocamlmklib -ocamlc "ocamlc.opt" -verbose -o boxD -oc boxD_caml box.cmo -L. -lboxD -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm  -L../apron
-- + ocamlc.opt -a  -o boxD.cma  box.cmo -dllib -lboxD_caml -cclib -lboxD_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L../apron -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L. -cclib -lboxD -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
-- ar rcs libboxD_caml_debug.a box_caml_debug.o
-- ranlib libboxD_caml_debug.a
-- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o boxD -oc boxD_caml box.cmx -L/home/opam/.opam/4.02.1/share/apron/lib -L. -lboxD -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm  -L../apron
-- + ocamlopt.opt -a -o boxD.cmxa  box.cmx -cclib -lboxD_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron/lib:/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L../apron -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L. -cclib -L/home/opam/.opam/4.02.1/share/apron/lib -cclib -lboxD -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
-- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dllboxD_caml.so box_caml.o -L. -lboxD -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm  -L../apron
-- ar rcs libboxMPFR_caml.a box_caml.o
-- ranlib libboxMPFR_caml.a
-- ocamlmklib -ocamlc "ocamlc.opt" -verbose -o boxMPFR -oc boxMPFR_caml box.cmo -L. -lboxMPFR -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm  -L../apron
-- + ocamlc.opt -a  -o boxMPFR.cma  box.cmo -dllib -lboxMPFR_caml -cclib -lboxMPFR_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L../apron -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L. -cclib -lboxMPFR -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
-- ar rcs libboxMPFR_caml_debug.a box_caml_debug.o
-- ranlib libboxMPFR_caml_debug.a
-- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o boxMPFR -oc boxMPFR_caml box.cmx -L/home/opam/.opam/4.02.1/share/apron/lib -L. -lboxMPFR -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm  -L../apron
-- + ocamlopt.opt -a -o boxMPFR.cmxa  box.cmx -cclib -lboxMPFR_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron/lib:/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L../apron -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L. -cclib -L/home/opam/.opam/4.02.1/share/apron/lib -cclib -lboxMPFR -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
-- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dllboxMPFR_caml.so box_caml.o -L. -lboxMPFR -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm  -L../apron
-- make[2]: Leaving directory '/home/opam/.opam/4.02.1/build/apron.20150518/apron/box'
-- (cd octagons; make mlMPQ mlD)
-- make[2]: Entering directory '/home/opam/.opam/4.02.1/build/apron.20150518/apron/octagons'
-- ocamlc.opt -g -I /home/opam/.opam/4.02.1/lib/gmp -I ../mlapronidl -c oct.mli
-- ocamlc.opt -g -I /home/opam/.opam/4.02.1/lib/gmp -I ../mlapronidl -c oct.ml
-- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -I/home/opam/.opam/4.02.1/lib/gmp -I../newpolka -I../apron -I../mlapronidl -I../num -I../itv -I/usr/include -I/usr/include -I/home/opam/.opam/4.02.1/lib/ocaml -I/home/opam/.opam/4.02.1/lib/camlidl -c -o oct_caml.o oct_caml.c
-- ar rcs liboctMPQ_caml.a oct_caml.o
-- ranlib liboctMPQ_caml.a
-- ocamlmklib -ocamlc "ocamlc.opt" -verbose -o octMPQ -oc octMPQ_caml oct.cmo -L. -loctMPQ -L../apron -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm  -L../apron
-- + ocamlc.opt -a  -o octMPQ.cma  oct.cmo -dllib -loctMPQ_caml -cclib -loctMPQ_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L../apron -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L../apron -cclib -L. -cclib -loctMPQ -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
-- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99  -U__STRICT_ANSI__ -fPIC -g -O0 -UNDEBUG -I/home/opam/.opam/4.02.1/lib/gmp -I../newpolka -I../apron -I../mlapronidl -I../num -I../itv -I/usr/include -I/usr/include -I/home/opam/.opam/4.02.1/lib/ocaml -I/home/opam/.opam/4.02.1/lib/camlidl -c -o oct_caml_debug.o oct_caml.c
-- ar rcs liboctMPQ_caml_debug.a oct_caml_debug.o
-- ranlib liboctMPQ_caml_debug.a
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -I ../mlapronidl -c oct.ml
-- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o octMPQ -oc octMPQ_caml oct.cmx -L. -loctMPQ -L../apron -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm  -L../apron
-- + ocamlopt.opt -a -o octMPQ.cmxa  oct.cmx -cclib -loctMPQ_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L../apron -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L../apron -cclib -L. -cclib -loctMPQ -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
-- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dlloctMPQ_caml.so oct_caml.o -L. -loctMPQ -L../apron -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm 
 - In file included from ../mlapronidl/apron_caml.h:336:0,
 -                  from oct_caml.c:24:
 - ../apron/ap_policy.h: In function 'ap_policy_cons':
@@ -13874,46 +13603,6 @@ The following actions will be performed:
 - oct_caml.c:203:43: warning: unused parameter '_unit' [-Wunused-parameter]
 -  value camlidl_oct_oct_manager_alloc(value _unit)
 -                                            ^
-- ar rcs liboctD_caml.a oct_caml.o
-- ranlib liboctD_caml.a
-- ocamlmklib -ocamlc "ocamlc.opt" -verbose -o octD -oc octD_caml oct.cmo -L. -loctD -L../apron -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm  -L../apron
-- + ocamlc.opt -a  -o octD.cma  oct.cmo -dllib -loctD_caml -cclib -loctD_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L../apron -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L../apron -cclib -L. -cclib -loctD -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
-- ar rcs liboctD_caml_debug.a oct_caml_debug.o
-- ranlib liboctD_caml_debug.a
-- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o octD -oc octD_caml oct.cmx -L. -loctD -L../apron -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm  -L../apron
-- + ocamlopt.opt -a -o octD.cmxa  oct.cmx -cclib -loctD_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L../apron -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L../apron -cclib -L. -cclib -loctD -cclib -lapron -cclib -lmpfr -cclib -lgmp -cclib -lm 
-- cc -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dlloctD_caml.so oct_caml.o -L. -loctD -L../apron -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lmpfr -L/usr/lib -lgmp -lm 
-- rm oct_caml_debug.o oct_caml.o
-- make[2]: Leaving directory '/home/opam/.opam/4.02.1/build/apron.20150518/apron/octagons'
-- (cd taylor1plus; make ml)
-- make[2]: Entering directory '/home/opam/.opam/4.02.1/build/apron.20150518/apron/taylor1plus'
-- ocamlc.opt -g -I /home/opam/.opam/4.02.1/lib/gmp -I ../mlapronidl -c t1p.mli
-- cc  -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -I/home/opam/.opam/4.02.1/lib/gmp -I../num -I../itv -I../apron -I../mlapronidl -I/usr/include -I/usr/include -I/home/opam/.opam/4.02.1/lib/camlidl -I/home/opam/.opam/4.02.1/lib/ocaml -DNUM_MPQ -c -o t1p_caml.o t1p_caml.c
-- ar rcs libt1pMPQ_caml.a t1p_caml.o
-- ranlib libt1pMPQ_caml.a
-- ocamlc.opt -g -I /home/opam/.opam/4.02.1/lib/gmp -I ../mlapronidl -c t1p.ml
-- ocamlmklib -ocamlc "ocamlc.opt" -verbose -o t1pMPQ -oc t1pMPQ_caml t1p.cmo -L. -lt1pMPQ -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lgmpxx -lgmp -L/usr/lib -lmpfr -lstdc++ -lm 
-- + ocamlc.opt -a  -o t1pMPQ.cma  t1p.cmo -dllib -lt1pMPQ_caml -cclib -lt1pMPQ_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L. -cclib -lt1pMPQ -cclib -lapron -cclib -lgmpxx -cclib -lgmp -cclib -lmpfr -cclib -lstdc++ -cclib -lm 
-- cc  -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99  -U__STRICT_ANSI__ -fPIC -g -O0 -UNDEBUG -D_GET_CPU_TIME -D_T1P_DEBUG  -I/home/opam/.opam/4.02.1/lib/gmp -I../num -I../itv -I../apron -I../mlapronidl -I/usr/include -I/usr/include -I/home/opam/.opam/4.02.1/lib/camlidl -I/home/opam/.opam/4.02.1/lib/ocaml -DNUM_MPQ -c -o t1p_caml_debug.o t1p_caml.c
-- ar rcs libt1pMPQ_caml_debug.a t1p_caml_debug.o
-- ranlib libt1pMPQ_caml_debug.a
-- ocamlopt.opt -inline 20 -I /home/opam/.opam/4.02.1/lib/gmp -I ../mlapronidl -c t1p.ml
-- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o t1pMPQ -oc t1pMPQ_caml t1p.cmx -L/home/opam/.opam/4.02.1/share/apron/lib -L. -lt1pMPQ -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lgmpxx -lgmp -L/usr/lib -lmpfr -lstdc++ -lm 
-- + ocamlopt.opt -a -o t1pMPQ.cmxa  t1p.cmx -cclib -lt1pMPQ_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron/lib:/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L. -cclib -L/home/opam/.opam/4.02.1/share/apron/lib -cclib -lt1pMPQ -cclib -lapron -cclib -lgmpxx -cclib -lgmp -cclib -lmpfr -cclib -lstdc++ -cclib -lm 
-- cc  -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dllt1pMPQ_caml.so t1p_caml.o  -L. -lt1pMPQ -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lgmpxx -lgmp -L/usr/lib -lmpfr -lstdc++ -lm -L../apron
-- cc  -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dllt1pMPQ_caml_debug.so t1p_caml_debug.o -L. -lt1pMPQ_debug -L/home/opam/.opam/4.02.1/share/apron -lapron_debug -L/usr/lib -lgmpxx -lgmp -L/usr/lib -lmpfr -lstdc++ -lm -L../apron
-- ar rcs libt1pD_caml.a t1p_caml.o
-- ranlib libt1pD_caml.a
-- ocamlmklib -ocamlc "ocamlc.opt" -verbose -o t1pD -oc t1pD_caml t1p.cmo -L. -lt1pD -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lgmpxx -lgmp -L/usr/lib -lmpfr -lstdc++ -lm 
-- + ocamlc.opt -a  -o t1pD.cma  t1p.cmo -dllib -lt1pD_caml -cclib -lt1pD_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L. -cclib -lt1pD -cclib -lapron -cclib -lgmpxx -cclib -lgmp -cclib -lmpfr -cclib -lstdc++ -cclib -lm 
-- ar rcs libt1pD_caml_debug.a t1p_caml_debug.o
-- ranlib libt1pD_caml_debug.a
-- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o t1pD -oc t1pD_caml t1p.cmx -L/home/opam/.opam/4.02.1/share/apron/lib -L. -lt1pD -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lgmpxx -lgmp -L/usr/lib -lmpfr -lstdc++ -lm 
-- + ocamlopt.opt -a -o t1pD.cmxa  t1p.cmx -cclib -lt1pD_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron/lib:/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L. -cclib -L/home/opam/.opam/4.02.1/share/apron/lib -cclib -lt1pD -cclib -lapron -cclib -lgmpxx -cclib -lgmp -cclib -lmpfr -cclib -lstdc++ -cclib -lm 
-- cc  -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dllt1pD_caml.so t1p_caml.o  -L. -lt1pD -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lgmpxx -lgmp -L/usr/lib -lmpfr -lstdc++ -lm -L../apron
-- cc  -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dllt1pD_caml_debug.so t1p_caml_debug.o -L. -lt1pD_debug -L/home/opam/.opam/4.02.1/share/apron -lapron_debug -L/usr/lib -lgmpxx -lgmp -L/usr/lib -lmpfr -lstdc++ -lm -L../apron
-- ar rcs libt1pMPFR_caml.a t1p_caml.o
-- ranlib libt1pMPFR_caml.a
 - In file included from ../mlapronidl/apron_caml.h:336:0,
 -                  from t1p_caml.c:18:
 - ../apron/ap_policy.h: In function 'ap_policy_cons':
@@ -13934,17 +13623,328 @@ The following actions will be performed:
 - t1p_caml.c:46:43: warning: unused parameter '_unit' [-Wunused-parameter]
 -  value camlidl_t1p_t1p_manager_alloc(value _unit)
 -                                            ^
-- ocamlmklib -ocamlc "ocamlc.opt" -verbose -o t1pMPFR -oc t1pMPFR_caml t1p.cmo -L. -lt1pMPFR -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lgmpxx -lgmp -L/usr/lib -lmpfr -lstdc++ -lm 
-- + ocamlc.opt -a  -o t1pMPFR.cma  t1p.cmo -dllib -lt1pMPFR_caml -cclib -lt1pMPFR_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L. -cclib -lt1pMPFR -cclib -lapron -cclib -lgmpxx -cclib -lgmp -cclib -lmpfr -cclib -lstdc++ -cclib -lm 
-- ar rcs libt1pMPFR_caml_debug.a t1p_caml_debug.o
-- ranlib libt1pMPFR_caml_debug.a
-- ocamlmklib -ocamlopt "ocamlopt.opt" -verbose -o t1pMPFR -oc t1pMPFR_caml t1p.cmx -L/home/opam/.opam/4.02.1/share/apron/lib -L. -lt1pMPFR -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lgmpxx -lgmp -L/usr/lib -lmpfr -lstdc++ -lm 
-- + ocamlopt.opt -a -o t1pMPFR.cmxa  t1p.cmx -cclib -lt1pMPFR_caml  -ccopt -Wl,-rpath,/home/opam/.opam/4.02.1/share/apron/lib:/home/opam/.opam/4.02.1/share/apron:/usr/lib -cclib -L/usr/lib -cclib -L/usr/lib -cclib -L/home/opam/.opam/4.02.1/share/apron -cclib -L. -cclib -L/home/opam/.opam/4.02.1/share/apron/lib -cclib -lt1pMPFR -cclib -lapron -cclib -lgmpxx -cclib -lgmp -cclib -lmpfr -cclib -lstdc++ -cclib -lm 
-- cc  -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dllt1pMPFR_caml.so t1p_caml.o  -L. -lt1pMPFR -L/home/opam/.opam/4.02.1/share/apron -lapron -L/usr/lib -lgmpxx -lgmp -L/usr/lib -lmpfr -lstdc++ -lm -L../apron
-- cc  -Wcast-qual -Wswitch -Werror-implicit-function-declaration -Wall -Wextra -Wundef -Wbad-function-cast -Wcast-align -Wstrict-prototypes -Wno-unused -std=c99 -U__STRICT_ANSI__ -fPIC -O3 -DNDEBUG -shared -o dllt1pMPFR_caml_debug.so t1p_caml_debug.o -L. -lt1pMPFR_debug -L/home/opam/.opam/4.02.1/share/apron -lapron_debug -L/usr/lib -lgmpxx -lgmp -L/usr/lib -lmpfr -lstdc++ -lm -L../apron
-- make[2]: Leaving directory '/home/opam/.opam/4.02.1/build/apron.20150518/apron/taylor1plus'
-- make[1]: Leaving directory '/home/opam/.opam/4.02.1/build/apron.20150518/apron'
 [apron: make install] Command started
++ make  (CWD=/home/opam/.opam/4.02.1/build/deriving.0.7)
+- ocamlfind ocamlopt -o setup.exe setup.ml || ocamlfind ocamlc -o setup.exe setup.ml || true
+- rm -f setup.cmi setup.cmo setup.cmx setup.o
+- ./setup.exe -configure 
+- 
+- Configuration: 
+- ocamlfind: ........................................... /home/opam/.opam/4.02.1/bin/ocamlfind
+- ocamlc: .............................................. /home/opam/.opam/4.02.1/bin/ocamlc.opt
+- ocamlopt: ............................................ /home/opam/.opam/4.02.1/bin/ocamlopt.opt
+- ocamlbuild: .......................................... /home/opam/.opam/4.02.1/bin/ocamlbuild
+- Package name: ........................................ deriving
+- Package version: ..................................... 0.7
+- os_type: ............................................. Unix
+- system: .............................................. linux
+- architecture: ........................................ amd64
+- ccomp_type: .......................................... cc
+- ocaml_version: ....................................... 4.02.1
+- standard_library_default: ............................ /home/opam/.opam/4.02.1/lib/ocaml
+- standard_library: .................................... /home/opam/.opam/4.02.1/lib/ocaml
+- standard_runtime: .................................... /home/opam/.opam/4.02.1/bin/ocamlrun
+- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
+- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
+- model: ............................................... default
+- ext_obj: ............................................. .o
+- ext_asm: ............................................. .s
+- ext_lib: ............................................. .a
+- ext_dll: ............................................. .so
+- default_executable_name: ............................. a.out
+- systhread_supported: ................................. true
+- Install architecture-independent files dir: .......... /home/opam/.opam/4.02.1
+- Install architecture-dependent files in dir: ......... $prefix
+- User executables: .................................... $exec_prefix/bin
+- System admin executables: ............................ $exec_prefix/sbin
+- Program executables: ................................. $exec_prefix/libexec
+- Read-only single-machine data: ....................... $prefix/etc
+- Modifiable architecture-independent data: ............ $prefix/com
+- Modifiable single-machine data: ...................... $prefix/var
+- Object code libraries: ............................... $exec_prefix/lib
+- Read-only arch-independent data root: ................ $prefix/share
+- Read-only architecture-independent data: ............. $datarootdir
+- Info documentation: .................................. $datarootdir/info
+- Locale-dependent data: ............................... $datarootdir/locale
+- Man documentation: ................................... $datarootdir/man
+- Documentation root: .................................. $datarootdir/doc/$pkg_name
+- HTML documentation: .................................. $docdir
+- DVI documentation: ................................... $docdir
+- PDF documentation: ................................... $docdir
+- PS documentation: .................................... $docdir
+- findlib_version: ..................................... 1.5.5
+- is_native: ........................................... true
+- suffix_program: ...................................... 
+- Remove a file.: ...................................... rm -f
+- Remove a directory.: ................................. rm -rf
+- Turn ocaml debug flag on: ............................ true
+- Turn ocaml profile flag on: .......................... false
+- Compiler support generation of .cmxs.: ............... true
+- OCamlbuild additional flags: ......................... 
+- type-conv support: ................................... false
+- Create documentations: ............................... true
+- Compile tests executable and library and run them: ... false
+- pkg_camlp4: .......................................... /home/opam/.opam/4.02.1/lib/ocaml/camlp4
+- pkg_camlp4_extend: ................................... /home/opam/.opam/4.02.1/lib/ocaml/camlp4
+- pkg_camlp4_quotations_o: ............................. /home/opam/.opam/4.02.1/lib/ocaml/camlp4
+- pkg_optcomp: ......................................... /home/opam/.opam/4.02.1/lib/optcomp
+- pkg_bytes: ........................................... /home/opam/.opam/4.02.1/lib/bytes
+- ocamldoc: ............................................ /home/opam/.opam/4.02.1/bin/ocamldoc
+- 
+- ./setup.exe -build 
+- ocamlfind ocamlopt unix.cmxa -I /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa -linkpkg myocamlbuild.ml /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/id.ml > syntax/common/id.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/utils.mli > syntax/common/utils.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/utils.cmi syntax/common/utils.mli
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/utils.ml > syntax/common/utils.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package camlp4.quotations.r -syntax camlp4o -package optcomp -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/type.mli > syntax/common/type.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -package camlp4.quotations.r -syntax camlp4o -package optcomp -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/type.cmi syntax/common/type.mli
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package camlp4.quotations.r -syntax camlp4o -package optcomp -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/type.ml > syntax/common/type.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/defs.mli > syntax/common/defs.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/defs.cmi syntax/common/defs.mli
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/defs.ml > syntax/common/defs.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/clusters.mli > syntax/common/clusters.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/clusters.cmi syntax/common/clusters.mli
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/clusters.ml > syntax/common/clusters.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/base.mli > syntax/common/base.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/base.cmi syntax/common/base.mli
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/base.ml > syntax/common/base.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/extend.mli > syntax/common/extend.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/extend.cmi syntax/common/extend.mli
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/extend.ml > syntax/common/extend.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/id.cmo syntax/common/id.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/utils.cmo syntax/common/utils.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -package camlp4.quotations.r -syntax camlp4o -package optcomp -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/type.cmo syntax/common/type.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/defs.cmo syntax/common/defs.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/clusters.cmo syntax/common/clusters.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/base.cmo syntax/common/base.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/extend.cmo syntax/common/extend.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -pack -g syntax/common/id.cmo syntax/common/utils.cmo syntax/common/type.cmo syntax/common/defs.cmo syntax/common/clusters.cmo syntax/common/base.cmo syntax/common/extend.cmo -o syntax/common/pa_deriving_common.cmo
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a syntax/common/pa_deriving_common.cmo -o syntax/common/pa_deriving_common.cma
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -for-pack Pa_deriving_common -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/utils.cmx syntax/common/utils.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -for-pack Pa_deriving_common -package camlp4.quotations.r -syntax camlp4o -package optcomp -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/type.cmx syntax/common/type.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -for-pack Pa_deriving_common -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/clusters.cmx syntax/common/clusters.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -for-pack Pa_deriving_common -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/defs.cmx syntax/common/defs.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -for-pack Pa_deriving_common -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/base.cmx syntax/common/base.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -for-pack Pa_deriving_common -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/id.cmx syntax/common/id.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -for-pack Pa_deriving_common -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/extend.cmx syntax/common/extend.ml
+- touch syntax/common/pa_deriving_common.mli  ; if  /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -pack -g -I syntax/common syntax/common/id.cmx syntax/common/utils.cmx syntax/common/type.cmx syntax/common/defs.cmx syntax/common/clusters.cmx syntax/common/base.cmx syntax/common/extend.cmx -o syntax/common/pa_deriving_common.cmx  ; then  rm -f syntax/common/pa_deriving_common.mli  ; else  rm -f syntax/common/pa_deriving_common.mli  ; exit 1; fi
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a syntax/common/pa_deriving_common.cmx -o syntax/common/pa_deriving_common.cmxa
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared syntax/common/pa_deriving_common.cmxa syntax/common/pa_deriving_common.cmx -o syntax/common/pa_deriving_common.cmxs
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/std/pa_deriving_std.ml > syntax/std/pa_deriving_std.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -ppopt syntax/common/pa_deriving_common.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/std -I syntax/common -o syntax/std/pa_deriving_std.cmo syntax/std/pa_deriving_std.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a syntax/std/pa_deriving_std.cmo -o syntax/std/pa_deriving_std.cma
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -ppopt syntax/common/pa_deriving_common.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/std -I syntax/common -o syntax/std/pa_deriving_std.cmx syntax/std/pa_deriving_std.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a syntax/std/pa_deriving_std.cmx -o syntax/std/pa_deriving_std.cmxa
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared syntax/std/pa_deriving_std.cmxa syntax/std/pa_deriving_std.cmx -o syntax/std/pa_deriving_std.cmxs
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/show_class.ml > syntax/classes/show_class.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/dump_class.ml > syntax/classes/dump_class.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/enum_class.ml > syntax/classes/enum_class.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/bounded_class.ml > syntax/classes/bounded_class.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/eq_class.ml > syntax/classes/eq_class.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/typeable_class.ml > syntax/classes/typeable_class.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/pickle_class.ml > syntax/classes/pickle_class.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/eq_class.cmo syntax/classes/eq_class.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/typeable_class.cmo syntax/classes/typeable_class.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/functor_class.ml > syntax/classes/functor_class.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/default_class.ml > syntax/classes/default_class.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/show_class.cmo syntax/classes/show_class.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/dump_class.cmo syntax/classes/dump_class.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/enum_class.cmo syntax/classes/enum_class.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/bounded_class.cmo syntax/classes/bounded_class.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/pickle_class.cmo syntax/classes/pickle_class.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/functor_class.cmo syntax/classes/functor_class.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/default_class.cmo syntax/classes/default_class.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a syntax/classes/show_class.cmo syntax/classes/dump_class.cmo syntax/classes/enum_class.cmo syntax/classes/bounded_class.cmo syntax/classes/eq_class.cmo syntax/classes/typeable_class.cmo syntax/classes/pickle_class.cmo syntax/classes/functor_class.cmo syntax/classes/default_class.cmo -o syntax/classes/pa_deriving_classes.cma
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/eq_class.cmx syntax/classes/eq_class.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/typeable_class.cmx syntax/classes/typeable_class.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/show_class.cmx syntax/classes/show_class.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/dump_class.cmx syntax/classes/dump_class.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/enum_class.cmx syntax/classes/enum_class.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/bounded_class.cmx syntax/classes/bounded_class.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/pickle_class.cmx syntax/classes/pickle_class.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/functor_class.cmx syntax/classes/functor_class.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/default_class.cmx syntax/classes/default_class.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a syntax/classes/show_class.cmx syntax/classes/dump_class.cmx syntax/classes/enum_class.cmx syntax/classes/bounded_class.cmx syntax/classes/eq_class.cmx syntax/classes/typeable_class.cmx syntax/classes/pickle_class.cmx syntax/classes/functor_class.cmx syntax/classes/default_class.cmx -o syntax/classes/pa_deriving_classes.cmxa
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared syntax/classes/pa_deriving_classes.cmxa syntax/classes/show_class.cmx syntax/classes/dump_class.cmx syntax/classes/enum_class.cmx syntax/classes/bounded_class.cmx syntax/classes/eq_class.cmx syntax/classes/typeable_class.cmx syntax/classes/pickle_class.cmx syntax/classes/functor_class.cmx syntax/classes/default_class.cmx -o syntax/classes/pa_deriving_classes.cmxs
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Show.mli > lib/deriving_Show.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Show.cmi lib/deriving_Show.mli
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Show.ml > lib/deriving_Show.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Eq.mli > lib/deriving_Eq.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Eq.cmi lib/deriving_Eq.mli
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Eq.ml > lib/deriving_Eq.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Bounded.mli > lib/deriving_Bounded.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Bounded.cmi lib/deriving_Bounded.mli
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Bounded.ml > lib/deriving_Bounded.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Enum.mli > lib/deriving_Enum.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Enum.cmi lib/deriving_Enum.mli
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Enum.ml > lib/deriving_Enum.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_monad.mli > lib/deriving_monad.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_monad.cmi lib/deriving_monad.mli
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_monad.ml > lib/deriving_monad.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Dump.mli > lib/deriving_Dump.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Dump.cmi lib/deriving_Dump.mli
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Dump.ml > lib/deriving_Dump.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Typeable.mli > lib/deriving_Typeable.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Typeable.cmi lib/deriving_Typeable.mli
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Typeable.ml > lib/deriving_Typeable.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_interned.mli > lib/deriving_interned.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_interned.cmi lib/deriving_interned.mli
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Pickle.mli > lib/deriving_Pickle.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Pickle.cmi lib/deriving_Pickle.mli
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Pickle.ml > lib/deriving_Pickle.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_dynmap.mli > lib/deriving_dynmap.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_dynmap.cmi lib/deriving_dynmap.mli
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Functor.mli > lib/deriving_Functor.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Functor.cmi lib/deriving_Functor.mli
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Functor.ml > lib/deriving_Functor.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Default.mli > lib/deriving_Default.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Default.cmi lib/deriving_Default.mli
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_Default.ml > lib/deriving_Default.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_interned.ml > lib/deriving_interned.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_dynmap.ml > lib/deriving_dynmap.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Show.cmo lib/deriving_Show.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Eq.cmo lib/deriving_Eq.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Bounded.cmo lib/deriving_Bounded.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Enum.cmo lib/deriving_Enum.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_monad.cmo lib/deriving_monad.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Dump.cmo lib/deriving_Dump.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Typeable.cmo lib/deriving_Typeable.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Pickle.cmo lib/deriving_Pickle.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Functor.cmo lib/deriving_Functor.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Default.cmo lib/deriving_Default.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_interned.cmo lib/deriving_interned.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_dynmap.cmo lib/deriving_dynmap.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a lib/deriving_Show.cmo lib/deriving_Eq.cmo lib/deriving_Bounded.cmo lib/deriving_Enum.cmo lib/deriving_monad.cmo lib/deriving_Dump.cmo lib/deriving_interned.cmo lib/deriving_Typeable.cmo lib/deriving_dynmap.cmo lib/deriving_Pickle.cmo lib/deriving_Functor.cmo lib/deriving_Default.cmo -o lib/deriving.cma
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Bounded.cmx lib/deriving_Bounded.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Show.cmx lib/deriving_Show.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_interned.cmx lib/deriving_interned.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Dump.cmx lib/deriving_Dump.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Eq.cmx lib/deriving_Eq.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Typeable.cmx lib/deriving_Typeable.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_monad.cmx lib/deriving_monad.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_dynmap.cmx lib/deriving_dynmap.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Enum.cmx lib/deriving_Enum.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Pickle.cmx lib/deriving_Pickle.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Functor.cmx lib/deriving_Functor.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_Default.cmx lib/deriving_Default.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a lib/deriving_Show.cmx lib/deriving_Eq.cmx lib/deriving_Bounded.cmx lib/deriving_Enum.cmx lib/deriving_monad.cmx lib/deriving_Dump.cmx lib/deriving_interned.cmx lib/deriving_Typeable.cmx lib/deriving_dynmap.cmx lib/deriving_Pickle.cmx lib/deriving_Functor.cmx lib/deriving_Default.cmx -o lib/deriving.cmxa
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared lib/deriving.cmxa lib/deriving_Show.cmx lib/deriving_Eq.cmx lib/deriving_Bounded.cmx lib/deriving_Enum.cmx lib/deriving_monad.cmx lib/deriving_Dump.cmx lib/deriving_interned.cmx lib/deriving_Typeable.cmx lib/deriving_dynmap.cmx lib/deriving_Pickle.cmx lib/deriving_Functor.cmx lib/deriving_Default.cmx -o lib/deriving.cmxs
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_num.mli > lib/deriving_num.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_num.cmi lib/deriving_num.mli
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules lib/deriving_num.ml > lib/deriving_num.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_num.cmo lib/deriving_num.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a lib/deriving_num.cmo -o lib/deriving_num.cma
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -I syntax/classes -I lib -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -ppopt syntax/classes/pa_deriving_classes.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I lib -I syntax/classes -o lib/deriving_num.cmx lib/deriving_num.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a lib/deriving_num.cmx -o lib/deriving_num.cmxa
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared lib/deriving_num.cmxa lib/deriving_num.cmx -o lib/deriving_num.cmxs
+- File "setup.ml", line 246, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "setup.ml", line 2501, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
+- W: Cannot find source file matching module 'pa_deriving_common' in library pa_deriving_common
+- ocamlfind: Package `wikidoc' not found
+[deriving: make install] Command started
++ make "install" (CWD=/home/opam/.opam/4.02.1/build/deriving.0.7)
+- ./setup.exe -install 
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Show.mli
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Eq.mli
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Bounded.mli
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Enum.mli
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_monad.mli
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Dump.mli
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Typeable.mli
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Pickle.mli
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Functor.mli
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Default.mli
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving.cma
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving.cmxa
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving.a
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving.cmxs
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Default.cmi
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Functor.cmi
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Pickle.cmi
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Typeable.cmi
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Dump.cmi
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_monad.cmi
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Enum.cmi
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Bounded.cmi
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Eq.cmi
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Show.cmi
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_dynmap.cmx
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_interned.cmx
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Default.cmx
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Functor.cmx
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Pickle.cmx
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Typeable.cmx
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Dump.cmx
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_monad.cmx
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Enum.cmx
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Bounded.cmx
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Eq.cmx
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_Show.cmx
+- Installed /home/opam/.opam/4.02.1/lib/deriving/show_class.ml
+- Installed /home/opam/.opam/4.02.1/lib/deriving/dump_class.ml
+- Installed /home/opam/.opam/4.02.1/lib/deriving/enum_class.ml
+- Installed /home/opam/.opam/4.02.1/lib/deriving/bounded_class.ml
+- Installed /home/opam/.opam/4.02.1/lib/deriving/eq_class.ml
+- Installed /home/opam/.opam/4.02.1/lib/deriving/typeable_class.ml
+- Installed /home/opam/.opam/4.02.1/lib/deriving/pickle_class.ml
+- Installed /home/opam/.opam/4.02.1/lib/deriving/functor_class.ml
+- Installed /home/opam/.opam/4.02.1/lib/deriving/default_class.ml
+- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_classes.cma
+- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_classes.cmxa
+- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_classes.a
+- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_classes.cmxs
+- Installed /home/opam/.opam/4.02.1/lib/deriving/default_class.cmi
+- Installed /home/opam/.opam/4.02.1/lib/deriving/functor_class.cmi
+- Installed /home/opam/.opam/4.02.1/lib/deriving/pickle_class.cmi
+- Installed /home/opam/.opam/4.02.1/lib/deriving/typeable_class.cmi
+- Installed /home/opam/.opam/4.02.1/lib/deriving/eq_class.cmi
+- Installed /home/opam/.opam/4.02.1/lib/deriving/bounded_class.cmi
+- Installed /home/opam/.opam/4.02.1/lib/deriving/enum_class.cmi
+- Installed /home/opam/.opam/4.02.1/lib/deriving/dump_class.cmi
+- Installed /home/opam/.opam/4.02.1/lib/deriving/show_class.cmi
+- Installed /home/opam/.opam/4.02.1/lib/deriving/default_class.cmx
+- Installed /home/opam/.opam/4.02.1/lib/deriving/functor_class.cmx
+- Installed /home/opam/.opam/4.02.1/lib/deriving/pickle_class.cmx
+- Installed /home/opam/.opam/4.02.1/lib/deriving/typeable_class.cmx
+- Installed /home/opam/.opam/4.02.1/lib/deriving/eq_class.cmx
+- Installed /home/opam/.opam/4.02.1/lib/deriving/bounded_class.cmx
+- Installed /home/opam/.opam/4.02.1/lib/deriving/enum_class.cmx
+- Installed /home/opam/.opam/4.02.1/lib/deriving/dump_class.cmx
+- Installed /home/opam/.opam/4.02.1/lib/deriving/show_class.cmx
+- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_std.ml
+- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_std.cma
+- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_std.cmxa
+- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_std.a
+- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_std.cmxs
+- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_std.cmi
+- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_std.cmx
+- Installed /home/opam/.opam/4.02.1/lib/deriving/id.ml
+- Installed /home/opam/.opam/4.02.1/lib/deriving/utils.mli
+- Installed /home/opam/.opam/4.02.1/lib/deriving/type.mli
+- Installed /home/opam/.opam/4.02.1/lib/deriving/defs.mli
+- Installed /home/opam/.opam/4.02.1/lib/deriving/clusters.mli
+- Installed /home/opam/.opam/4.02.1/lib/deriving/base.mli
+- Installed /home/opam/.opam/4.02.1/lib/deriving/extend.mli
+- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_common.cmi
+- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_common.cma
+- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_common.cmxa
+- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_common.a
+- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_common.cmxs
+- Installed /home/opam/.opam/4.02.1/lib/deriving/pa_deriving_common.cmx
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_num.mli
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_num.cma
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_num.cmxa
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_num.a
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_num.cmxs
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_num.cmi
+- Installed /home/opam/.opam/4.02.1/lib/deriving/deriving_num.cmx
+- Installed /home/opam/.opam/4.02.1/lib/deriving/META
+-> installed deriving.0.7
 + make "install" (CWD=/home/opam/.opam/4.02.1/build/apron.20150518)
 - (cd mlgmpidl; make install)
 - make[1]: Entering directory '/home/opam/.opam/4.02.1/build/apron.20150518/mlgmpidl'
@@ -14259,5 +14259,5 @@ The following changes have been performed
   - install optcomp      1.6     
 
 The former state can be restored with:
-    opam switch import "~/.opam/4.02.1/backup/state-20150507082152.export"
+    opam switch import "~/.opam/4.02.1/backup/state-20150507144556.export"
 'opam install clangml-transforms' failed.
