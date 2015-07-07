@@ -3,12 +3,12 @@
 + lsb_release -i -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=typerep
 # Detecting depexts using flags: x86_64 linux ubuntu
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=typerep
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=typerep
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
@@ -30,18 +30,18 @@ Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [141 kB]
 Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [636 kB]
 Get:9 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [15.1 kB]
 Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [356 kB]
-Get:11 http://archive.ubuntu.com trusty-security/main Sources [97.2 kB]
+Get:11 http://archive.ubuntu.com trusty-security/main Sources [97.7 kB]
 Get:12 http://archive.ubuntu.com trusty-security/restricted Sources [1874 B]
 Get:13 http://archive.ubuntu.com trusty-security/universe Sources [23.3 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [329 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [128 kB]
-Fetched 2120 kB in 7s (287 kB/s)
+Fetched 2122 kB in 10s (202 kB/s)
 Reading package lists...
 # OS package update successful
++ sudo apt-get install -qq -yy m4
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
-+ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind 1.5.5                                     [required by typerep]
@@ -56,17 +56,17 @@ The following actions will be performed:
 [bin_prot: from default] Command started
 [ocamlfind: from default] Command started
 [sexplib: from default] Command started
-[bin_prot: from default] Command started
 [sexplib: from default] Command started
 [ocamlfind: from default] Command started
+[bin_prot: from default] Command started
 [default] http://opam-archive:8080/archives/bin_prot.111.03.00+opam.tar.gz downloaded
 [type_conv: from default] Command started
 [default] http://opam-archive:8080/archives/sexplib.111.13.00+opam.tar.gz downloaded
 [typerep: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [type_conv: from default] Command started
-[typerep: from default] Command started
 [default] http://opam-archive:8080/archives/type_conv.111.13.00+opam.tar.gz downloaded
+[typerep: from default] Command started
 [default] http://opam-archive:8080/archives/typerep.111.06.00+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -88,6 +88,8 @@ The following actions will be performed:
 - compiler-libs: found
 - dbm: not present (normal since OCaml-4.00)
 - bytes: not found, installing compat library
+- File "itest-aux/ppx.ml", line 1, characters 0-25:
+- Error: Unbound value Toploop.preprocess_phrase
 - Configuration for dynlink written to site-lib-src/dynlink/META
 - Configuration for graphics written to site-lib-src/graphics/META
 - Configuration for num written to site-lib-src/num/META
@@ -101,10 +103,8 @@ The following actions will be performed:
 - Configuration for camlp4 written to site-lib-src/camlp4/META
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
-- Detecting compiler arguments: (extractor built) 
-- File "itest-aux/ppx.ml", line 1, characters 0-25:
-- Error: Unbound value Toploop.preprocess_phrase
-- ok
+- Detecting compiler arguments: 
+- (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib/ocaml
@@ -151,6 +151,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_meta.ml
 - ocamlc -I +compiler-libs -c fl_metascanner.mli
 - ocamlc -I +compiler-libs -g -c fl_metascanner.ml
+- Makefile:160: depend: No such file or directory
 - ocamlc -I +compiler-libs -c fl_topo.mli
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
@@ -160,7 +161,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
-- Makefile:160: depend: No such file or directory
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
@@ -713,11 +713,11 @@ The following actions will be performed:
 - ocamlfind ocamlc -c -g -package type_conv -package camlp4.extend -package camlp4.quotations -I syntax -o syntax/pa_sexp_conv.cmi syntax/pa_sexp_conv.mli
 - ocamlfind ocamldep -syntax camlp4o -package type_conv -package camlp4.extend -package camlp4.quotations -modules syntax/pa_sexp_conv.ml > syntax/pa_sexp_conv.ml.depends
 - ocamlfind ocamlc -c -g -syntax camlp4o -package type_conv -package camlp4.extend -package camlp4.quotations -I syntax -o syntax/pa_sexp_conv.cmo syntax/pa_sexp_conv.ml
+- ocamlfind ocamlc -a syntax/pa_sexp_conv.cmo -o syntax/pa_sexp_conv.cma
+- ocamlfind ocamlopt -c -g -syntax camlp4o -package type_conv -package camlp4.extend -package camlp4.quotations -I syntax -o syntax/pa_sexp_conv.cmx syntax/pa_sexp_conv.ml
 - W: Cannot find source file matching module 'sexplib_unix' in library sexplib_unix
 - W: Cannot find source file matching module 'sexplib_num' in library sexplib_num
 - W: Cannot find source file matching module 'sexplib' in library sexplib
-- ocamlfind ocamlc -a syntax/pa_sexp_conv.cmo -o syntax/pa_sexp_conv.cma
-- ocamlfind ocamlopt -c -g -syntax camlp4o -package type_conv -package camlp4.extend -package camlp4.quotations -I syntax -o syntax/pa_sexp_conv.cmx syntax/pa_sexp_conv.ml
 - ocamlfind ocamlopt -a syntax/pa_sexp_conv.cmx -o syntax/pa_sexp_conv.cmxa
 - ocamlfind ocamlopt -shared syntax/pa_sexp_conv.cmx -o syntax/pa_sexp_conv.cmxs
 - ocamlfind ocamldep -modules top/sexplib_install_printers.ml > top/sexplib_install_printers.ml.depends
@@ -927,15 +927,15 @@ The following actions will be performed:
 - 
 - ./setup.exe -build 
 - ocamlfind ocamlopt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa -linkpkg myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
-- W: Cannot find source file matching module 'typerep_generics_sexprep' in library typerep_generics_sexprep
-- W: Cannot find source file matching module 'typerep_extended' in library typerep_extended
-- W: Cannot find source file matching module 'typerep_lib' in library typerep_lib
 - ocamlfind ocamldep -modules lib/make_typename.mli > lib/make_typename.mli.depends
 - ocamlfind ocamldep -modules lib/named_intf.ml > lib/named_intf.ml.depends
 - ocamlfind ocamldep -modules lib/std_internal.mli > lib/std_internal.mli.depends
 - ocamlfind ocamldep -modules lib/type_equal.mli > lib/type_equal.mli.depends
 - ocamlfind ocamldep -modules lib/typename.mli > lib/typename.mli.depends
 - ocamlfind ocamlc -c -g -I lib -o lib/named_intf.cmo lib/named_intf.ml
+- W: Cannot find source file matching module 'typerep_generics_sexprep' in library typerep_generics_sexprep
+- W: Cannot find source file matching module 'typerep_extended' in library typerep_extended
+- W: Cannot find source file matching module 'typerep_lib' in library typerep_lib
 - ocamlfind ocamlc -c -g -I lib -o lib/type_equal.cmi lib/type_equal.mli
 - ocamlfind ocamldep -modules lib/variant_and_record_intf.ml > lib/variant_and_record_intf.ml.depends
 - ocamlfind ocamlc -c -g -I lib -o lib/typename.cmi lib/typename.mli
