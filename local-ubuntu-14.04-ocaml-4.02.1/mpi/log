@@ -1,8 +1,8 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-# Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=mpi
+# Detecting depexts using flags: x86_64 linux ubuntu
 # The following system packages are needed:
 #  - m4
 #  - mpi-default-dev
@@ -41,23 +41,21 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [28.4 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [360 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [138 kB]
-Fetched 2252 kB in 5s (420 kB/s)
+Fetched 2252 kB in 6s (348 kB/s)
 Reading package lists...
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_source_Sources.gz is not what the server reported 261598 262370
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 672907 673418
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_universe_binary-amd64_Packages.gz is not what the server reported 137660 137667# OS package update successful
+W# OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4 mpi-default-dev
-
+: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_source_Sources.gz is not what the server reported 261578 261598
 + sudo apt-get install -qq -yy m4 mpi-default-dev
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
-Selecting previously unselected package libnuma1:amd64.
 debconf: unable to initialize frontend: Readline
 debconf: (This frontend requires a controlling tty.)
 debconf: falling back to frontend: Teletype
 dpkg-preconfigure: unable to re-open stdin: 
+Selecting previously unselected package libnuma1:amd64.
 (Reading database ... 22842 files and directories currently installed.)
 Preparing to unpack .../libnuma1_2.0.9~rc5-1ubuntu3_amd64.deb ...
 Unpacking libnuma1:amd64 (2.0.9~rc5-1ubuntu3) ...
@@ -146,8 +144,8 @@ The following actions will be performed:
 [mpi: from default] Command started
 [ocamlfind: from default] Command started
 [mpi: from default] Command started
-[default] http://opam-archive:8080/archives/mpi.1.01+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/mpi.1.01+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -345,6 +343,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -389,7 +388,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -460,6 +458,10 @@ The following actions will be performed:
 - /usr/bin/mpicc.openmpi -I`ocamlc -where` -I/usr/lib/openmpi/include -O2 -g -Wall   -c -o msgs.o msgs.c
 - /usr/bin/mpicc.openmpi -I`ocamlc -where` -I/usr/lib/openmpi/include -O2 -g -Wall   -c -o collcomm.o collcomm.c
 - /usr/bin/mpicc.openmpi -I`ocamlc -where` -I/usr/lib/openmpi/include -O2 -g -Wall   -c -o groups.o groups.c
+- /usr/bin/mpicc.openmpi -I`ocamlc -where` -I/usr/lib/openmpi/include -O2 -g -Wall   -c -o utils.o utils.c
+- rm -f libcamlmpi.a
+- ar rc libcamlmpi.a init.o comm.o msgs.o collcomm.o groups.o utils.o
+- ocamlc -c mpi.mli
 - collcomm.c: In function 'caml_mpi_scatter_float':
 - collcomm.c:123:12: warning: unused variable 'len' [-Wunused-variable]
 -    mlsize_t len = Wosize_val(data) / Double_wosize;
@@ -476,10 +478,6 @@ The following actions will be performed:
 - collcomm.c:245:12: warning: unused variable 'reslen' [-Wunused-variable]
 -    mlsize_t reslen = Wosize_val(result) / Double_wosize;
 -             ^
-- /usr/bin/mpicc.openmpi -I`ocamlc -where` -I/usr/lib/openmpi/include -O2 -g -Wall   -c -o utils.o utils.c
-- rm -f libcamlmpi.a
-- ar rc libcamlmpi.a init.o comm.o msgs.o collcomm.o groups.o utils.o
-- ocamlc -c mpi.mli
 - ocamlc -c mpi.ml
 - ocamlc -a -o mpi.cma -custom mpi.cmo -cclib -lcamlmpi -ccopt -L/usr/lib/openmpi/lib -cclib -lmpi
 - File "mpi.ml", line 200, characters 15-28:
