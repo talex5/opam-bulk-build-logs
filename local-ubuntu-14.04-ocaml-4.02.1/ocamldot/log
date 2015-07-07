@@ -8,20 +8,21 @@
 #  - libgtk2.0-dev
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=ocamldot
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
+Ign http://download.opensuse.org  InRelease
+Hit http://download.opensuse.org  Release.gpg
+Hit http://download.opensuse.org  Release
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
-Ign http://download.opensuse.org  InRelease
+Hit http://download.opensuse.org  Packages
 Hit http://archive.ubuntu.com trusty Release.gpg
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
-Hit http://download.opensuse.org  Release.gpg
 Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
 Hit http://archive.ubuntu.com trusty Release
 Get:3 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
-Hit http://download.opensuse.org  Release
 Get:4 http://archive.ubuntu.com trusty-security Release [63.5 kB]
 Hit http://archive.ubuntu.com trusty/main Sources
 Hit http://archive.ubuntu.com trusty/restricted Sources
@@ -31,21 +32,20 @@ Hit http://archive.ubuntu.com trusty/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty/universe amd64 Packages
 Get:5 http://archive.ubuntu.com trusty-updates/main Sources [262 kB]
 Get:6 http://archive.ubuntu.com trusty-updates/restricted Sources [3158 B]
-Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [149 kB]
+Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [150 kB]
 Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [681 kB]
-Hit http://download.opensuse.org  Packages
 Get:9 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [18.1 kB]
-Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [373 kB]
+Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [374 kB]
 Get:11 http://archive.ubuntu.com trusty-security/main Sources [106 kB]
 Get:12 http://archive.ubuntu.com trusty-security/restricted Sources [1874 B]
-Get:13 http://archive.ubuntu.com trusty-security/universe Sources [28.4 kB]
+Get:13 http://archive.ubuntu.com trusty-security/universe Sources [29.1 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [368 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
-Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [138 kB]
-Fetched 2273 kB in 4s (553 kB/s)
+Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [139 kB]
+Fetched 2276 kB in 5s (427 kB/s)
 Reading package lists...
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_main_source_Sources.gz is not what the server reported 106429 106432
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_main_binary-amd64_Packages.gz is not what the server reported 367732 367736
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 680897 680942
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages.gz is not what the server reported 374297 374341
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libexpat1-dev libgtk2.0-dev m4
@@ -248,7 +248,6 @@ Selecting previously unselected package gir1.2-gdkpixbuf-2.0.
 Preparing to unpack .../gir1.2-gdkpixbuf-2.0_2.30.7-0ubuntu1_amd64.deb ...
 Unpacking gir1.2-gdkpixbuf-2.0 (2.30.7-0ubuntu1) ...
 Selecting previously unselected package gir1.2-pango-1.0.
-debconf: unable to initialize frontend: Dialog
 Preparing to unpack .../gir1.2-pango-1.0_1.36.3-1ubuntu1.1_amd64.deb ...
 Unpacking gir1.2-pango-1.0 (1.36.3-1ubuntu1.1) ...
 Selecting previously unselected package gir1.2-gtk-2.0.
@@ -365,6 +364,7 @@ Unpacking x11proto-composite-dev (1:0.4.2-2) ...
 Selecting previously unselected package libxcomposite-dev.
 Preparing to unpack .../libxcomposite-dev_1%3a0.4.4-1_amd64.deb ...
 Unpacking libxcomposite-dev (1:0.4.4-1) ...
+debconf: unable to initialize frontend: Dialog
 Selecting previously unselected package x11proto-damage-dev.
 Preparing to unpack .../x11proto-damage-dev_1%3a1.2.1-2_all.deb ...
 Unpacking x11proto-damage-dev (1:1.2.1-2) ...
@@ -662,6 +662,13 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 		cp topfind.ml.in topfind.ml;                             \
+- 	else                                                             \
+- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 			> topfind.ml ;                                   \
+- 	fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -670,13 +677,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 		cp topfind.ml.in topfind.ml;                             \
-- 	else                                                             \
-- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 			> topfind.ml ;                                   \
-- 	fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -722,6 +722,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -766,7 +767,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -868,8 +868,7 @@ The following actions will be performed:
 - checking whether gcc accepts -g... yes
 - checking for gcc option to accept ISO C89... none needed
 - checking platform... Unix
-- checking native dynlink... 
-- checking for pkg-config... /usr/bin/pkg-config
+- checking native dynlink... checking for pkg-config... /usr/bin/pkg-config
 - checking for GTK+ - version >= 2.0.0... yes (version 2.24.23)
 - checking pkg-config is at least version 0.9.0... yes
 - checking for GTKGL... no
@@ -1037,6 +1036,7 @@ The following actions will be performed:
 - Warning: no conversion for type GdkPixbufAnimation in class GtkImage
 - Warning: no conversion for type PangoTabArray in class GtkTextView
 - Warning: no conversion for type PangoTabArray in class GtkTextTag
+- Warning: no conversion for type PangoAttrList in class GtkCellRendererText
 - ocamlc.opt   -w s -c  gtkTreeProps.ml
 - ./propcc gtkFile.props
 - ocamlc.opt   -w s -c  gtkFileProps.ml
@@ -1073,11 +1073,10 @@ The following actions will be performed:
 - ocamlc.opt   -w s -c  gData.ml
 - ocamlc.opt   -w s -c  ogtkBinProps.ml
 - ocamlc.opt   -w s -c  ogtkButtonProps.ml
-- ocamlc.opt   -w s -c  ogtkEditProps.ml
-- Warning: no conversion for type PangoAttrList in class GtkCellRendererText
 - File "gtkList.ml", line 188, characters 14-26:
 - Warning 3: deprecated: StdLabels.Array.create
 - Use ArrayLabels.make instead.
+- ocamlc.opt   -w s -c  ogtkEditProps.ml
 - ocamlc.opt   -w s -c  ogtkListProps.ml
 - ocamlc.opt   -w s -c  ogtkMenuProps.ml
 - ocamlc.opt   -w s -c  ogtkMiscProps.ml
@@ -1166,6 +1165,8 @@ The following actions will be performed:
 - ocamlopt.opt  -w s -c gpointer.ml
 - ocamlopt.opt  -w s -c gutf8.ml
 - ocamlopt.opt  -w s -c glib.ml
+- ocamlopt.opt  -w s -c gobject.ml
+- ocamlopt.opt  -w s -c gdkEnums.ml
 - File "gpointer.ml", line 144, characters 10-23:
 - Warning 3: deprecated: StdLabels.String.create
 - Use BytesLabels.create instead.
@@ -1184,8 +1185,6 @@ The following actions will be performed:
 - File "gutf8.ml", line 145, characters 11-23:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
-- ocamlopt.opt  -w s -c gobject.ml
-- ocamlopt.opt  -w s -c gdkEnums.ml
 - ocamlopt.opt  -w s -c pangoEnums.ml
 - ocamlopt.opt  -w s -c gtkEnums.ml
 - ocamlopt.opt  -w s -c pango.ml
@@ -1222,13 +1221,13 @@ The following actions will be performed:
 - ocamlopt.opt  -w s -c gtkWindow.ml
 - ocamlopt.opt  -w s -c gtkList.ml
 - ocamlopt.opt  -w s -c gtkBin.ml
+- File "gtkList.ml", line 188, characters 14-26:
+- Warning 3: deprecated: StdLabels.Array.create
+- Use ArrayLabels.make instead.
 - ocamlopt.opt  -w s -c gtkEdit.ml
 - ocamlopt.opt  -w s -c gtkRange.ml
 - ocamlopt.opt  -w s -c gtkText.ml
 - ocamlopt.opt  -w s -c gtkTree.ml
-- File "gtkList.ml", line 188, characters 14-26:
-- Warning 3: deprecated: StdLabels.Array.create
-- Use ArrayLabels.make instead.
 - ocamlopt.opt  -w s -c gtkFile.ml
 - ocamlopt.opt  -w s -c gtkMain.ml
 - ocamlopt.opt  -w s -c gtkBroken.ml
@@ -1279,7 +1278,7 @@ The following actions will be performed:
 - ocamlopt.opt -verbose -o lablgtk.cmxs -shared -linkall -I . \
 -         -ccopt '' lablgtk.cmxa
 - make[1]: Leaving directory `/home/opam/.opam/system/build/lablgtk.2.18.3/src'
-- + as -o 'lablgtk.cmxs.startup.o' '/tmp/camlstartup3e2be8.s'
+- + as -o 'lablgtk.cmxs.startup.o' '/tmp/camlstartup6e8e7c.s'
 - + gcc -shared -o 'lablgtk.cmxs'   '-L.' '-L/usr/lib/ocaml'  'lablgtk.cmxs.startup.o' 'lablgtk.a' '-llablgtk2' '-lgtk-x11-2.0' '-lgdk-x11-2.0' '-latk-1.0' '-lgio-2.0' '-lpangoft2-1.0' '-lpangocairo-1.0' '-lgdk_pixbuf-2.0' '-lcairo' '-lpango-1.0' '-lfontconfig' '-lgobject-2.0' '-lglib-2.0' '-lfreetype' 
 [lablgtk: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/lablgtk.2.18.3)
