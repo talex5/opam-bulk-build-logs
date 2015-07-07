@@ -7,25 +7,25 @@
 #  - libssl-dev
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=scrypt
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
 Hit http://security.debian.org stable/updates InRelease
 Ign http://download.opensuse.org  InRelease
-Get:1 http://security.debian.org stable/updates/main amd64 Packages [79.2 kB]
 Hit http://download.opensuse.org  Release.gpg
-Get:2 http://httpredir.debian.org stable InRelease [128 kB]
+Get:1 http://httpredir.debian.org stable InRelease [128 kB]
 Hit http://download.opensuse.org  Release
-Get:3 http://httpredir.debian.org stable-updates InRelease [126 kB]
+Get:2 http://httpredir.debian.org stable-updates InRelease [126 kB]
+Get:3 http://security.debian.org stable/updates/main amd64 Packages [79.2 kB]
 Get:4 http://download.opensuse.org  Packages [5783 B]
 Get:5 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
 Get:6 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9362 kB in 8s (1134 kB/s)
+Fetched 9362 kB in 4s (2061 kB/s)
 Reading package lists...
-+ sudo apt-get install -qq -yy libssl-dev m4
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libssl-dev m4
++ sudo apt-get install -qq -yy libssl-dev m4
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
@@ -55,8 +55,8 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: from default] Command started
 [scrypt: from default] Command started
-[ocamlfind: from default] Command started
 [scrypt: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/scrypt.0.2.1+opam.tar.gz downloaded
 
@@ -140,6 +140,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -185,12 +187,18 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
@@ -225,14 +233,6 @@ The following actions will be performed:
 - if ocamlopt.opt >/dev/null 2>&1; then \
 - 	echo 'ocamlopt="ocamlopt.opt"' >>findlib.conf; \
 - fi
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - if ocamldep.opt >/dev/null 2>&1; then \
 - 	echo 'ocamldep="ocamldep.opt"' >>findlib.conf; \
 - fi
@@ -408,9 +408,9 @@ The following actions will be performed:
 - checking err.h usability... yes
 - checking err.h presence... yes
 - checking for err.h... yes
-- checking for clock_gettime in -lrt... yes
-- checking for clock_gettime... 
+- checking for clock_gettime in -lrt... 
 - yes
+- checking for clock_gettime... yes
 - checking sys/sysinfo.h usability... yes
 - checking sys/sysinfo.h presence... yes
 - checking for sys/sysinfo.h... yes
@@ -419,10 +419,10 @@ The following actions will be performed:
 - checking for struct sysinfo.totalram... yes
 - checking for struct sysinfo.mem_unit... yes
 - checking sys/param.h usability... yes
-- checking sys/param.h presence... yes
-- checking for sys/param.h... yes
-- checking for posix_memalign... 
+- checking sys/param.h presence... 
 - yes
+- checking for sys/param.h... yes
+- checking for posix_memalign... yes
 - checking for special C compiler options needed for large files... no
 - checking for _FILE_OFFSET_BITS value needed for large files... no
 - configure: creating ./config.status
