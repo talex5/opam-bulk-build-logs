@@ -1,7 +1,7 @@
 + uname -m
 + uname -s
-+ opam list --safe --recursive --external=x86_64,linux,centos --required-by=sqlgg
 # Detecting depexts using flags: x86_64 linux centos
++ opam list --safe --recursive --external=x86_64,linux,centos --required-by=sqlgg
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=sqlgg
 # No extra OS packages requirements found.
 The following actions will be performed:
@@ -13,15 +13,15 @@ The following actions will be performed:
   - install optcomp    1.6                                      [required by deriving]
   - install extlib     1.6.1                                    [required by sqlgg]
   - install deriving   0.7                                      [required by sqlgg]
-  - install sqlgg      0.2.5        
+  - install sqlgg      0.3.0        
 ===== 9 to install =====
 
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [deriving: from default] Command started
 [extlib: from default] Command started
 [menhir: from default] Command started
-[extlib: from default] Command started
 [deriving: from default] Command started
+[extlib: from default] Command started
 [default] http://opam-archive:8080/archives/extlib.1.6.1+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [menhir: from default] Command started
@@ -30,14 +30,14 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/menhir.20141215+opam.tar.gz downloaded
 [ounit: from default] Command started
+[optcomp: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [sqlgg: from default] Command started
 [ounit: from default] Command started
+[default] http://opam-archive:8080/archives/optcomp.1.6+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ounit.2.0.0+opam.tar.gz downloaded
 [sqlgg: from default] Command started
-[default] http://opam-archive:8080/archives/sqlgg.0.2.5+opam.tar.gz downloaded
-[optcomp: from default] Command started
-[default] http://opam-archive:8080/archives/optcomp.1.6+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/sqlgg.0.3.0+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlp4: sh] Command started
@@ -130,7 +130,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
-- ocamlc -I +compiler-libs -g -c frontend.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -176,16 +175,9 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -194,6 +186,14 @@ The following actions will be performed:
 - fi
 - ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
 - export USE_CYGPATH; \
@@ -237,6 +237,8 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -281,8 +283,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -2081,6 +2081,14 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/bounded_class.cmo syntax/classes/bounded_class.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/pickle_class.cmo syntax/classes/pickle_class.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/functor_class.cmo syntax/classes/functor_class.ml
+- File "setup.ml", line 246, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "setup.ml", line 2501, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
+- W: Cannot find source file matching module 'pa_deriving_common' in library pa_deriving_common
+- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/default_class.cmo syntax/classes/default_class.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -a syntax/classes/show_class.cmo syntax/classes/dump_class.cmo syntax/classes/enum_class.cmo syntax/classes/bounded_class.cmo syntax/classes/eq_class.cmo syntax/classes/typeable_class.cmo syntax/classes/pickle_class.cmo syntax/classes/functor_class.cmo syntax/classes/default_class.cmo -o syntax/classes/pa_deriving_classes.cma
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/eq_class.cmx syntax/classes/eq_class.ml
@@ -2091,14 +2099,6 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/bounded_class.cmx syntax/classes/bounded_class.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/pickle_class.cmx syntax/classes/pickle_class.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/functor_class.cmx syntax/classes/functor_class.ml
-- File "setup.ml", line 246, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "setup.ml", line 2501, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
-- W: Cannot find source file matching module 'pa_deriving_common' in library pa_deriving_common
-- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/default_class.cmx syntax/classes/default_class.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -a syntax/classes/show_class.cmx syntax/classes/dump_class.cmx syntax/classes/enum_class.cmx syntax/classes/bounded_class.cmx syntax/classes/eq_class.cmx syntax/classes/typeable_class.cmx syntax/classes/pickle_class.cmx syntax/classes/functor_class.cmx syntax/classes/default_class.cmx -o syntax/classes/pa_deriving_classes.cmxa
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared syntax/classes/pa_deriving_classes.cmxa syntax/classes/show_class.cmx syntax/classes/dump_class.cmx syntax/classes/enum_class.cmx syntax/classes/bounded_class.cmx syntax/classes/eq_class.cmx syntax/classes/typeable_class.cmx syntax/classes/pickle_class.cmx syntax/classes/functor_class.cmx syntax/classes/default_class.cmx -o syntax/classes/pa_deriving_classes.cmxs
@@ -2272,75 +2272,182 @@ The following actions will be performed:
 - Installed /home/opam/.opam/system/lib/deriving/deriving_num.cmx
 - Installed /home/opam/.opam/system/lib/deriving/META
 -> installed deriving.0.7
-[sqlgg: make src] Command started
-+ make "-C" "src" (CWD=/home/opam/.opam/system/build/sqlgg.0.2.5)
-- make: Entering directory `/home/opam/.opam/system/build/sqlgg.0.2.5/src'
-- ocamlbuild -use-ocamlfind -j 0 sqlgg.byte
-- ocamlfind ocamlopt unix.cmxa -I /usr/lib64/ocaml/ocamlbuild /usr/lib64/ocaml/ocamlbuild/ocamlbuildlib.cmxa -linkpkg myocamlbuild.ml /usr/lib64/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
-- ocamlfind ocamldep -syntax camlp4o -package deriving.syntax,extlib -modules sqlgg.ml > sqlgg.ml.depends
-- ocamlfind ocamldep -syntax camlp4o -package deriving.syntax,extlib -modules error.ml > error.ml.depends
-- ocamlfind ocamldep -syntax camlp4o -package deriving.syntax,extlib -modules gen.ml > gen.ml.depends
-- ocamlfind ocamldep -syntax camlp4o -package deriving.syntax,extlib -modules prelude.ml > prelude.ml.depends
-- fatal: Not a git repository (or any of the parent directories): .git
-- ocamlfind ocamldep -syntax camlp4o -package deriving.syntax,extlib -modules props.ml > props.ml.depends
-- ocamlfind ocamldep -syntax camlp4o -package deriving.syntax,extlib -modules rA.ml > rA.ml.depends
-- ocamlfind ocamldep -syntax camlp4o -package deriving.syntax,extlib -modules listMore.ml > listMore.ml.depends
-- ocamlfind ocamlc -c -annot -w A -w e -w -44 -syntax camlp4o -package deriving.syntax,extlib -o prelude.cmo prelude.ml
-- ocamlfind ocamldep -syntax camlp4o -package deriving.syntax,extlib -modules sql.ml > sql.ml.depends
-- ocamlfind ocamlc -c -annot -w A -w e -w -44 -syntax camlp4o -package deriving.syntax,extlib -o listMore.cmo listMore.ml
-- ocamlfind ocamlc -c -annot -w A -w e -w -44 -syntax camlp4o -package deriving.syntax,extlib -o sql.cmo sql.ml
-- ocamlfind ocamldep -syntax camlp4o -package deriving.syntax,extlib -modules sqlgg_config.ml > sqlgg_config.ml.depends
-- ocamlfind ocamldep -syntax camlp4o -package deriving.syntax,extlib -modules version.ml > version.ml.depends
-- ocamlfind ocamlc -c -annot -w A -w e -w -44 -syntax camlp4o -package deriving.syntax,extlib -o version.cmo version.ml
-- ocamlfind ocamldep -syntax camlp4o -package deriving.syntax,extlib -modules stmt.ml > stmt.ml.depends
-- ocamlfind ocamlc -c -annot -w A -w e -w -44 -syntax camlp4o -package deriving.syntax,extlib -o props.cmo props.ml
-- ocamlfind ocamlc -c -annot -w A -w e -w -44 -syntax camlp4o -package deriving.syntax,extlib -o rA.cmo rA.ml
-- ocamlfind ocamlc -c -annot -w A -w e -w -44 -syntax camlp4o -package deriving.syntax,extlib -o sqlgg_config.cmo sqlgg_config.ml
-- ocamlfind ocamlc -c -annot -w A -w e -w -44 -syntax camlp4o -package deriving.syntax,extlib -o stmt.cmo stmt.ml
-- ocamlfind ocamldep -syntax camlp4o -package deriving.syntax,extlib -modules gen_caml.ml > gen_caml.ml.depends
-- ocamlfind ocamlc -c -annot -w A -w e -w -44 -syntax camlp4o -package deriving.syntax,extlib -o gen.cmo gen.ml
-- + ocamlfind ocamlc -c -annot -w A -w e -w -44 -syntax camlp4o -package deriving.syntax,extlib -o gen.cmo gen.ml
-- File "gen.ml", line 113, characters 34-45:
-- Warning 48: implicit elimination of optional argument ?cmp
-- ocamlfind ocamldep -syntax camlp4o -package deriving.syntax,extlib -modules gen_csharp.ml > gen_csharp.ml.depends
-- ocamlfind ocamlc -c -annot -w A -w e -w -44 -syntax camlp4o -package deriving.syntax,extlib -o gen_caml.cmo gen_caml.ml
-- ocamlfind ocamldep -syntax camlp4o -package deriving.syntax,extlib -modules gen_cxx.ml > gen_cxx.ml.depends
-- ocamlfind ocamldep -syntax camlp4o -package deriving.syntax,extlib -modules gen_java.ml > gen_java.ml.depends
-- ocamlfind ocamlc -c -annot -w A -w e -w -44 -syntax camlp4o -package deriving.syntax,extlib -o gen_cxx.cmo gen_cxx.ml
-- ocamlfind ocamlc -c -annot -w A -w e -w -44 -syntax camlp4o -package deriving.syntax,extlib -o gen_java.cmo gen_java.ml
-- ocamlfind ocamldep -syntax camlp4o -package deriving.syntax,extlib -modules gen_xml.ml > gen_xml.ml.depends
-- ocamlfind ocamldep -syntax camlp4o -package deriving.syntax,extlib -modules main.ml > main.ml.depends
-- ocamlfind ocamlc -c -annot -w A -w e -w -44 -syntax camlp4o -package deriving.syntax,extlib -o error.cmo error.ml
-- ocamlfind ocamldep -syntax camlp4o -package deriving.syntax,extlib -modules parser.ml > parser.ml.depends
-- ocamlfind ocamldep -syntax camlp4o -package deriving.syntax,extlib -modules parser_utils.ml > parser_utils.ml.depends
-- /usr/bin/ocamllex.opt -q sql_lexer.mll
-- ocamlfind ocamldep -syntax camlp4o -package deriving.syntax,extlib -modules sql_lexer.ml > sql_lexer.ml.depends
-- ocamlfind ocamldep -syntax camlp4o -package deriving.syntax,extlib -modules parser_state.ml > parser_state.ml.depends
-- menhir --raw-depend --ocamldep 'ocamlfind ocamldep -modules' sql_parser.mly > sql_parser.mly.depends
-- ocamlfind ocamlc -c -annot -w A -w e -w -44 -syntax camlp4o -package deriving.syntax,extlib -o parser_state.cmo parser_state.ml
-- ocamlfind ocamldep -syntax camlp4o -package deriving.syntax,extlib -modules syntax.ml > syntax.ml.depends
-- ocamlfind ocamldep -syntax camlp4o -package deriving.syntax,extlib -modules tables.ml > tables.ml.depends
-- ocamlfind ocamlc -c -annot -w A -w e -w -44 -syntax camlp4o -package deriving.syntax,extlib -o tables.cmo tables.ml
-- ocamlfind ocamlc -c -annot -w A -w e -w -44 -syntax camlp4o -package deriving.syntax,extlib -o syntax.cmo syntax.ml
-- menhir --ocamlc 'ocamlfind ocamlc -annot -w A -w e -w -44' --infer sql_parser.mly
-- + menhir --ocamlc 'ocamlfind ocamlc -annot -w A -w e -w -44' --infer sql_parser.mly
+[sqlgg: ocaml setup.ml] Command started
++ ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/sqlgg.0.3.0)
+- 
+- Configuration: 
+- ocamlfind: ........................................... /home/opam/.opam/system/bin/ocamlfind
+- ocamlc: .............................................. /usr/bin/ocamlc.opt
+- ocamlopt: ............................................ /usr/bin/ocamlopt.opt
+- ocamlbuild: .......................................... /usr/bin/ocamlbuild
+- Package name: ........................................ sqlgg
+- Package version: ..................................... 0.3.0
+- os_type: ............................................. Unix
+- system: .............................................. linux
+- architecture: ........................................ amd64
+- ccomp_type: .......................................... cc
+- ocaml_version: ....................................... 4.02.1
+- standard_library_default: ............................ /usr/lib64/ocaml
+- standard_library: .................................... /usr/lib64/ocaml
+- standard_runtime: .................................... /usr/bin/ocamlrun
+- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches   -m64 -mtune=generic -fPIC
+- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches   -m64 -mtune=generic
+- model: ............................................... default
+- ext_obj: ............................................. .o
+- ext_asm: ............................................. .s
+- ext_lib: ............................................. .a
+- ext_dll: ............................................. .so
+- default_executable_name: ............................. a.out
+- systhread_supported: ................................. true
+- Install architecture-independent files dir: .......... /home/opam/.opam/system
+- Install architecture-dependent files in dir: ......... $prefix
+- User executables: .................................... $exec_prefix/bin
+- System admin executables: ............................ $exec_prefix/sbin
+- Program executables: ................................. $exec_prefix/libexec
+- Read-only single-machine data: ....................... $prefix/etc
+- Modifiable architecture-independent data: ............ $prefix/com
+- Modifiable single-machine data: ...................... $prefix/var
+- Object code libraries: ............................... $exec_prefix/lib
+- Read-only arch-independent data root: ................ $prefix/share
+- Read-only architecture-independent data: ............. $datarootdir
+- Info documentation: .................................. $datarootdir/info
+- Locale-dependent data: ............................... $datarootdir/locale
+- Man documentation: ................................... $datarootdir/man
+- Documentation root: .................................. $datarootdir/doc/$pkg_name
+- HTML documentation: .................................. $docdir
+- DVI documentation: ................................... $docdir
+- PDF documentation: ................................... $docdir
+- PS documentation: .................................... $docdir
+- findlib_version: ..................................... 1.5.5
+- is_native: ........................................... true
+- suffix_program: ...................................... 
+- Remove a file.: ...................................... rm -f
+- Remove a directory.: ................................. rm -rf
+- Turn ocaml debug flag on: ............................ true
+- Turn ocaml profile flag on: .......................... false
+- Compiler support generation of .cmxs.: ............... true
+- OCamlbuild additional flags: ......................... 
+- Create documentations: ............................... true
+- Compile tests executable and library and run them: ... false
+- camlp4: .............................................. /usr/bin/camlp4
+- menhir: .............................................. /home/opam/.opam/system/bin/menhir
+- pkg_extlib: .......................................... /home/opam/.opam/system/lib/extlib
+- pkg_deriving: ........................................ /home/opam/.opam/system/lib/deriving
+- pkg_ounit: ........................................... /home/opam/.opam/system/lib/oUnit
+- 
+[sqlgg: ocaml setup.ml] Command started
++ ocaml "setup.ml" "-build" (CWD=/home/opam/.opam/system/build/sqlgg.0.3.0)
+- /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib64/ocaml/ocamlbuild /usr/lib64/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib64/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -modules lib/props.ml > lib/props.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -modules lib/sql.ml > lib/sql.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -modules lib/prelude.ml > lib/prelude.ml.depends
+- W: Cannot find source file matching module 'sqlgg' in library sqlgg
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -w A -w e -w -44 -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -I lib -o lib/prelude.cmo lib/prelude.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -modules lib/stmt.ml > lib/stmt.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -w A -w e -w -44 -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -I lib -o lib/props.cmo lib/props.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -w A -w e -w -44 -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -I lib -o lib/sql.cmo lib/sql.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -modules lib/tables.ml > lib/tables.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -modules lib/syntax.ml > lib/syntax.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -w A -w e -w -44 -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -I lib -o lib/stmt.cmo lib/stmt.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -w A -w e -w -44 -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -I lib -o lib/tables.cmo lib/tables.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -w A -w e -w -44 -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -I lib -o lib/syntax.cmo lib/syntax.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -pack -g -annot -bin-annot lib/props.cmo lib/prelude.cmo lib/sql.cmo lib/stmt.cmo lib/tables.cmo lib/syntax.cmo -o lib/sqlgg.cmo
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -a lib/sqlgg.cmo -o lib/sqlgg.cma
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -w A -w e -w -44 -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -for-pack Sqlgg -I lib -o lib/prelude.cmx lib/prelude.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -w A -w e -w -44 -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -for-pack Sqlgg -I lib -o lib/props.cmx lib/props.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -w A -w e -w -44 -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -for-pack Sqlgg -I lib -o lib/sql.cmx lib/sql.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -w A -w e -w -44 -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -for-pack Sqlgg -I lib -o lib/stmt.cmx lib/stmt.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -w A -w e -w -44 -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -for-pack Sqlgg -I lib -o lib/tables.cmx lib/tables.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -w A -w e -w -44 -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -for-pack Sqlgg -I lib -o lib/syntax.cmx lib/syntax.ml
+- touch lib/sqlgg.mli  ; if  /home/opam/.opam/system/bin/ocamlfind ocamlopt -pack -g -annot -bin-annot -I lib lib/props.cmx lib/prelude.cmx lib/sql.cmx lib/stmt.cmx lib/tables.cmx lib/syntax.cmx -o lib/sqlgg.cmx  ; then  rm -f lib/sqlgg.mli  ; else  rm -f lib/sqlgg.mli  ; exit 1; fi
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -a lib/sqlgg.cmx -o lib/sqlgg.cmxa
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared lib/sqlgg.cmxa lib/sqlgg.cmx -o lib/sqlgg.cmxs
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -modules src/cli.ml > src/cli.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -modules src/error.ml > src/error.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -modules src/gen.ml > src/gen.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -modules src/sqlgg_config.ml > src/sqlgg_config.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -modules src/version.ml > src/version.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -modules src/version_release.ml > src/version_release.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -w A -w e -w -44 -I lib -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -I src -I lib -o src/version_release.cmo src/version_release.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -w A -w e -w -44 -I lib -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -I src -I lib -o src/version.cmo src/version.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -w A -w e -w -44 -I lib -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -I src -I lib -o src/sqlgg_config.cmo src/sqlgg_config.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -modules src/gen_caml.ml > src/gen_caml.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -w A -w e -w -44 -I lib -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -I src -I lib -o src/gen.cmo src/gen.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -modules src/gen_csharp.ml > src/gen_csharp.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -w A -w e -w -44 -I lib -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -I src -I lib -o src/gen_caml.cmo src/gen_caml.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -modules src/gen_cxx.ml > src/gen_cxx.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -modules src/gen_java.ml > src/gen_java.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -w A -w e -w -44 -I lib -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -I src -I lib -o src/gen_cxx.cmo src/gen_cxx.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -w A -w e -w -44 -I lib -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -I src -I lib -o src/gen_java.cmo src/gen_java.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -modules src/gen_xml.ml > src/gen_xml.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -modules src/main.ml > src/main.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -w A -w e -w -44 -I lib -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -I src -I lib -o src/error.cmo src/error.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -modules lib/parser.ml > lib/parser.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -modules lib/parser_utils.ml > lib/parser_utils.ml.depends
+- /usr/bin/ocamllex.opt -q lib/sql_lexer.mll
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -modules lib/sql_lexer.ml > lib/sql_lexer.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -modules lib/parser_state.ml > lib/parser_state.ml.depends
+- menhir --raw-depend --ocamldep '/home/opam/.opam/system/bin/ocamlfind ocamldep -modules' lib/sql_parser.mly > lib/sql_parser.mly.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -w A -w e -w -44 -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -I lib -o lib/parser_state.cmo lib/parser_state.ml
+- menhir --ocamlc '/home/opam/.opam/system/bin/ocamlfind ocamlc -g -annot -bin-annot -w A -w e -w -44 -package deriving -package extlib -I lib' --infer lib/sql_parser.mly
+- + menhir --ocamlc '/home/opam/.opam/system/bin/ocamlfind ocamlc -g -annot -bin-annot -w A -w e -w -44 -package deriving -package extlib -I lib' --infer lib/sql_parser.mly
 - Warning: 16 states have shift/reduce conflicts.
 - Warning: 106 shift/reduce conflicts were arbitrarily resolved.
-- ocamlfind ocamldep -modules sql_parser.mli > sql_parser.mli.depends
-- ocamlfind ocamlc -c -annot -w A -w e -w -44 -o sql_parser.cmi sql_parser.mli
-- ocamlfind ocamlc -c -annot -w A -w e -w -44 -syntax camlp4o -package deriving.syntax,extlib -o sql_lexer.cmo sql_lexer.ml
-- ocamlfind ocamlc -c -annot -w A -w e -w -44 -syntax camlp4o -package deriving.syntax,extlib -o parser_utils.cmo parser_utils.ml
-- ocamlfind ocamlc -c -annot -w A -w e -w -44 -syntax camlp4o -package deriving.syntax,extlib -o parser.cmo parser.ml
-- ocamlfind ocamldep -package oUnit -syntax camlp4o -package deriving.syntax,extlib -modules test.ml > test.ml.depends
-- ocamlfind ocamlc -c -annot -w A -w e -w -44 -syntax camlp4o -package deriving.syntax,extlib -o main.cmo main.ml
-- ocamlfind ocamlc -c -annot -w A -w e -w -44 -syntax camlp4o -package deriving.syntax,extlib -o gen_csharp.cmo gen_csharp.ml
-- ocamlfind ocamlc -c -annot -w A -w e -w -44 -syntax camlp4o -package deriving.syntax,extlib -o gen_xml.cmo gen_xml.ml
-- ocamlfind ocamlc -c -annot -w A -w e -w -44 -package oUnit -syntax camlp4o -package deriving.syntax,extlib -o test.cmo test.ml
-- ocamlfind ocamlc -c -annot -w A -w e -w -44 -syntax camlp4o -package deriving.syntax,extlib -o sqlgg.cmo sqlgg.ml
-- ocamlfind ocamldep -modules sql_parser.ml > sql_parser.ml.depends
-- ocamlfind ocamlc -c -annot -w A -w e -w -44 -o sql_parser.cmo sql_parser.ml
-- ocamlfind ocamlc -linkpkg -package extlib,deriving,oUnit error.cmo prelude.cmo props.cmo listMore.cmo sql.cmo rA.cmo version.cmo sqlgg_config.cmo stmt.cmo gen.cmo gen_caml.cmo gen_cxx.cmo gen_java.cmo gen_csharp.cmo gen_xml.cmo parser_state.cmo tables.cmo syntax.cmo sql_parser.cmo sql_lexer.cmo parser_utils.cmo parser.cmo main.cmo test.cmo sqlgg.cmo -o sqlgg.byte
-- # Parallel statistics: { count(total): 3(53), max: 3, min: 2, average(total): 2.333(1.075) }
-- make: Leaving directory `/home/opam/.opam/system/build/sqlgg.0.2.5/src'
--> installed sqlgg.0.2.5
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -package deriving -package extlib -modules lib/sql_parser.mli > lib/sql_parser.mli.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -w A -w e -w -44 -package deriving -package extlib -I lib -o lib/sql_parser.cmi lib/sql_parser.mli
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -w A -w e -w -44 -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -I lib -o lib/sql_lexer.cmo lib/sql_lexer.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -w A -w e -w -44 -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -I lib -o lib/parser_utils.cmo lib/parser_utils.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -w A -w e -w -44 -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -I lib -o lib/parser.cmo lib/parser.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -modules src/test.ml > src/test.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -w A -w e -w -44 -I lib -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -I src -I lib -o src/main.cmo src/main.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -w A -w e -w -44 -I lib -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -I src -I lib -o src/gen_csharp.cmo src/gen_csharp.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -w A -w e -w -44 -I lib -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -I src -I lib -o src/gen_xml.cmo src/gen_xml.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -w A -w e -w -44 -I lib -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -I src -I lib -o src/test.cmo src/test.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -w A -w e -w -44 -I lib -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -I src -I lib -o src/cli.cmo src/cli.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -w A -w e -w -44 -I lib -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -I src -I lib -o src/version_release.cmx src/version_release.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -w A -w e -w -44 -I lib -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -I src -I lib -o src/version.cmx src/version.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -w A -w e -w -44 -I lib -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -I src -I lib -o src/sqlgg_config.cmx src/sqlgg_config.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -w A -w e -w -44 -I lib -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -I src -I lib -o src/gen.cmx src/gen.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -w A -w e -w -44 -I lib -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -I src -I lib -o src/gen_caml.cmx src/gen_caml.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -w A -w e -w -44 -I lib -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -I src -I lib -o src/gen_cxx.cmx src/gen_cxx.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -w A -w e -w -44 -I lib -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -I src -I lib -o src/gen_java.cmx src/gen_java.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -w A -w e -w -44 -I lib -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -I src -I lib -o src/error.cmx src/error.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -package deriving -package extlib -modules lib/sql_parser.ml > lib/sql_parser.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -w A -w e -w -44 -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -I lib -o lib/parser_state.cmx lib/parser_state.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -w A -w e -w -44 -package deriving -package extlib -I lib -o lib/sql_parser.cmx lib/sql_parser.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -w A -w e -w -44 -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -I lib -o lib/sql_lexer.cmx lib/sql_lexer.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -w A -w e -w -44 -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -I lib -o lib/parser_utils.cmx lib/parser_utils.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -w A -w e -w -44 -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -I lib -o lib/parser.cmx lib/parser.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -w A -w e -w -44 -I lib -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -I src -I lib -o src/main.cmx src/main.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -w A -w e -w -44 -I lib -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -I src -I lib -o src/gen_csharp.cmx src/gen_csharp.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -w A -w e -w -44 -I lib -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -I src -I lib -o src/gen_xml.cmx src/gen_xml.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -w A -w e -w -44 -I lib -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -I src -I lib -o src/test.cmx src/test.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -w A -w e -w -44 -I lib -package deriving -syntax camlp4o -package deriving.syntax -package extlib -package oUnit -syntax camlp4o -I src -I lib -o src/cli.cmx src/cli.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -linkpkg -package deriving -package extlib -package oUnit lib/sqlgg.cmxa lib/parser_state.cmx lib/prelude.cmx lib/props.cmx lib/sql.cmx lib/stmt.cmx lib/tables.cmx lib/syntax.cmx lib/sql_parser.cmx lib/sql_lexer.cmx lib/parser_utils.cmx lib/parser.cmx src/error.cmx src/version_release.cmx src/version.cmx src/sqlgg_config.cmx src/gen.cmx src/gen_caml.cmx src/gen_cxx.cmx src/gen_java.cmx src/gen_csharp.cmx src/gen_xml.cmx src/main.cmx src/test.cmx src/cli.cmx -o src/cli.native
+[sqlgg: ocaml setup.ml] Command started
++ ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/system/build/sqlgg.0.3.0)
+- Installed /home/opam/.opam/system/lib/sqlgg/props.ml
+- Installed /home/opam/.opam/system/lib/sqlgg/sql.ml
+- Installed /home/opam/.opam/system/lib/sqlgg/stmt.ml
+- Installed /home/opam/.opam/system/lib/sqlgg/tables.ml
+- Installed /home/opam/.opam/system/lib/sqlgg/syntax.ml
+- Installed /home/opam/.opam/system/lib/sqlgg/sqlgg.cmt
+- Installed /home/opam/.opam/system/lib/sqlgg/sqlgg.cmi
+- Installed /home/opam/.opam/system/lib/sqlgg/sqlgg.cma
+- Installed /home/opam/.opam/system/lib/sqlgg/sqlgg.cmxa
+- Installed /home/opam/.opam/system/lib/sqlgg/sqlgg.a
+- Installed /home/opam/.opam/system/lib/sqlgg/sqlgg.cmxs
+- Installed /home/opam/.opam/system/lib/sqlgg/syntax.cmt
+- Installed /home/opam/.opam/system/lib/sqlgg/syntax.annot
+- Installed /home/opam/.opam/system/lib/sqlgg/tables.cmt
+- Installed /home/opam/.opam/system/lib/sqlgg/tables.annot
+- Installed /home/opam/.opam/system/lib/sqlgg/stmt.cmt
+- Installed /home/opam/.opam/system/lib/sqlgg/stmt.annot
+- Installed /home/opam/.opam/system/lib/sqlgg/sql.cmt
+- Installed /home/opam/.opam/system/lib/sqlgg/sql.annot
+- Installed /home/opam/.opam/system/lib/sqlgg/props.cmt
+- Installed /home/opam/.opam/system/lib/sqlgg/props.annot
+- Installed /home/opam/.opam/system/lib/sqlgg/sqlgg.cmx
+- Installed /home/opam/.opam/system/lib/sqlgg/META
+-> installed sqlgg.0.3.0
 Done.
