@@ -1,27 +1,27 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-# Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=mpi
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=mpi
+# Detecting depexts using flags: x86_64 linux debian
 # The following system packages are needed:
 #  - m4
 #  - mpi-default-dev
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=mpi
 + sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-Hit http://security.debian.org stable/updates InRelease
-Get:1 http://security.debian.org stable/updates/main amd64 Packages [79.2 kB]
+Get:1 http://security.debian.org stable/updates InRelease [63.1 kB]
 Hit http://httpredir.debian.org stable InRelease
 Get:2 http://httpredir.debian.org stable-updates InRelease [126 kB]
-Get:3 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
-Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9228 kB in 5s (1701 kB/s)
+Get:3 http://security.debian.org stable/updates/main amd64 Packages [79.2 kB]
+Get:4 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
+Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
+Fetched 9291 kB in 3s (2684 kB/s)
 Reading package lists...
++ sudo apt-get install -qq -yy m4 mpi-default-dev
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4 mpi-default-dev
-+ sudo apt-get install -qq -yy m4 mpi-default-dev
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
@@ -117,8 +117,8 @@ The following actions will be performed:
 [mpi: from default] Command started
 [ocamlfind: from default] Command started
 [mpi: from default] Command started
-[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/mpi.1.01+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -346,6 +346,10 @@ The following actions will be performed:
 - /usr/bin/mpicc.openmpi -I`ocamlc -where` -I/usr/lib/openmpi/include -O2 -g -Wall   -c -o msgs.o msgs.c
 - /usr/bin/mpicc.openmpi -I`ocamlc -where` -I/usr/lib/openmpi/include -O2 -g -Wall   -c -o collcomm.o collcomm.c
 - /usr/bin/mpicc.openmpi -I`ocamlc -where` -I/usr/lib/openmpi/include -O2 -g -Wall   -c -o groups.o groups.c
+- /usr/bin/mpicc.openmpi -I`ocamlc -where` -I/usr/lib/openmpi/include -O2 -g -Wall   -c -o utils.o utils.c
+- rm -f libcamlmpi.a
+- ar rc libcamlmpi.a init.o comm.o msgs.o collcomm.o groups.o utils.o
+- ocamlc -c mpi.mli
 - collcomm.c: In function 'caml_mpi_scatter_float':
 - collcomm.c:123:12: warning: unused variable 'len' [-Wunused-variable]
 -    mlsize_t len = Wosize_val(data) / Double_wosize;
@@ -362,10 +366,6 @@ The following actions will be performed:
 - collcomm.c:245:12: warning: unused variable 'reslen' [-Wunused-variable]
 -    mlsize_t reslen = Wosize_val(result) / Double_wosize;
 -             ^
-- /usr/bin/mpicc.openmpi -I`ocamlc -where` -I/usr/lib/openmpi/include -O2 -g -Wall   -c -o utils.o utils.c
-- rm -f libcamlmpi.a
-- ar rc libcamlmpi.a init.o comm.o msgs.o collcomm.o groups.o utils.o
-- ocamlc -c mpi.mli
 - ocamlc -c mpi.ml
 - ocamlc -a -o mpi.cma -custom mpi.cmo -cclib -lcamlmpi -ccopt -L/usr/lib/openmpi/lib -cclib -lmpi
 [mpi: make opt] Command started
