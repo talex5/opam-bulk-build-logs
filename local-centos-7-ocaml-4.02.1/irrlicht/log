@@ -101,7 +101,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -147,11 +146,18 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 	cp topfind.ml.in topfind.ml;                             \
+- else                                                             \
+- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 		> topfind.ml ;                                   \
+- fi
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -160,12 +166,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 	cp topfind.ml.in topfind.ml;                             \
-- else                                                             \
-- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 		> topfind.ml ;                                   \
-- fi
 - ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
@@ -213,45 +213,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
-[ERROR] The compilation of irrlicht failed at "ocaml setup.ml -build".
-
-#=== ERROR while installing irrlicht.0.0.3 ====================================#
-# opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
-# os                   linux
-# command              ocaml setup.ml -build
-# path                 /home/opam/.opam/system/build/irrlicht.0.0.3
-# compiler             system (4.02.1)
-# exit-code            1
-# env-file             /home/opam/.opam/system/build/irrlicht.0.0.3/irrlicht-1-60459a.env
-# stdout-file          /home/opam/.opam/system/build/irrlicht.0.0.3/irrlicht-1-60459a.out
-# stderr-file          /home/opam/.opam/system/build/irrlicht.0.0.3/irrlicht-1-60459a.err
-### stdout ###
-# [...]
-# cp irr_enums.mli irr_enums.ml
-# hash_values/main.byte methods_hash_values.txt > methods_hash_values.h
-# g++ -fPIC -I `ocamlc -where` -I /usr/include/irrlicht -c irr_enums_wrap.cpp
-# + g++ -fPIC -I `ocamlc -where` -I /usr/include/irrlicht -c irr_enums_wrap.cpp
-# In file included from irr_enums_wrap.cpp:1:0:
-# global.h:8:22: fatal error: irrlicht.h: No such file or directory
-#  #include <irrlicht.h>
-#                       ^
-# compilation terminated.
-# Command exited with code 1.
-### stderr ###
-# File "/home/axiles/src/oasis-0.3.0/src/oasis/OASISString.ml", line 118, characters 8-26:
-# Warning 3: deprecated: String.set
-# Use Bytes.set instead.
-# File "/home/axiles/src/oasis-0.3.0/src/oasis/OASISLibrary.ml", line 402, characters 6-24:
-# Warning 3: deprecated: Lazy.lazy_from_fun
-# Use Lazy.from_fun instead.
-# W: Cannot find source file matching module 'Irr_enums' in library irrlicht
-# W: Cannot find source file matching module 'Irr_enums' in library irrlicht
-# E: Failure("Command ''/usr/bin/ocamlbuild' hash_values/main.byte enums/main.byte libirrlicht_stubs.a dllirrlicht_stubs.so irrlicht.cma irrlicht.cmxa irrlicht.a irrlicht.cmxs -tag debug' terminated with error code 10")
-
-
-The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150314140734.export"
-'opam install irrlicht' failed.
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -361,6 +322,12 @@ The former state can be restored with:
 -> installed ocamlfind.1.5.5
 [irrlicht: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/irrlicht.0.0.3)
+- File "/home/axiles/src/oasis-0.3.0/src/oasis/OASISString.ml", line 118, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/home/axiles/src/oasis-0.3.0/src/oasis/OASISLibrary.ml", line 402, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
 - 
 - Configuration: 
 - ocamlfind: ........................................... /home/opam/.opam/system/bin/ocamlfind
@@ -419,12 +386,6 @@ The former state can be restored with:
 - Compile tests executable and library and run them: ... false
 - ocamldoc: ............................................ /usr/bin/ocamldoc
 - 
-- File "/home/axiles/src/oasis-0.3.0/src/oasis/OASISString.ml", line 118, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/home/axiles/src/oasis-0.3.0/src/oasis/OASISLibrary.ml", line 402, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
 [irrlicht: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-build" (CWD=/home/opam/.opam/system/build/irrlicht.0.0.3)
 - File "/home/axiles/src/oasis-0.3.0/src/oasis/OASISString.ml", line 118, characters 8-26:
@@ -433,8 +394,6 @@ The former state can be restored with:
 - File "/home/axiles/src/oasis-0.3.0/src/oasis/OASISLibrary.ml", line 402, characters 6-24:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
-- W: Cannot find source file matching module 'Irr_enums' in library irrlicht
-- W: Cannot find source file matching module 'Irr_enums' in library irrlicht
 - /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib64/ocaml/ocamlbuild /usr/lib64/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib64/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
 - File "_tags", line 29, characters 22-25:
 - Warning: the tag "cpp" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
@@ -452,6 +411,8 @@ The former state can be restored with:
 - ocamlfind ocamldep -modules hash_values/parser.ml > hash_values/parser.ml.depends
 - ocamlfind ocamlc -c -g -I hash_values -o hash_values/parser.cmo hash_values/parser.ml
 - ocamlfind ocamlc -g -custom -dllib dllmake_hash_values_stubs -linkpkg hash_values/parser.cmo hash_values/lexer.cmo hash_values/main.cmo hash_values/libmake_hash_values_stubs.a -o hash_values/main.byte
+- W: Cannot find source file matching module 'Irr_enums' in library irrlicht
+- W: Cannot find source file matching module 'Irr_enums' in library irrlicht
 - ocamlfind ocamldep -modules enums/main.ml > enums/main.ml.depends
 - ocamlfind ocamldep -modules enums/expr.mli > enums/expr.mli.depends
 - /usr/bin/ocamllex.opt -q enums/lexer.mll
@@ -481,6 +442,7 @@ The former state can be restored with:
 -                       ^
 - compilation terminated.
 - Command exited with code 1.
+[ERROR] The compilation of irrlicht failed at "ocaml setup.ml -build".
 - E: Failure("Command ''/usr/bin/ocamlbuild' hash_values/main.byte enums/main.byte libirrlicht_stubs.a dllirrlicht_stubs.so irrlicht.cma irrlicht.cmxa irrlicht.a irrlicht.cmxs -tag debug' terminated with error code 10")
 [irrlicht: ocamlfind remove] Command started
 + ocamlfind "remove" "irrlicht" (CWD=/home/opam/.opam/system/build/irrlicht.0.0.3)
@@ -492,3 +454,41 @@ The following actions failed
   - install irrlicht 0.0.3
 The following changes have been performed
   - install ocamlfind 1.5.5
+
+#=== ERROR while installing irrlicht.0.0.3 ====================================#
+# opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
+# os                   linux
+# command              ocaml setup.ml -build
+# path                 /home/opam/.opam/system/build/irrlicht.0.0.3
+# compiler             system (4.02.1)
+# exit-code            1
+# env-file             /home/opam/.opam/system/build/irrlicht.0.0.3/irrlicht-1-60459a.env
+# stdout-file          /home/opam/.opam/system/build/irrlicht.0.0.3/irrlicht-1-60459a.out
+# stderr-file          /home/opam/.opam/system/build/irrlicht.0.0.3/irrlicht-1-60459a.err
+### stdout ###
+# [...]
+# cp irr_enums.mli irr_enums.ml
+# hash_values/main.byte methods_hash_values.txt > methods_hash_values.h
+# g++ -fPIC -I `ocamlc -where` -I /usr/include/irrlicht -c irr_enums_wrap.cpp
+# + g++ -fPIC -I `ocamlc -where` -I /usr/include/irrlicht -c irr_enums_wrap.cpp
+# In file included from irr_enums_wrap.cpp:1:0:
+# global.h:8:22: fatal error: irrlicht.h: No such file or directory
+#  #include <irrlicht.h>
+#                       ^
+# compilation terminated.
+# Command exited with code 1.
+### stderr ###
+# File "/home/axiles/src/oasis-0.3.0/src/oasis/OASISString.ml", line 118, characters 8-26:
+# Warning 3: deprecated: String.set
+# Use Bytes.set instead.
+# File "/home/axiles/src/oasis-0.3.0/src/oasis/OASISLibrary.ml", line 402, characters 6-24:
+# Warning 3: deprecated: Lazy.lazy_from_fun
+# Use Lazy.from_fun instead.
+# W: Cannot find source file matching module 'Irr_enums' in library irrlicht
+# W: Cannot find source file matching module 'Irr_enums' in library irrlicht
+# E: Failure("Command ''/usr/bin/ocamlbuild' hash_values/main.byte enums/main.byte libirrlicht_stubs.a dllirrlicht_stubs.so irrlicht.cma irrlicht.cmxa irrlicht.a irrlicht.cmxs -tag debug' terminated with error code 10")
+
+
+The former state can be restored with:
+    opam switch import "~/.opam/system/backup/state-20150315091133.export"
+'opam install irrlicht' failed.
