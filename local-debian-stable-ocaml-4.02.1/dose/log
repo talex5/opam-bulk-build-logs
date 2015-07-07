@@ -6,20 +6,20 @@
 # The following system packages are needed:
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=dose
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
-Ign http://download.opensuse.org  InRelease
 Hit http://security.debian.org stable/updates InRelease
-Hit http://download.opensuse.org  Release.gpg
+Ign http://download.opensuse.org  InRelease
 Hit http://httpredir.debian.org stable InRelease
+Hit http://httpredir.debian.org stable-updates InRelease
+Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
-Get:2 http://security.debian.org stable/updates/main amd64 Packages [51.7 kB]
+Get:1 http://security.debian.org stable/updates/main amd64 Packages [53.7 kB]
+Get:2 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
 Get:3 http://download.opensuse.org  Packages [5783 B]
-Get:4 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
-Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3618 B]
-Fetched 9206 kB in 4s (1918 kB/s)
+Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3618 B]
+Fetched 9083 kB in 3s (2460 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
@@ -41,24 +41,24 @@ The following actions will be performed:
 [camlp4: from default] Command started
 [cudf: from default] Command started
 [dose: from default] Command started
-[cudf: from default] Command started
-[camlp4: from default] Command started
 [dose: from default] Command started
-[default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/dose.3.3+opam.tar.gz downloaded
 [extlib-compat: from default] Command started
+[camlp4: from default] Command started
+[cudf: from default] Command started
 [default] http://opam-archive:8080/archives/cudf.0.7+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/dose.3.3+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
 [ocamlgraph: from default] Command started
 [extlib-compat: from default] Command started
 [default] http://opam-archive:8080/archives/extlib-compat.1.6.1+opam.tar.gz downloaded
 [re: from default] Command started
 [ocamlfind: from default] Command started
+[ocamlgraph: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlgraph.1.8.5+opam.tar.gz downloaded
 [re: from default] Command started
 [default] http://opam-archive:8080/archives/re.1.3.2+opam.tar.gz downloaded
-[ocamlgraph: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlgraph.1.8.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -91,8 +91,7 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) 
-- ok
+- Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /home/opam/.opam/4.02.1/lib/ocaml
@@ -141,6 +140,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -186,8 +187,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
@@ -197,11 +196,11 @@ The following actions will be performed:
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -1156,8 +1155,8 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.ml > camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4Parsers -I camlp4 -I camlp4/config -o camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.ml
 - ocamlbuild -classic-display -no-ocamlfind  `./build/camlp4-native-only.sh`
-- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -for-pack Camlp4 -g -w Z -I camlp4/import -warn-error A-3 -pp 'camlp4/boot/camlp4boot.native -D OPT' -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Sig.cmx camlp4/Camlp4/Sig.ml
 - + echo camlp4/Camlp4.cmx camlp4/Camlp4Top.cmx camlp4/camlp4prof.native camlp4/mkcamlp4.native camlp4/camlp4.native camlp4/camlp4fulllib.cmxa camlp4/camlp4boot.native camlp4/camlp4r.native camlp4/camlp4rf.native camlp4/camlp4o.native camlp4/camlp4of.native camlp4/camlp4oof.native camlp4/camlp4orf.native camlp4/Camlp4Parsers/Camlp4AstLoader.cmx camlp4/Camlp4Parsers/Camlp4AstLoader.o camlp4/Camlp4Parsers/Camlp4DebugParser.cmx camlp4/Camlp4Parsers/Camlp4DebugParser.o camlp4/Camlp4Parsers/Camlp4GrammarParser.cmx camlp4/Camlp4Parsers/Camlp4GrammarParser.o camlp4/Camlp4Parsers/Camlp4ListComprehension.cmx camlp4/Camlp4Parsers/Camlp4ListComprehension.o camlp4/Camlp4Parsers/Camlp4MacroParser.cmx camlp4/Camlp4Parsers/Camlp4MacroParser.o camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmx camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.o camlp4/Camlp4Parsers/Camlp4OCamlParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlParser.o camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlParserParser.o camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.o camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.o camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.o camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmx camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.o camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmx camlp4/Camlp4Parsers/Camlp4QuotationCommon.o camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmx camlp4/Camlp4Parsers/Camlp4QuotationExpander.o camlp4/Camlp4Printers/Camlp4AstDumper.cmx camlp4/Camlp4Printers/Camlp4AstDumper.o camlp4/Camlp4Printers/Camlp4AutoPrinter.cmx camlp4/Camlp4Printers/Camlp4AutoPrinter.o camlp4/Camlp4Printers/Camlp4NullDumper.cmx camlp4/Camlp4Printers/Camlp4NullDumper.o camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmx camlp4/Camlp4Printers/Camlp4OCamlAstDumper.o camlp4/Camlp4Printers/Camlp4OCamlPrinter.cmx camlp4/Camlp4Printers/Camlp4OCamlPrinter.o camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.cmx camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.o camlp4/Camlp4Filters/Camlp4AstLifter.cmx camlp4/Camlp4Filters/Camlp4AstLifter.o camlp4/Camlp4Filters/Camlp4ExceptionTracer.cmx camlp4/Camlp4Filters/Camlp4ExceptionTracer.o camlp4/Camlp4Filters/Camlp4FoldGenerator.cmx camlp4/Camlp4Filters/Camlp4FoldGenerator.o camlp4/Camlp4Filters/Camlp4LocationStripper.cmx camlp4/Camlp4Filters/Camlp4LocationStripper.o camlp4/Camlp4Filters/Camlp4MapGenerator.cmx camlp4/Camlp4Filters/Camlp4MapGenerator.o camlp4/Camlp4Filters/Camlp4MetaGenerator.cmx camlp4/Camlp4Filters/Camlp4MetaGenerator.o camlp4/Camlp4Filters/Camlp4Profiler.cmx camlp4/Camlp4Filters/Camlp4Profiler.o camlp4/Camlp4Filters/Camlp4TrashRemover.cmx camlp4/Camlp4Filters/Camlp4TrashRemover.o
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -for-pack Camlp4 -g -w Z -I camlp4/import -warn-error A-3 -pp 'camlp4/boot/camlp4boot.native -D OPT' -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Sig.cmx camlp4/Camlp4/Sig.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -for-pack Camlp4 -g -w Z -I camlp4/import -warn-error A-3 -pp 'camlp4/boot/camlp4boot.native -D OPT' -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Utils.cmx camlp4/Camlp4/Utils.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -for-pack Camlp4 -g -w Z -I camlp4/import -warn-error A-3 -pp 'camlp4/boot/camlp4boot.native -D OPT' -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/OCamlInitSyntax.cmx camlp4/Camlp4/OCamlInitSyntax.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -for-pack Camlp4 -g -w Z -I camlp4/import -warn-error A-3 -pp 'camlp4/boot/camlp4boot.native -D OPT' -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/ErrorHandler.cmx camlp4/Camlp4/ErrorHandler.ml
@@ -1454,8 +1453,6 @@ The following actions will be performed:
 - ocamlc -g -c extHashtbl.mli extHashtbl.ml
 - ocamlc -g -c extList.mli extList.ml
 - ocamlc -g -c extString.mli extString.ml
-- ocamlc -g -c global.mli global.ml
-- ocamlc -g -c IO.mli IO.ml
 - File "bitSet.ml", line 23, characters 40-53:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -1491,9 +1488,8 @@ The following actions will be performed:
 - Use Bytes.create instead.
 - File "extString.ml", line 250, characters 28-39:
 - Warning 3: deprecated: String.copy
-- File "IO.ml", line 65, characters 9-22:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
+- ocamlc -g -c global.mli global.ml
+- ocamlc -g -c IO.mli IO.ml
 - ocamlc -g -c option.mli option.ml
 - ocamlc -g -c pMap.mli pMap.ml
 - ocamlc -g -c std.mli std.ml
@@ -1502,8 +1498,9 @@ The following actions will be performed:
 - ocamlc -g -c base64.mli base64.ml
 - ocamlc -g -c unzip.mli unzip.ml
 - ocamlc -g -c refList.mli refList.ml
-- ocamlc -g -c optParse.mli optParse.ml
-- ocamlc -g -c dllist.mli dllist.ml
+- File "IO.ml", line 65, characters 9-22:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - File "IO.ml", line 119, characters 9-22:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -1549,23 +1546,27 @@ The following actions will be performed:
 - File "unzip.ml", line 436, characters 9-22:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- ocamlc -g -c optParse.mli optParse.ml
+- ocamlc -g -c dllist.mli dllist.ml
 - ocamlc -g -c extLib.ml
 - ocamlc -g -a -o extLib.cma enum.cmo bitSet.cmo dynArray.cmo extArray.cmo extHashtbl.cmo extList.cmo extString.cmo global.cmo IO.cmo option.cmo pMap.cmo std.cmo uChar.cmo uTF8.cmo base64.cmo unzip.cmo refList.cmo optParse.cmo dllist.cmo extLib.cmo
 - ocamlopt -g -c enum.mli enum.ml
 - ocamlopt -g -c bitSet.mli bitSet.ml
 - ocamlopt -g -c dynArray.mli dynArray.ml
-- ocamlopt -g -c extArray.mli extArray.ml
 - File "bitSet.ml", line 23, characters 40-53:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
 - File "bitSet.ml", line 28, characters 64-75:
 - Warning 3: deprecated: String.fill
 - Use Bytes.fill instead.
+- ocamlopt -g -c extArray.mli extArray.ml
 - ocamlopt -g -c extHashtbl.mli extHashtbl.ml
 - ocamlopt -g -c extList.mli extList.ml
 - ocamlopt -g -c extString.mli extString.ml
 - ocamlopt -g -c global.mli global.ml
 - ocamlopt -g -c IO.mli IO.ml
+- ocamlopt -g -c option.mli option.ml
+- ocamlopt -g -c pMap.mli pMap.ml
 - File "extString.ml", line 28, characters 9-15:
 - Warning 3: deprecated: create
 - Use Bytes.create instead.
@@ -1616,12 +1617,11 @@ The following actions will be performed:
 - Warning 3: deprecated: String.unsafe_set
 - File "IO.ml", line 788, characters 4-21:
 - Warning 3: deprecated: String.unsafe_set
-- ocamlopt -g -c option.mli option.ml
-- ocamlopt -g -c pMap.mli pMap.ml
 - ocamlopt -g -c std.mli std.ml
 - ocamlopt -g -c uChar.mli uChar.ml
 - ocamlopt -g -c uTF8.mli uTF8.ml
 - ocamlopt -g -c base64.mli base64.ml
+- ocamlopt -g -c unzip.mli unzip.ml
 - File "std.ml", line 52, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -1636,10 +1636,6 @@ The following actions will be performed:
 - Replaced by custom_tag.
 - File "base64.ml", line 98, characters 4-21:
 - Warning 3: deprecated: String.unsafe_set
-- ocamlopt -g -c unzip.mli unzip.ml
-- ocamlopt -g -c refList.mli refList.ml
-- ocamlopt -g -c optParse.mli optParse.ml
-- ocamlopt -g -c dllist.mli dllist.ml
 - File "unzip.ml", line 172, characters 12-25:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -1653,6 +1649,9 @@ The following actions will be performed:
 - File "unzip.ml", line 436, characters 9-22:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- ocamlopt -g -c refList.mli refList.ml
+- ocamlopt -g -c optParse.mli optParse.ml
+- ocamlopt -g -c dllist.mli dllist.ml
 - ocamlopt -g -c extLib.ml
 - ocamlopt -g -a -o extLib.cmxa enum.cmx bitSet.cmx dynArray.cmx extArray.cmx extHashtbl.cmx extList.cmx extString.cmx global.cmx IO.cmx option.cmx pMap.cmx std.cmx uChar.cmx uTF8.cmx base64.cmx unzip.cmx refList.cmx optParse.cmx dllist.cmx extLib.cmx
 - ocamlopt -g -shared -linkall extLib.cmxa -o extLib.cmxs
@@ -1958,11 +1957,11 @@ The following actions will be performed:
 - checking whether the C compiler works... yes
 - checking for C compiler default output file name... a.out
 - checking for suffix of executables... 
-- checking whether we are cross compiling... 
-- no
+- checking whether we are cross compiling... no
 - checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
-- checking whether gcc accepts -g... yes
+- checking whether gcc accepts -g... 
+- yes
 - checking for gcc option to accept ISO C89... none needed
 - checking how to run the C preprocessor... gcc -E
 - checking for grep that handles long lines and -e... /bin/grep
@@ -2637,15 +2636,13 @@ The following actions will be performed:
 - pod2html buildcheck.pod > buildcheck.html
 - pod2html distcheck.pod > distcheck.html
 - pod2html apt-cudf-get.pod > apt-cudf-get.html
+- Cannot find "deb-control(5)" in podpath: cannot find suitable replacement path, cannot resolve link
+- Cannot find "dose3-distcheck(1)" in podpath: cannot find suitable replacement path, cannot resolve link
+- Cannot find "deb-control(5)" in podpath: cannot find suitable replacement path, cannot resolve link
+- Cannot find "dose3-distcheck(1)" in podpath: cannot find suitable replacement path, cannot resolve link
+- Cannot find "deb-control(5)" in podpath: cannot find suitable replacement path, cannot resolve link
 - pod2html outdated.pod > outdated.html
 - pod2html challenged.pod > challenged.html
-- Cannot find "deb-control(5)" in podpath: cannot find suitable replacement path, cannot resolve link
-- Cannot find "dose3-distcheck(1)" in podpath: cannot find suitable replacement path, cannot resolve link
-- Cannot find "deb-control(5)" in podpath: cannot find suitable replacement path, cannot resolve link
-- Cannot find "dose3-distcheck(1)" in podpath: cannot find suitable replacement path, cannot resolve link
-- Cannot find "deb-control(5)" in podpath: cannot find suitable replacement path, cannot resolve link
-- Cannot find "distcheck(5)" in podpath: cannot find suitable replacement path, cannot resolve link
-- Cannot find "challenged(5)" in podpath: cannot find suitable replacement path, cannot resolve link
 - make[1]: Leaving directory '/home/opam/.opam/4.02.1/build/dose.3.3/doc/manpages'
 - ocamlbuild  -j 10 applications/apps.otarget
 - File "_tags", line 18, characters 27-31:
@@ -2701,10 +2698,12 @@ The following actions will be performed:
 - ocamlfind ocamlc -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package unix -package cudf -package ocamlgraph -package re.str -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs  -DHASOCAMLGRAPH' -I applications -I doselibs -o applications/deb-buildcheck.cmo applications/deb-buildcheck.ml
 - ocamlfind ocamlopt -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package unix -package cudf -package ocamlgraph -package re.str -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs  -DHASOCAMLGRAPH' -I applications -I doselibs -o applications/deb-buildcheck.cmx applications/deb-buildcheck.ml
 - ocamlfind ocamldep -package extlib -package re.pcre -package unix -package cudf -package ocamlgraph -package re.str -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs  -DHASOCAMLGRAPH' -modules applications/ceve.ml > applications/ceve.ml.depends
-- ocamlfind ocamlc -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package unix -package cudf -package ocamlgraph -package re.str -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs  -DHASOCAMLGRAPH' -I applications -I doselibs -o applications/ceve.cmo applications/ceve.ml
+- Cannot find "distcheck(5)" in podpath: cannot find suitable replacement path, cannot resolve link
+- Cannot find "challenged(5)" in podpath: cannot find suitable replacement path, cannot resolve link
 - Cannot find "distcheck(1)" in podpath: cannot find suitable replacement path, cannot resolve link
 - Cannot find "outdated(1)" in podpath: cannot find suitable replacement path, cannot resolve link
 - make: Circular all <- all dependency dropped.
+- ocamlfind ocamlc -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package unix -package cudf -package ocamlgraph -package re.str -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs  -DHASOCAMLGRAPH' -I applications -I doselibs -o applications/ceve.cmo applications/ceve.ml
 - ocamlfind ocamlopt -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package unix -package cudf -package ocamlgraph -package re.str -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs  -DHASOCAMLGRAPH' -I applications -I doselibs -o applications/ceve.cmx applications/ceve.ml
 - ocamlfind ocamldep -package extlib -package re.pcre -package unix -package cudf -package ocamlgraph -package re.str -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs  -DHASOCAMLGRAPH' -modules applications/apt-cudf.ml > applications/apt-cudf.ml.depends
 - ocamlfind ocamlc -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package unix -package cudf -package ocamlgraph -package re.str -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs  -DHASOCAMLGRAPH' -I applications -I doselibs -o applications/apt-cudf.cmo applications/apt-cudf.ml
@@ -2750,6 +2749,8 @@ The following actions will be performed:
 - # Parallel statistics: { count(total): 1(33), max: 10, min: 10, average(total): 10.000(1.273) }
 [dose: make install] Command started
 + make "install" (CWD=/home/opam/.opam/4.02.1/build/dose.3.3)
+- Install dose librairies to /home/opam/.opam/4.02.1/lib
+- Install dose binaries to /home/opam/.opam/4.02.1/bin
 - Installed /home/opam/.opam/4.02.1/lib/dose3/edosSolver.mli
 - Installed /home/opam/.opam/4.02.1/lib/dose3/input.mli
 - Installed /home/opam/.opam/4.02.1/lib/dose3/cudfAdd.mli
@@ -2805,7 +2806,5 @@ The following actions will be performed:
 - Installed /home/opam/.opam/4.02.1/lib/dose3/doseparseNoRpm.cma
 - Installed /home/opam/.opam/4.02.1/lib/dose3/doseparse.cma
 - Installed /home/opam/.opam/4.02.1/lib/dose3/META
-- Install dose librairies to /home/opam/.opam/4.02.1/lib
-- Install dose binaries to /home/opam/.opam/4.02.1/bin
 -> installed dose.3.3
 Done.
