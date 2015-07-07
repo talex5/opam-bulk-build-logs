@@ -1,7 +1,7 @@
 + uname -m
+# Detecting depexts using flags: x86_64 linux centos
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=iocamljs-kernel
-# Detecting depexts using flags: x86_64 linux centos
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=iocamljs-kernel
 # No extra OS packages requirements found.
 The following actions will be performed:
@@ -19,14 +19,14 @@ The following actions will be performed:
 [js_of_ocaml: from default] Command started
 [lwt: from default] Command started
 [iocamljs-kernel: from default] Command started
-[lwt: from default] Command started
 [default] http://opam-archive:8080/archives/iocamljs-kernel.0.4.6+opam.tar.gz downloaded
 [menhir: from default] Command started
 [js_of_ocaml: from default] Command started
-[default] http://opam-archive:8080/archives/lwt.2.4.5+opam.tar.gz downloaded
+[lwt: from default] Command started
+[default] http://opam-archive:8080/archives/js_of_ocaml.2.5+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [menhir: from default] Command started
-[default] http://opam-archive:8080/archives/js_of_ocaml.2.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/lwt.2.4.5+opam.tar.gz downloaded
 [optcomp: from default] Command started
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/menhir.20141215+opam.tar.gz downloaded
@@ -173,14 +173,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -197,6 +189,14 @@ The following actions will be performed:
 -     	    >topfind
 - ocamlc -I +compiler-libs -c num_top_printers.mli
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -c num_top.mli
 - ocamlc -I +compiler-libs -g -c num_top.ml
 - ocamlc -I +compiler-libs -a -o num_top.cma num_top_printers.cmo num_top.cmo
@@ -1890,8 +1890,6 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -a syntax/pa_lwt.cmo -o syntax/lwt-syntax.cma
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -package camlp4 -syntax camlp4o -package camlp4.extend -syntax camlp4o -package camlp4.quotations.o -syntax camlp4o -I syntax -o syntax/pa_lwt_options.cmx syntax/pa_lwt_options.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -package camlp4 -syntax camlp4o -package camlp4.extend -syntax camlp4o -package camlp4.quotations.o -syntax camlp4o -I syntax -o syntax/pa_lwt.cmx syntax/pa_lwt.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -a syntax/pa_lwt.cmx -o syntax/lwt-syntax.cmxa
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared syntax/lwt-syntax.cmxa syntax/pa_lwt.cmx -o syntax/lwt-syntax.cmxs
 - File "setup.ml", line 254, characters 8-26:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
@@ -1899,6 +1897,8 @@ The following actions will be performed:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
 - ocamlfind: Package `wikidoc' not found
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -a syntax/pa_lwt.cmx -o syntax/lwt-syntax.cmxa
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared syntax/lwt-syntax.cmxa syntax/pa_lwt.cmx -o syntax/lwt-syntax.cmxs
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -a syntax/pa_lwt_options.cmo -o syntax/lwt-syntax-options.cma
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -a syntax/pa_lwt_options.cmx -o syntax/lwt-syntax-options.cmxa
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared syntax/lwt-syntax-options.cmxa syntax/pa_lwt_options.cmx -o syntax/lwt-syntax-options.cmxs
@@ -2318,6 +2318,17 @@ The following actions will be performed:
 - ocamlfind ocamlopt -linkpkg -g -safe-string \
 - -package compiler-libs.common,findlib \
 - ../compiler/compiler.cmxa jsoo_common.cmx jsoo_mktop.cmx -o jsoo_mktop.opt
+- findlib: [WARNING] Interface subst.cmi occurs in several directories: ../compiler, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface primitive.cmi occurs in several directories: ../compiler, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface deadcode.cmi occurs in several directories: ../compiler, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface compile.cmi occurs in several directories: ../compiler, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface subst.cmi occurs in several directories: ../compiler, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface primitive.cmi occurs in several directories: ../compiler, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface deadcode.cmi occurs in several directories: ../compiler, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface compile.cmi occurs in several directories: ../compiler, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
 - cp jsoo_mktop.opt jsoo_mktop
 - ocamlfind ocamlopt -c -g -safe-string \
 - -package compiler-libs.common,findlib \
@@ -2325,23 +2336,6 @@ The following actions will be performed:
 - ocamlfind ocamlopt -linkpkg -g -safe-string \
 - -package compiler-libs.common,findlib \
 - ../compiler/compiler.cmxa jsoo_common.cmx jsoo_mkcmis.cmx -o jsoo_mkcmis.opt
-- findlib: [WARNING] Interface subst.cmi occurs in several directories: ../compiler, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface primitive.cmi occurs in several directories: ../compiler, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface deadcode.cmi occurs in several directories: ../compiler, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface compile.cmi occurs in several directories: ../compiler, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface subst.cmi occurs in several directories: ../compiler, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface primitive.cmi occurs in several directories: ../compiler, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface deadcode.cmi occurs in several directories: ../compiler, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface compile.cmi occurs in several directories: ../compiler, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface subst.cmi occurs in several directories: ../compiler, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface primitive.cmi occurs in several directories: ../compiler, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface deadcode.cmi occurs in several directories: ../compiler, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface compile.cmi occurs in several directories: ../compiler, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
 - cp jsoo_mkcmis.opt jsoo_mkcmis
 - make[1]: Leaving directory `/home/opam/.opam/system/build/js_of_ocaml.2.5/jsoo_tools'
 - make -C lib toplevel_lib
@@ -2353,6 +2347,12 @@ The following actions will be performed:
 - 	-I toplevel -I ../compiler -I +compiler-libs \
 - 	-c toplevel/jsooTop.ml -o toplevel/jsooTop.cmo
 - make[1]: Leaving directory `/home/opam/.opam/system/build/js_of_ocaml.2.5/lib'
+- findlib: [WARNING] Interface subst.cmi occurs in several directories: ../compiler, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface primitive.cmi occurs in several directories: ../compiler, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface deadcode.cmi occurs in several directories: ../compiler, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface compile.cmi occurs in several directories: ../compiler, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
 - findlib: [WARNING] Interface subst.cmi occurs in several directories: /usr/lib64/ocaml/compiler-libs, ../compiler
 - findlib: [WARNING] Interface primitive.cmi occurs in several directories: /usr/lib64/ocaml/compiler-libs, ../compiler
 - findlib: [WARNING] Interface compile.cmi occurs in several directories: /usr/lib64/ocaml/compiler-libs, ../compiler
