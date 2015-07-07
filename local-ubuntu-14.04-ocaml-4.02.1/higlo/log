@@ -3,9 +3,9 @@
 + lsb_release -i -s
 # Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=higlo
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=higlo
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=higlo
 Not running as root, the following command will be run through "sudo":
     apt-get update
 + sudo apt-get update
@@ -15,8 +15,8 @@ Hit http://download.opensuse.org  Release
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
-Hit http://download.opensuse.org  Packages
 Hit http://archive.ubuntu.com trusty Release.gpg
+Hit http://download.opensuse.org  Packages
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
 Hit http://archive.ubuntu.com trusty Release
@@ -40,10 +40,12 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [23.3 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [329 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [128 kB]
-Fetched 2122 kB in 5s (359 kB/s)
+Fetched 2122 kB in 6s (319 kB/s)
 Reading package lists...
-# OS package update successful
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 635587 635616
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages.gz is not what the server reported 356350 356387
 + sudo apt-get install -qq -yy m4
+# OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
 # OS packages installation successful
@@ -65,18 +67,18 @@ The following actions will be performed:
 [js_of_ocaml: from default] Command started
 [lwt: from default] Command started
 [higlo: from default] Command started
-[default] http://opam-archive:8080/archives/higlo.0.4+opam.tar.gz downloaded
-[menhir: from default] Command started
 [lwt: from default] Command started
 [js_of_ocaml: from default] Command started
 [default] http://opam-archive:8080/archives/lwt.2.4.8+opam.tar.gz downloaded
+[menhir: from default] Command started
+[default] http://opam-archive:8080/archives/higlo.0.4+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/js_of_ocaml.2.5+opam.tar.gz downloaded
 [ppx_tools: from default] Command started
 [menhir: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/menhir.20141215+opam.tar.gz downloaded
 [ulex: from default] Command started
-[ocamlfind: from default] Command started
 [ppx_tools: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [xmlm: from default] Command started
@@ -124,7 +126,8 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) ok
+- Detecting compiler arguments: (extractor built) 
+- ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib/ocaml
@@ -177,6 +180,9 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -222,10 +228,9 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c fl_args.ml
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -234,8 +239,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -1771,6 +1774,7 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -syntax camlp4o -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -modules syntax/pa_lwt_options.ml > syntax/pa_lwt_options.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -safe-string -syntax camlp4o -syntax camlp4o -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -I syntax -o syntax/pa_lwt_options.cmo syntax/pa_lwt_options.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -safe-string -syntax camlp4o -syntax camlp4o -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -I syntax -o syntax/pa_lwt.cmo syntax/pa_lwt.ml
+- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -a syntax/pa_lwt.cmo -o syntax/lwt-syntax.cma
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -safe-string -syntax camlp4o -syntax camlp4o -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -I syntax -o syntax/pa_lwt_options.cmx syntax/pa_lwt_options.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -safe-string -syntax camlp4o -syntax camlp4o -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -I syntax -o syntax/pa_lwt.cmx syntax/pa_lwt.ml
@@ -1809,7 +1813,6 @@ The following actions will be performed:
 - + /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -safe-string -package ppx_tools.metaquot -package compiler-libs.common -I ppx -o ppx/ppx_lwt_ex.cmx ppx/ppx_lwt_ex.ml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -linkpkg -g -linkpkg -package ppx_tools.metaquot -package compiler-libs.common ppx/ppx_lwt_ex.cmx -o ppx/ppx_lwt_ex.native
-- ocamlfind: Package `wikidoc' not found
 - + /home/opam/.opam/system/bin/ocamlfind ocamlopt -linkpkg -g -linkpkg -package ppx_tools.metaquot -package compiler-libs.common ppx/ppx_lwt_ex.cmx -o ppx/ppx_lwt_ex.native
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -package unix -package bytes -package bigarray -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -modules examples/unix/logging.ml > examples/unix/logging.ml.depends
@@ -2307,17 +2310,6 @@ The following actions will be performed:
 - ocamlfind ocamlopt -linkpkg -g -safe-string \
 - 	-package compiler-libs.common,findlib \
 - 	../compiler/compiler.cmxa jsoo_common.cmx jsoo_mktop.cmx -o jsoo_mktop.opt
-- findlib: [WARNING] Interface subst.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface primitive.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface deadcode.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface compile.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface subst.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface primitive.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface deadcode.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface compile.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
 - cp jsoo_mktop.opt jsoo_mktop
 - ocamlfind ocamlopt -c -g -safe-string \
 - 	-package compiler-libs.common,findlib \
@@ -2328,6 +2320,23 @@ The following actions will be performed:
 - cp jsoo_mkcmis.opt jsoo_mkcmis
 - make[1]: Leaving directory `/home/opam/.opam/system/build/js_of_ocaml.2.5/jsoo_tools'
 - make -C lib toplevel_lib
+- findlib: [WARNING] Interface subst.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface primitive.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface deadcode.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface compile.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface subst.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface primitive.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface deadcode.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface compile.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface subst.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface primitive.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface deadcode.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface compile.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
 - make[1]: Entering directory `/home/opam/.opam/system/build/js_of_ocaml.2.5/lib'
 - ocamlfind ocamlc -safe-string -package lwt -I . -I log toplevel/jsooTop.mli -o toplevel/jsooTop.cmi
 - ocamlfind ocamlc -syntax camlp4o \
@@ -2336,12 +2345,6 @@ The following actions will be performed:
 - 		-I toplevel -I ../compiler -I +compiler-libs \
 - 		-c toplevel/jsooTop.ml -o toplevel/jsooTop.cmo
 - make[1]: Leaving directory `/home/opam/.opam/system/build/js_of_ocaml.2.5/lib'
-- findlib: [WARNING] Interface subst.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface primitive.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface deadcode.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface compile.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
 - findlib: [WARNING] Interface subst.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, ../compiler
 - findlib: [WARNING] Interface primitive.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, ../compiler
 - findlib: [WARNING] Interface compile.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, ../compiler
@@ -2443,8 +2446,8 @@ The following actions will be performed:
 - ocamlfind ocamlc -o ppx_xtmpl.byte -package ppx_tools.metaquot,str,xmlm \
 - 	-annot -rectypes -safe-string -g -linkpkg xtmpl.cma ppx_xtmpl.ml
 - ocamlfind ocamlopt -c -package xmlm -annot -rectypes -safe-string -g xtmpl.ml
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
 - ocamlfind ocamlopt -c -package xmlm -annot -rectypes -safe-string -g xtmpl_xhtml.ml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
 - ocamlfind ocamlopt -o xtmpl.cmxa -a -package xmlm xtmpl.cmx xtmpl_xhtml.cmx
 - ocamlfind ocamlopt -shared -o xtmpl.cmxs -package xmlm xtmpl.cmx xtmpl_xhtml.cmx
 - ocamlfind ocamlopt -o ppx_xtmpl -package ppx_tools.metaquot,str,xmlm \

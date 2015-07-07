@@ -1,14 +1,14 @@
 + uname -m
+# Detecting depexts using flags: x86_64 linux ubuntu
 + uname -s
 + lsb_release -i -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=higlo
-# Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=higlo
++ sudo apt-get update
 # The following system packages are needed:
 #  - m4
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
@@ -29,7 +29,6 @@ Get:6 http://archive.ubuntu.com trusty-updates/restricted Sources [2310 B]
 Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [141 kB]
 Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [636 kB]
 Get:9 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [15.1 kB]
-+ sudo apt-get install -qq -yy m4
 Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [356 kB]
 Get:11 http://archive.ubuntu.com trusty-security/main Sources [97.7 kB]
 Get:12 http://archive.ubuntu.com trusty-security/restricted Sources [1874 B]
@@ -37,11 +36,12 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [23.3 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [329 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [128 kB]
-Fetched 2122 kB in 6s (348 kB/s)
+Fetched 2122 kB in 6s (339 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
++ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind 1.5.5                                     [required by higlo]
@@ -65,8 +65,8 @@ The following actions will be performed:
 [xtmpl: from default] Command started
 [default] http://opam-archive:8080/archives/higlo.0.3+opam.tar.gz downloaded
 [xmlm: from default] Command started
-[xtmpl: from default] Command started
 [default] http://opam-archive:8080/archives/xmlm.1.2.0+opam.tar.gz downloaded
+[xtmpl: from default] Command started
 [default] http://opam-archive:8080/archives/xtmpl.0.9+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -84,8 +84,6 @@ The following actions will be performed:
 - native dynlink: found
 - labltk: found
 - ocamlbuild: found
-- File "itest-aux/ppx.ml", line 1, characters 0-25:
-- Error: Unbound value Toploop.preprocess_phrase
 - camlp4: using camlp4, style 310
 - compiler-libs: found
 - dbm: not present (normal since OCaml-4.00)
@@ -103,7 +101,10 @@ The following actions will be performed:
 - Configuration for camlp4 written to site-lib-src/camlp4/META
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
-- Detecting compiler arguments: (extractor built) ok
+- Detecting compiler arguments: (extractor built) 
+- File "itest-aux/ppx.ml", line 1, characters 0-25:
+- Error: Unbound value Toploop.preprocess_phrase
+- ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib/ocaml
@@ -297,6 +298,24 @@ The following actions will be performed:
 [xmlm: ./pkg/pkg-git] Command started
 + ./pkg/pkg-git  (CWD=/home/opam/.opam/system/build/xmlm.1.2.0)
 [xmlm: ./pkg/build true] Command started
++ ./pkg/build "true" (CWD=/home/opam/.opam/system/build/xmlm.1.2.0)
+- ocamlfind ocamldep -modules src/xmlm.mli > src/xmlm.mli.depends
+- ocamlfind ocamlc -c -I src -I test -o src/xmlm.cmi src/xmlm.mli
+- ocamlfind ocamldep -modules src/xmlm.ml > src/xmlm.ml.depends
+- ocamlfind ocamlopt -c -annot -bin-annot -I src -I test -o src/xmlm.cmx src/xmlm.ml
+- ocamlfind ocamlc -c -annot -bin-annot -I src -I test -o src/xmlm.cmo src/xmlm.ml
+- ocamlfind ocamlc -a src/xmlm.cmo -o src/xmlm.cma
+- ocamlfind ocamlopt -a src/xmlm.cmx -o src/xmlm.cmxa
+- ocamlfind ocamlopt -shared src/xmlm.cmx -o src/xmlm.cmxs
+- ocamlfind ocamldep -modules test/xmltrip.ml > test/xmltrip.ml.depends
+- ocamlfind ocamldep -modules test/xhtml.ml > test/xhtml.ml.depends
+- ocamlfind ocamlc -c -annot -bin-annot -I test -I src -o test/xhtml.cmo test/xhtml.ml
+- ocamlfind ocamlc -c -annot -bin-annot -I test -I src -o test/xmltrip.cmo test/xmltrip.ml
+- ocamlfind ocamlopt -c -annot -bin-annot -I test -I src -o test/xhtml.cmx test/xhtml.ml
+- ocamlfind ocamlopt -c -annot -bin-annot -I test -I src -o test/xmltrip.cmx test/xmltrip.ml
+- ocamlfind ocamlopt -linkpkg src/xmlm.cmx test/xhtml.cmx test/xmltrip.cmx -o test/xmltrip.native
+-> installed xmlm.1.2.0
+[xtmpl: make all] Command started
 + make  (CWD=/home/opam/.opam/system/build/ulex.1.1)
 - ocamlbuild -byte-plugin pa_ulex.cma ulexing.cma
 - /usr/bin/ocamlc.opt unix.cma -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cma myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmo -o myocamlbuild
@@ -322,24 +341,6 @@ The following actions will be performed:
 - Warning 3: deprecated feature: operator (&); you should use (&&) instead
 - /usr/bin/ocamlc.opt -a utf8.cmo ulexing.cmo -o ulexing.cma
 [ulex: make all.opt] Command started
-+ ./pkg/build "true" (CWD=/home/opam/.opam/system/build/xmlm.1.2.0)
-- ocamlfind ocamldep -modules src/xmlm.mli > src/xmlm.mli.depends
-- ocamlfind ocamlc -c -I src -I test -o src/xmlm.cmi src/xmlm.mli
-- ocamlfind ocamldep -modules src/xmlm.ml > src/xmlm.ml.depends
-- ocamlfind ocamlopt -c -annot -bin-annot -I src -I test -o src/xmlm.cmx src/xmlm.ml
-- ocamlfind ocamlc -c -annot -bin-annot -I src -I test -o src/xmlm.cmo src/xmlm.ml
-- ocamlfind ocamlc -a src/xmlm.cmo -o src/xmlm.cma
-- ocamlfind ocamlopt -a src/xmlm.cmx -o src/xmlm.cmxa
-- ocamlfind ocamlopt -shared src/xmlm.cmx -o src/xmlm.cmxs
-- ocamlfind ocamldep -modules test/xmltrip.ml > test/xmltrip.ml.depends
-- ocamlfind ocamldep -modules test/xhtml.ml > test/xhtml.ml.depends
-- ocamlfind ocamlc -c -annot -bin-annot -I test -I src -o test/xhtml.cmo test/xhtml.ml
-- ocamlfind ocamlc -c -annot -bin-annot -I test -I src -o test/xmltrip.cmo test/xmltrip.ml
-- ocamlfind ocamlopt -c -annot -bin-annot -I test -I src -o test/xhtml.cmx test/xhtml.ml
-- ocamlfind ocamlopt -c -annot -bin-annot -I test -I src -o test/xmltrip.cmx test/xmltrip.ml
-- ocamlfind ocamlopt -linkpkg src/xmlm.cmx test/xhtml.cmx test/xmltrip.cmx -o test/xmltrip.native
--> installed xmlm.1.2.0
-[xtmpl: make all] Command started
 + make "all" (CWD=/home/opam/.opam/system/build/xtmpl.0.9)
 - ocamlc.opt -g  -c `ocamlfind query -i-format xmlm` -annot -rectypes xtmpl.mli
 - ocamlc.opt -g  -c `ocamlfind query -i-format xmlm` -annot -rectypes xtmpl.ml
@@ -410,8 +411,7 @@ The following actions will be performed:
 - ocamlfind ocamlopt -package ulex,xtmpl -annot -rectypes -g -shared -o higlo_xml.cmxs higlo_xml.ml
 - ocamlfind ocamlopt -package ulex,xtmpl -annot -rectypes -g -c higlo_printers.ml
 - ocamlfind ocamlopt -package ulex,xtmpl -annot -rectypes -g -o higlo -package dynlink -linkpkg higlo.cmx higlo_ocaml.cmx higlo_xml.cmx higlo_printers.cmx higlo_main.ml
-- Creating mk-higlo... 
-- done
+- Creating mk-higlo... done
 - rm higlo_ocaml.ml higlo_xml.ml
 [higlo: make install-lib] Command started
 + make "install-lib" (CWD=/home/opam/.opam/system/build/higlo.0.3)
