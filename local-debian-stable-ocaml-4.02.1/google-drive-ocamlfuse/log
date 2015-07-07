@@ -1,7 +1,7 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux debian
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=google-drive-ocamlfuse
+# Detecting depexts using flags: x86_64 linux debian
 # The following system packages are needed:
 #  - libcurl4-gnutls-dev
 #  - libfuse-dev
@@ -9,22 +9,22 @@
 #  - m4
 #  - zlib1g-dev
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=google-drive-ocamlfuse
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
-Get:1 http://security.debian.org stable/updates Release.gpg [836 B]
 Hit http://download.opensuse.org  Release.gpg
-Get:2 http://security.debian.org stable/updates Release [102 kB]
-Hit http://download.opensuse.org  Release
-Hit http://download.opensuse.org  Packages
-Get:3 http://security.debian.org stable/updates/main amd64 Packages [382 kB]
 Hit http://http.debian.net stable Release.gpg
-Get:4 http://http.debian.net stable-updates Release.gpg [836 B]
+Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
 Hit http://http.debian.net stable Release
-Get:5 http://http.debian.net stable-updates Release [124 kB]
+Hit http://download.opensuse.org  Release
+Get:2 http://http.debian.net stable-updates Release [124 kB]
+Hit http://download.opensuse.org  Packages
 Hit http://http.debian.net stable/main amd64 Packages
-Get:6 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
-Fetched 614 kB in 1s (329 kB/s)
+Get:3 http://http.debian.net stable-updates/main amd64 Packages [4369 B]
+Hit http://security.debian.org stable/updates Release.gpg
+Hit http://security.debian.org stable/updates Release
+Hit http://security.debian.org stable/updates/main amd64 Packages
+Fetched 129 kB in 3s (41.5 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
@@ -134,11 +134,11 @@ The following actions will be performed:
 [biniou: from default] Command started
 [camlidl: from default] Command started
 [camlp4: from default] Command started
-[default] http://opam-archive:8080/archives/biniou.1.0.9+opam.tar.gz downloaded
-[cppo: from default] Command started
-[default] http://opam-archive:8080/archives/camlidl.1.05+opam.tar.gz downloaded
-[cryptokit: from default] Command started
 [default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
+[cppo: from default] Command started
+[default] http://opam-archive:8080/archives/biniou.1.0.9+opam.tar.gz downloaded
+[cryptokit: from default] Command started
+[default] http://opam-archive:8080/archives/camlidl.1.05+opam.tar.gz downloaded
 [easy-format: from default] Command started
 [cppo: from default] Command started
 [cryptokit: from default] Command started
@@ -156,9 +156,9 @@ The following actions will be performed:
 [default] http://opam-archive:8080/archives/gapi-ocaml.0.2.6+opam.tar.gz downloaded
 [ocamlfuse: from default] Command started
 [google-drive-ocamlfuse: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/google-drive-ocamlfuse.0.5.14+opam.tar.gz downloaded
 [ocamlnet: from default] Command started
-[ocamlfind: from default] Command started
 [ocamlfuse: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [ocurl: from default] Command started
@@ -170,11 +170,11 @@ The following actions will be performed:
 [sqlite3: from default] Command started
 [default] http://opam-archive:8080/archives/sqlite3.2.0.9+opam.tar.gz downloaded
 [yojson: from default] Command started
-[xmlm: from default] Command started
 [ocamlnet: from default] Command started
-[default] http://opam-archive:8080/archives/xmlm.1.2.0+opam.tar.gz downloaded
-[yojson: from default] Command started
+[xmlm: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlnet.4.0.2+opam.tar.gz downloaded
+[yojson: from default] Command started
+[default] http://opam-archive:8080/archives/xmlm.1.2.0+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/yojson.1.2.0+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -522,6 +522,11 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
+- ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
+- if [ 1 -gt 0 ]; then \
+- 	    ocamlopt -I +compiler-libs -shared -o findlib.cmxs findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx; \
+- 	fi
+- ocamlopt -I +compiler-libs -c ocaml_args.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -566,11 +571,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
-- if [ 1 -gt 0 ]; then \
-- 	    ocamlopt -I +compiler-libs -shared -o findlib.cmxs findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx; \
-- 	fi
-- ocamlopt -I +compiler-libs -c ocaml_args.ml
 - ocamlopt -I +compiler-libs -c frontend.ml
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
@@ -3953,6 +3953,24 @@ The following actions will be performed:
 [xmlm: ./pkg/pkg-git] Command started
 + ./pkg/pkg-git  (CWD=/home/opam/.opam/4.02.1/build/xmlm.1.2.0)
 [xmlm: ./pkg/build true] Command started
++ ./pkg/build "true" (CWD=/home/opam/.opam/4.02.1/build/xmlm.1.2.0)
+- ocamlfind ocamldep -modules src/xmlm.mli > src/xmlm.mli.depends
+- ocamlfind ocamlc -c -I src -I test -o src/xmlm.cmi src/xmlm.mli
+- ocamlfind ocamldep -modules src/xmlm.ml > src/xmlm.ml.depends
+- ocamlfind ocamlopt -c -annot -bin-annot -I src -I test -o src/xmlm.cmx src/xmlm.ml
+- ocamlfind ocamlc -c -annot -bin-annot -I src -I test -o src/xmlm.cmo src/xmlm.ml
+- ocamlfind ocamlc -a src/xmlm.cmo -o src/xmlm.cma
+- ocamlfind ocamlopt -a src/xmlm.cmx -o src/xmlm.cmxa
+- ocamlfind ocamlopt -shared src/xmlm.cmx -o src/xmlm.cmxs
+- ocamlfind ocamldep -modules test/xmltrip.ml > test/xmltrip.ml.depends
+- ocamlfind ocamldep -modules test/xhtml.ml > test/xhtml.ml.depends
+- ocamlfind ocamlc -c -annot -bin-annot -I test -I src -o test/xhtml.cmo test/xhtml.ml
+- ocamlfind ocamlc -c -annot -bin-annot -I test -I src -o test/xmltrip.cmo test/xmltrip.ml
+- ocamlfind ocamlopt -c -annot -bin-annot -I test -I src -o test/xhtml.cmx test/xhtml.ml
+- ocamlfind ocamlopt -c -annot -bin-annot -I test -I src -o test/xmltrip.cmx test/xmltrip.ml
+- ocamlfind ocamlopt -linkpkg src/xmlm.cmx test/xhtml.cmx test/xmltrip.cmx -o test/xmltrip.native
+-> installed xmlm.1.2.0
+[yojson: make] Command started
 + make "opt" (CWD=/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2)
 - ( cd tools/cppo-0.9.4 && make all )
 - make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/tools/cppo-0.9.4'
@@ -4772,24 +4790,6 @@ The following actions will be performed:
 - File "nethttpd_services.ml", line 1118, characters 4-5:
 - Warning 11: this match case is unused.
 [ocamlnet: make install] Command started
-+ ./pkg/build "true" (CWD=/home/opam/.opam/4.02.1/build/xmlm.1.2.0)
-- ocamlfind ocamldep -modules src/xmlm.mli > src/xmlm.mli.depends
-- ocamlfind ocamlc -c -I src -I test -o src/xmlm.cmi src/xmlm.mli
-- ocamlfind ocamldep -modules src/xmlm.ml > src/xmlm.ml.depends
-- ocamlfind ocamlopt -c -annot -bin-annot -I src -I test -o src/xmlm.cmx src/xmlm.ml
-- ocamlfind ocamlc -c -annot -bin-annot -I src -I test -o src/xmlm.cmo src/xmlm.ml
-- ocamlfind ocamlc -a src/xmlm.cmo -o src/xmlm.cma
-- ocamlfind ocamlopt -a src/xmlm.cmx -o src/xmlm.cmxa
-- ocamlfind ocamlopt -shared src/xmlm.cmx -o src/xmlm.cmxs
-- ocamlfind ocamldep -modules test/xmltrip.ml > test/xmltrip.ml.depends
-- ocamlfind ocamldep -modules test/xhtml.ml > test/xhtml.ml.depends
-- ocamlfind ocamlc -c -annot -bin-annot -I test -I src -o test/xhtml.cmo test/xhtml.ml
-- ocamlfind ocamlc -c -annot -bin-annot -I test -I src -o test/xmltrip.cmo test/xmltrip.ml
-- ocamlfind ocamlopt -c -annot -bin-annot -I test -I src -o test/xhtml.cmx test/xhtml.ml
-- ocamlfind ocamlopt -c -annot -bin-annot -I test -I src -o test/xmltrip.cmx test/xmltrip.ml
-- ocamlfind ocamlopt -linkpkg src/xmlm.cmx test/xhtml.cmx test/xmltrip.cmx -o test/xmltrip.native
--> installed xmlm.1.2.0
-[yojson: make] Command started
 + make "install" (CWD=/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2)
 - for pkg in netsys netshm netstring netunidata equeue shell rpc-generator rpc rpc-auth-local netclient netcgi2 netplex netcgi2-plex netcamlbox netmulticore nethttpd; do \
 - 		( cd src/$pkg && make -f Makefile.pre install ) || exit; \
@@ -5484,99 +5484,99 @@ The following actions will be performed:
 - 547 states, 2537 transitions, table size 13430 bytes
 - cppo -D "VERSION 1.2.0" yojson.ml.cppo -o yojson.ml
 - ocamlfind ocamlc -c -dtypes -g -package easy-format,biniou yojson.ml
-- File "write.ml", line 21, characters 2-38:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "write.ml", line 22, characters 2-41:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "write.ml", line 61, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "write.ml", line 63, characters 4-23:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "write.ml", line 88, characters 4-20:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "write.ml", line 98, characters 4-18:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "write.ml", line 21, characters 2-38:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "write.ml", line 22, characters 2-41:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "write.ml", line 61, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "write.ml", line 63, characters 4-23:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "write.ml", line 88, characters 4-20:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "write.ml", line 98, characters 4-18:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "read.mll", line 367, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "read.mll", line 368, characters 4-16:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "write.ml", line 21, characters 2-38:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "write.ml", line 22, characters 2-41:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "write.ml", line 61, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "write.ml", line 63, characters 4-23:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "write.ml", line 88, characters 4-20:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "write.ml", line 98, characters 4-18:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "read.mll", line 367, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "read.mll", line 368, characters 4-16:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "write.ml", line 21, characters 2-38:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "write.ml", line 22, characters 2-41:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "write.ml", line 61, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "write.ml", line 63, characters 4-23:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "write.ml", line 88, characters 4-20:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "write.ml", line 98, characters 4-18:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "read.mll", line 367, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "read.mll", line 368, characters 4-16:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 - ocamlfind ocamlc -c -dtypes -g -package easy-format,biniou yojson_biniou.mli
 - ocamlfind ocamlc -c -dtypes -g -package easy-format,biniou yojson_biniou.ml
 - ocamlfind ocamlopt -c -dtypes -g -package easy-format,biniou yojson.ml
+- File "write.ml", line 21, characters 2-38:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "write.ml", line 22, characters 2-41:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "write.ml", line 61, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "write.ml", line 63, characters 4-23:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "write.ml", line 88, characters 4-20:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "write.ml", line 98, characters 4-18:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "write.ml", line 21, characters 2-38:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "write.ml", line 22, characters 2-41:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "write.ml", line 61, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "write.ml", line 63, characters 4-23:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "write.ml", line 88, characters 4-20:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "write.ml", line 98, characters 4-18:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "read.mll", line 367, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "read.mll", line 368, characters 4-16:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "write.ml", line 21, characters 2-38:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "write.ml", line 22, characters 2-41:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "write.ml", line 61, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "write.ml", line 63, characters 4-23:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "write.ml", line 88, characters 4-20:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "write.ml", line 98, characters 4-18:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "read.mll", line 367, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "read.mll", line 368, characters 4-16:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "write.ml", line 21, characters 2-38:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "write.ml", line 22, characters 2-41:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "write.ml", line 61, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "write.ml", line 63, characters 4-23:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "write.ml", line 88, characters 4-20:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "write.ml", line 98, characters 4-18:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "read.mll", line 367, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "read.mll", line 368, characters 4-16:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 - File "write.ml", line 21, characters 2-38:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
