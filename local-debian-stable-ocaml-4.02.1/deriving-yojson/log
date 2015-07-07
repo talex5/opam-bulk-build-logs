@@ -1,30 +1,30 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-+ opam list --safe --recursive --external=x86_64,linux,debian --required-by=deriving-yojson
 # Detecting depexts using flags: x86_64 linux debian
++ opam list --safe --recursive --external=x86_64,linux,debian --required-by=deriving-yojson
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=deriving-yojson
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=deriving-yojson
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
 Hit http://security.debian.org stable/updates InRelease
 Ign http://download.opensuse.org  InRelease
-Hit http://httpredir.debian.org stable InRelease
-Hit http://httpredir.debian.org stable-updates InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Get:1 http://security.debian.org stable/updates/main amd64 Packages [83.0 kB]
-Get:2 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
-Get:3 http://download.opensuse.org  Packages [5783 B]
-Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9112 kB in 6s (1482 kB/s)
-Reading package lists...
+Get:1 http://security.debian.org stable/updates/main amd64 Packages [83.8 kB]
+Get:2 http://download.opensuse.org  Packages [5783 B]
+Get:3 http://httpredir.debian.org stable-updates InRelease [126 kB]
+Hit http://httpredir.debian.org stable InRelease
+Get:4 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
+Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
+Fetched 9238 kB in 6s (1388 kB/s)
+Reading package lists...+ sudo apt-get install -qq -yy m4
+
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
-+ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind       1.5.5                               [required by deriving-yojson]
@@ -43,11 +43,11 @@ The following actions will be performed:
 [biniou: http] Command started
 [camlp4: from default] Command started
 [cppo: from default] Command started
-[cppo: from default] Command started
-[default] http://opam-archive:8080/archives/cppo.1.1.2+opam.tar.gz downloaded
-[deriving: from default] Command started
 [camlp4: from default] Command started
+[cppo: from default] Command started
 [default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
+[deriving: from default] Command started
+[default] http://opam-archive:8080/archives/cppo.1.1.2+opam.tar.gz downloaded
 [deriving-yojson: from default] Command started
 [deriving: from default] Command started
 [default] http://opam-archive:8080/archives/deriving.0.7+opam.tar.gz downloaded
@@ -99,8 +99,7 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) 
-- ok
+- Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /home/opam/.opam/4.02.1/lib/ocaml
@@ -260,6 +259,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -304,7 +304,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -1675,6 +1674,12 @@ The following actions will be performed:
 [deriving: make] Command started
 + make  (CWD=/home/opam/.opam/4.02.1/build/deriving.0.7)
 - ocamlfind ocamlopt -o setup.exe setup.ml || ocamlfind ocamlc -o setup.exe setup.ml || true
+- File "setup.ml", line 246, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "setup.ml", line 2501, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
 - rm -f setup.cmi setup.cmo setup.cmx setup.o
 - ./setup.exe -configure 
 - 
@@ -1742,20 +1747,14 @@ The following actions will be performed:
 - 
 - ./setup.exe -build 
 - ocamlfind ocamlopt unix.cmxa -I /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa -linkpkg myocamlbuild.ml /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
-- File "setup.ml", line 246, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "setup.ml", line 2501, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
-- W: Cannot find source file matching module 'pa_deriving_common' in library pa_deriving_common
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/id.ml > syntax/common/id.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/utils.mli > syntax/common/utils.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/utils.cmi syntax/common/utils.mli
+- W: Cannot find source file matching module 'pa_deriving_common' in library pa_deriving_common
+- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/utils.ml > syntax/common/utils.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package camlp4.quotations.r -syntax camlp4o -package optcomp -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/type.mli > syntax/common/type.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -package camlp4.quotations.r -syntax camlp4o -package optcomp -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/type.cmi syntax/common/type.mli
-- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package camlp4.quotations.r -syntax camlp4o -package optcomp -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/type.ml > syntax/common/type.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/defs.mli > syntax/common/defs.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/defs.cmi syntax/common/defs.mli
