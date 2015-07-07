@@ -1,29 +1,30 @@
 + uname -m
-/usr/bin/lsb_release
-# Detecting depexts using flags: x86_64 linux ubuntu
 + uname -s
+/usr/bin/lsb_release
 + lsb_release -i -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=obigstore
+# Detecting depexts using flags: x86_64 linux ubuntu
 # The following system packages are needed:
 #  - libleveldb-dev
 #  - libsnappy-dev
 #  - m4
 #  - zlib1g-dev
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=obigstore
-Not running as root, system installation will be done through "sudo"
 + sudo apt-get update
+Not running as root, system installation will be done through "sudo"
+Ign http://download.opensuse.org  InRelease
+Hit http://download.opensuse.org  Release.gpg
+Hit http://download.opensuse.org  Release
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
+Hit http://download.opensuse.org  Packages
 Hit http://archive.ubuntu.com trusty Release.gpg
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
-Ign http://download.opensuse.org  InRelease
 Hit http://archive.ubuntu.com trusty Release
 Get:3 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
-Hit http://download.opensuse.org  Release.gpg
 Get:4 http://archive.ubuntu.com trusty-security Release [63.5 kB]
-Hit http://download.opensuse.org  Release
 Hit http://archive.ubuntu.com trusty/main Sources
 Hit http://archive.ubuntu.com trusty/restricted Sources
 Hit http://archive.ubuntu.com trusty/universe Sources
@@ -31,7 +32,6 @@ Hit http://archive.ubuntu.com trusty/main amd64 Packages
 Hit http://archive.ubuntu.com trusty/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty/universe amd64 Packages
 Get:5 http://archive.ubuntu.com trusty-updates/main Sources [242 kB]
-Hit http://download.opensuse.org  Packages
 Get:6 http://archive.ubuntu.com trusty-updates/restricted Sources [2310 B]
 Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [135 kB]
 Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [621 kB]
@@ -43,11 +43,11 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [21.0 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [320 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [118 kB]
-Fetched 2057 kB in 3s (609 kB/s)
+Fetched 2057 kB in 5s (394 kB/s)
 Reading package lists...
++ sudo apt-get install -qq -yy libleveldb-dev libsnappy-dev m4 zlib1g-dev
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
-+ sudo apt-get install -qq -yy libleveldb-dev libsnappy-dev m4 zlib1g-dev
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
@@ -106,9 +106,9 @@ The following actions will be performed:
 [batteries: from default] Command started
 [default] http://opam-archive:8080/archives/cryptokit.1.10+opam.tar.gz downloaded
 [leveldb: from default] Command started
-[extprot: from default] Command started
 [default] http://opam-archive:8080/archives/batteries.2.3.1+opam.tar.gz downloaded
 [lwt: from default] Command started
+[extprot: from default] Command started
 [leveldb: from default] Command started
 [default] http://opam-archive:8080/archives/extprot.1.1.2+opam.tar.gz downloaded
 [obigstore: from default] Command started
@@ -126,11 +126,11 @@ The following actions will be performed:
 [ounit: from default] Command started
 [default] http://opam-archive:8080/archives/ounit.2.0.0+opam.tar.gz downloaded
 [type_conv: from default] Command started
-[omake: from default] Command started
 [sexplib: from default] Command started
-[default] http://opam-archive:8080/archives/omake.0.9.8.6-0.rc1+opam.tar.gz downloaded
-[type_conv: from default] Command started
 [default] http://opam-archive:8080/archives/sexplib.112.24.01+opam.tar.gz downloaded
+[omake: from default] Command started
+[type_conv: from default] Command started
+[default] http://opam-archive:8080/archives/omake.0.9.8.6-0.rc1+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -273,6 +273,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -281,8 +283,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -3614,6 +3614,166 @@ The following actions will be performed:
 - Installed /home/opam/.opam/system/lib/oUnit/META
 -> installed ounit.2.0.0
 [type_conv: make] Command started
++ make  (CWD=/home/opam/.opam/system/build/type_conv.112.01.01)
+- ocamlopt.opt -o setup.exe setup.ml || ocamlopt -o setup.exe setup.ml || ocamlc -o setup.exe setup.ml
+- rm -f setup.cmx setup.cmi setup.o setup.obj setup.cmo
+- ./setup.exe -configure 
+- 
+- Configuration: 
+- ocamlfind: ........................................... /home/opam/.opam/system/bin/ocamlfind
+- ocamlc: .............................................. /usr/bin/ocamlc.opt
+- ocamlopt: ............................................ /usr/bin/ocamlopt.opt
+- ocamlbuild: .......................................... /usr/bin/ocamlbuild
+- Package name: ........................................ type_conv
+- Package version: ..................................... 112.01.01
+- os_type: ............................................. Unix
+- system: .............................................. linux
+- architecture: ........................................ amd64
+- ccomp_type: .......................................... cc
+- ocaml_version: ....................................... 4.02.1
+- standard_library_default: ............................ /usr/lib/ocaml
+- standard_library: .................................... /usr/lib/ocaml
+- standard_runtime: .................................... /usr/bin/ocamlrun
+- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
+- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
+- model: ............................................... default
+- ext_obj: ............................................. .o
+- ext_asm: ............................................. .s
+- ext_lib: ............................................. .a
+- ext_dll: ............................................. .so
+- default_executable_name: ............................. a.out
+- systhread_supported: ................................. true
+- Install architecture-independent files dir: .......... /usr/local
+- Install architecture-dependent files in dir: ......... $prefix
+- User executables: .................................... $exec_prefix/bin
+- System admin executables: ............................ $exec_prefix/sbin
+- Program executables: ................................. $exec_prefix/libexec
+- Read-only single-machine data: ....................... $prefix/etc
+- Modifiable architecture-independent data: ............ $prefix/com
+- Modifiable single-machine data: ...................... $prefix/var
+- Object code libraries: ............................... $exec_prefix/lib
+- Read-only arch-independent data root: ................ $prefix/share
+- Read-only architecture-independent data: ............. $datarootdir
+- Info documentation: .................................. $datarootdir/info
+- Locale-dependent data: ............................... $datarootdir/locale
+- Man documentation: ................................... $datarootdir/man
+- Documentation root: .................................. $datarootdir/doc/$pkg_name
+- HTML documentation: .................................. $docdir
+- DVI documentation: ................................... $docdir
+- PDF documentation: ................................... $docdir
+- PS documentation: .................................... $docdir
+- findlib_version: ..................................... 1.5.5
+- is_native: ........................................... true
+- suffix_program: ...................................... 
+- Remove a file.: ...................................... rm -f
+- Remove a directory.: ................................. rm -rf
+- Turn ocaml debug flag on: ............................ true
+- Turn ocaml profile flag on: .......................... false
+- Compiler support generation of .cmxs.: ............... true
+- OCamlbuild additional flags: ......................... 
+- Create documentations: ............................... true
+- Compile tests executable and library and run them: ... false
+- camlp4o: ............................................. /usr/bin/camlp4o
+- pkg_camlp4_quotations: ............................... /usr/lib/ocaml/camlp4
+- pkg_camlp4_extend: ................................... /usr/lib/ocaml/camlp4
+- 
+- ./setup.exe -build 
+- ocamlfind ocamlopt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa -linkpkg myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -package camlp4.quotations -package camlp4.extend -modules lib/pa_type_conv.mli > lib/pa_type_conv.mli.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -package camlp4.quotations -package camlp4.extend -I lib -o lib/pa_type_conv.cmi lib/pa_type_conv.mli
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -syntax camlp4o -package camlp4.quotations -package camlp4.extend -modules lib/pa_type_conv.ml > lib/pa_type_conv.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package camlp4.quotations -package camlp4.extend -I lib -o lib/pa_type_conv.cmo lib/pa_type_conv.ml
+- + /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package camlp4.quotations -package camlp4.extend -I lib -o lib/pa_type_conv.cmo lib/pa_type_conv.ml
+- File "lib/pa_type_conv.ml", line 291, characters 6-20:
+- Warning 3: deprecated: Format.bprintf
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -a lib/pa_type_conv.cmo -o lib/pa_type_conv.cma
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package camlp4.quotations -package camlp4.extend -I lib -o lib/pa_type_conv.cmx lib/pa_type_conv.ml
+- + /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package camlp4.quotations -package camlp4.extend -I lib -o lib/pa_type_conv.cmx lib/pa_type_conv.ml
+- File "lib/pa_type_conv.ml", line 291, characters 6-20:
+- Warning 3: deprecated: Format.bprintf
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -a lib/pa_type_conv.cmx -o lib/pa_type_conv.cmxa
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared lib/pa_type_conv.cmxa lib/pa_type_conv.cmx -o lib/pa_type_conv.cmxs
+[type_conv: make install] Command started
++ make "install" (CWD=/home/opam/.opam/system/build/type_conv.112.01.01)
+- ./setup.exe -install 
+- Installed /home/opam/.opam/system/lib/type_conv/pa_type_conv.mli
+- Installed /home/opam/.opam/system/lib/type_conv/pa_type_conv.cma
+- Installed /home/opam/.opam/system/lib/type_conv/pa_type_conv.cmxa
+- Installed /home/opam/.opam/system/lib/type_conv/pa_type_conv.a
+- Installed /home/opam/.opam/system/lib/type_conv/pa_type_conv.cmxs
+- Installed /home/opam/.opam/system/lib/type_conv/pa_type_conv.cmi
+- Installed /home/opam/.opam/system/lib/type_conv/pa_type_conv.cmti
+- Installed /home/opam/.opam/system/lib/type_conv/pa_type_conv.cmt
+- Installed /home/opam/.opam/system/lib/type_conv/pa_type_conv.annot
+- Installed /home/opam/.opam/system/lib/type_conv/pa_type_conv.cmx
+- Installed /home/opam/.opam/system/lib/type_conv/META
+-> installed type_conv.112.01.01
+[sexplib: ./configure] Command started
++ ./configure "--enable-syntax" (CWD=/home/opam/.opam/system/build/sexplib.112.24.01)
+- 
+- Configuration: 
+- ocamlfind: ........................................... /home/opam/.opam/system/bin/ocamlfind
+- ocamlc: .............................................. /usr/bin/ocamlc.opt
+- ocamlopt: ............................................ /usr/bin/ocamlopt.opt
+- ocamlbuild: .......................................... /usr/bin/ocamlbuild
+- Package name: ........................................ sexplib
+- Package version: ..................................... 112.24.01
+- os_type: ............................................. Unix
+- system: .............................................. linux
+- architecture: ........................................ amd64
+- ccomp_type: .......................................... cc
+- ocaml_version: ....................................... 4.02.1
+- standard_library_default: ............................ /usr/lib/ocaml
+- standard_library: .................................... /usr/lib/ocaml
+- standard_runtime: .................................... /usr/bin/ocamlrun
+- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
+- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
+- model: ............................................... default
+- ext_obj: ............................................. .o
+- ext_asm: ............................................. .s
+- ext_lib: ............................................. .a
+- ext_dll: ............................................. .so
+- default_executable_name: ............................. a.out
+- systhread_supported: ................................. true
+- Install architecture-independent files dir: .......... /usr/local
+- Install architecture-dependent files in dir: ......... $prefix
+- User executables: .................................... $exec_prefix/bin
+- System admin executables: ............................ $exec_prefix/sbin
+- Program executables: ................................. $exec_prefix/libexec
+- Read-only single-machine data: ....................... $prefix/etc
+- Modifiable architecture-independent data: ............ $prefix/com
+- Modifiable single-machine data: ...................... $prefix/var
+- Object code libraries: ............................... $exec_prefix/lib
+- Read-only arch-independent data root: ................ $prefix/share
+- Read-only architecture-independent data: ............. $datarootdir
+- Info documentation: .................................. $datarootdir/info
+- Locale-dependent data: ............................... $datarootdir/locale
+- Man documentation: ................................... $datarootdir/man
+- Documentation root: .................................. $datarootdir/doc/$pkg_name
+- HTML documentation: .................................. $docdir
+- DVI documentation: ................................... $docdir
+- PDF documentation: ................................... $docdir
+- PS documentation: .................................... $docdir
+- findlib_version: ..................................... 1.5.5
+- is_native: ........................................... true
+- suffix_program: ...................................... 
+- Remove a file.: ...................................... rm -f
+- Remove a directory.: ................................. rm -rf
+- Turn ocaml debug flag on: ............................ true
+- Turn ocaml profile flag on: .......................... false
+- Compiler support generation of .cmxs.: ............... true
+- OCamlbuild additional flags: ......................... 
+- Build the syntax extension: .......................... true
+- Create documentations: ............................... true
+- Compile tests executable and library and run them: ... false
+- pkg_bigarray: ........................................ /usr/lib/ocaml
+- pkg_num: ............................................. /home/opam/.opam/system/lib/num
+- pkg_unix: ............................................ /usr/lib/ocaml
+- pkg_camlp4_quotations: ............................... /usr/lib/ocaml/camlp4
+- pkg_camlp4_extend: ................................... /usr/lib/ocaml/camlp4
+- pkg_type_conv: ....................................... /home/opam/.opam/system/lib/type_conv
+- 
+[sexplib: make] Command started
 + make "bootstrap" "PREFIX=/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/omake.0.9.8.6-0.rc1)
 - mkdir -p boot
 - ln -sf ../src/Makefile boot/Makefile
@@ -4477,166 +4637,6 @@ The following actions will be performed:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
 [omake: make all] Command started
-+ make  (CWD=/home/opam/.opam/system/build/type_conv.112.01.01)
-- ocamlopt.opt -o setup.exe setup.ml || ocamlopt -o setup.exe setup.ml || ocamlc -o setup.exe setup.ml
-- rm -f setup.cmx setup.cmi setup.o setup.obj setup.cmo
-- ./setup.exe -configure 
-- 
-- Configuration: 
-- ocamlfind: ........................................... /home/opam/.opam/system/bin/ocamlfind
-- ocamlc: .............................................. /usr/bin/ocamlc.opt
-- ocamlopt: ............................................ /usr/bin/ocamlopt.opt
-- ocamlbuild: .......................................... /usr/bin/ocamlbuild
-- Package name: ........................................ type_conv
-- Package version: ..................................... 112.01.01
-- os_type: ............................................. Unix
-- system: .............................................. linux
-- architecture: ........................................ amd64
-- ccomp_type: .......................................... cc
-- ocaml_version: ....................................... 4.02.1
-- standard_library_default: ............................ /usr/lib/ocaml
-- standard_library: .................................... /usr/lib/ocaml
-- standard_runtime: .................................... /usr/bin/ocamlrun
-- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
-- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
-- model: ............................................... default
-- ext_obj: ............................................. .o
-- ext_asm: ............................................. .s
-- ext_lib: ............................................. .a
-- ext_dll: ............................................. .so
-- default_executable_name: ............................. a.out
-- systhread_supported: ................................. true
-- Install architecture-independent files dir: .......... /usr/local
-- Install architecture-dependent files in dir: ......... $prefix
-- User executables: .................................... $exec_prefix/bin
-- System admin executables: ............................ $exec_prefix/sbin
-- Program executables: ................................. $exec_prefix/libexec
-- Read-only single-machine data: ....................... $prefix/etc
-- Modifiable architecture-independent data: ............ $prefix/com
-- Modifiable single-machine data: ...................... $prefix/var
-- Object code libraries: ............................... $exec_prefix/lib
-- Read-only arch-independent data root: ................ $prefix/share
-- Read-only architecture-independent data: ............. $datarootdir
-- Info documentation: .................................. $datarootdir/info
-- Locale-dependent data: ............................... $datarootdir/locale
-- Man documentation: ................................... $datarootdir/man
-- Documentation root: .................................. $datarootdir/doc/$pkg_name
-- HTML documentation: .................................. $docdir
-- DVI documentation: ................................... $docdir
-- PDF documentation: ................................... $docdir
-- PS documentation: .................................... $docdir
-- findlib_version: ..................................... 1.5.5
-- is_native: ........................................... true
-- suffix_program: ...................................... 
-- Remove a file.: ...................................... rm -f
-- Remove a directory.: ................................. rm -rf
-- Turn ocaml debug flag on: ............................ true
-- Turn ocaml profile flag on: .......................... false
-- Compiler support generation of .cmxs.: ............... true
-- OCamlbuild additional flags: ......................... 
-- Create documentations: ............................... true
-- Compile tests executable and library and run them: ... false
-- camlp4o: ............................................. /usr/bin/camlp4o
-- pkg_camlp4_quotations: ............................... /usr/lib/ocaml/camlp4
-- pkg_camlp4_extend: ................................... /usr/lib/ocaml/camlp4
-- 
-- ./setup.exe -build 
-- ocamlfind ocamlopt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa -linkpkg myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
-- /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -package camlp4.quotations -package camlp4.extend -modules lib/pa_type_conv.mli > lib/pa_type_conv.mli.depends
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -package camlp4.quotations -package camlp4.extend -I lib -o lib/pa_type_conv.cmi lib/pa_type_conv.mli
-- /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -syntax camlp4o -package camlp4.quotations -package camlp4.extend -modules lib/pa_type_conv.ml > lib/pa_type_conv.ml.depends
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package camlp4.quotations -package camlp4.extend -I lib -o lib/pa_type_conv.cmo lib/pa_type_conv.ml
-- + /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package camlp4.quotations -package camlp4.extend -I lib -o lib/pa_type_conv.cmo lib/pa_type_conv.ml
-- File "lib/pa_type_conv.ml", line 291, characters 6-20:
-- Warning 3: deprecated: Format.bprintf
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -a lib/pa_type_conv.cmo -o lib/pa_type_conv.cma
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package camlp4.quotations -package camlp4.extend -I lib -o lib/pa_type_conv.cmx lib/pa_type_conv.ml
-- + /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package camlp4.quotations -package camlp4.extend -I lib -o lib/pa_type_conv.cmx lib/pa_type_conv.ml
-- File "lib/pa_type_conv.ml", line 291, characters 6-20:
-- Warning 3: deprecated: Format.bprintf
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -a lib/pa_type_conv.cmx -o lib/pa_type_conv.cmxa
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared lib/pa_type_conv.cmxa lib/pa_type_conv.cmx -o lib/pa_type_conv.cmxs
-[type_conv: make install] Command started
-+ make "install" (CWD=/home/opam/.opam/system/build/type_conv.112.01.01)
-- ./setup.exe -install 
-- Installed /home/opam/.opam/system/lib/type_conv/pa_type_conv.mli
-- Installed /home/opam/.opam/system/lib/type_conv/pa_type_conv.cma
-- Installed /home/opam/.opam/system/lib/type_conv/pa_type_conv.cmxa
-- Installed /home/opam/.opam/system/lib/type_conv/pa_type_conv.a
-- Installed /home/opam/.opam/system/lib/type_conv/pa_type_conv.cmxs
-- Installed /home/opam/.opam/system/lib/type_conv/pa_type_conv.cmi
-- Installed /home/opam/.opam/system/lib/type_conv/pa_type_conv.cmti
-- Installed /home/opam/.opam/system/lib/type_conv/pa_type_conv.cmt
-- Installed /home/opam/.opam/system/lib/type_conv/pa_type_conv.annot
-- Installed /home/opam/.opam/system/lib/type_conv/pa_type_conv.cmx
-- Installed /home/opam/.opam/system/lib/type_conv/META
--> installed type_conv.112.01.01
-[sexplib: ./configure] Command started
-+ ./configure "--enable-syntax" (CWD=/home/opam/.opam/system/build/sexplib.112.24.01)
-- 
-- Configuration: 
-- ocamlfind: ........................................... /home/opam/.opam/system/bin/ocamlfind
-- ocamlc: .............................................. /usr/bin/ocamlc.opt
-- ocamlopt: ............................................ /usr/bin/ocamlopt.opt
-- ocamlbuild: .......................................... /usr/bin/ocamlbuild
-- Package name: ........................................ sexplib
-- Package version: ..................................... 112.24.01
-- os_type: ............................................. Unix
-- system: .............................................. linux
-- architecture: ........................................ amd64
-- ccomp_type: .......................................... cc
-- ocaml_version: ....................................... 4.02.1
-- standard_library_default: ............................ /usr/lib/ocaml
-- standard_library: .................................... /usr/lib/ocaml
-- standard_runtime: .................................... /usr/bin/ocamlrun
-- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
-- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
-- model: ............................................... default
-- ext_obj: ............................................. .o
-- ext_asm: ............................................. .s
-- ext_lib: ............................................. .a
-- ext_dll: ............................................. .so
-- default_executable_name: ............................. a.out
-- systhread_supported: ................................. true
-- Install architecture-independent files dir: .......... /usr/local
-- Install architecture-dependent files in dir: ......... $prefix
-- User executables: .................................... $exec_prefix/bin
-- System admin executables: ............................ $exec_prefix/sbin
-- Program executables: ................................. $exec_prefix/libexec
-- Read-only single-machine data: ....................... $prefix/etc
-- Modifiable architecture-independent data: ............ $prefix/com
-- Modifiable single-machine data: ...................... $prefix/var
-- Object code libraries: ............................... $exec_prefix/lib
-- Read-only arch-independent data root: ................ $prefix/share
-- Read-only architecture-independent data: ............. $datarootdir
-- Info documentation: .................................. $datarootdir/info
-- Locale-dependent data: ............................... $datarootdir/locale
-- Man documentation: ................................... $datarootdir/man
-- Documentation root: .................................. $datarootdir/doc/$pkg_name
-- HTML documentation: .................................. $docdir
-- DVI documentation: ................................... $docdir
-- PDF documentation: ................................... $docdir
-- PS documentation: .................................... $docdir
-- findlib_version: ..................................... 1.5.5
-- is_native: ........................................... true
-- suffix_program: ...................................... 
-- Remove a file.: ...................................... rm -f
-- Remove a directory.: ................................. rm -rf
-- Turn ocaml debug flag on: ............................ true
-- Turn ocaml profile flag on: .......................... false
-- Compiler support generation of .cmxs.: ............... true
-- OCamlbuild additional flags: ......................... 
-- Build the syntax extension: .......................... true
-- Create documentations: ............................... true
-- Compile tests executable and library and run them: ... false
-- pkg_bigarray: ........................................ /usr/lib/ocaml
-- pkg_num: ............................................. /home/opam/.opam/system/lib/num
-- pkg_unix: ............................................ /usr/lib/ocaml
-- pkg_camlp4_quotations: ............................... /usr/lib/ocaml/camlp4
-- pkg_camlp4_extend: ................................... /usr/lib/ocaml/camlp4
-- pkg_type_conv: ....................................... /home/opam/.opam/system/lib/type_conv
-- 
-[sexplib: make] Command started
 + make  (CWD=/home/opam/.opam/system/build/sexplib.112.24.01)
 - ocamlopt.opt -o setup.exe setup.ml || ocamlopt -o setup.exe setup.ml || ocamlc -o setup.exe setup.ml
 - rm -f setup.cmx setup.cmi setup.o setup.obj setup.cmo
@@ -5095,19 +5095,19 @@ The following actions will be performed:
 - --- Checking for hevea... (FAILED - no hevea found)
 - --- Checking for date... (found /bin/date)
 - --- Checking for date... (found /bin/date)
-- *** omake: finished reading OMakefiles (2.78 sec)
+- *** omake: finished reading OMakefiles (2.47 sec)
 - Updating the .config file.
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
 - *** omake: saved .omakedb
 - *** omake: saved .omakedb
-- *** omake: done (35.40 sec, 234/234 scans, 343/505 rules, 788/2313 digests)
+- *** omake: done (34.73 sec, 234/234 scans, 343/505 rules, 788/2314 digests)
 - OMAKEFLAGS= OMAKEPATH=lib src/main/omake --dotomake .omake --force-dotomake -j2 all
 - *** omake: reading OMakefiles
 - *** omake: finished reading OMakefiles (0.06 sec)
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
-- *** omake: done (7.39 sec, 219/235 scans, 27/534 rules, 39/1842 digests)
+- *** omake: done (7.49 sec, 219/235 scans, 27/534 rules, 39/1842 digests)
 [omake: make install] Command started
 + make "install" "PREFIX=/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/omake.0.9.8.6-0.rc1)
 - make[1]: Entering directory `/home/opam/.opam/system/build/omake.0.9.8.6-0.rc1/boot'
@@ -5119,19 +5119,19 @@ The following actions will be performed:
 - touch .config
 - OMAKEFLAGS= OMAKEPATH=lib ./omake-boot --dotomake .omake --force-dotomake -j2 main
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.36 sec)
+- *** omake: finished reading OMakefiles (0.38 sec)
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
-- *** omake: done (4.57 sec, 0/234 scans, 0/505 rules, 1/1762 digests)
+- *** omake: done (4.39 sec, 0/234 scans, 0/505 rules, 1/1762 digests)
 - OMAKEFLAGS= OMAKEPATH=lib src/main/omake --dotomake .omake --force-dotomake -j2 all
 - *** omake: reading OMakefiles
 - *** omake: finished reading OMakefiles (0.05 sec)
-[ERROR] The compilation of leveldb failed at "omake -j9".
-- *** omake: done (0.46 sec, 0/235 scans, 0/534 rules, 0/1821 digests)
+- *** omake: done (0.47 sec, 0/235 scans, 0/534 rules, 0/1821 digests)
 - OMAKEFLAGS= OMAKEPATH=lib src/main/omake --dotomake .omake --force-dotomake -j2 install
 - *** omake: reading OMakefiles
+[ERROR] The compilation of leveldb failed at "omake -j9".
 - *** omake: finished reading OMakefiles (0.05 sec)
-- *** omake: done (0.52 sec, 0/235 scans, 2/536 rules, 0/1821 digests)
+- *** omake: done (0.54 sec, 0/235 scans, 2/536 rules, 0/1821 digests)
 -> installed omake.0.9.8.6-0.rc1
 [extprot: omake] Command started
 [leveldb: omake] Command started
@@ -5141,18 +5141,18 @@ The following actions will be performed:
 - --- Checking for ocamlc.opt... (found /usr/bin/ocamlc.opt)
 - --- Checking for ocamlopt.opt... (found /usr/bin/ocamlopt.opt)
 - --- Checking whether ocamlc understands the "z" warnings... (yes)
-- *** omake: finished reading OMakefiles (0.06 sec)
+- *** omake: finished reading OMakefiles (0.05 sec)
 - --- Checking if ocamldep understands -modules... (yes)
 - --- Checking for gcc... (found /usr/bin/gcc)
 - --- Checking for g++... (found /usr/bin/g++)
 - - build test test_00util.o
 - + ocamlfind ocamlc -package unix,threads,oUnit -w +a-4-6-9-27-28-30..99 -warn-error +a-4-6-9-18-27-28-30..99 -annot -thread -g -I . -I ../src -c test_00util.ml
-- - build src levelDB.cmx
-- + ocamlfind ocamlopt -w +a-4-6-9-27-28-30..99 -warn-error +a-4-6-9-18-27-28-30..99 -annot -thread -inline 100 -I . -c levelDB.ml
 - - build src levelDB.cmo
 - + ocamlfind ocamlc -w +a-4-6-9-27-28-30..99 -warn-error +a-4-6-9-18-27-28-30..99 -annot -thread -g -I . -c levelDB.ml
+- - build src levelDB.cmx
+- + ocamlfind ocamlopt -w +a-4-6-9-27-28-30..99 -warn-error +a-4-6-9-18-27-28-30..99 -annot -thread -inline 100 -I . -c levelDB.ml
 - *** omake: 45/71 targets are up to date
-- *** omake: failed (0.89 sec, 6/6 scans, 5/5 rules, 29/120 digests)
+- *** omake: failed (0.86 sec, 6/6 scans, 5/5 rules, 29/120 digests)
 - File "test_00util.ml", line 78, characters 10-23:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -5164,11 +5164,11 @@ The following actions will be performed:
 - File "levelDB.ml", line 253, characters 15-28:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- File "levelDB.ml", line 1:
+- Error: Some fatal warnings were triggered (1 occurrences)
 - File "levelDB.ml", line 253, characters 15-28:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- File "levelDB.ml", line 1:
-- Error: Some fatal warnings were triggered (1 occurrences)
 - File "levelDB.ml", line 1:
 - Error: Some fatal warnings were triggered (1 occurrences)
 - *** omake: warning: stdout is not a tty, disabling the progress bar
@@ -5193,7 +5193,7 @@ The following actions will be performed:
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/leveldb
 + omake  (CWD=/home/opam/.opam/system/build/extprot.1.1.2)
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.10 sec)
+- *** omake: finished reading OMakefiles (0.09 sec)
 - --- Checking if ocamldep understands -modules... (yes)
 - --- Checking for ocamlfind... (found /home/opam/.opam/system/bin/ocamlfind)
 - --- Checking for ocamlc.opt... (found /usr/bin/ocamlc.opt)
@@ -5204,7 +5204,7 @@ The following actions will be performed:
 -    This expression should use a => binding.
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
-- *** omake: done (16.49 sec, 21/21 scans, 30/81 rules, 119/312 digests)
+- *** omake: done (16.84 sec, 21/21 scans, 30/81 rules, 119/312 digests)
 
 #=== ERROR while installing leveldb.1.0.3 =====================================#
 # opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
@@ -5222,12 +5222,12 @@ The following actions will be performed:
 # --- Checking for g++... (found /usr/bin/g++)
 # - build test test_00util.o
 # + ocamlfind ocamlc -package unix,threads,oUnit -w +a-4-6-9-27-28-30..99 -warn-error +a-4-6-9-18-27-28-30..99 -annot -thread -g -I . -I ../src -c test_00util.ml
-# - build src levelDB.cmx
-# + ocamlfind ocamlopt -w +a-4-6-9-27-28-30..99 -warn-error +a-4-6-9-18-27-28-30..99 -annot -thread -inline 100 -I . -c levelDB.ml
 # - build src levelDB.cmo
 # + ocamlfind ocamlc -w +a-4-6-9-27-28-30..99 -warn-error +a-4-6-9-18-27-28-30..99 -annot -thread -g -I . -c levelDB.ml
+# - build src levelDB.cmx
+# + ocamlfind ocamlopt -w +a-4-6-9-27-28-30..99 -warn-error +a-4-6-9-18-27-28-30..99 -annot -thread -inline 100 -I . -c levelDB.ml
 # *** omake: 45/71 targets are up to date
-# *** omake: failed (0.89 sec, 6/6 scans, 5/5 rules, 29/120 digests)
+# *** omake: failed (0.86 sec, 6/6 scans, 5/5 rules, 29/120 digests)
 ### stderr ###
 # *** omake: targets were not rebuilt because of errors:
 # [...]
@@ -5244,10 +5244,10 @@ The following actions will be performed:
 [extprot: omake install] Command started
 + omake "install" "prefix=/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/extprot.1.1.2)
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.04 sec)
+- *** omake: finished reading OMakefiles (0.05 sec)
 - - build . <install>
 - + ocamlfind install -patch-version git extprot runtime/META runtime/extprot.cma runtime/extprot.cmxa runtime/extprot.cmx runtime/extprot.cmi runtime/extprot.a runtime/*.mli
-- *** omake: done (0.07 sec, 0/0 scans, 1/1 rules, 0/75 digests)
+- *** omake: done (0.08 sec, 0/0 scans, 1/1 rules, 0/75 digests)
 - Installed /home/opam/.opam/system/lib/extprot/conv.mli
 - Installed /home/opam/.opam/system/lib/extprot/limits.mli
 - Installed /home/opam/.opam/system/lib/extprot/reader.mli
@@ -5280,5 +5280,5 @@ The following changes have been performed
   - install type_conv    112.01.01    
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150304084514.export"
+    opam switch import "~/.opam/system/backup/state-20150304195034.export"
 'opam install obigstore' failed.
