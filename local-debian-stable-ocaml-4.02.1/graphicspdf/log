@@ -1,30 +1,30 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux debian
 + uname -s
 + lsb_release -i -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=graphicspdf
+# Detecting depexts using flags: x86_64 linux debian
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=graphicspdf
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=graphicspdf
-+ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
++ sudo apt-get update
 Hit http://security.debian.org stable/updates InRelease
 Ign http://download.opensuse.org  InRelease
 Hit http://httpredir.debian.org stable InRelease
-Hit http://httpredir.debian.org stable-updates InRelease
+Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Get:1 http://security.debian.org stable/updates/main amd64 Packages [84.4 kB]
-Get:2 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
-Get:3 http://download.opensuse.org  Packages [5783 B]
-Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9113 kB in 4s (2160 kB/s)
+Get:2 http://security.debian.org stable/updates/main amd64 Packages [87.6 kB]
+Get:3 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
+Get:4 http://download.opensuse.org  Packages [5783 B]
+Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
+Fetched 9242 kB in 6s (1527 kB/s)
 Reading package lists...
 # OS package update successful
-+ sudo apt-get install -qq -yy m4
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
++ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind   1.5.5                                   [required by graphicspdf]
@@ -36,11 +36,11 @@ The following actions will be performed:
 [camlpdf: from default] Command started
 [graphicspdf: from default] Command started
 [ocamlfind: from default] Command started
-[ocamlfind: from default] Command started
 [graphicspdf: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [camlpdf: from default] Command started
 [default] http://opam-archive:8080/archives/graphicspdf.1.1+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/camlpdf.2.1.1+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -234,6 +234,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -278,7 +279,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -431,14 +431,6 @@ The following actions will be performed:
 - ocamlc -c -cc "cc" -ccopt "-fPIC  \
 - 			-DPIC -DNATIVE_CODE   \
 - 			    -o sha2.o " sha2.c
-- ocamlc -c -cc "cc" -ccopt "-fPIC  \
-- 			-DPIC -DNATIVE_CODE   \
-- 			    -o stubs-sha2.o " stubs-sha2.c
-- ar rcs libcamlpdf_stubs.a  flatestubs.o rijndael-alg-fst.o stubs-aes.o sha2.o stubs-sha2.o
-- ocamlfind ocamlc -package bigarray -c pdfutil.mli
-- ocamlfind ocamlopt -package bigarray -c -g -w -3 pdfutil.ml
-- ocamlfind ocamlc -package bigarray -c pdfio.mli
-- ocamlfind ocamlopt -package bigarray -c -g -w -3 pdfio.ml
 - In file included from flatestubs.c:20:0:
 - miniz.c:2440:28: warning: always_inline function might not be inlinable [-Wattributes]
 -  static MZ_FORCEINLINE void tdefl_record_match(tdefl_compressor *d, mz_uint match_len, mz_uint match_dist)
@@ -449,6 +441,14 @@ The following actions will be performed:
 - miniz.c:2230:28: warning: always_inline function might not be inlinable [-Wattributes]
 -  static MZ_FORCEINLINE void tdefl_find_match(tdefl_compressor *d, mz_uint lookahead_pos, mz_uint max_dist, mz_uint max_match_len, mz_uint *pMatch_dist, mz_uint *pMatch_len)
 -                             ^
+- ocamlc -c -cc "cc" -ccopt "-fPIC  \
+- 			-DPIC -DNATIVE_CODE   \
+- 			    -o stubs-sha2.o " stubs-sha2.c
+- ar rcs libcamlpdf_stubs.a  flatestubs.o rijndael-alg-fst.o stubs-aes.o sha2.o stubs-sha2.o
+- ocamlfind ocamlc -package bigarray -c pdfutil.mli
+- ocamlfind ocamlopt -package bigarray -c -g -w -3 pdfutil.ml
+- ocamlfind ocamlc -package bigarray -c pdfio.mli
+- ocamlfind ocamlopt -package bigarray -c -g -w -3 pdfio.ml
 - ocamlfind ocamlc -package bigarray -c pdftransform.mli
 - ocamlfind ocamlopt -package bigarray -c -g -w -3 pdftransform.ml
 - ocamlfind ocamlc -package bigarray -c pdfunits.mli
