@@ -3,12 +3,12 @@
 + lsb_release -i -s
 # Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=sha
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=sha
 # The following system packages are needed:
 #  - m4
-+ sudo apt-get update
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=sha
 Not running as root, the following command will be run through "sudo":
     apt-get update
++ sudo apt-get update
 Ign http://download.opensuse.org  InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
@@ -40,12 +40,15 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [24.5 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [337 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [130 kB]
-Fetched 2150 kB in 5s (395 kB/s)
+Fetched 2150 kB in 6s (315 kB/s)
 Reading package lists...
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 643906 643961
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages.gz is not what the server reported 358789 358790
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_main_binary-amd64_Packages.gz is not what the server reported 336529 336580
 # OS package update successful
++ sudo apt-get install -qq -yy m4
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
-+ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind 1.5.5                                     [required by sha]
@@ -373,6 +376,7 @@ The following actions will be performed:
 - ocamlmklib -o sha1 sha1.lib.o sha1_stubs.o sha1.cmo
 - ocamlopt  -c -o sha1.cmx sha1.ml
 - ocamlmklib -o sha1 sha1.lib.o sha1_stubs.o sha1.cmx
+- ocamlc -c -o sha256.cmi sha256.mli
 - sha1_stubs.c: In function 'stub_sha1_file':
 - sha1_stubs.c:118:2: warning: implicit declaration of function 'strcpy' [-Wimplicit-function-declaration]
 -   char *name_dup = strdupa(String_val(name));
@@ -406,7 +410,6 @@ The following actions will be performed:
 - File "sha1.ml", line 61, characters 11-24:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -c -o sha256.cmi sha256.mli
 - ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha256.o sha256.c
 - mv sha256.o sha256.lib.o
 - ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha256_stubs.o sha256_stubs.c
@@ -456,7 +459,6 @@ The following actions will be performed:
 - ocamlopt  -c -o sha512.cmx sha512.ml
 - ocamlmklib -o sha512 sha512.lib.o sha512_stubs.o sha512.cmx
 - ocamlmklib -o sha  sha1.lib.o sha1_stubs.o sha1.cmo  sha256.lib.o sha256_stubs.o sha256.cmo  sha512.lib.o sha512_stubs.o sha512.cmo
-- ocamlmklib -o sha  sha1.lib.o sha1_stubs.o sha1.cmx  sha256.lib.o sha256_stubs.o sha256.cmx  sha512.lib.o sha512_stubs.o sha512.cmx
 - sha512_stubs.c: In function 'stub_sha512_file':
 - sha512_stubs.c:116:2: warning: implicit declaration of function 'strcpy' [-Wimplicit-function-declaration]
 -   char *name_dup = strdupa(String_val(name));
@@ -490,6 +492,7 @@ The following actions will be performed:
 - File "sha512.ml", line 60, characters 11-24:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- ocamlmklib -o sha  sha1.lib.o sha1_stubs.o sha1.cmx  sha256.lib.o sha256_stubs.o sha256.cmx  sha512.lib.o sha512_stubs.o sha512.cmx
 - rm sha1.o sha256.o sha512.o
 [sha: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/sha.1.9)
