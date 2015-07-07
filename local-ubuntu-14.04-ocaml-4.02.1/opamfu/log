@@ -1,26 +1,26 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-# Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=opamfu
+# Detecting depexts using flags: x86_64 linux ubuntu
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=opamfu
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=opamfu
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
-Ign http://archive.ubuntu.com trusty InRelease
 Ign http://download.opensuse.org  InRelease
-Ign http://archive.ubuntu.com trusty-updates InRelease
 Hit http://download.opensuse.org  Release.gpg
-Ign http://archive.ubuntu.com trusty-security InRelease
 Hit http://download.opensuse.org  Release
+Ign http://archive.ubuntu.com trusty InRelease
+Ign http://archive.ubuntu.com trusty-updates InRelease
+Ign http://archive.ubuntu.com trusty-security InRelease
+Hit http://download.opensuse.org  Packages
 Hit http://archive.ubuntu.com trusty Release.gpg
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
 Hit http://archive.ubuntu.com trusty Release
 Get:3 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
-Hit http://download.opensuse.org  Packages
 Get:4 http://archive.ubuntu.com trusty-security Release [63.5 kB]
 Hit http://archive.ubuntu.com trusty/main Sources
 Hit http://archive.ubuntu.com trusty/restricted Sources
@@ -40,12 +40,14 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [28.4 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [346 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [134 kB]
-Fetched 2214 kB in 4s (474 kB/s)
+Fetched 2214 kB in 6s (336 kB/s)
 Reading package lists...
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 664676 664679
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages.gz is not what the server reported 365944 365952
 # OS package update successful
++ sudo apt-get install -qq -yy m4
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
-+ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install camlp4        4.02.1+system                         [required by cudf, sexplib]
@@ -98,9 +100,9 @@ The following actions will be performed:
 [sexplib: from default] Command started
 [default] http://opam-archive:8080/archives/re.1.4.0+opam.tar.gz downloaded
 [type_conv: from default] Command started
-[stringext: from default] Command started
 [default] http://opam-archive:8080/archives/sexplib.112.24.01+opam.tar.gz downloaded
 [uri: from default] Command started
+[stringext: from default] Command started
 [type_conv: from default] Command started
 [default] http://opam-archive:8080/archives/stringext.1.3.1+opam.tar.gz downloaded
 [uutf: from default] Command started
@@ -198,6 +200,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -243,7 +246,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
@@ -309,7 +311,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -354,6 +355,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -1172,65 +1174,6 @@ The following actions will be performed:
 - W: Nothing to install for findlib library 'fort_unit'
 -> installed re.1.4.0
 [stringext: ocaml setup.ml] Command started
-+ ocaml "setup.ml" "-configure" (CWD=/home/opam/.opam/system/build/stringext.1.3.1)
-- 
-- Configuration: 
-- ocamlfind: ........................................... /home/opam/.opam/system/bin/ocamlfind
-- ocamlc: .............................................. /usr/bin/ocamlc.opt
-- ocamlopt: ............................................ /usr/bin/ocamlopt.opt
-- ocamlbuild: .......................................... /usr/bin/ocamlbuild
-- Package name: ........................................ Stringext
-- Package version: ..................................... 1.3.1
-- os_type: ............................................. Unix
-- system: .............................................. linux
-- architecture: ........................................ amd64
-- ccomp_type: .......................................... cc
-- ocaml_version: ....................................... 4.02.1
-- standard_library_default: ............................ /usr/lib/ocaml
-- standard_library: .................................... /usr/lib/ocaml
-- standard_runtime: .................................... /usr/bin/ocamlrun
-- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
-- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
-- model: ............................................... default
-- ext_obj: ............................................. .o
-- ext_asm: ............................................. .s
-- ext_lib: ............................................. .a
-- ext_dll: ............................................. .so
-- default_executable_name: ............................. a.out
-- systhread_supported: ................................. true
-- Install architecture-independent files dir: .......... /usr/local
-- Install architecture-dependent files in dir: ......... $prefix
-- User executables: .................................... $exec_prefix/bin
-- System admin executables: ............................ $exec_prefix/sbin
-- Program executables: ................................. $exec_prefix/libexec
-- Read-only single-machine data: ....................... $prefix/etc
-- Modifiable architecture-independent data: ............ $prefix/com
-- Modifiable single-machine data: ...................... $prefix/var
-- Object code libraries: ............................... $exec_prefix/lib
-- Read-only arch-independent data root: ................ $prefix/share
-- Read-only architecture-independent data: ............. $datarootdir
-- Info documentation: .................................. $datarootdir/info
-- Locale-dependent data: ............................... $datarootdir/locale
-- Man documentation: ................................... $datarootdir/man
-- Documentation root: .................................. $datarootdir/doc/$pkg_name
-- HTML documentation: .................................. $docdir
-- DVI documentation: ................................... $docdir
-- PDF documentation: ................................... $docdir
-- PS documentation: .................................... $docdir
-- findlib_version: ..................................... 1.5.5
-- is_native: ........................................... true
-- suffix_program: ...................................... 
-- Remove a file.: ...................................... rm -f
-- Remove a directory.: ................................. rm -rf
-- Turn ocaml debug flag on: ............................ true
-- Turn ocaml profile flag on: .......................... false
-- Compiler support generation of .cmxs.: ............... true
-- OCamlbuild additional flags: ......................... 
-- Create documentations: ............................... true
-- Compile tests executable and library and run them: ... false
-- pkg_bytes: ........................................... /home/opam/.opam/system/lib/bytes
-- 
-[stringext: ocaml setup.ml] Command started
 + make "all" "opt" (CWD=/home/opam/.opam/system/build/cudf.0.7)
 - make -C doc/
 - make[1]: Entering directory `/home/opam/.opam/system/build/cudf.0.7/doc'
@@ -1433,6 +1376,65 @@ The following actions will be performed:
 - Installed /home/opam/.opam/system/lib/cudf/META
 -> installed cudf.0.7
 [dose: ./configure] Command started
++ ocaml "setup.ml" "-configure" (CWD=/home/opam/.opam/system/build/stringext.1.3.1)
+- 
+- Configuration: 
+- ocamlfind: ........................................... /home/opam/.opam/system/bin/ocamlfind
+- ocamlc: .............................................. /usr/bin/ocamlc.opt
+- ocamlopt: ............................................ /usr/bin/ocamlopt.opt
+- ocamlbuild: .......................................... /usr/bin/ocamlbuild
+- Package name: ........................................ Stringext
+- Package version: ..................................... 1.3.1
+- os_type: ............................................. Unix
+- system: .............................................. linux
+- architecture: ........................................ amd64
+- ccomp_type: .......................................... cc
+- ocaml_version: ....................................... 4.02.1
+- standard_library_default: ............................ /usr/lib/ocaml
+- standard_library: .................................... /usr/lib/ocaml
+- standard_runtime: .................................... /usr/bin/ocamlrun
+- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
+- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
+- model: ............................................... default
+- ext_obj: ............................................. .o
+- ext_asm: ............................................. .s
+- ext_lib: ............................................. .a
+- ext_dll: ............................................. .so
+- default_executable_name: ............................. a.out
+- systhread_supported: ................................. true
+- Install architecture-independent files dir: .......... /usr/local
+- Install architecture-dependent files in dir: ......... $prefix
+- User executables: .................................... $exec_prefix/bin
+- System admin executables: ............................ $exec_prefix/sbin
+- Program executables: ................................. $exec_prefix/libexec
+- Read-only single-machine data: ....................... $prefix/etc
+- Modifiable architecture-independent data: ............ $prefix/com
+- Modifiable single-machine data: ...................... $prefix/var
+- Object code libraries: ............................... $exec_prefix/lib
+- Read-only arch-independent data root: ................ $prefix/share
+- Read-only architecture-independent data: ............. $datarootdir
+- Info documentation: .................................. $datarootdir/info
+- Locale-dependent data: ............................... $datarootdir/locale
+- Man documentation: ................................... $datarootdir/man
+- Documentation root: .................................. $datarootdir/doc/$pkg_name
+- HTML documentation: .................................. $docdir
+- DVI documentation: ................................... $docdir
+- PDF documentation: ................................... $docdir
+- PS documentation: .................................... $docdir
+- findlib_version: ..................................... 1.5.5
+- is_native: ........................................... true
+- suffix_program: ...................................... 
+- Remove a file.: ...................................... rm -f
+- Remove a directory.: ................................. rm -rf
+- Turn ocaml debug flag on: ............................ true
+- Turn ocaml profile flag on: .......................... false
+- Compiler support generation of .cmxs.: ............... true
+- OCamlbuild additional flags: ......................... 
+- Create documentations: ............................... true
+- Compile tests executable and library and run them: ... false
+- pkg_bytes: ........................................... /home/opam/.opam/system/lib/bytes
+- 
+[stringext: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-build" (CWD=/home/opam/.opam/system/build/stringext.1.3.1)
 - /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
 - File "_tags", line 22, characters 41-50:
@@ -2096,71 +2098,6 @@ The following actions will be performed:
 - Installed /home/opam/.opam/system/lib/sexplib/pa_sexp_conv.cmx
 - Installed /home/opam/.opam/system/lib/sexplib/META
 -> installed sexplib.112.24.01
-[uri: ocaml setup.ml] Command started
-+ ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/system" "--disable-tests" (CWD=/home/opam/.opam/system/build/uri.1.9.0)
-- 
-- Configuration: 
-- ocamlfind: ........................................... /home/opam/.opam/system/bin/ocamlfind
-- ocamlc: .............................................. /usr/bin/ocamlc.opt
-- ocamlopt: ............................................ /usr/bin/ocamlopt.opt
-- ocamlbuild: .......................................... /usr/bin/ocamlbuild
-- Package name: ........................................ uri
-- Package version: ..................................... 1.9.0
-- os_type: ............................................. Unix
-- system: .............................................. linux
-- architecture: ........................................ amd64
-- ccomp_type: .......................................... cc
-- ocaml_version: ....................................... 4.02.1
-- standard_library_default: ............................ /usr/lib/ocaml
-- standard_library: .................................... /usr/lib/ocaml
-- standard_runtime: .................................... /usr/bin/ocamlrun
-- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
-- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
-- model: ............................................... default
-- ext_obj: ............................................. .o
-- ext_asm: ............................................. .s
-- ext_lib: ............................................. .a
-- ext_dll: ............................................. .so
-- default_executable_name: ............................. a.out
-- systhread_supported: ................................. true
-- Install architecture-independent files dir: .......... /home/opam/.opam/system
-- Install architecture-dependent files in dir: ......... $prefix
-- User executables: .................................... $exec_prefix/bin
-- System admin executables: ............................ $exec_prefix/sbin
-- Program executables: ................................. $exec_prefix/libexec
-- Read-only single-machine data: ....................... $prefix/etc
-- Modifiable architecture-independent data: ............ $prefix/com
-- Modifiable single-machine data: ...................... $prefix/var
-- Object code libraries: ............................... $exec_prefix/lib
-- Read-only arch-independent data root: ................ $prefix/share
-- Read-only architecture-independent data: ............. $datarootdir
-- Info documentation: .................................. $datarootdir/info
-- Locale-dependent data: ............................... $datarootdir/locale
-- Man documentation: ................................... $datarootdir/man
-- Documentation root: .................................. $datarootdir/doc/$pkg_name
-- HTML documentation: .................................. $docdir
-- DVI documentation: ................................... $docdir
-- PDF documentation: ................................... $docdir
-- PS documentation: .................................... $docdir
-- findlib_version: ..................................... 1.5.5
-- is_native: ........................................... true
-- suffix_program: ...................................... 
-- Remove a file.: ...................................... rm -f
-- Remove a directory.: ................................. rm -rf
-- Turn ocaml debug flag on: ............................ true
-- Turn ocaml profile flag on: .......................... false
-- Compiler support generation of .cmxs.: ............... true
-- OCamlbuild additional flags: ......................... 
-- build the full services library: ..................... false
-- Create documentations: ............................... true
-- Compile tests executable and library and run them: ... false
-- pkg_re_posix: ........................................ /home/opam/.opam/system/lib/re
-- pkg_stringext: ....................................... /home/opam/.opam/system/lib/stringext
-- pkg_sexplib_syntax: .................................. /home/opam/.opam/system/lib/sexplib
-- pkg_sexplib: ......................................... /home/opam/.opam/system/lib/sexplib
-- pkg_compiler_libs_toplevel: .......................... /usr/lib/ocaml/compiler-libs
-- ocamldoc: ............................................ /usr/bin/ocamldoc
-- 
 [uri: ocaml setup.ml] Command started
 + make "TARGETS=" (CWD=/home/opam/.opam/system/build/dose.3.2.2+opam)
 - mkdir -p _build
@@ -4145,6 +4082,71 @@ The following actions will be performed:
 - Cannot find "challenged(5)" in podpath: cannot find suitable replacement path, cannot resolve link
 - make: Circular all <- all dependency dropped.
 [dose: make install] Command started
++ ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/system" "--disable-tests" (CWD=/home/opam/.opam/system/build/uri.1.9.0)
+- 
+- Configuration: 
+- ocamlfind: ........................................... /home/opam/.opam/system/bin/ocamlfind
+- ocamlc: .............................................. /usr/bin/ocamlc.opt
+- ocamlopt: ............................................ /usr/bin/ocamlopt.opt
+- ocamlbuild: .......................................... /usr/bin/ocamlbuild
+- Package name: ........................................ uri
+- Package version: ..................................... 1.9.0
+- os_type: ............................................. Unix
+- system: .............................................. linux
+- architecture: ........................................ amd64
+- ccomp_type: .......................................... cc
+- ocaml_version: ....................................... 4.02.1
+- standard_library_default: ............................ /usr/lib/ocaml
+- standard_library: .................................... /usr/lib/ocaml
+- standard_runtime: .................................... /usr/bin/ocamlrun
+- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
+- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
+- model: ............................................... default
+- ext_obj: ............................................. .o
+- ext_asm: ............................................. .s
+- ext_lib: ............................................. .a
+- ext_dll: ............................................. .so
+- default_executable_name: ............................. a.out
+- systhread_supported: ................................. true
+- Install architecture-independent files dir: .......... /home/opam/.opam/system
+- Install architecture-dependent files in dir: ......... $prefix
+- User executables: .................................... $exec_prefix/bin
+- System admin executables: ............................ $exec_prefix/sbin
+- Program executables: ................................. $exec_prefix/libexec
+- Read-only single-machine data: ....................... $prefix/etc
+- Modifiable architecture-independent data: ............ $prefix/com
+- Modifiable single-machine data: ...................... $prefix/var
+- Object code libraries: ............................... $exec_prefix/lib
+- Read-only arch-independent data root: ................ $prefix/share
+- Read-only architecture-independent data: ............. $datarootdir
+- Info documentation: .................................. $datarootdir/info
+- Locale-dependent data: ............................... $datarootdir/locale
+- Man documentation: ................................... $datarootdir/man
+- Documentation root: .................................. $datarootdir/doc/$pkg_name
+- HTML documentation: .................................. $docdir
+- DVI documentation: ................................... $docdir
+- PDF documentation: ................................... $docdir
+- PS documentation: .................................... $docdir
+- findlib_version: ..................................... 1.5.5
+- is_native: ........................................... true
+- suffix_program: ...................................... 
+- Remove a file.: ...................................... rm -f
+- Remove a directory.: ................................. rm -rf
+- Turn ocaml debug flag on: ............................ true
+- Turn ocaml profile flag on: .......................... false
+- Compiler support generation of .cmxs.: ............... true
+- OCamlbuild additional flags: ......................... 
+- build the full services library: ..................... false
+- Create documentations: ............................... true
+- Compile tests executable and library and run them: ... false
+- pkg_re_posix: ........................................ /home/opam/.opam/system/lib/re
+- pkg_stringext: ....................................... /home/opam/.opam/system/lib/stringext
+- pkg_sexplib_syntax: .................................. /home/opam/.opam/system/lib/sexplib
+- pkg_sexplib: ......................................... /home/opam/.opam/system/lib/sexplib
+- pkg_compiler_libs_toplevel: .......................... /usr/lib/ocaml/compiler-libs
+- ocamldoc: ............................................ /usr/bin/ocamldoc
+- 
+[uri: ocaml setup.ml] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/dose.3.2.2+opam)
 - test -d /home/opam/.opam/system/lib || mkdir -p /home/opam/.opam/system/lib
 - test -d /home/opam/.opam/system/lib/stublibs || mkdir -p /home/opam/.opam/system/lib/stublibs
@@ -4392,6 +4394,40 @@ The following actions will be performed:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
 [jsonm: ocaml setup.ml] Command started
++ ocaml "setup.ml" "-build" (CWD=/home/opam/.opam/system/build/uri.1.9.0)
+- ocamlfind ocamlopt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa -linkpkg myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -modules lib/uri.mli > lib/uri.mli.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -I lib -o lib/uri.cmi lib/uri.mli
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -modules lib/uri.ml > lib/uri.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -modules lib/uri_re.mli > lib/uri_re.mli.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -I lib -o lib/uri_re.cmi lib/uri_re.mli
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -modules lib/uri_re.ml > lib/uri_re.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -I lib -o lib/uri.cmo lib/uri.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -I lib -o lib/uri_re.cmo lib/uri_re.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -a lib/uri_re.cmo lib/uri.cmo -o lib/uri.cma
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -I lib -o lib/uri_re.cmx lib/uri_re.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -I lib -o lib/uri.cmx lib/uri.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -a lib/uri_re.cmx lib/uri.cmx -o lib/uri.cmxa
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared lib/uri.cmxa lib/uri_re.cmx lib/uri.cmx -o lib/uri.cmxs
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -modules lib/uri_services.mli > lib/uri_services.mli.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -I lib -o lib/uri_services.cmi lib/uri_services.mli
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -modules lib/uri_services.ml > lib/uri_services.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -I lib -o lib/uri_services.cmo lib/uri_services.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -a lib/uri_services.cmo -o lib/services.cma
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -I lib -o lib/uri_services.cmx lib/uri_services.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -a lib/uri_services.cmx -o lib/services.cmxa
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared lib/services.cmxa lib/uri_services.cmx -o lib/services.cmxs
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -package compiler-libs.toplevel -modules top/uri_top.ml > top/uri_top.ml.depends
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package compiler-libs.toplevel -I top -o top/uri_top.cmo top/uri_top.ml
+- + /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package compiler-libs.toplevel -I top -o top/uri_top.cmo top/uri_top.ml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -a top/uri_top.cmo -o top/uri_top.cma
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package compiler-libs.toplevel -I top -o top/uri_top.cmx top/uri_top.ml
+- + /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package compiler-libs.toplevel -I top -o top/uri_top.cmx top/uri_top.ml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -a top/uri_top.cmx -o top/uri_top.cmxa
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared top/uri_top.cmxa top/uri_top.cmx -o top/uri_top.cmxs
+[uri: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-build" (CWD=/home/opam/.opam/system/build/jsonm.0.9.1)
 - /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
 - ocamlfind ocamldep -package uutf -modules src/jsonm.mli > src/jsonm.mli.depends
@@ -4499,6 +4535,44 @@ The following actions will be performed:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
 [jsonm: ocaml setup.ml] Command started
++ ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/system/build/uri.1.9.0)
+- Installed /home/opam/.opam/system/lib/uri/uri.mli
+- Installed /home/opam/.opam/system/lib/uri/uri_re.mli
+- Installed /home/opam/.opam/system/lib/uri/uri.cma
+- Installed /home/opam/.opam/system/lib/uri/uri.cmxa
+- Installed /home/opam/.opam/system/lib/uri/uri.a
+- Installed /home/opam/.opam/system/lib/uri/uri.cmxs
+- Installed /home/opam/.opam/system/lib/uri/uri_re.cmi
+- Installed /home/opam/.opam/system/lib/uri/uri_re.cmti
+- Installed /home/opam/.opam/system/lib/uri/uri_re.cmt
+- Installed /home/opam/.opam/system/lib/uri/uri_re.annot
+- Installed /home/opam/.opam/system/lib/uri/uri.cmi
+- Installed /home/opam/.opam/system/lib/uri/uri.cmti
+- Installed /home/opam/.opam/system/lib/uri/uri.cmt
+- Installed /home/opam/.opam/system/lib/uri/uri.annot
+- Installed /home/opam/.opam/system/lib/uri/uri_re.cmx
+- Installed /home/opam/.opam/system/lib/uri/uri.cmx
+- Installed /home/opam/.opam/system/lib/uri/uri_top.ml
+- Installed /home/opam/.opam/system/lib/uri/uri_top.cma
+- Installed /home/opam/.opam/system/lib/uri/uri_top.cmxa
+- Installed /home/opam/.opam/system/lib/uri/uri_top.a
+- Installed /home/opam/.opam/system/lib/uri/uri_top.cmxs
+- Installed /home/opam/.opam/system/lib/uri/uri_top.cmi
+- Installed /home/opam/.opam/system/lib/uri/uri_top.cmt
+- Installed /home/opam/.opam/system/lib/uri/uri_top.annot
+- Installed /home/opam/.opam/system/lib/uri/uri_top.cmx
+- Installed /home/opam/.opam/system/lib/uri/uri_services.mli
+- Installed /home/opam/.opam/system/lib/uri/services.cma
+- Installed /home/opam/.opam/system/lib/uri/services.cmxa
+- Installed /home/opam/.opam/system/lib/uri/services.a
+- Installed /home/opam/.opam/system/lib/uri/services.cmxs
+- Installed /home/opam/.opam/system/lib/uri/uri_services.cmi
+- Installed /home/opam/.opam/system/lib/uri/uri_services.cmti
+- Installed /home/opam/.opam/system/lib/uri/uri_services.cmt
+- Installed /home/opam/.opam/system/lib/uri/uri_services.annot
+- Installed /home/opam/.opam/system/lib/uri/uri_services.cmx
+- Installed /home/opam/.opam/system/lib/uri/META
+-> installed uri.1.9.0
 + ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/system/build/jsonm.0.9.1)
 - File "/Users/dbuenzli/.odb/install-oasis/oasis-0.3.0/src/oasis/OASISString.ml", line 118, characters 8-26:
 - Warning 3: deprecated: String.set
@@ -4516,40 +4590,6 @@ The following actions will be performed:
 - Installed /home/opam/.opam/system/lib/jsonm/META
 -> installed jsonm.0.9.1
 [opam-lib: ./configure] Command started
-+ ocaml "setup.ml" "-build" (CWD=/home/opam/.opam/system/build/uri.1.9.0)
-- ocamlfind ocamlopt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa -linkpkg myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
-- /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -modules lib/uri.mli > lib/uri.mli.depends
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -I lib -o lib/uri.cmi lib/uri.mli
-- /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -modules lib/uri.ml > lib/uri.ml.depends
-- /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -modules lib/uri_re.mli > lib/uri_re.mli.depends
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -I lib -o lib/uri_re.cmi lib/uri_re.mli
-- /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -modules lib/uri_re.ml > lib/uri_re.ml.depends
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -I lib -o lib/uri.cmo lib/uri.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -I lib -o lib/uri_re.cmo lib/uri_re.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -a lib/uri_re.cmo lib/uri.cmo -o lib/uri.cma
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -I lib -o lib/uri_re.cmx lib/uri_re.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -I lib -o lib/uri.cmx lib/uri.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -a lib/uri_re.cmx lib/uri.cmx -o lib/uri.cmxa
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared lib/uri.cmxa lib/uri_re.cmx lib/uri.cmx -o lib/uri.cmxs
-- /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -modules lib/uri_services.mli > lib/uri_services.mli.depends
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -I lib -o lib/uri_services.cmi lib/uri_services.mli
-- /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -modules lib/uri_services.ml > lib/uri_services.ml.depends
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -I lib -o lib/uri_services.cmo lib/uri_services.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -a lib/uri_services.cmo -o lib/services.cma
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -I lib -o lib/uri_services.cmx lib/uri_services.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -a lib/uri_services.cmx -o lib/services.cmxa
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared lib/services.cmxa lib/uri_services.cmx -o lib/services.cmxs
-- /home/opam/.opam/system/bin/ocamlfind ocamldep -package compiler-libs.toplevel -modules top/uri_top.ml > top/uri_top.ml.depends
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package compiler-libs.toplevel -I top -o top/uri_top.cmo top/uri_top.ml
-- + /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package compiler-libs.toplevel -I top -o top/uri_top.cmo top/uri_top.ml
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -a top/uri_top.cmo -o top/uri_top.cma
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package compiler-libs.toplevel -I top -o top/uri_top.cmx top/uri_top.ml
-- + /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package compiler-libs.toplevel -I top -o top/uri_top.cmx top/uri_top.ml
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -a top/uri_top.cmx -o top/uri_top.cmxa
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared top/uri_top.cmxa top/uri_top.cmx -o top/uri_top.cmxs
-[uri: ocaml setup.ml] Command started
 + ./configure  (CWD=/home/opam/.opam/system/build/opam-lib.1.2.0)
 - checking for gcc... gcc
 - checking whether the C compiler works... yes
@@ -4603,44 +4643,6 @@ The following actions will be performed:
 - Executables will be installed in /usr/local/bin
 - Manual pages will be installed in /usr/local/share/man
 [opam-lib: make] Command started
-+ ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/system/build/uri.1.9.0)
-- Installed /home/opam/.opam/system/lib/uri/uri.mli
-- Installed /home/opam/.opam/system/lib/uri/uri_re.mli
-- Installed /home/opam/.opam/system/lib/uri/uri.cma
-- Installed /home/opam/.opam/system/lib/uri/uri.cmxa
-- Installed /home/opam/.opam/system/lib/uri/uri.a
-- Installed /home/opam/.opam/system/lib/uri/uri.cmxs
-- Installed /home/opam/.opam/system/lib/uri/uri_re.cmi
-- Installed /home/opam/.opam/system/lib/uri/uri_re.cmti
-- Installed /home/opam/.opam/system/lib/uri/uri_re.cmt
-- Installed /home/opam/.opam/system/lib/uri/uri_re.annot
-- Installed /home/opam/.opam/system/lib/uri/uri.cmi
-- Installed /home/opam/.opam/system/lib/uri/uri.cmti
-- Installed /home/opam/.opam/system/lib/uri/uri.cmt
-- Installed /home/opam/.opam/system/lib/uri/uri.annot
-- Installed /home/opam/.opam/system/lib/uri/uri_re.cmx
-- Installed /home/opam/.opam/system/lib/uri/uri.cmx
-- Installed /home/opam/.opam/system/lib/uri/uri_top.ml
-- Installed /home/opam/.opam/system/lib/uri/uri_top.cma
-- Installed /home/opam/.opam/system/lib/uri/uri_top.cmxa
-- Installed /home/opam/.opam/system/lib/uri/uri_top.a
-- Installed /home/opam/.opam/system/lib/uri/uri_top.cmxs
-- Installed /home/opam/.opam/system/lib/uri/uri_top.cmi
-- Installed /home/opam/.opam/system/lib/uri/uri_top.cmt
-- Installed /home/opam/.opam/system/lib/uri/uri_top.annot
-- Installed /home/opam/.opam/system/lib/uri/uri_top.cmx
-- Installed /home/opam/.opam/system/lib/uri/uri_services.mli
-- Installed /home/opam/.opam/system/lib/uri/services.cma
-- Installed /home/opam/.opam/system/lib/uri/services.cmxa
-- Installed /home/opam/.opam/system/lib/uri/services.a
-- Installed /home/opam/.opam/system/lib/uri/services.cmxs
-- Installed /home/opam/.opam/system/lib/uri/uri_services.cmi
-- Installed /home/opam/.opam/system/lib/uri/uri_services.cmti
-- Installed /home/opam/.opam/system/lib/uri/uri_services.cmt
-- Installed /home/opam/.opam/system/lib/uri/uri_services.annot
-- Installed /home/opam/.opam/system/lib/uri/uri_services.cmx
-- Installed /home/opam/.opam/system/lib/uri/META
--> installed uri.1.9.0
 + make  (CWD=/home/opam/.opam/system/build/opam-lib.1.2.0)
 - make -C src opam-lib
 - make[1]: Entering directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
@@ -4737,13 +4739,6 @@ The following actions will be performed:
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamSwitch.ml
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamSystem.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamSystem.ml
-- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamParallel.mli
-- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamParallel.ml
-- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamFilename.mli
-- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamFilename.ml
-- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamPackage.mli
-- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamPackage.ml
-- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamVariable.mli
 - File "core/opamMisc.ml", line 74, characters 11-24:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -4756,12 +4751,13 @@ The following actions will be performed:
 - File "core/opamGlobals.ml", line 176, characters 18-40:
 - Warning 3: deprecated: Filename.temp_dir_name
 - Use Filename.get_temp_dir_name instead
-- File "core/opamSystem.ml", line 53, characters 10-32:
-- Warning 3: deprecated: Filename.temp_dir_name
-- Use Filename.get_temp_dir_name instead
-- File "core/opamSystem.ml", line 118, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
+- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamParallel.mli
+- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamParallel.ml
+- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamFilename.mli
+- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamFilename.ml
+- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamPackage.mli
+- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamPackage.ml
+- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamVariable.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamVariable.ml
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamFormula.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamFormula.ml
@@ -4774,6 +4770,12 @@ The following actions will be performed:
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamPath.ml
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamParser.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamParser.ml
+- File "core/opamSystem.ml", line 53, characters 10-32:
+- Warning 3: deprecated: Filename.temp_dir_name
+- Use Filename.get_temp_dir_name instead
+- File "core/opamSystem.ml", line 118, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamLexer.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamLexer.ml
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamFormat.mli
@@ -4782,12 +4784,6 @@ The following actions will be performed:
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamFile.ml
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamActionGraph.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamActionGraph.ml
-- File "core/opamFile.ml", line 49, characters 18-31:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "core/opamFile.ml", line 53, characters 12-32:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamFilter.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamFilter.ml
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamRepository.mli
@@ -4805,6 +4801,12 @@ The following actions will be performed:
 - ocamlfind ocamldep -I core -I solver -I repositories -I client -I solver/ solver/opamCudf.mli > ._bcdi/solver/opamCudf.di
 - ocamlfind ocamldep -I core -I solver -I repositories -I client -I solver/ solver/opamSolver.ml > ._d/solver/opamSolver.d
 - ocamlfind ocamldep -I core -I solver -I repositories -I client -I solver/ solver/opamHeuristic.ml > ._d/solver/opamHeuristic.d
+- File "core/opamFile.ml", line 49, characters 18-31:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "core/opamFile.ml", line 53, characters 12-32:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 - ocamlfind ocamldep -I core -I solver -I repositories -I client -I solver/ solver/opamCudf.ml > ._d/solver/opamCudf.d
 - make[5]: Leaving directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
 - make[5]: Entering directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
@@ -4820,12 +4822,6 @@ The following actions will be performed:
 - make[3]: Leaving directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
 - make -f ../OCamlMakefile subprojs SUBPROJS=repositories SUBTARGET=byte-code-library
 - make[3]: Entering directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
-- File "solver/opamHeuristic.ml", line 171, characters 13-33:
-- Warning 48: implicit elimination of optional argument ?last
-- File "solver/opamHeuristic.ml", line 423, characters 10-30:
-- Warning 48: implicit elimination of optional argument ?last
-- File "solver/opamHeuristic.ml", line 494, characters 11-31:
-- Warning 48: implicit elimination of optional argument ?last
 - make[4]: Entering directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
 - make[5]: Entering directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
 - ocamlfind ocamldep -I core -I solver -I repositories -I client -I repositories/ repositories/opamHg.mli > ._bcdi/repositories/opamHg.di
@@ -4846,6 +4842,14 @@ The following actions will be performed:
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I repositories/ repositories/opamHTTP.ml
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I repositories/ repositories/opamLocal.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I repositories/ repositories/opamLocal.ml
+- File "solver/opamHeuristic.ml", line 171, characters 13-33:
+- Warning 48: implicit elimination of optional argument ?last
+- File "solver/opamHeuristic.ml", line 423, characters 10-30:
+- Warning 48: implicit elimination of optional argument ?last
+- File "solver/opamHeuristic.ml", line 494, characters 11-31:
+- Warning 48: implicit elimination of optional argument ?last
+- File "repositories/opamHTTP.ml", line 230, characters 55-75:
+- Warning 48: implicit elimination of optional argument ?last
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I repositories/ repositories/opamVCS.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I repositories/ repositories/opamVCS.ml
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I repositories/ repositories/opamGit.mli
@@ -4873,8 +4877,6 @@ The following actions will be performed:
 - ocamlfind ocamldep -I core -I solver -I repositories -I client -I client/ client/opamClient.ml > ._d/client/opamClient.d
 - ocamlfind ocamldep -I core -I solver -I repositories -I client -I client/ client/opamPinCommand.ml > ._d/client/opamPinCommand.d
 - ocamlfind ocamldep -I core -I solver -I repositories -I client -I client/ client/opamRepositoryCommand.ml > ._d/client/opamRepositoryCommand.d
-- File "repositories/opamHTTP.ml", line 230, characters 55-75:
-- Warning 48: implicit elimination of optional argument ?last
 - ocamlfind ocamldep -I core -I solver -I repositories -I client -I client/ client/opamConfigCommand.ml > ._d/client/opamConfigCommand.d
 - ocamlfind ocamldep -I core -I solver -I repositories -I client -I client/ client/opamSwitchCommand.ml > ._d/client/opamSwitchCommand.d
 - ocamlfind ocamldep -I core -I solver -I repositories -I client -I client/ client/opamSolution.ml > ._d/client/opamSolution.d
@@ -4884,6 +4886,12 @@ The following actions will be performed:
 - make[5]: Entering directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamState.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamState.ml
+- File "client/opamState.ml", line 1232, characters 14-27:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "client/opamState.ml", line 1240, characters 15-28:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamAction.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamAction.ml
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamSolution.mli
@@ -4896,21 +4904,25 @@ The following actions will be performed:
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamRepositoryCommand.ml
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamPinCommand.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamPinCommand.ml
-- File "client/opamState.ml", line 1232, characters 14-27:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "client/opamState.ml", line 1240, characters 15-28:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
+- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamClient.mli
+- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamClient.ml
+- ocamlfind ocamlc -a     -I core -I solver -I repositories -I client -I client/  -g -w +a-4-9-32-41-44-45 -bin-annot   -ccopt -Lclient/     -o opam-client.cma client/opamState.cmo client/opamAction.cmo client/opamSolution.cmo client/opamSwitchCommand.cmo client/opamConfigCommand.cmo client/opamRepositoryCommand.cmo client/opamPinCommand.cmo client/opamClient.cmo
 - File "client/opamAction.ml", line 415, characters 15-38:
 - Warning 48: implicit elimination of optional argument ?num
 - File "client/opamSwitchCommand.ml", line 486, characters 30-47:
 - Warning 48: implicit elimination of optional argument ?confirm
 - File "client/opamRepositoryCommand.ml", line 432, characters 13-33:
 - Warning 48: implicit elimination of optional argument ?last
-- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamClient.mli
-- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamClient.ml
-- ocamlfind ocamlc -a     -I core -I solver -I repositories -I client -I client/  -g -w +a-4-9-32-41-44-45 -bin-annot   -ccopt -Lclient/     -o opam-client.cma client/opamState.cmo client/opamAction.cmo client/opamSolution.cmo client/opamSwitchCommand.cmo client/opamConfigCommand.cmo client/opamRepositoryCommand.cmo client/opamPinCommand.cmo client/opamClient.cmo
+- File "client/opamClient.ml", line 325, characters 10-21:
+- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
+- File "client/opamClient.ml", line 328, characters 19-30:
+- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
+- File "client/opamClient.ml", line 363, characters 11-31:
+- Warning 48: implicit elimination of optional argument ?last
+- File "client/opamClient.ml", line 534, characters 41-52:
+- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
+- File "client/opamClient.ml", line 535, characters 41-52:
+- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
 - make[5]: Leaving directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
 - make[4]: Leaving directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
 - make[3]: Leaving directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
@@ -4953,16 +4965,9 @@ The following actions will be performed:
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamJson.ml
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamLineLexer.ml
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamMisc.ml
-- File "client/opamClient.ml", line 325, characters 10-21:
-- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
-- File "client/opamClient.ml", line 328, characters 19-30:
-- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
-- File "client/opamClient.ml", line 363, characters 11-31:
-- Warning 48: implicit elimination of optional argument ?last
-- File "client/opamClient.ml", line 534, characters 41-52:
-- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
-- File "client/opamClient.ml", line 535, characters 41-52:
-- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
+- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamScript.ml
+- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamGitVersion.ml
+- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamVersion.ml
 - File "core/opamMisc.ml", line 74, characters 11-24:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -4972,9 +4977,6 @@ The following actions will be performed:
 - File "core/opamMisc.ml", line 492, characters 10-28:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
-- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamScript.ml
-- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamGitVersion.ml
-- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamVersion.ml
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamGlobals.ml
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamProcess.ml
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamRepositoryName.ml
@@ -4983,6 +4985,10 @@ The following actions will be performed:
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamParallel.ml
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamFilename.ml
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamPackage.ml
+- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamVariable.ml
+- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamFormula.ml
+- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamCompiler.ml
+- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamTypesBase.ml
 - File "core/opamGlobals.ml", line 176, characters 18-40:
 - Warning 3: deprecated: Filename.temp_dir_name
 - Use Filename.get_temp_dir_name instead
@@ -4992,10 +4998,6 @@ The following actions will be performed:
 - File "core/opamSystem.ml", line 118, characters 10-23:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamVariable.ml
-- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamFormula.ml
-- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamCompiler.ml
-- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamTypesBase.ml
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamPath.ml
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamParser.ml
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamLexer.ml
@@ -5025,13 +5027,13 @@ The following actions will be performed:
 - make[5]: Entering directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I solver/ solver/opamCudf.ml
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I solver/ solver/opamHeuristic.ml
-- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I solver/ solver/opamSolver.ml
 - File "solver/opamHeuristic.ml", line 171, characters 13-33:
 - Warning 48: implicit elimination of optional argument ?last
 - File "solver/opamHeuristic.ml", line 423, characters 10-30:
 - Warning 48: implicit elimination of optional argument ?last
 - File "solver/opamHeuristic.ml", line 494, characters 11-31:
 - Warning 48: implicit elimination of optional argument ?last
+- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I solver/ solver/opamSolver.ml
 - ocamlfind ocamlopt -a      -I core -I solver -I repositories -I client -I solver/  -g -w +a-4-9-32-41-44-45 -bin-annot   -ccopt -Lsolver/    -o opam-solver.cmxa solver/opamCudf.cmx solver/opamHeuristic.cmx solver/opamSolver.cmx
 - make[5]: Leaving directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
 - make[4]: Leaving directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
@@ -5060,6 +5062,8 @@ The following actions will be performed:
 - make[3]: Leaving directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
 - make -f ../OCamlMakefile subprojs SUBPROJS=client SUBTARGET=native-code-library
 - make[3]: Entering directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
+- File "repositories/opamHTTP.ml", line 230, characters 55-75:
+- Warning 48: implicit elimination of optional argument ?last
 - make[4]: Entering directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
 - make[5]: Entering directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
 - ocamlfind ocamldep -native -I core -I solver -I repositories -I client -I client/ client/opamClient.mli > ._ncdi/client/opamClient.di
@@ -5073,13 +5077,8 @@ The following actions will be performed:
 - make[5]: Leaving directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
 - make[5]: Entering directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamState.ml
-- File "repositories/opamHTTP.ml", line 230, characters 55-75:
-- Warning 48: implicit elimination of optional argument ?last
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamAction.ml
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamSolution.ml
-- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamSwitchCommand.ml
-- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamConfigCommand.ml
-- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamRepositoryCommand.ml
 - File "client/opamState.ml", line 1232, characters 14-27:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -5088,10 +5087,9 @@ The following actions will be performed:
 - Use Bytes.create instead.
 - File "client/opamAction.ml", line 415, characters 15-38:
 - Warning 48: implicit elimination of optional argument ?num
-- File "client/opamSwitchCommand.ml", line 486, characters 30-47:
-- Warning 48: implicit elimination of optional argument ?confirm
-- File "client/opamRepositoryCommand.ml", line 432, characters 13-33:
-- Warning 48: implicit elimination of optional argument ?last
+- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamSwitchCommand.ml
+- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamConfigCommand.ml
+- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamRepositoryCommand.ml
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamPinCommand.ml
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamClient.ml
 - ocamlfind ocamlopt -a      -I core -I solver -I repositories -I client -I client/  -g -w +a-4-9-32-41-44-45 -bin-annot   -ccopt -Lclient/    -o opam-client.cmxa client/opamState.cmx client/opamAction.cmx client/opamSolution.cmx client/opamSwitchCommand.cmx client/opamConfigCommand.cmx client/opamRepositoryCommand.cmx client/opamPinCommand.cmx client/opamClient.cmx
@@ -5101,6 +5099,20 @@ The following actions will be performed:
 - make[2]: Leaving directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
 - make -f ../OCamlMakefile subprojs SUBPROJS=opam-admin-top SUBTARGET=top
 - make[2]: Entering directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
+- File "client/opamSwitchCommand.ml", line 486, characters 30-47:
+- Warning 48: implicit elimination of optional argument ?confirm
+- File "client/opamRepositoryCommand.ml", line 432, characters 13-33:
+- Warning 48: implicit elimination of optional argument ?last
+- File "client/opamClient.ml", line 325, characters 10-21:
+- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
+- File "client/opamClient.ml", line 328, characters 19-30:
+- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
+- File "client/opamClient.ml", line 363, characters 11-31:
+- Warning 48: implicit elimination of optional argument ?last
+- File "client/opamClient.ml", line 534, characters 41-52:
+- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
+- File "client/opamClient.ml", line 535, characters 41-52:
+- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
 - make[3]: Entering directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
 - make[4]: Entering directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
 - ocamlfind ocamldep -I core -I solver -I repositories -I client -I tools/ tools/opam_admin_top.ml > ._d/tools/opam_admin_top.d
@@ -5112,16 +5124,6 @@ The following actions will be performed:
 - 				-package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -linkpkg \
 - 				    -I core -I solver -I repositories -I client -I tools/  -g -w +a-4-9-32-41-44-45 -bin-annot   -ccopt -Ltools/    ./opam-core.cma ./opam-solver.cma ./opam-repositories.cma ./opam-client.cma -o opam-admin.top \
 - 				tools/opam_admin_top.cmo
-- File "client/opamClient.ml", line 325, characters 10-21:
-- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
-- File "client/opamClient.ml", line 328, characters 19-30:
-- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
-- File "client/opamClient.ml", line 363, characters 11-31:
-- Warning 48: implicit elimination of optional argument ?last
-- File "client/opamClient.ml", line 534, characters 41-52:
-- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
-- File "client/opamClient.ml", line 535, characters 41-52:
-- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
 - make[4]: Leaving directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
 - make[3]: Leaving directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
 - make[2]: Leaving directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
@@ -5163,12 +5165,6 @@ The following actions will be performed:
 - make[4]: Entering directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamArg.mli
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamArg.ml
-- File "client/opamArg.ml", line 394, characters 24-28:
-- Warning 48: implicit elimination of optional argument ?none
-- File "client/opamArg.ml", line 783, characters 11-15:
-- Warning 48: implicit elimination of optional argument ?none
-- File "client/opamArg.ml", line 1547, characters 22-26:
-- Warning 48: implicit elimination of optional argument ?none
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamMain.ml
 - ocamlfind ocamlopt \
 - 				-package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -linkpkg \
@@ -5183,6 +5179,12 @@ The following actions will be performed:
 - make -f ../OCamlMakefile subprojs SUBPROJS=core SUBTARGET=native-code-library
 - make[2]: Entering directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
 - make[3]: Entering directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
+- File "client/opamArg.ml", line 394, characters 24-28:
+- Warning 48: implicit elimination of optional argument ?none
+- File "client/opamArg.ml", line 783, characters 11-15:
+- Warning 48: implicit elimination of optional argument ?none
+- File "client/opamArg.ml", line 1547, characters 22-26:
+- Warning 48: implicit elimination of optional argument ?none
 - make[4]: Entering directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
 - make[4]: `opam-core.cmxa' is up to date.
 - make[4]: Leaving directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
@@ -5292,12 +5294,12 @@ The following actions will be performed:
 - 				-package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -linkpkg \
 - 				     -I core -I solver -I repositories -I client -I tools/  -g -w +a-4-9-32-41-44-45 -bin-annot   -ccopt -Ltools/    ./opam-core.cmxa ./opam-solver.cmxa ./opam-repositories.cmxa ./opam-client.cmxa -o opam-installer \
 - 				tools/opam_installer.cmx
-- File "tools/opam_installer.ml", line 154, characters 34-43:
-- Warning 48: implicit elimination of optional argument ?num
 - make[4]: Leaving directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
 - make[3]: Leaving directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
 - make[2]: Leaving directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
 - make[1]: Leaving directory `/home/opam/.opam/system/build/opam-lib.1.2.0/src'
+- File "tools/opam_installer.ml", line 154, characters 34-43:
+- Warning 48: implicit elimination of optional argument ?num
 -> installed opam-lib.1.2.0
 [opamfu: make build] Command started
 + make "build" (CWD=/home/opam/.opam/system/build/opamfu.0.1.2)
