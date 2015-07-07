@@ -6,20 +6,20 @@
 # The following system packages are needed:
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=statsd-client
-+ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
++ sudo apt-get update
 Hit http://security.debian.org stable/updates InRelease
 Ign http://download.opensuse.org  InRelease
 Hit http://httpredir.debian.org stable InRelease
-Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
 Hit http://download.opensuse.org  Release.gpg
+Hit http://httpredir.debian.org stable-updates InRelease
+Get:1 http://security.debian.org stable/updates/main amd64 Packages [58.9 kB]
 Hit http://download.opensuse.org  Release
-Get:2 http://security.debian.org stable/updates/main amd64 Packages [58.9 kB]
-Get:3 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
-Get:4 http://download.opensuse.org  Packages [5783 B]
-Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9213 kB in 4s (2180 kB/s)
+Get:2 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
+Get:3 http://download.opensuse.org  Packages [5783 B]
+Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
+Fetched 9088 kB in 3s (2502 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
@@ -37,14 +37,14 @@ The following actions will be performed:
 [lwt: from default] Command started
 [ocamlfind: from default] Command started
 [ppx_tools: from default] Command started
-[lwt: from default] Command started
-[ppx_tools: from default] Command started
-[default] http://opam-archive:8080/archives/ppx_tools.0.99.2+opam.tar.gz downloaded
-[statsd-client: from default] Command started
 [ocamlfind: from default] Command started
+[ppx_tools: from default] Command started
+[lwt: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[statsd-client: from default] Command started
+[default] http://opam-archive:8080/archives/ppx_tools.0.99.2+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/lwt.2.4.8+opam.tar.gz downloaded
 [statsd-client: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/statsd-client.1.0.1+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -237,6 +237,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -281,7 +282,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -388,22 +388,21 @@ The following actions will be performed:
 + ./configure "--prefix" "/home/opam/.opam/4.02.1" "--disable-libev" "--disable-camlp4" "--disable-react" "--disable-ssl" "--enable-unix" "--enable-preemptive" "--disable-glib" "--enable-ppx" (CWD=/home/opam/.opam/4.02.1/build/lwt.2.4.8)
 - not checking for pkg-config
 - not checking for libev
-- testing for pthread:
--  ........................... available
+- testing for pthread: ........................... available
 - not checking for glib
 - testing for eventfd: ........................... available
 - testing for fd passing: ........................ available
-- testing for sched_getcpu:
--  ...................... available
-- testing for affinity getting/setting: .......... available
+- testing for sched_getcpu: ...................... available
+- testing for affinity getting/setting:
+-  .......... available
 - testing for credentials getting (Linux): ....... available
 - testing for credentials getting (NetBSD): ...... unavailable
 - testing for credentials getting (OpenBSD): ..... unavailable
 - testing for credentials getting (FreeBSD): ..... unavailable
-- testing for credentials getting (getpeereid):
--  .. unavailable
+- testing for credentials getting (getpeereid): .. unavailable
 - testing for fdatasync: ......................... available
-- testing for netdb_reentrant: ................... available
+- testing for netdb_reentrant:
+-  ................... available
 - Generating C stubs...
 - 
 - Configuration: 
@@ -491,16 +490,16 @@ The following actions will be performed:
 - not checking for glib
 - testing for eventfd: ........................... available
 - testing for fd passing: ........................ available
-- testing for sched_getcpu: ...................... available
-- testing for affinity getting/setting:
--  .......... available
+- testing for sched_getcpu:
+-  ...................... available
+- testing for affinity getting/setting: .......... available
 - testing for credentials getting (Linux): ....... available
 - testing for credentials getting (NetBSD): ...... unavailable
 - testing for credentials getting (OpenBSD): ..... unavailable
 - testing for credentials getting (FreeBSD): ..... unavailable
-- testing for credentials getting (getpeereid): .. unavailable
-- testing for fdatasync:
--  ......................... available
+- testing for credentials getting (getpeereid):
+-  .. unavailable
+- testing for fdatasync: ......................... available
 - testing for netdb_reentrant: ................... available
 - Generating C stubs...
 - 
@@ -614,6 +613,7 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bytes -modules src/core/lwt_pqueue.mli > src/core/lwt_pqueue.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -safe-string -package bytes -I src/core -o src/core/lwt_pqueue.cmi src/core/lwt_pqueue.mli
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bytes -modules src/core/lwt_pqueue.ml > src/core/lwt_pqueue.ml.depends
+- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -safe-string -package bytes -I src/core -o src/core/lwt_condition.cmo src/core/lwt_condition.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -safe-string -package bytes -I src/core -o src/core/lwt_list.cmo src/core/lwt_list.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -safe-string -package bytes -I src/core -o src/core/lwt.cmo src/core/lwt.ml
@@ -621,7 +621,6 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -safe-string -package bytes -I src/core -o src/core/lwt_mvar.cmo src/core/lwt_mvar.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -safe-string -package bytes -I src/core -o src/core/lwt_pool.cmo src/core/lwt_pool.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -safe-string -package bytes -I src/core -o src/core/lwt_sequence.cmo src/core/lwt_sequence.ml
-- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -safe-string -package bytes -I src/core -o src/core/lwt_stream.cmo src/core/lwt_stream.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -safe-string -package bytes -I src/core -o src/core/lwt_switch.cmo src/core/lwt_switch.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -safe-string -package bytes -I src/core -o src/core/lwt_pqueue.cmo src/core/lwt_pqueue.ml
