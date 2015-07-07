@@ -1,27 +1,27 @@
 + uname -m
 + uname -s
-# Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=ezjsonm
+# Detecting depexts using flags: x86_64 linux debian
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=ezjsonm
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=ezjsonm
-+ sudo apt-get update
 Not running as root, system installation will be done through "sudo"
-Hit http://download.opensuse.org  Release.gpg
-Hit http://download.opensuse.org  Release
-Hit http://download.opensuse.org  Packages
-Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
-Get:2 http://http.debian.net stable Release.gpg [1655 B]
-Get:3 http://http.debian.net stable-updates Release [124 kB]
++ sudo apt-get update
 Hit http://security.debian.org stable/updates Release.gpg
-Hit http://http.debian.net stable Release
-Get:4 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
-Hit http://http.debian.net stable/main amd64 Packages
+Hit http://download.opensuse.org  Release.gpg
 Hit http://security.debian.org stable/updates Release
+Hit http://download.opensuse.org  Release
 Hit http://security.debian.org stable/updates/main amd64 Packages
-Fetched 131 kB in 2s (61.4 kB/s)
-Reading package lists...
-+ sudo apt-get install -qq -yy m4
+Hit http://download.opensuse.org  Packages
+Hit http://http.debian.net stable Release.gpg
+Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
+Hit http://http.debian.net stable Release
+Get:2 http://http.debian.net stable-updates Release [124 kB]
+Hit http://http.debian.net stable/main amd64 Packages
+Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
+Fetched 129 kB in 11s (11.6 kB/s)
+Reading package lists...+ sudo apt-get install -qq -yy m4
+
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
 # OS packages installation successful
@@ -41,11 +41,11 @@ The following actions will be performed:
 [ezjsonm: from default] Command started
 [hex: from default] Command started
 [jsonm: from default] Command started
-[default] http://opam-archive:8080/archives/hex.0.1.0+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/jsonm.0.9.1+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ezjsonm.0.4.1+opam.tar.gz downloaded
 [sexplib: from default] Command started
-[default] http://opam-archive:8080/archives/jsonm.0.9.1+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/hex.0.1.0+opam.tar.gz downloaded
 [uutf: from default] Command started
 [ocamlfind: from default] Command started
 [sexplib: from default] Command started
@@ -136,6 +136,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -181,12 +182,13 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -195,8 +197,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -1143,12 +1143,6 @@ The following actions will be performed:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
 - ocamlfind ocamlopt -c -g -I src -package uutf -package unix -I test -I src -o test/jsontrip.cmx test/jsontrip.ml
-- File "/Users/dbuenzli/.odb/install-oasis/oasis-0.3.0/src/oasis/OASISString.ml", line 118, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/Users/dbuenzli/.odb/install-oasis/oasis-0.3.0/src/oasis/OASISLibrary.ml", line 402, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
 - + ocamlfind ocamlopt -c -g -I src -package uutf -package unix -I test -I src -o test/jsontrip.cmx test/jsontrip.ml
 - File "test/jsontrip.ml", line 36, characters 50-63:
 - Warning 3: deprecated: String.create
@@ -1172,6 +1166,12 @@ The following actions will be performed:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
 - ocamlfind ocamlopt -g -linkpkg -package uutf -package unix src/jsonm.cmxa test/jsontrip.cmx -o test/jsontrip.native
+- File "/Users/dbuenzli/.odb/install-oasis/oasis-0.3.0/src/oasis/OASISString.ml", line 118, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/Users/dbuenzli/.odb/install-oasis/oasis-0.3.0/src/oasis/OASISLibrary.ml", line 402, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
 - ocamlfind ocamldep -package uutf -package unix -modules test/ocamltweets.ml > test/ocamltweets.ml.depends
 - ocamlfind ocamlc -c -g -I src -package uutf -package unix -I test -I src -o test/ocamltweets.cmo test/ocamltweets.ml
 - ocamlfind ocamlopt -c -g -I src -package uutf -package unix -I test -I src -o test/ocamltweets.cmx test/ocamltweets.ml
