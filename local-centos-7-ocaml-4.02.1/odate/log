@@ -1,18 +1,18 @@
 + uname -m
 + uname -s
-# Detecting depexts using flags: x86_64 linux centos
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=odate
-+ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=odate
+# Detecting depexts using flags: x86_64 linux centos
 # The following system packages are needed:
 #  - pcre-devel
++ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=odate
++ sudo yum -y update
 Not running as root, the following command will be run through "sudo":
     yum -y update
-+ sudo yum -y update
 Loaded plugins: fastestmirror
 Repodata is over 2 weeks old. Install yum-cron? Or run: yum makecache fast
 Determining fastest mirrors
  * base: anorien.csc.warwick.ac.uk
- * extras: centos.serverspace.co.uk
+ * extras: anorien.csc.warwick.ac.uk
  * updates: anorien.csc.warwick.ac.uk
 Resolving Dependencies
 --> Running transaction check
@@ -94,7 +94,7 @@ Total download size: 28 M
 Downloading packages:
 Delta RPMs disabled because /usr/bin/applydeltarpm not installed.
 --------------------------------------------------------------------------------
-Total                                              6.7 MB/s |  28 MB  00:04     
+Total                                              1.9 MB/s |  28 MB  00:14     
 Running transaction check
 Running transaction test
 Transaction test succeeded
@@ -144,7 +144,8 @@ Running transaction
   Verifying  : systemtap-runtime-2.6-10.el7_1.x86_64                       4/39 
   Verifying  : libmount-2.23.2-22.el7_1.x86_64                             5/39 
   Verifying  : systemtap-devel-2.6-10.el7_1.x86_64                         6/39 
-  Verifying  : util-linux-2.23.2-22.el7_1.x86_64                           7/39 
+  Verifying  : util-linux-2.23.2-22.el7_1.x86_64                           7/39+ sudo yum install -y pcre-devel
+ 
   Verifying  : ca-certificates-2015.2.4-70.0.el7_1.noarch                  8/39 
   Verifying  : nss-3.18.0-2.2.el7_1.x86_64                                 9/39 
   Verifying  : systemtap-client-2.6-10.el7_1.x86_64                       10/39 
@@ -208,11 +209,10 @@ Not running as root, the following command will be run through "sudo":
     yum install -y pcre-devel
 Not running as root, the following command will be run through "sudo":
     rpm -q pcre-devel
-+ sudo yum install -y pcre-devel
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
  * base: anorien.csc.warwick.ac.uk
- * extras: centos.serverspace.co.uk
+ * extras: anorien.csc.warwick.ac.uk
  * updates: anorien.csc.warwick.ac.uk
 Resolving Dependencies
 --> Running transaction check
@@ -265,15 +265,15 @@ The following actions will be performed:
 [oasis: from default] Command started
 [ocaml-data-notation: from default] Command started
 [menhir: from default] Command started
+[default] http://opam-archive:8080/archives/menhir.20141215+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [oasis: from default] Command started
 [ocaml-data-notation: from default] Command started
 [default] http://opam-archive:8080/archives/oasis.0.4.5+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/menhir.20141215+opam.tar.gz downloaded
 [ocamlify: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocaml-data-notation.0.0.11+opam.tar.gz downloaded
 [ocamlmod: from default] Command started
-[ocamlfind: from default] Command started
 [ocamlify: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [odate: from default] Command started
@@ -282,8 +282,8 @@ The following actions will be performed:
 [type_conv: from default] Command started
 [odate: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlmod.0.0.7+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/odate.0.5+opam.tar.gz downloaded
 [type_conv: from default] Command started
+[default] http://opam-archive:8080/archives/odate.0.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -484,6 +484,8 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -528,8 +530,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -650,8 +650,8 @@ The following actions will be performed:
 - ocamlc: ........................................ /usr/bin/ocamlc.opt
 - ocamlfind: ..................................... /home/opam/.opam/system/bin/ocamlfind
 - 
-- I: Running command '/usr/bin/ocamlc.opt -config > /tmp/oasis-390a8e.txt'
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %v findlib > /tmp/oasis-45c294.txt'
+- I: Running command '/usr/bin/ocamlc.opt -config > /tmp/oasis-c71aa0.txt'
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %v findlib > /tmp/oasis-403382.txt'
 [ocamlify: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-build" (CWD=/home/opam/.opam/system/build/ocamlify.0.0.1)
 - /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib64/ocaml/ocamlbuild /usr/lib64/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib64/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
@@ -2006,6 +2006,21 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package odn -package unix -modules src/oasis/OASISTest.mli > src/oasis/OASISTest.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package odn -package unix -modules src/oasis/OASISTest_intern.ml > src/oasis/OASISTest_intern.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -package odn -package unix -warn-error +8 -I src/oasis -o src/oasis/OASISBuildSection.cmi src/oasis/OASISBuildSection.mli
+- File "src/oasis/OASISString.ml", line 148, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "src/oasis/OASISFindlib.ml", line 262, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
+- W: Cannot find source file matching module 'plugins/none/NoneData' in library builtin-plugins
+- W: Cannot find source file matching module 'plugins/internal/InternalData' in library builtin-plugins
+- W: Cannot find source file matching module 'plugins/ocamlbuild/OCamlbuildData' in library builtin-plugins
+- W: Cannot find source file matching module 'plugins/custom/CustomData' in library builtin-plugins
+- W: Cannot find source file matching module 'plugins/extra/META/METAData' in library builtin-plugins
+- W: Cannot find source file matching module 'plugins/extra/devfiles/DevFilesData' in library builtin-plugins
+- W: Cannot find source file matching module 'plugins/extra/stdfiles/StdFilesData' in library builtin-plugins
+- W: Cannot find source file matching module 'OASISData' in library oasis
+- W: Cannot find source file matching module 'OASISData' in library oasis
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -package odn -package unix -warn-error +8 -I src/oasis -o src/oasis/OASISCheck.cmo src/oasis/OASISCheck.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -package odn -package unix -warn-error +8 -I src/oasis -o src/oasis/OASISDocument.cmi src/oasis/OASISDocument.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -package odn -package unix -warn-error +8 -I src/oasis -o src/oasis/OASISDocument_intern.cmo src/oasis/OASISDocument_intern.ml
@@ -2041,21 +2056,6 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -package odn -package unix -warn-error +8 -I src/oasis -o src/oasis/OASISVersion_parser.cmi src/oasis/OASISVersion_parser.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -package odn -package unix -warn-error +8 -I src/oasis -o src/oasis/OASISVersion_lexer.cmo src/oasis/OASISVersion_lexer.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package odn -syntax camlp4o -package odn.with.syntax -package unix -syntax camlp4o -modules src/oasis/OASISLicense.ml > src/oasis/OASISLicense.ml.depends
-- File "src/oasis/OASISString.ml", line 148, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "src/oasis/OASISFindlib.ml", line 262, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
-- W: Cannot find source file matching module 'plugins/none/NoneData' in library builtin-plugins
-- W: Cannot find source file matching module 'plugins/internal/InternalData' in library builtin-plugins
-- W: Cannot find source file matching module 'plugins/ocamlbuild/OCamlbuildData' in library builtin-plugins
-- W: Cannot find source file matching module 'plugins/custom/CustomData' in library builtin-plugins
-- W: Cannot find source file matching module 'plugins/extra/META/METAData' in library builtin-plugins
-- W: Cannot find source file matching module 'plugins/extra/devfiles/DevFilesData' in library builtin-plugins
-- W: Cannot find source file matching module 'plugins/extra/stdfiles/StdFilesData' in library builtin-plugins
-- W: Cannot find source file matching module 'OASISData' in library oasis
-- W: Cannot find source file matching module 'OASISData' in library oasis
 - /usr/bin/ocamllex.opt -q src/oasis/OASISLicense_lexer.mll
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package odn -package unix -modules src/oasis/OASISLicense_lexer.ml > src/oasis/OASISLicense_lexer.ml.depends
 - /usr/bin/ocamlyacc src/oasis/OASISLicense_parser.mly
