@@ -1,30 +1,30 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-# Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=mm
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=mm
+# Detecting depexts using flags: x86_64 linux ubuntu
 # The following system packages are needed:
 #  - m4
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=mm
 Not running as root, the following command will be run through "sudo":
     apt-get update
 + sudo apt-get update
-Ign http://download.opensuse.org  InRelease
-Hit http://download.opensuse.org  Release.gpg
-Hit http://download.opensuse.org  Release
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
-Hit http://download.opensuse.org  Packages
 Hit http://archive.ubuntu.com trusty Release.gpg
+Ign http://download.opensuse.org  InRelease
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Hit http://archive.ubuntu.com trusty-security Release.gpg
+Hit http://download.opensuse.org  Release.gpg
 Hit http://archive.ubuntu.com trusty Release
 Get:2 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
+Hit http://download.opensuse.org  Release
 Hit http://archive.ubuntu.com trusty-security Release
 Hit http://archive.ubuntu.com trusty/main Sources
 Hit http://archive.ubuntu.com trusty/restricted Sources
 Hit http://archive.ubuntu.com trusty/universe Sources
+Hit http://download.opensuse.org  Packages
 Hit http://archive.ubuntu.com trusty/main amd64 Packages
 Hit http://archive.ubuntu.com trusty/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty/universe amd64 Packages
@@ -40,13 +40,12 @@ Hit http://archive.ubuntu.com trusty-security/universe Sources
 Hit http://archive.ubuntu.com trusty-security/main amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/universe amd64 Packages
-Fetched 1540 kB in 5s (276 kB/s)
+Fetched 1540 kB in 4s (382 kB/s)
 Reading package lists...
-W# OS package update successful
+# OS package update successful
++ sudo apt-get install -qq -yy m4
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
-: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 673407 673409
-+ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind 1.5.5                                     [required by mm]
@@ -57,8 +56,8 @@ The following actions will be performed:
 [mm: from default] Command started
 [ocamlfind: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [mm: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/mm.0.2.1+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -144,6 +143,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -189,11 +189,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -202,8 +203,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -256,6 +255,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -300,7 +300,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -376,11 +375,11 @@ The following actions will be performed:
 - checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
 - checking for gcc option to accept ISO C89... none needed
-- checking build system type... x86_64-unknown-linux-gnu
+- checking build system type... 
+- x86_64-unknown-linux-gnu
 - checking host system type... x86_64-unknown-linux-gnu
 - checking for a BSD-compatible install... /usr/bin/install -c
-- checking that calling user is not root... 
-- ok
+- checking that calling user is not root... ok
 - checking for gcc... (cached) gcc
 - checking whether we are using the GNU C compiler... (cached) yes
 - checking whether gcc accepts -g... (cached) yes
@@ -419,9 +418,9 @@ The following actions will be performed:
 - checking how to run the C preprocessor... gcc -E
 - checking for grep that handles long lines and -e... /bin/grep
 - checking for egrep... /bin/grep -E
-- checking for ANSI C header files... 
+- checking for ANSI C header files... yes
+- checking for sys/types.h... 
 - yes
-- checking for sys/types.h... yes
 - checking for sys/stat.h... yes
 - checking for stdlib.h... yes
 - checking for string.h... yes
@@ -512,6 +511,22 @@ The following actions will be performed:
 - ocamlc.opt -c -dtypes -I .. audio.ml
 - ocamlc.opt -c -dtypes -I .. image.mli
 - ocamlc.opt -c -dtypes -I .. image.ml
+- ocamlc.opt -c -dtypes -I .. video.mli
+- ocamlc.opt -c -dtypes -I .. video.ml
+- ocamlc.opt -c -dtypes -I .. MIDI.mli
+- ocamlc.opt -c -dtypes -I .. MIDI.ml
+- ocamlc.opt -c -dtypes -I .. synth.mli
+- ocamlc.opt -c -dtypes -I .. synth.ml
+- ocamlmklib    -I ..     \
+- 				-o mm_stubs  audio_c.o image_c.o   \
+- 				
+- ocamlc.opt -a -dllib dllmm_stubs.so    -I .. -linkall        -cclib -lmm_stubs    -o mm.cma ringbuffer.cmo IO.cmo audio.cmo image.cmo video.cmo MIDI.cmo synth.cmo
+- make[2]: Leaving directory `/home/opam/.opam/system/build/mm.0.2.1/src'
+- make[2]: Entering directory `/home/opam/.opam/system/build/mm.0.2.1/src'
+- ocamldep -native synth.mli > ._ncdi/synth.di
+- ocamldep -native MIDI.mli > ._ncdi/MIDI.di
+- ocamldep -native video.mli > ._ncdi/video.di
+- ocamldep -native image.mli > ._ncdi/image.di
 - File "IO.ml", line 71, characters 14-27:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -530,30 +545,6 @@ The following actions will be performed:
 - File "audio.ml", line 956, characters 15-28:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc.opt -c -dtypes -I .. video.mli
-- ocamlc.opt -c -dtypes -I .. video.ml
-- ocamlc.opt -c -dtypes -I .. MIDI.mli
-- ocamlc.opt -c -dtypes -I .. MIDI.ml
-- ocamlc.opt -c -dtypes -I .. synth.mli
-- ocamlc.opt -c -dtypes -I .. synth.ml
-- ocamlmklib    -I ..     \
-- 				-o mm_stubs  audio_c.o image_c.o   \
-- 				
-- ocamlc.opt -a -dllib dllmm_stubs.so    -I .. -linkall        -cclib -lmm_stubs    -o mm.cma ringbuffer.cmo IO.cmo audio.cmo image.cmo video.cmo MIDI.cmo synth.cmo
-- make[2]: Leaving directory `/home/opam/.opam/system/build/mm.0.2.1/src'
-- make[2]: Entering directory `/home/opam/.opam/system/build/mm.0.2.1/src'
-- ocamldep -native synth.mli > ._ncdi/synth.di
-- ocamldep -native MIDI.mli > ._ncdi/MIDI.di
-- ocamldep -native video.mli > ._ncdi/video.di
-- ocamldep -native image.mli > ._ncdi/image.di
-- ocamldep -native audio.mli > ._ncdi/audio.di
-- ocamldep -native ringbuffer.mli > ._ncdi/ringbuffer.di
-- make[2]: Leaving directory `/home/opam/.opam/system/build/mm.0.2.1/src'
-- make[2]: Entering directory `/home/opam/.opam/system/build/mm.0.2.1/src'
-- make[2]: `libmm_stubs.a' is up to date.
-- ocamlopt.opt -c -dtypes -I .. ringbuffer.ml
-- ocamlopt.opt -c -dtypes -I .. IO.ml
-- ocamlopt.opt -c -dtypes -I .. audio.ml
 - File "MIDI.ml", line 101, characters 10-23:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -584,6 +575,15 @@ The following actions will be performed:
 - File "MIDI.ml", line 292, characters 14-52:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamldep -native audio.mli > ._ncdi/audio.di
+- ocamldep -native ringbuffer.mli > ._ncdi/ringbuffer.di
+- make[2]: Leaving directory `/home/opam/.opam/system/build/mm.0.2.1/src'
+- make[2]: Entering directory `/home/opam/.opam/system/build/mm.0.2.1/src'
+- make[2]: `libmm_stubs.a' is up to date.
+- ocamlopt.opt -c -dtypes -I .. ringbuffer.ml
+- ocamlopt.opt -c -dtypes -I .. IO.ml
+- ocamlopt.opt -c -dtypes -I .. audio.ml
+- ocamlopt.opt -c -dtypes -I .. image.ml
 - File "IO.ml", line 71, characters 14-27:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -602,7 +602,6 @@ The following actions will be performed:
 - File "audio.ml", line 956, characters 15-28:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlopt.opt -c -dtypes -I .. image.ml
 - ocamlopt.opt -c -dtypes -I .. video.ml
 - ocamlopt.opt -c -dtypes -I .. MIDI.ml
 - ocamlopt.opt -c -dtypes -I .. synth.ml
