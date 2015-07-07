@@ -1,6 +1,6 @@
 + uname -m
-+ uname -s
 # Detecting depexts using flags: x86_64 linux centos
++ uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=modelica_ml
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=modelica_ml
 # No extra OS packages requirements found.
@@ -27,8 +27,8 @@ The following actions will be performed:
 [batteries: from default] Command started
 [biniou: from default] Command started
 [cppo: from default] Command started
-[cppo: from default] Command started
 [biniou: from default] Command started
+[cppo: from default] Command started
 [batteries: from default] Command started
 [default] http://opam-archive:8080/archives/cppo.1.1.2+opam.tar.gz downloaded
 [easy-format: from default] Command started
@@ -40,38 +40,38 @@ The following actions will be performed:
 [menhir: from default] Command started
 [default] http://opam-archive:8080/archives/easy-format.1.0.2+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
+[modelica_ml: from default] Command started
 [default] http://opam-archive:8080/archives/menhir.20141215+opam.tar.gz downloaded
 [ocamlgraph: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[omake: from default] Command started
-[modelica_ml: from default] Command started
-[omake: from default] Command started
 [default] http://opam-archive:8080/archives/modelica_ml.0.2.0+opam.tar.gz downloaded
-[ppx_deriving: from default] Command started
-[default] http://opam-archive:8080/archives/omake.0.9.8.6-0.rc1+opam.tar.gz downloaded
-[ppx_deriving_yojson: from default] Command started
+[omake: from default] Command started
 [ocamlgraph: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [ppx_deriving: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlgraph.1.8.6+opam.tar.gz downloaded
+[ppx_deriving_yojson: from default] Command started
+[ppx_deriving: from default] Command started
+[default] http://opam-archive:8080/archives/ppx_deriving.1.0+opam.tar.gz downloaded
 [ppx_import: from default] Command started
 [ppx_deriving_yojson: from default] Command started
-[default] http://opam-archive:8080/archives/ppx_deriving.1.0+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ppx_deriving_yojson.2.0+opam.tar.gz downloaded
 [ppx_monadic: from default] Command started
 [ppx_import: from default] Command started
-[default] http://opam-archive:8080/archives/ppx_deriving_yojson.2.0+opam.tar.gz downloaded
-[ppx_tools: from default] Command started
 [default] http://opam-archive:8080/archives/ppx_import.1.0+opam.tar.gz downloaded
-[sedlex: from default] Command started
-[ppx_monadic: from default] Command started
 [ppx_tools: from default] Command started
+[ppx_monadic: from default] Command started
 [default] http://opam-archive:8080/archives/ppx_monadic.1.0.3+opam.tar.gz downloaded
-[yojson: from default] Command started
+[sedlex: from default] Command started
+[ppx_tools: from default] Command started
 [default] http://opam-archive:8080/archives/ppx_tools.0.99.2+opam.tar.gz downloaded
 [yojson: from default] Command started
 [sedlex: from default] Command started
-[default] http://opam-archive:8080/archives/yojson.1.2.1+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/sedlex.1.99.2+opam.tar.gz downloaded
+[yojson: from default] Command started
+[omake: from default] Command started
+[default] http://opam-archive:8080/archives/yojson.1.2.1+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/omake.0.9.8.6-0.rc1+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -208,6 +208,13 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 	cp topfind.ml.in topfind.ml;                             \
+- else                                                             \
+- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 		> topfind.ml ;                                   \
+- fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -216,13 +223,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 	cp topfind.ml.in topfind.ml;                             \
-- else                                                             \
-- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 		> topfind.ml ;                                   \
-- fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -268,7 +268,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -313,6 +312,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -4456,19 +4456,19 @@ The following actions will be performed:
 - --- Checking for hevea... (FAILED - no hevea found)
 - --- Checking for date... (found /usr/bin/date)
 - --- Checking for date... (found /usr/bin/date)
-- *** omake: finished reading OMakefiles (2.34 sec)
+- *** omake: finished reading OMakefiles (2.48 sec)
 - Updating the .config file.
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
 - *** omake: saved .omakedb
 - *** omake: saved .omakedb
-- *** omake: done (34.90 sec, 234/234 scans, 343/505 rules, 788/2325 digests)
+- *** omake: done (36.61 sec, 234/234 scans, 343/505 rules, 788/2324 digests)
 - OMAKEFLAGS= OMAKEPATH=lib src/main/omake --dotomake .omake --force-dotomake -j2 all
 - *** omake: reading OMakefiles
 - *** omake: finished reading OMakefiles (0.07 sec)
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
-- *** omake: done (8.45 sec, 219/235 scans, 27/534 rules, 39/1843 digests)
+- *** omake: done (8.17 sec, 219/235 scans, 27/534 rules, 39/1843 digests)
 [omake: make install] Command started
 + make "install" "PREFIX=/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/omake.0.9.8.6-0.rc1)
 - make[1]: Entering directory `/home/opam/.opam/system/build/omake.0.9.8.6-0.rc1/boot'
@@ -4480,18 +4480,18 @@ The following actions will be performed:
 - touch .config
 - OMAKEFLAGS= OMAKEPATH=lib ./omake-boot --dotomake .omake --force-dotomake -j2 main
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.35 sec)
+- *** omake: finished reading OMakefiles (0.37 sec)
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
-- *** omake: done (4.28 sec, 0/234 scans, 0/505 rules, 1/1762 digests)
+- *** omake: done (4.26 sec, 0/234 scans, 0/505 rules, 1/1762 digests)
 - OMAKEFLAGS= OMAKEPATH=lib src/main/omake --dotomake .omake --force-dotomake -j2 all
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.06 sec)
-- *** omake: done (0.53 sec, 0/235 scans, 0/534 rules, 0/1821 digests)
+- *** omake: finished reading OMakefiles (0.07 sec)
+- *** omake: done (0.58 sec, 0/235 scans, 0/534 rules, 0/1821 digests)
 - OMAKEFLAGS= OMAKEPATH=lib src/main/omake --dotomake .omake --force-dotomake -j2 install
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.06 sec)
-- *** omake: done (0.63 sec, 0/235 scans, 2/536 rules, 0/1821 digests)
+- *** omake: finished reading OMakefiles (0.07 sec)
+- *** omake: done (0.75 sec, 0/235 scans, 2/536 rules, 0/1821 digests)
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
 -> installed omake.0.9.8.6-0.rc1
@@ -4557,7 +4557,7 @@ The following actions will be performed:
 - --- Checking for ocamlc.opt... (found /usr/bin/ocamlc.opt)
 - --- Checking for ocamlopt.opt... (found /usr/bin/ocamlopt.opt)
 - --- Checking whether ocamlc understands the "z" warnings... (yes)
-- *** omake: finished reading OMakefiles (0.12 sec)
+- *** omake: finished reading OMakefiles (0.15 sec)
 - --- Checking if ocamldep understands -modules... (yes)
 - - build ppx monadic.cmi
 - + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common,ppx_tools.metaquot -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c monadic.mli
@@ -4565,8 +4565,6 @@ The following actions will be performed:
 - + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common,ppx_tools.metaquot -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c ppxx.ml
 - - build ppx ppxx.o
 - + ocamlfind ocamlopt -annot -bin-annot -package compiler-libs.common,ppx_tools.metaquot -g -w A-3-4-9-40-42-44-45-48 -warn-error a -I . -c ppxx.ml
-- - build ppx monadic.cmo
-- + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common,ppx_tools.metaquot -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c monadic.ml
 - File OMyMakefile: line 204, characters 3-26:
 -    Warning: old-style foreach expression.
 -    This expression should use a => binding.
@@ -4576,9 +4574,8 @@ The following actions will be performed:
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
-- *** omake: warning: stdout is not a tty, disabling the progress bar
--    (use --progress to override).
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
+- - build ppx monadic.cmo
+- + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common,ppx_tools.metaquot -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c monadic.ml
 - - build ppx monadic.cmx
 - + ocamlfind ocamlopt -annot -bin-annot -package compiler-libs.common,ppx_tools.metaquot -g -w A-3-4-9-40-42-44-45-48 -warn-error a -I . -c monadic.ml
 - - build ppx pattern_guard.o
@@ -4599,19 +4596,21 @@ The following actions will be performed:
 - + ocamlfind ocamlopt -annot -bin-annot -package compiler-libs.common,ppx_tools.metaquot -g -w A-3-4-9-40-42-44-45-48 -warn-error a -I . -c ppx_monadic.ml
 - - build ppx ppx_monadic.run
 - + ocamlfind ocamlc -package compiler-libs.common,ppx_tools.metaquot -g -g -I . -o ppx_monadic.run ppxx.cmo monadic.cmo do_.cmo pattern_guard.cmo comprehension.cmo ppx_monadic.cmo -linkpkg
+- *** omake: warning: stdout is not a tty, disabling the progress bar
+-    (use --progress to override).
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
 - - build ppx ppx_monadic.opt
 - + ocamlfind ocamlopt -package compiler-libs.common,ppx_tools.metaquot -g -I . -o ppx_monadic.opt ppxx.cmx monadic.cmx do_.cmx pattern_guard.cmx comprehension.cmx ppx_monadic.cmx -linkpkg
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
 - - build tests test_comprehension.o
 - + ocamlfind ocamlc -annot -bin-annot -g -w A -warn-error a -g -ppx ../ppx/ppx_monadic.opt -I . -c test_comprehension.ml
 - - build tests test_comprehension.o
@@ -4620,6 +4619,7 @@ The following actions will be performed:
 - + ocamlfind ocamlc -annot -bin-annot -g -w A -warn-error a -g -ppx ../ppx/ppx_monadic.opt -I . -c test_combination.ml
 - - build tests test_combination.o
 - + ocamlfind ocamlopt -annot -bin-annot -g -w A -warn-error a -ppx ../ppx/ppx_monadic.opt -I . -c test_combination.ml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
 - File "test_comprehension.ml", line 5, characters 24-27:
 - Warning 27: unused variable n_.
 - File "test_comprehension.ml", line 6, characters 24-27:
@@ -4656,16 +4656,16 @@ The following actions will be performed:
 - Warning 27: unused variable n_.
 - File "test_combination.ml", line 63, characters 23-26:
 - Warning 27: unused variable n_.
-- *** omake: done (2.94 sec, 11/11 scans, 18/46 rules, 68/197 digests)
+- *** omake: done (2.85 sec, 11/11 scans, 18/46 rules, 68/197 digests)
 [ppx_monadic: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/system/build/ppx_monadic.1.0.3)
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.03 sec)
+- *** omake: finished reading OMakefiles (0.05 sec)
 - - build ppx <install>
 - + ocamlfind remove ppx_monadic
 - - build ppx <install>
 - + ocamlfind install ppx_monadic META ppx_monadic ppx_monadic.run ppx_monadic.opt
-- *** omake: done (0.09 sec, 0/7 scans, 1/28 rules, 1/114 digests)
+- *** omake: done (0.10 sec, 0/7 scans, 1/28 rules, 1/114 digests)
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/ppx_monadic
 - Installed /home/opam/.opam/system/lib/ppx_monadic/ppx_monadic.opt
 - Installed /home/opam/.opam/system/lib/ppx_monadic/ppx_monadic.run
