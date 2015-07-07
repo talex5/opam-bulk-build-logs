@@ -1,10 +1,10 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux centos
 + uname -s
+# Detecting depexts using flags: x86_64 linux centos
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=hardcaml-vpi
++ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=hardcaml-vpi
 # The following system packages are needed:
 #  - libffi-devel
-+ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=hardcaml-vpi
 Not running as root, the following command will be run through "sudo":
     yum -y update
 + sudo yum -y update
@@ -12,10 +12,10 @@ Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
  * base: mirror.vorboss.net
  * extras: mirrors.melbourne.co.uk
- * updates: centos.serverspace.co.uk
+ * updates: mirror.sov.uk.goscomb.net
 No packages marked for update
-# OS package update successful
 + sudo yum install -y libffi-devel
+# OS package update successful
 Not running as root, the following command will be run through "sudo":
     yum install -y libffi-devel
 Not running as root, the following command will be run through "sudo":
@@ -23,7 +23,7 @@ Not running as root, the following command will be run through "sudo":
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
  * base: mirror.sov.uk.goscomb.net
- * extras: mirror.econdc.com
+ * extras: mirrors.melbourne.co.uk
  * updates: mirror.sov.uk.goscomb.net
 Resolving Dependencies
 --> Running transaction check
@@ -49,19 +49,19 @@ Running transaction check
 Running transaction test
 Transaction test succeeded
 Running transaction
-  Installing : libffi-devel-3.0.13-11.el7.x86_64                            1/1 
+  Installing : libffi-devel-3.0.13-11.el7.x86_64                            1/1Non-fatal POSTIN scriptlet failure in rpm package libffi-devel-3.0.13-11.el7.x86_64 
 install-info: No such file or directory for /usr/share/info/libffi.info.gz
 warning: %post(libffi-devel-3.0.13-11.el7.x86_64) scriptlet failed, exit status 1
-Non-fatal POSTIN scriptlet failure in rpm package libffi-devel-3.0.13-11.el7.x86_64
   Verifying  : libffi-devel-3.0.13-11.el7.x86_64                            1/1 
 
 Installed:
   libffi-devel.x86_64 0:3.0.13-11.el7                                           
 
-+ sudo rpm -q libffi-devel
 Complete!
 libffi-devel-3.0.13-11.el7.x86_64
 # OS packages installation successful
+
++ sudo rpm -q libffi-devel
 The following actions will be performed:
   - install ctypes-foreign 0.4.0                                [required by hardcaml-vpi]
   - install camlp4         4.02.1+system                        [required by hardcaml]
@@ -76,13 +76,13 @@ The following actions will be performed:
 [ctypes: from default] Command started
 [hardcaml: from default] Command started
 [hardcaml-vpi: from default] Command started
+[hardcaml: from default] Command started
 [hardcaml-vpi: from default] Command started
 [ctypes: from default] Command started
-[hardcaml: from default] Command started
-[default] http://opam-archive:8080/archives/hardcaml-vpi.0.2+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/ctypes.0.4.1+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/hardcaml.1.1.1+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/hardcaml-vpi.0.2+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ctypes.0.4.1+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
@@ -286,7 +286,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -331,6 +330,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -1056,6 +1056,7 @@ The following actions will be performed:
 - ocamlfind ocamlc -c -package 'ctypes.foreign, hardcaml' -o vpi.cmo vpi.ml
 - ocamlfind c -output-obj -package bigarray,num,hardcaml,ctypes.foreign -linkpkg -o cosim_o.o \
 - 	_build/vpi.cmo _build/cosim_icarus.cmo
+[ERROR] The compilation of hardcaml-vpi failed at "make all".
 - mv cosim_o.o _build/cosim_o.o
 - ocamlfind c -c -ccopt "`iverilog-vpi --cflags` -o _build/cosim_c.o" -g cosim_c.c 
 - /bin/sh: iverilog-vpi: command not found
@@ -1064,11 +1065,27 @@ The following actions will be performed:
 -                       ^
 - compilation terminated.
 - make: *** [vpi] Error 2
-[ERROR] The compilation of hardcaml-vpi failed at "make all".
 [hardcaml-vpi: make uninstall] Command started
 + make "uninstall" (CWD=/home/opam/.opam/system/build/hardcaml-vpi.0.2)
 - ocamlfind remove hardcaml-vpi
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/hardcaml-vpi
+
+
+=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+The following actions failed
+  - install hardcaml-vpi 0.2
+The following changes have been performed
+  - install base-bytes     base         
+  - install camlp4         4.02.1+system
+  - install ctypes         0.4.1        
+  - install ctypes-foreign 0.4.0        
+  - install hardcaml       1.1.1        
+  - install ocamlfind      1.5.5        
+
+=-=- hardcaml-vpi.0.2 troobleshooting -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+=> This package relies on external (system) dependencies that may be missing.
+   `opam depext hardcaml-vpi.0.2' may help you find the correct installation
+   for your system.
 
 #=== ERROR while installing hardcaml-vpi.0.2 ==================================#
 # opam-version         1.2.2 (391297300524717e1475deaea37bca287c7f5e36)
@@ -1101,23 +1118,6 @@ The following actions will be performed:
 # make: *** [vpi] Error 2
 
 
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions failed
-  - install hardcaml-vpi 0.2
-The following changes have been performed
-  - install base-bytes     base         
-  - install camlp4         4.02.1+system
-  - install ctypes         0.4.1        
-  - install ctypes-foreign 0.4.0        
-  - install hardcaml       1.1.1        
-  - install ocamlfind      1.5.5        
-
-=-=- hardcaml-vpi.0.2 troobleshooting -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-=> This package relies on external (system) dependencies that may be missing.
-   `opam depext hardcaml-vpi.0.2' may help you find the correct installation
-   for your system.
-
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150410215133.export"
+    opam switch import "~/.opam/system/backup/state-20150411094723.export"
 'opam install hardcaml-vpi' failed.
