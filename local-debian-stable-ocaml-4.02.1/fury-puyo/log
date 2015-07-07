@@ -2,32 +2,31 @@
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=fury-puyo
 # Detecting depexts using flags: x86_64 linux debian
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=fury-puyo
 # The following system packages are needed:
 #  - libsdl-image1.2-dev
 #  - libsdl-mixer1.2-dev
 #  - libsdl-ttf2.0-dev
 #  - libsdl1.2-dev
 #  - m4
-+ sudo apt-get update
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=fury-puyo
 Not running as root, system installation will be done through "sudo"
++ sudo apt-get update
 Hit http://download.opensuse.org  Release.gpg
 Hit http://security.debian.org stable/updates Release.gpg
-Hit http://download.opensuse.org  Release
-Hit http://security.debian.org stable/updates Release
-Hit http://download.opensuse.org  Packages
-Hit http://security.debian.org stable/updates/main amd64 Packages
 Hit http://http.debian.net stable Release.gpg
+Hit http://http.debian.net stable-updates Release.gpg
+Hit http://download.opensuse.org  Release
 Hit http://http.debian.net stable Release
-Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
-Get:2 http://http.debian.net stable-updates Release [124 kB]
+Hit http://security.debian.org stable/updates Release
+Hit http://http.debian.net stable-updates Release
+Hit http://download.opensuse.org  Packages
 Hit http://http.debian.net stable/main amd64 Packages
-Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
-Fetched 129 kB in 1s (97.7 kB/s)
+Hit http://security.debian.org stable/updates/main amd64 Packages
+Hit http://http.debian.net stable-updates/main amd64 Packages
 Reading package lists...
-+ sudo apt-get install -qq -yy libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev libsdl1.2-dev m4
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
++ sudo apt-get install -qq -yy libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev libsdl1.2-dev m4
 debconf: delaying package configuration, since apt-utils is not installed
 Selecting previously unselected package libwrap0:amd64.
 (Reading database ... 19958 files and directories currently installed.)
@@ -254,11 +253,11 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [ocamlsdl: from default] Command started
 [ocamlfind: from default] Command started
-[ocamlsdl: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [fury-puyo: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlsdl.0.9.1+opam.tar.gz downloaded
+[ocamlsdl: from default] Command started
 [default] http://opam-archive:8080/archives/fury-puyo.0.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlsdl.0.9.1+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [conf-sdl-image: pkg-config SDL_image] Command started
@@ -351,6 +350,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -396,12 +396,13 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -410,8 +411,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -612,10 +611,10 @@ The following actions will be performed:
 - checking for inttypes.h... yes
 - checking for stdint.h... yes
 - checking for unistd.h... yes
-- checking for size_t... 
-- yes
+- checking for size_t... yes
 - checking for working alloca.h... yes
-- checking for alloca... yes
+- checking for alloca... 
+- yes
 - checking for inline... inline
 - checking for a BSD-compatible install... /usr/bin/install -c
 - checking for OCaml module lablGL... not found
@@ -629,9 +628,9 @@ The following actions will be performed:
 - checking SDL_image.h presence... yes
 - checking for SDL_image.h... yes
 - checking for IMG_ReadXPMFromArray in -lSDL_image... yes
-- checking SDL_mixer.h usability... yes
-- checking SDL_mixer.h presence... 
+- checking SDL_mixer.h usability... 
 - yes
+- checking SDL_mixer.h presence... yes
 - checking for SDL_mixer.h... yes
 - checking for Mix_QuickLoad_WAV in -lSDL_mixer... yes
 - checking SDL_gfxPrimitives.h usability... no
@@ -691,11 +690,11 @@ The following actions will be performed:
 - ocamlc.opt -ccopt "-I/usr/include/SDL -D_GNU_SOURCE=1 -D_REENTRANT -g -O " sdlcdrom_stub.c
 - ocamlc.opt -ccopt "-I/usr/include/SDL -D_GNU_SOURCE=1 -D_REENTRANT -g -O " sdltimer_stub.c
 - ocamlc.opt -ccopt "-I/usr/include/SDL -D_GNU_SOURCE=1 -D_REENTRANT -g -O " sdljoystick_stub.c
+- ocamlc.opt -ccopt "-I/usr/include/SDL -D_GNU_SOURCE=1 -D_REENTRANT -g -O " sdlkey_stub.c
+- ocamlc.opt -ccopt "-I/usr/include/SDL -D_GNU_SOURCE=1 -D_REENTRANT -g -O " sdlmouse_stub.c
 - File "sdlmouse.ml", line 55, characters 9-23:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc.opt -ccopt "-I/usr/include/SDL -D_GNU_SOURCE=1 -D_REENTRANT -g -O " sdlkey_stub.c
-- ocamlc.opt -ccopt "-I/usr/include/SDL -D_GNU_SOURCE=1 -D_REENTRANT -g -O " sdlmouse_stub.c
 - ocamlc.opt -ccopt "-I/usr/include/SDL -D_GNU_SOURCE=1 -D_REENTRANT -g -O " sdlevent_stub.c
 - ocamlc.opt -ccopt "-I/usr/include/SDL -D_GNU_SOURCE=1 -D_REENTRANT -g -O " sdlvideo_stub.c
 - ocamlc.opt -ccopt "-I/usr/include/SDL -D_GNU_SOURCE=1 -D_REENTRANT -g -O " sdlwm_stub.c
@@ -727,6 +726,8 @@ The following actions will be performed:
 - ocamlopt.opt -c  -unsafe sdlwm.ml
 - ocamlmklib -v -o sdl -oc sdlstub sdl.cmx sdlcdrom.cmx sdltimer.cmx sdljoystick.cmx sdlkey.cmx sdlmouse.cmx sdlevent.cmx sdlvideo.cmx sdlwm.cmx -L/usr/lib/x86_64-linux-gnu -lSDL
 - + /home/opam/.opam/4.02.1/bin/ocamlopt -a -o sdl.cmxa  sdl.cmx sdlcdrom.cmx sdltimer.cmx sdljoystick.cmx sdlkey.cmx sdlmouse.cmx sdlevent.cmx sdlvideo.cmx sdlwm.cmx -cclib -lsdlstub  -ccopt -Wl,-rpath,/usr/lib/x86_64-linux-gnu -cclib -L/usr/lib/x86_64-linux-gnu -cclib -lSDL 
+- File "sdlmouse.ml", line 55, characters 9-23:
+- Warning 3: deprecated: String.unsafe_set
 - ocamlopt.opt -c  -unsafe sdlttf.ml
 - ocamlmklib -v -o sdlttf -oc sdlttfstub sdlttf.cmx -L/usr/lib/x86_64-linux-gnu -lSDL -lSDL_ttf
 - + /home/opam/.opam/4.02.1/bin/ocamlopt -a -o sdlttf.cmxa  sdlttf.cmx -cclib -lsdlttfstub  -ccopt -Wl,-rpath,/usr/lib/x86_64-linux-gnu -cclib -L/usr/lib/x86_64-linux-gnu -cclib -lSDL -cclib -lSDL_ttf 
@@ -737,8 +738,6 @@ The following actions will be performed:
 - ocamlmklib -v -o sdlmixer -oc sdlmixerstub sdlmixer.cmx -L/usr/lib/x86_64-linux-gnu -lSDL -lSDL_mixer
 - + /home/opam/.opam/4.02.1/bin/ocamlopt -a -o sdlmixer.cmxa  sdlmixer.cmx -cclib -lsdlmixerstub  -ccopt -Wl,-rpath,/usr/lib/x86_64-linux-gnu -cclib -L/usr/lib/x86_64-linux-gnu -cclib -lSDL -cclib -lSDL_mixer 
 - make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlsdl.0.9.1/src'
-- File "sdlmouse.ml", line 55, characters 9-23:
-- Warning 3: deprecated: String.unsafe_set
 [ocamlsdl: make install] Command started
 + make "install" (CWD=/home/opam/.opam/4.02.1/build/ocamlsdl.0.9.1)
 - make -C src install
