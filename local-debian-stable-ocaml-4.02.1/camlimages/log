@@ -1,25 +1,25 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-+ opam list --safe --recursive --external=x86_64,linux,debian --required-by=camlimages
 # Detecting depexts using flags: x86_64 linux debian
++ opam list --safe --recursive --external=x86_64,linux,debian --required-by=camlimages
 # The following system packages are needed:
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=camlimages
 Not running as root, the following command will be run through "sudo":
     apt-get update
 + sudo apt-get update
-Get:1 http://security.debian.org stable/updates InRelease [63.1 kB]
+Hit http://security.debian.org stable/updates InRelease
 Ign http://download.opensuse.org  InRelease
-Hit http://httpredir.debian.org stable InRelease
-Get:2 http://httpredir.debian.org stable-updates InRelease [126 kB]
+Get:1 http://security.debian.org stable/updates/main amd64 Packages [79.2 kB]
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Get:3 http://security.debian.org stable/updates/main amd64 Packages [79.2 kB]
+Get:2 http://httpredir.debian.org stable-updates InRelease [126 kB]
+Hit http://httpredir.debian.org stable InRelease
+Get:3 http://download.opensuse.org  Packages [5783 B]
 Get:4 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
-Get:5 http://download.opensuse.org  Packages [5783 B]
-Get:6 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9297 kB in 4s (1867 kB/s)
+Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
+Fetched 9234 kB in 4s (2075 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
@@ -120,6 +120,9 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_metascanner.mli
 - ocamlc -I +compiler-libs -g -c fl_metascanner.ml
 - ocamlc -I +compiler-libs -c fl_topo.mli
+- ocamlc -I +compiler-libs -g -c fl_topo.ml
+- ocamlc -I +compiler-libs -c fl_package_base.mli
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -165,22 +168,19 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c fl_topo.ml
-- ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -271,15 +271,15 @@ The following actions will be performed:
 - File "fl_meta.mll", line 62, characters 11-22:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
+- ocamlopt -I +compiler-libs -c findlib.ml
 - File "fl_metascanner.ml", line 111, characters 23-32:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
-- ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
 - if [ 1 -gt 0 ]; then \
@@ -598,16 +598,6 @@ The following actions will be performed:
 - ocamlc -g -c omake_gen_magic.ml
 - ocamlc -g -c lm_printf.mli
 - ocamlc -g -c lm_printf.ml
-- ocamlc -g -c lm_debug.mli
-- ocamlc -g -c lm_debug.ml
-- ocamlc -g -c lm_heap.ml
-- ocamlc -g -c lm_list_util.mli
-- ocamlc -g -c lm_list_util.ml
-- ocamlc -g -c lm_array_util.mli
-- ocamlc -g -c lm_array_util.ml
-- ocamlc -g -c lm_set_sig.ml
-- ocamlc -g -c lm_set.mli
-- ocamlc -g -c lm_set.ml
 - File "lm_printf.ml", line 111, characters 6-43:
 - Warning 3: deprecated: pp_set_all_formatter_output_functions
 - Use Format.pp_set_formatter_out_functions instead.
@@ -619,6 +609,16 @@ The following actions will be performed:
 - File "lm_printf.ml", line 190, characters 3-40:
 - Warning 3: deprecated: pp_set_all_formatter_output_functions
 - Use Format.pp_set_formatter_out_functions instead.
+- ocamlc -g -c lm_debug.mli
+- ocamlc -g -c lm_debug.ml
+- ocamlc -g -c lm_heap.ml
+- ocamlc -g -c lm_list_util.mli
+- ocamlc -g -c lm_list_util.ml
+- ocamlc -g -c lm_array_util.mli
+- ocamlc -g -c lm_array_util.ml
+- ocamlc -g -c lm_set_sig.ml
+- ocamlc -g -c lm_set.mli
+- ocamlc -g -c lm_set.ml
 - File "lm_debug.ml", line 377, characters 24-33:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
@@ -680,16 +680,20 @@ The following actions will be performed:
 - ocamlc -g -c lm_thread_sig.ml
 - ocamlc -g -c lm_thread_core.mli
 - ocamlc -g -c lm_thread_core.ml
+- ocamlc -g -c lm_thread.mli
+- ocamlc -g -c lm_thread.ml
 - File "lm_arg.ml", line 401, characters 12-30:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
 - File "lm_arg.ml", line 532, characters 12-24:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc -g -c lm_thread.mli
-- ocamlc -g -c lm_thread.ml
 - ocamlc -g -c lm_string_util.ml
 - ocamlc -g -c lm_string_set.mli
+- ocamlc -g -c lm_string_set.ml
+- ocamlc -g -c lm_hash_sig.ml
+- ocamlc -g -c lm_hash.mli
+- ocamlc -g -c lm_hash.ml
 - File "lm_string_util.ml", line 100, characters 16-18:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
@@ -789,18 +793,16 @@ The following actions will be performed:
 - File "lm_string_util.ml", line 1574, characters 18-56:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc -g -c lm_string_set.ml
-- ocamlc -g -c lm_hash_sig.ml
-- ocamlc -g -c lm_hash.mli
-- ocamlc -g -c lm_hash.ml
-- ocamlc -g -c lm_symbol.mli
-- ocamlc -g -c lm_symbol.ml
 - File "lm_hash.ml", line 105, characters 24-36:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
 - File "lm_hash.ml", line 108, characters 25-37:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
+- ocamlc -g -c lm_symbol.mli
+- ocamlc -g -c lm_symbol.ml
+- ocamlc -g -c lm_location.mli
+- ocamlc -g -c lm_location.ml
 - File "lm_hash.ml", line 1365, characters 22-34:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
@@ -810,8 +812,6 @@ The following actions will be performed:
 - File "lm_hash.ml", line 1442, characters 12-52:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc -g -c lm_location.mli
-- ocamlc -g -c lm_location.ml
 - ocamlc -g -c lm_position.mli
 - ocamlc -g -c lm_position.ml
 - ocamlc -g -c lm_filename_util.mli
@@ -894,6 +894,12 @@ The following actions will be performed:
 - File "lm_unix_util.ml", line 91, characters 29-42:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- File "lm_glob.ml", line 91, characters 28-40:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
+- File "lm_glob.ml", line 128, characters 18-30:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 - ocamlc -g -c lm_db.mli
 - ocamlc -g -c lm_db.ml
 - ocamlc -g -c lm_notify.mli
@@ -906,12 +912,6 @@ The following actions will be performed:
 - ocamlc -g -c omake_magic.ml
 - ocamlc -g  -a -o magic.cma omake_magic.cmo
 - ocamlc -g -c fmarshal.ml
-- File "lm_glob.ml", line 91, characters 28-40:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
-- File "lm_glob.ml", line 128, characters 18-30:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 - File "lm_db.ml", line 129, characters 13-26:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -927,13 +927,13 @@ The following actions will be performed:
 - File "lm_db.ml", line 294, characters 14-27:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- File "fmarshal.ml", line 363, characters 14-27:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -g -c omake_marshal.ml
 - ocamlc -g -c omake_node_sig.ml
 - ocamlc -g -c omake_node.mli
 - ocamlc -g -c omake_ir.ml
+- File "fmarshal.ml", line 363, characters 14-27:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -g -c omake_var.mli
 - ocamlc -g -c omake_wild.mli
 - ocamlc -g -c omake_symbol.ml
@@ -989,13 +989,13 @@ The following actions will be performed:
 - ocamlc -g -c omake_print_util.ml
 - ocamlc -g -c omake_readline.ml
 - ocamlc -g -c omake_printf.ml
+- File "omake_wild.ml", line 126, characters 13-26:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -g  -a -o util.cma fmarshal.cmo ocaml_patch.cmo omake_util.cmo omake_wild.cmo omake_print_util.cmo omake_readline.cmo omake_printf.cmo omake_marshal.cmo omake_handle_table.cmo
 - ocamlc -g -c omake_ast_util.mli
 - ocamlc -g -c omake_ast_util.ml
 - ocamlc -g -c omake_ast_print.ml
-- File "omake_wild.ml", line 126, characters 13-26:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -g  -a -o ast.cma omake_ast.cmo omake_ast_util.cmo omake_ast_print.cmo
 - ocamlc -g -c omake_options.ml
 - ocamlc -g -c omake_state.ml
@@ -1009,11 +1009,11 @@ The following actions will be performed:
 - ocamlc -g -c omake_ir_util.ml
 - ocamlc -g -c omake_ir_print.ml
 - ocamlc -g -c omake_ir_free_vars.ml
-- ocamlc -g -c omake_value_print.ml
-- ocamlc -g -c omake_pos.ml
 - File "omake_var.ml", line 161, characters 18-30:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
+- ocamlc -g -c omake_value_print.ml
+- ocamlc -g -c omake_pos.ml
 - ocamlc -g -c omake_command.mli
 - ocamlc -g -c omake_command.ml
 - ocamlc -g -c omake_cache.ml
@@ -1054,10 +1054,10 @@ The following actions will be performed:
 - ocamlc -g -c omake_exp_parse.ml
 - ocamlc -g -c omake_exp_lex.mli
 - ocamlc -g -c omake_exp_lex.ml
-- ocamlc -g -c omake_ir_ast.ml
 - File "omake_ast_lex.mll", line 1035, characters 12-30:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlc -g -c omake_ir_ast.ml
 - ocamlc -g -c omake_ir_semant.mli
 - ocamlc -g -c omake_ir_semant.ml
 - ocamlc -g -c omake_command_digest.mli
@@ -1070,17 +1070,17 @@ The following actions will be performed:
 - ocamlc -g -c omake_exec_local.mli
 - ocamlc -g -c omake_exec_local.ml
 - ocamlc -g -c omake_exec_remote.ml
+- ocamlc -g -c omake_exec_notify.mli
+- ocamlc -g -c omake_exec_notify.ml
+- ocamlc -g -c omake_exec.ml
+- ocamlc -g  -a -o exec.cma omake_exec_id.cmo omake_exec_type.cmo omake_exec_print.cmo omake_exec_util.cmo omake_exec_local.cmo omake_exec_remote.cmo omake_exec_notify.cmo omake_exec.cmo
+- ocamlc -g -c omake_eval.ml
 - File "omake_exec_local.ml", line 209, characters 33-46:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
 - File "omake_exec_local.ml", line 209, characters 53-66:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -g -c omake_exec_notify.mli
-- ocamlc -g -c omake_exec_notify.ml
-- ocamlc -g -c omake_exec.ml
-- ocamlc -g  -a -o exec.cma omake_exec_id.cmo omake_exec_type.cmo omake_exec_print.cmo omake_exec_util.cmo omake_exec_local.cmo omake_exec_remote.cmo omake_exec_notify.cmo omake_exec.cmo
-- ocamlc -g -c omake_eval.ml
 - ocamlc -g -c omake_value.ml
 - ocamlc -g  -a -o eval.cma omake_eval.cmo omake_value.cmo
 - ocamlc -g -c omake_shell_parse.mli
@@ -1092,15 +1092,15 @@ The following actions will be performed:
 - ocamlc -g -c omake_shell_completion.ml
 - ocamlc -g  -a -o shell.cma omake_shell_parse.cmo omake_shell_lex.cmo omake_shell_sys_type.cmo omake_shell_sys.cmo omake_shell_job.cmo omake_shell_completion.cmo
 - ocamlc -g -c omake_rule.ml
+- File "omake_rule.ml", line 1279, characters 20-33:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -g -c omake_build_util.mli
 - ocamlc -g -c omake_build_util.ml
 - ocamlc -g -c omake_builtin_util.mli
 - ocamlc -g -c omake_builtin_util.ml
 - ocamlc -g -c omake_target.mli
 - ocamlc -g -c omake_target.ml
-- File "omake_rule.ml", line 1279, characters 20-33:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -g -c omake_builtin.ml
 - ocamlc -g -c omake_build_tee.mli
 - ocamlc -g -c omake_build_tee.ml
@@ -1164,9 +1164,6 @@ The following actions will be performed:
 - ocamlc -g -c omake_builtin_test.ml
 - ocamlc -g -c omake_builtin_object.mli
 - ocamlc -g -c omake_builtin_object.ml
-- ocamlc -g -linkall -a -o builtin.cma omake_builtin_base.cmo omake_builtin_arith.cmo omake_builtin_file.cmo omake_builtin_fun.cmo omake_builtin_io.cmo omake_builtin_io_fun.cmo omake_builtin_sys.cmo omake_builtin_target.cmo omake_builtin_shell.cmo omake_builtin_rule.cmo omake_builtin_test.cmo omake_builtin_object.cmo
-- cc  -I"`ocamlc -where`" -c lm_heap.c
-- cc  -I"`ocamlc -where`" -c lm_channel.c
 - File "omake_builtin_object.ml", line 761, characters 31-44:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -1185,6 +1182,9 @@ The following actions will be performed:
 - File "omake_builtin_object.ml", line 779, characters 28-54:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlc -g -linkall -a -o builtin.cma omake_builtin_base.cmo omake_builtin_arith.cmo omake_builtin_file.cmo omake_builtin_fun.cmo omake_builtin_io.cmo omake_builtin_io_fun.cmo omake_builtin_sys.cmo omake_builtin_target.cmo omake_builtin_shell.cmo omake_builtin_rule.cmo omake_builtin_test.cmo omake_builtin_object.cmo
+- cc  -I"`ocamlc -where`" -c lm_heap.c
+- cc  -I"`ocamlc -where`" -c lm_channel.c
 - cc  -I"`ocamlc -where`" -c lm_printf.c
 - cc  -I"`ocamlc -where`" -c lm_ctype.c
 - cc  -I"`ocamlc -where`" -c lm_uname_ext.c
@@ -1220,10 +1220,10 @@ The following actions will be performed:
 - --- Checking for ocamlc.opt... (found /home/opam/.opam/4.02.1/bin/ocamlc.opt)
 - --- Checking for ocamlopt.opt... (found /home/opam/.opam/4.02.1/bin/ocamlopt.opt)
 - --- Checking whether ocamlc understands the "z" warnings... (yes)
-- --- Checking for ncurses... (found)
+- --- Checking for ncurses... 
+- (found)
 - --- Checking for readline... (NOT found)
-- --- Checking for FAM... 
-- (NOT found)
+- --- Checking for FAM... (NOT found)
 - --- Checking if ocamldep understands -modules... (yes)
 - --- Checking for ocamlfind... (found /home/opam/.opam/4.02.1/bin/ocamlfind)
 - --- Checking for ocamlc.opt... (found /home/opam/.opam/4.02.1/bin/ocamlc.opt)
@@ -1232,27 +1232,28 @@ The following actions will be performed:
 - --- Checking for OCaml library location... (/home/opam/.opam/4.02.1/lib/ocaml)
 - --- Checking for ncurses... (found)
 - --- Checking for readline... (NOT found)
-- --- Checking for FAM... (NOT found)
-- --- Checking for function snprintf... (found)
-- --- Checking for optimal filesystem case-sensitivity test... 
+- --- Checking for FAM... 
 - Updating the .config file.
-- (Generic)
+- (NOT found)
+- --- Checking for function snprintf... (found)
+- --- Checking for optimal filesystem case-sensitivity test... (Generic)
 - --- Checking if ocamldep understands -modules... (yes)
 - --- Checking for hevea... (FAILED - no hevea found)
 - --- Checking for date... (found /bin/date)
 - --- Checking for date... (found /bin/date)
-- *** omake: finished reading OMakefiles (2.69 sec)
+- *** omake: finished reading OMakefiles (2.82 sec)
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
 - *** omake: saved .omakedb
 - *** omake: saved .omakedb
-- *** omake: done (45.52 sec, 234/234 scans, 343/505 rules, 788/2321 digests)
+- *** omake: saved .omakedb
+- *** omake: done (52.23 sec, 234/234 scans, 343/505 rules, 788/2321 digests)
 - OMAKEFLAGS= OMAKEPATH=lib src/main/omake --dotomake .omake --force-dotomake -j2 all
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.08 sec)
+- *** omake: finished reading OMakefiles (0.07 sec)
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
-- *** omake: done (10.69 sec, 219/235 scans, 27/534 rules, 39/1843 digests)
+- *** omake: done (9.48 sec, 219/235 scans, 27/534 rules, 39/1843 digests)
 [omake: make install] Command started
 + make "install" "PREFIX=/home/opam/.opam/4.02.1" (CWD=/home/opam/.opam/4.02.1/build/omake.0.9.8.6-0.rc1)
 - make[1]: Entering directory '/home/opam/.opam/4.02.1/build/omake.0.9.8.6-0.rc1/boot'
@@ -1264,18 +1265,18 @@ The following actions will be performed:
 - touch .config
 - OMAKEFLAGS= OMAKEPATH=lib ./omake-boot --dotomake .omake --force-dotomake -j2 main
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.44 sec)
+- *** omake: finished reading OMakefiles (0.40 sec)
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
-- *** omake: done (5.62 sec, 0/234 scans, 0/505 rules, 1/1762 digests)
+- *** omake: done (4.85 sec, 0/234 scans, 0/505 rules, 1/1762 digests)
 - OMAKEFLAGS= OMAKEPATH=lib src/main/omake --dotomake .omake --force-dotomake -j2 all
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.07 sec)
-- *** omake: done (0.56 sec, 0/235 scans, 0/534 rules, 0/1821 digests)
+- *** omake: finished reading OMakefiles (0.06 sec)
+- *** omake: done (0.54 sec, 0/235 scans, 0/534 rules, 0/1821 digests)
 - OMAKEFLAGS= OMAKEPATH=lib src/main/omake --dotomake .omake --force-dotomake -j2 install
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.06 sec)
-- *** omake: done (0.54 sec, 0/235 scans, 2/536 rules, 0/1821 digests)
+- *** omake: finished reading OMakefiles (0.05 sec)
+- *** omake: done (0.55 sec, 0/235 scans, 2/536 rules, 0/1821 digests)
 -> installed omake.0.9.8.6-0.rc1
 [camlimages: omake] Command started
 + omake "--configure" (CWD=/home/opam/.opam/4.02.1/build/camlimages.4.2.0)
@@ -1300,10 +1301,38 @@ The following actions will be performed:
 - --- Checking for libtiff-4 by pkg-config... (failed /usr/bin/pkg-config libtiff-4)
 - --- Checking for tiff.h... (NOT found)
 - --- Checking for xpm by pkg-config... (failed /usr/bin/pkg-config xpm)
-- --- Checking for X11/xpm.h... (NOT found)
+- --- Checking for X11/xpm.h... 
+- File OMyMakeroot: line 189, characters 18-98:
+-    Warning: old-style fun expression.
+-    This expression should use a => binding.
+- File src/OMakefile: line 79, characters 2-34:
+-    Warning: old-style foreach expression.
+-    This expression should use a => binding.
+- File src/OMakefile: line 83, characters 2-24:
+-    Warning: old-style foreach expression.
+-    This expression should use a => binding.
+- File src/OMakefile: line 158, characters 2-34:
+-    Warning: old-style foreach expression.
+-    This expression should use a => binding.
+- File src/OMakefile: line 162, characters 2-24:
+-    Warning: old-style foreach expression.
+-    This expression should use a => binding.
+- File src/OMakefile: line 182, characters 2-34:
+-    Warning: old-style foreach expression.
+-    This expression should use a => binding.
+- File src/OMakefile: line 189, characters 2-24:
+-    Warning: old-style foreach expression.
+-    This expression should use a => binding.
+- File src/OMakefile: line 206, characters 2-38:
+-    Warning: old-style foreach expression.
+-    This expression should use a => binding.
+- File src/OMakefile: line 255, characters 70-144:
+-    Warning: old-style foreach expression.
+-    This expression should use a => binding.
+- (NOT found)
 - --- Checking for gs... (FAILED - no gs found)
 - --- Checking lablgtk2... (NOT found)
-- --- Checking graphics compilability: open Graphics... --- Checking /tmp/omakec59434.ml... ocamlfind ocamlc -w A-4-9-40-42-44-45-37-41-48 -g -I . -warn-error -a -c -package graphics /tmp/omakec59434.ml
+- --- Checking graphics compilability: open Graphics... --- Checking /tmp/omakeb15dd6.ml... ocamlfind ocamlc -w A-4-9-40-42-44-45-37-41-48 -g -I . -warn-error -a -c -package graphics /tmp/omakeb15dd6.ml
 - (yes)
 - --- Checking for freetype-config... (FAILED - no freetype-config found)
 - --- Checking for rgb.txt... (found /etc/X11/rgb.txt)
@@ -1335,47 +1364,20 @@ The following actions will be performed:
 - supported non-formats: graphics
 - ---
 - --- Checking if ocamldep understands -modules... (yes)
-- *** omake: finished reading OMakefiles (0.97 sec)
-- File OMyMakeroot: line 189, characters 18-98:
--    Warning: old-style fun expression.
--    This expression should use a => binding.
-- File src/OMakefile: line 79, characters 2-34:
--    Warning: old-style foreach expression.
--    This expression should use a => binding.
-- File src/OMakefile: line 83, characters 2-24:
--    Warning: old-style foreach expression.
--    This expression should use a => binding.
-- File src/OMakefile: line 158, characters 2-34:
--    Warning: old-style foreach expression.
--    This expression should use a => binding.
-- File src/OMakefile: line 162, characters 2-24:
--    Warning: old-style foreach expression.
--    This expression should use a => binding.
-- File src/OMakefile: line 182, characters 2-34:
--    Warning: old-style foreach expression.
--    This expression should use a => binding.
-- File src/OMakefile: line 189, characters 2-24:
--    Warning: old-style foreach expression.
--    This expression should use a => binding.
-- File src/OMakefile: line 206, characters 2-38:
--    Warning: old-style foreach expression.
--    This expression should use a => binding.
-- File src/OMakefile: line 255, characters 70-144:
--    Warning: old-style foreach expression.
--    This expression should use a => binding.
+- *** omake: finished reading OMakefiles (1.08 sec)
 - ocamlfind: Package `lablgtk2' not found
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
-- *** omake: done (28.54 sec, 95/95 scans, 182/291 rules, 418/1044 digests)
+- *** omake: done (22.19 sec, 95/95 scans, 182/291 rules, 418/1044 digests)
 [camlimages: omake install] Command started
 + omake "install" (CWD=/home/opam/.opam/4.02.1/build/camlimages.4.2.0)
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.09 sec)
+- *** omake: finished reading OMakefiles (0.33 sec)
 - - build src <install>
 - + ocamlfind remove camlimages
 - - build src <install>
 - + ocamlfind install camlimages META graphic_image.mli ps.mli gif.mli xpm.mli png.mli ppm.mli bmp.mli info.mli oPng.mli jpeg.mli util.mli tiff.mli exif.mli rgb24.mli ftlow.mli oJpeg.mli blend.mli color.mli images.mli ximage.mli region.mli reduce.mli rgba32.mli index8.mli fttext.mli oColor.mli bitmap.mli cmyk32.mli mstring.mli index16.mli xvthumb.mli oXimage.mli oImages.mli tmpfile.mli imagegdk.mli freetype.mli geometry.mli genimage.mli oXvthumb.mli colorhist.mli image_intf.mli jis_unicode.mli graphic_image.cmi ps.cmi gif.cmi xpm.cmi png.cmi oPs.cmi ppm.cmi bmp.cmi info.cmi oPng.cmi jpeg.cmi oPpm.cmi oBmp.cmi util.cmi oXpm.cmi oGif.cmi tiff.cmi exif.cmi rgb24.cmi oJpeg.cmi oTiff.cmi units.cmi blend.cmi color.cmi images.cmi region.cmi reduce.cmi rgba32.cmi index8.cmi oColor.cmi bitmap.cmi cmyk32.cmi mstring.cmi index16.cmi xvthumb.cmi oImages.cmi tmpfile.cmi geometry.cmi genimage.cmi oXvthumb.cmi oGraphic.cmi exifutil.cmi jis_table.cmi colorhist.cmi image_intf.cmi camlimages.cmi jis_unicode.cmi exifanalyze.cmi camlimages_png.cma camlimages_gif.cma camlimages_xpm.cma camlimages_supported.cma camlimages_core.cma camlimages_exif.cma camlimages_jpeg.cma camlimages_tiff.cma camlimages_ps.cma camlimages_graphics.cma camlimages_all_formats.cma camlimages_ps.cmxa camlimages_graphics.cmxa camlimages_png.cmxa camlimages_gif.cmxa camlimages_xpm.cmxa camlimages_supported.cmxa camlimages_all_formats.cmxa camlimages_core.cmxa camlimages_exif.cmxa camlimages_jpeg.cmxa camlimages_tiff.cmxa camlimages_all_formats.a libcamlimages_gif.a libcamlimages_png.a libcamlimages_xpm.a libcamlimages_all_formats.a camlimages_core.a camlimages_exif.a camlimages_jpeg.a camlimages_tiff.a camlimages_supported.a camlimages_graphics.a camlimages_ps.a libcamlimages_exif.a libcamlimages_jpeg.a libcamlimages_tiff.a camlimages_png.a camlimages_gif.a camlimages_xpm.a dllcamlimages_all_formats.so dllcamlimages_jpeg.so dllcamlimages_tiff.so dllcamlimages_exif.so dllcamlimages_png.so dllcamlimages_gif.so dllcamlimages_xpm.so
-- *** omake: done (0.26 sec, 0/88 scans, 1/243 rules, 0/672 digests)
+- *** omake: done (0.56 sec, 0/88 scans, 1/243 rules, 0/672 digests)
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/4.02.1/lib/camlimages
 - Installed /home/opam/.opam/4.02.1/lib/camlimages/camlimages_xpm.a
 - Installed /home/opam/.opam/4.02.1/lib/camlimages/camlimages_gif.a
