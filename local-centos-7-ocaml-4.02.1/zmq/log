@@ -1,17 +1,16 @@
 + uname -m
 + uname -s
-# Detecting depexts using flags: x86_64 linux centos
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=zmq
+# Detecting depexts using flags: x86_64 linux centos
++ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=zmq
 # The following system packages are needed:
 #  - pcre-devel
-+ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=zmq
 Not running as root, the following command will be run through "sudo":
     yum -y update
 + sudo yum -y update
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
-+ sudo yum install -y pcre-devel
- * base: mirrors.coreix.net
+ * base: anorien.csc.warwick.ac.uk
  * extras: anorien.csc.warwick.ac.uk
  * updates: mirror.sov.uk.goscomb.net
 No packages marked for update
@@ -20,9 +19,10 @@ Not running as root, the following command will be run through "sudo":
     yum install -y pcre-devel
 Not running as root, the following command will be run through "sudo":
     rpm -q pcre-devel
++ sudo yum install -y pcre-devel
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: mirrors.coreix.net
+ * base: anorien.csc.warwick.ac.uk
  * extras: anorien.csc.warwick.ac.uk
  * updates: mirror.sov.uk.goscomb.net
 Resolving Dependencies
@@ -79,10 +79,10 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [ocaml-data-notation: from default] Command started
 [oasis: from default] Command started
-[default] http://opam-archive:8080/archives/ocaml-data-notation.0.0.11+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/oasis.0.4.5+opam.tar.gz downloaded
 [ocamlify: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/oasis.0.4.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocaml-data-notation.0.0.11+opam.tar.gz downloaded
 [ocamlmod: from default] Command started
 [ocamlify: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
@@ -98,8 +98,8 @@ The following actions will be performed:
 [zmq: from default] Command started
 [uint: from default] Command started
 [default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/uint.1.1.5+opam.tar.gz downloaded
 [zmq: from default] Command started
+[default] http://opam-archive:8080/archives/uint.1.1.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/zmq.4.0-3+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -109,12 +109,12 @@ The following actions will be performed:
 - Camlp4 version 4.02.1
 -> installed camlp4.4.02.1+system
 [ocamlfind: ./configure] Command started
+[ERROR] The compilation of conf-zmq failed at "cc test.c -lzmq".
 + cc "test.c" "-lzmq" (CWD=/home/opam/.opam/system/build/conf-zmq.0.1)
 - test.c:1:17: fatal error: zmq.h: No such file or directory
 -  #include <zmq.h>
 -                  ^
 - compilation terminated.
-[ERROR] The compilation of conf-zmq failed at "cc test.c -lzmq".
 + ./configure "-bindir" "/home/opam/.opam/system/bin" "-sitelib" "/home/opam/.opam/system/lib" "-mandir" "/home/opam/.opam/system/man" "-config" "/home/opam/.opam/system/lib/findlib.conf" "-no-topfind" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
 - Welcome to findlib version 1.5.5
 - Configuring core...
@@ -200,7 +200,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
-- ocamlc -I +compiler-libs -g -c frontend.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -246,16 +245,9 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -285,6 +277,14 @@ The following actions will be performed:
 - if ocamlc.opt >/dev/null 2>&1; then \
 - 	echo 'ocamlc="ocamlc.opt"' >>findlib.conf; \
 - fi
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - if ocamlopt.opt >/dev/null 2>&1; then \
 - 	echo 'ocamlopt="ocamlopt.opt"' >>findlib.conf; \
 - fi
@@ -473,8 +473,8 @@ The following actions will be performed:
 - ocamlc: ........................................ /usr/bin/ocamlc.opt
 - ocamlfind: ..................................... /home/opam/.opam/system/bin/ocamlfind
 - 
-- I: Running command '/usr/bin/ocamlc.opt -config > /tmp/oasis-3dcf4e.txt'
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %v findlib > /tmp/oasis-d86f9b.txt'
+- I: Running command '/usr/bin/ocamlc.opt -config > /tmp/oasis-3beeb0.txt'
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %v findlib > /tmp/oasis-c76fde.txt'
 [ocamlify: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/ocamlmod.0.0.7)
 - 
@@ -1125,8 +1125,12 @@ The following actions will be performed:
 - 
 - ocaml setup.ml -build 
 - /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib64/ocaml/ocamlbuild /usr/lib64/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib64/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
+- File "_tags", line 48, characters 18-27:
+- Warning: the tag "pkg_oUnit" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
 - File "_tags", line 49, characters 18-31:
 - Warning: the tag "pkg_fileutils" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
+- File "_tags", line 52, characters 17-26:
+- Warning: the tag "pkg_oUnit" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
 - File "_tags", line 53, characters 17-30:
 - Warning: the tag "pkg_fileutils" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
 - ocamlfind ocamldep -package camlp4.lib -package camlp4.quotations.o -package type_conv -modules src/ODN.ml > src/ODN.ml.depends
@@ -1163,6 +1167,30 @@ The following actions will be performed:
 - Use Lazy.from_fun instead.
 - W: Tests are turned off, consider enabling with 'ocaml setup.ml -configure --enable-tests'
 [ocaml-data-notation: make install] Command started
++ make "install" (CWD=/home/opam/.opam/system/build/ocaml-data-notation.0.0.11)
+- ocaml setup.ml -install 
+- File "setup.ml", line 232, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "setup.ml", line 1946, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
+- Installed /home/opam/.opam/system/lib/odn/ODN.ml
+- Installed /home/opam/.opam/system/lib/odn/odn.cma
+- Installed /home/opam/.opam/system/lib/odn/odn.cmxa
+- Installed /home/opam/.opam/system/lib/odn/odn.a
+- Installed /home/opam/.opam/system/lib/odn/odn.cmxs
+- Installed /home/opam/.opam/system/lib/odn/ODN.cmi
+- Installed /home/opam/.opam/system/lib/odn/ODN.cmx
+- Installed /home/opam/.opam/system/lib/odn/pa_noodn.ml
+- Installed /home/opam/.opam/system/lib/odn/pa_noodn.cma
+- Installed /home/opam/.opam/system/lib/odn/pa_noodn.cmi
+- Installed /home/opam/.opam/system/lib/odn/pa_odn.ml
+- Installed /home/opam/.opam/system/lib/odn/pa_odn.cma
+- Installed /home/opam/.opam/system/lib/odn/pa_odn.cmi
+- Installed /home/opam/.opam/system/lib/odn/META
+-> installed ocaml-data-notation.0.0.11
+[oasis: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-build" (CWD=/home/opam/.opam/system/build/uint.1.1.5)
 - /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib64/ocaml/ocamlbuild /usr/lib64/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib64/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
 - ocamlfind ocamlc -c lib/uint32_stubs.c
@@ -1214,61 +1242,6 @@ The following actions will be performed:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
 [uint: ocaml setup.ml] Command started
-+ make "install" (CWD=/home/opam/.opam/system/build/ocaml-data-notation.0.0.11)
-- ocaml setup.ml -install 
-- File "setup.ml", line 232, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "setup.ml", line 1946, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
-- Installed /home/opam/.opam/system/lib/odn/ODN.ml
-- Installed /home/opam/.opam/system/lib/odn/odn.cma
-- Installed /home/opam/.opam/system/lib/odn/odn.cmxa
-- Installed /home/opam/.opam/system/lib/odn/odn.a
-- Installed /home/opam/.opam/system/lib/odn/odn.cmxs
-- Installed /home/opam/.opam/system/lib/odn/ODN.cmi
-- Installed /home/opam/.opam/system/lib/odn/ODN.cmx
-- Installed /home/opam/.opam/system/lib/odn/pa_noodn.ml
-- Installed /home/opam/.opam/system/lib/odn/pa_noodn.cma
-- Installed /home/opam/.opam/system/lib/odn/pa_noodn.cmi
-- Installed /home/opam/.opam/system/lib/odn/pa_odn.ml
-- Installed /home/opam/.opam/system/lib/odn/pa_odn.cma
-- Installed /home/opam/.opam/system/lib/odn/pa_odn.cmi
-- Installed /home/opam/.opam/system/lib/odn/META
--> installed ocaml-data-notation.0.0.11
-[oasis: ocaml setup.ml] Command started
-+ ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/system/build/uint.1.1.5)
-- File "setup.ml", line 213, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "setup.ml", line 1793, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
-- Installed /home/opam/.opam/system/lib/uint/uint32.h
-- Installed /home/opam/.opam/system/lib/uint/uint64.h
-- Installed /home/opam/.opam/system/lib/uint/uint.mli
-- Installed /home/opam/.opam/system/lib/uint/uint32.mli
-- Installed /home/opam/.opam/system/lib/uint/uint64.mli
-- Installed /home/opam/.opam/system/lib/uint/uint128.mli
-- Installed /home/opam/.opam/system/lib/uint/libuint_stubs.a
-- Installed /home/opam/.opam/system/lib/uint/uint.cma
-- Installed /home/opam/.opam/system/lib/uint/uint.cmxa
-- Installed /home/opam/.opam/system/lib/uint/uint.a
-- Installed /home/opam/.opam/system/lib/uint/uint.cmxs
-- Installed /home/opam/.opam/system/lib/uint/uint.cmi
-- Installed /home/opam/.opam/system/lib/uint/uint32.cmi
-- Installed /home/opam/.opam/system/lib/uint/uint64.cmi
-- Installed /home/opam/.opam/system/lib/uint/uint128.cmi
-- Installed /home/opam/.opam/system/lib/uint/uint.cmx
-- Installed /home/opam/.opam/system/lib/uint/uint32.cmx
-- Installed /home/opam/.opam/system/lib/uint/uint64.cmx
-- Installed /home/opam/.opam/system/lib/uint/uint128.cmx
-- Installed /home/opam/.opam/system/lib/uint/META
-- Installed /home/opam/.opam/system/lib/stublibs/dlluint_stubs.so
-- Installed /home/opam/.opam/system/lib/stublibs/dlluint_stubs.so.owner
-- ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/system/lib/stublibs is not mentioned in ld.conf
--> installed uint.1.1.5
 + ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/oasis.0.4.5)
 - 
 - Configuration: 
@@ -1346,6 +1319,37 @@ The following actions will be performed:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
 [oasis: ocaml setup.ml] Command started
++ ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/system/build/uint.1.1.5)
+- File "setup.ml", line 213, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "setup.ml", line 1793, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
+- Installed /home/opam/.opam/system/lib/uint/uint32.h
+- Installed /home/opam/.opam/system/lib/uint/uint64.h
+- Installed /home/opam/.opam/system/lib/uint/uint.mli
+- Installed /home/opam/.opam/system/lib/uint/uint32.mli
+- Installed /home/opam/.opam/system/lib/uint/uint64.mli
+- Installed /home/opam/.opam/system/lib/uint/uint128.mli
+- Installed /home/opam/.opam/system/lib/uint/libuint_stubs.a
+- Installed /home/opam/.opam/system/lib/uint/uint.cma
+- Installed /home/opam/.opam/system/lib/uint/uint.cmxa
+- Installed /home/opam/.opam/system/lib/uint/uint.a
+- Installed /home/opam/.opam/system/lib/uint/uint.cmxs
+- Installed /home/opam/.opam/system/lib/uint/uint.cmi
+- Installed /home/opam/.opam/system/lib/uint/uint32.cmi
+- Installed /home/opam/.opam/system/lib/uint/uint64.cmi
+- Installed /home/opam/.opam/system/lib/uint/uint128.cmi
+- Installed /home/opam/.opam/system/lib/uint/uint.cmx
+- Installed /home/opam/.opam/system/lib/uint/uint32.cmx
+- Installed /home/opam/.opam/system/lib/uint/uint64.cmx
+- Installed /home/opam/.opam/system/lib/uint/uint128.cmx
+- Installed /home/opam/.opam/system/lib/uint/META
+- Installed /home/opam/.opam/system/lib/stublibs/dlluint_stubs.so
+- Installed /home/opam/.opam/system/lib/stublibs/dlluint_stubs.so.owner
+- ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/system/lib/stublibs is not mentioned in ld.conf
+-> installed uint.1.1.5
 + ocaml "setup.ml" "-build" (CWD=/home/opam/.opam/system/build/oasis.0.4.5)
 - File "src/oasis/OASISString.ml", line 148, characters 8-26:
 - Warning 3: deprecated: String.set
@@ -1353,6 +1357,15 @@ The following actions will be performed:
 - File "src/oasis/OASISFindlib.ml", line 262, characters 6-24:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
+- W: Cannot find source file matching module 'plugins/none/NoneData' in library builtin-plugins
+- W: Cannot find source file matching module 'plugins/internal/InternalData' in library builtin-plugins
+- W: Cannot find source file matching module 'plugins/ocamlbuild/OCamlbuildData' in library builtin-plugins
+- W: Cannot find source file matching module 'plugins/custom/CustomData' in library builtin-plugins
+- W: Cannot find source file matching module 'plugins/extra/META/METAData' in library builtin-plugins
+- W: Cannot find source file matching module 'plugins/extra/devfiles/DevFilesData' in library builtin-plugins
+- W: Cannot find source file matching module 'plugins/extra/stdfiles/StdFilesData' in library builtin-plugins
+- W: Cannot find source file matching module 'OASISData' in library oasis
+- W: Cannot find source file matching module 'OASISData' in library oasis
 - /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib64/ocaml/ocamlbuild /usr/lib64/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib64/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
 - File "test/data/TestFull/bug588/_tags", line 39, characters 16-27:
 - Warning: the tag "use_libtest" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
@@ -1398,15 +1411,6 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -package odn -package unix -warn-error +8 -I src/oasis -o src/oasis/FormatExt.cmi src/oasis/FormatExt.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package odn -package unix -modules src/oasis/FormatExt.ml > src/oasis/FormatExt.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package odn -package unix -modules src/oasis/OASISString.ml > src/oasis/OASISString.ml.depends
-- W: Cannot find source file matching module 'plugins/none/NoneData' in library builtin-plugins
-- W: Cannot find source file matching module 'plugins/internal/InternalData' in library builtin-plugins
-- W: Cannot find source file matching module 'plugins/ocamlbuild/OCamlbuildData' in library builtin-plugins
-- W: Cannot find source file matching module 'plugins/custom/CustomData' in library builtin-plugins
-- W: Cannot find source file matching module 'plugins/extra/META/METAData' in library builtin-plugins
-- W: Cannot find source file matching module 'plugins/extra/devfiles/DevFilesData' in library builtin-plugins
-- W: Cannot find source file matching module 'plugins/extra/stdfiles/StdFilesData' in library builtin-plugins
-- W: Cannot find source file matching module 'OASISData' in library oasis
-- W: Cannot find source file matching module 'OASISData' in library oasis
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -package odn -package unix -warn-error +8 -I src/oasis -o src/oasis/OASISString.cmo src/oasis/OASISString.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package odn -package unix -modules src/oasis/ODNFunc.mli > src/oasis/ODNFunc.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -package odn -package unix -warn-error +8 -I src/oasis -o src/oasis/ODNFunc.cmi src/oasis/ODNFunc.mli
@@ -2260,5 +2264,5 @@ The following changes have been performed
    your system.
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150325115825.export"
+    opam switch import "~/.opam/system/backup/state-20150326144954.export"
 'opam install zmq' failed.
