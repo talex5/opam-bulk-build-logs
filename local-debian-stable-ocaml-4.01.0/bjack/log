@@ -1,23 +1,23 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-# Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=bjack
+# Detecting depexts using flags: x86_64 linux debian
 # The following system packages are needed:
 #  - libjack-dev
 #  - libsamplerate0-dev
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=bjack
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
 Hit http://security.debian.org stable/updates InRelease
 Hit http://httpredir.debian.org stable InRelease
 Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
-Get:2 http://security.debian.org stable/updates/main amd64 Packages [87.6 kB]
+Get:2 http://security.debian.org stable/updates/main amd64 Packages [88.8 kB]
 Get:3 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
 Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9236 kB in 3s (2349 kB/s)
+Fetched 9237 kB in 3s (2589 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
@@ -61,8 +61,8 @@ The following actions will be performed:
 [bjack: from default] Command started
 [ocamlfind: from default] Command started
 [bjack: from default] Command started
-[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/bjack.0.1.4+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -294,8 +294,7 @@ The following actions will be performed:
 - checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
-- checking for gcc option to accept ISO C89... 
-- none needed
+- checking for gcc option to accept ISO C89... none needed
 - checking build system type... x86_64-unknown-linux-gnu
 - checking host system type... x86_64-unknown-linux-gnu
 - checking for a BSD-compatible install... /usr/bin/install -c
@@ -315,7 +314,8 @@ The following actions will be performed:
 - checking for ocaml... ocaml
 - checking for ocamldep... ocamldep
 - checking for ocamlmktop... ocamlmktop
-- checking for ocamlmklib... ocamlmklib
+- checking for ocamlmklib... 
+- ocamlmklib
 - checking for ocamldoc... ocamldoc
 - checking for ocamlbuild... ocamlbuild
 - checking for camlidl... no
@@ -355,6 +355,12 @@ The following actions will be performed:
 - ocamlc.opt -c -cc "gcc" -ccopt "-fPIC -g -O2 -I/home/opam/.opam/4.01.0/include   -Wall -DCAML_NAME_SPACE \
 - 			-DPIC -fPIC -I/home/opam/.opam/4.01.0/include    \
 - 			    -o jack_wrapper.o " jack_wrapper.c 
+- ar rcs libbjack_stubs.a  jack_stubs.o jack_wrapper.o
+- ocamlc.opt -c -thread bjack.mli
+- ocamlc.opt -c -thread bjack.ml
+- ocamlmklib      -L/home/opam/.opam/4.01.0/lib    \
+- 			-o bjack_stubs  jack_stubs.o jack_wrapper.o -ljack -lpthread -lsamplerate \
+- 			
 - jack_wrapper.c: In function 'JACK_Open':
 - jack_wrapper.c:1172:5: warning: 'jack_port_get_total_latency' is deprecated (declared at /usr/include/jack/jack.h:1093) [-Wdeprecated-declarations]
 -      periods = jack_port_get_total_latency(drv->client,
@@ -374,12 +380,6 @@ The following actions will be performed:
 - jack_wrapper.c:1938:5: warning: 'jack_port_get_total_latency' is deprecated (declared at /usr/include/jack/jack.h:1093) [-Wdeprecated-declarations]
 -      return_val = jack_port_get_total_latency(drv->client, drv->input_port[0]);
 -      ^
-- ar rcs libbjack_stubs.a  jack_stubs.o jack_wrapper.o
-- ocamlc.opt -c -thread bjack.mli
-- ocamlc.opt -c -thread bjack.ml
-- ocamlmklib      -L/home/opam/.opam/4.01.0/lib    \
-- 			-o bjack_stubs  jack_stubs.o jack_wrapper.o -ljack -lpthread -lsamplerate \
-- 			
 - ocamlc.opt -a -dllib dllbjack_stubs.so       -ccopt -L/home/opam/.opam/4.01.0/lib  -ccopt -L/home/opam/.opam/4.01.0/lib     \
 - 			-cclib -lbjack_stubs -cclib -ljack -cclib -lpthread -cclib -lsamplerate  -o bjack.cma  bjack.cmo
 - make[2]: Leaving directory '/home/opam/.opam/4.01.0/build/bjack.0.1.4/src'
