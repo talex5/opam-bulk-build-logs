@@ -8,6 +8,7 @@
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=wiringpi
 # The following scripts need to be run:
 #  - https://gist.github.com/Leonidas-from-XIV/a1a7315ac01f7fbee3f0/raw
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
 Ign http://archive.ubuntu.com trusty InRelease
@@ -35,33 +36,35 @@ Get:11 http://archive.ubuntu.com trusty-security/main Sources [100 kB]
 Get:12 http://archive.ubuntu.com trusty-security/restricted Sources [1874 B]
 Get:13 http://archive.ubuntu.com trusty-security/universe Sources [28.0 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [341 kB]
-+ sudo apt-get update
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [133 kB]
-Fetched 2188 kB in 4s (442 kB/s)
+Fetched 2187 kB in 3s (616 kB/s)
 Reading package lists...
 # OS package update successful
++ sudo apt-get install -qq -yy m4
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
-+ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 + curl -L "https://gist.github.com/Leonidas-from-XIV/a1a7315ac01f7fbee3f0/raw" | bash -ex -
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   200  100   200    0     0    200      0  0:00:01 --:--:--  0:00:01   464
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+100   200  100   200    0     0    302      0 --:--:-- --:--:-- --:--:--   302
 + git clone git://git.drogon.net/wiringPi
 Cloning into 'wiringPi'...
 + cd wiringPi
++ ./build
 wiringPi Build script
 =====================
 
-+ ./build
 
 WiringPi Library
 [UnInstall]
 [Compile] wiringPi.c
 wiringSerial.c: In function 'serialPutchar':
+wiringSerial.c:146:9: warning: ignoring return value of 'write', declared with attribute warn_unused_result [-Wunused-result]
+   write (fd, &c, 1) ;
+         ^
 [Compile] wiringSerial.c
 [Compile] wiringShift.c
 [Compile] piHiPri.c
@@ -87,31 +90,6 @@ wiringSerial.c: In function 'serialPutchar':
 [Compile] sn3218.c
 [Compile] drcSerial.c
 [Compile] wpiExtensions.c
-[Link (Dynamic)]
-[Install Headers]
-[Install Dynamic Lib]
-
-WiringPi Devices Library
-[UnInstall]
-[Compile] ds1302.c
-[Compile] maxdetect.c
-[Compile] piNes.c
-[Compile] gertboard.c
-[Compile] piFace.c
-[Compile] lcd128x64.c
-[Compile] lcd.c
-[Compile] piGlow.c
-[Link (Dynamic)]
-[Install Headers]
-[Install Dynamic Lib]
-
-GPIO Utility
-[Compile] gpio.c
-[Compile] readall.c
-[Compile] pins.c
-wiringSerial.c:146:9: warning: ignoring return value of 'write', declared with attribute warn_unused_result [-Wunused-result]
-   write (fd, &c, 1) ;
-         ^
 wiringSerial.c: In function 'serialPuts':
 wiringSerial.c:158:9: warning: ignoring return value of 'write', declared with attribute warn_unused_result [-Wunused-result]
    write (fd, s, strlen (s)) ;
@@ -165,7 +143,29 @@ mcp3422.c:74:12: warning: ignoring return value of 'read', declared with attribu
 mcp3422.c:80:12: warning: ignoring return value of 'read', declared with attribute warn_unused_result [-Wunused-result]
        read (node->fd, buffer, 3) ;
             ^
+[Link (Dynamic)]
+[Install Headers]
 gpio.c: In function 'doLoad':
+[Install Dynamic Lib]
+
+WiringPi Devices Library
+[UnInstall]
+[Compile] ds1302.c
+[Compile] maxdetect.c
+[Compile] piNes.c
+[Compile] gertboard.c
+[Compile] piFace.c
+[Compile] lcd128x64.c
+[Compile] lcd.c
+[Compile] piGlow.c
+[Link (Dynamic)]
+[Install Headers]
+[Install Dynamic Lib]
+
+GPIO Utility
+[Compile] gpio.c
+[Compile] readall.c
+[Compile] pins.c
 [Link]
 [Install]
 
@@ -201,9 +201,9 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [wiringpi: from default] Command started
 [wiringpi: from default] Command started
+[default] http://opam-archive:8080/archives/wiringpi.0.0.1+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/wiringpi.0.0.1+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -294,8 +294,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
-- ocamlc -I +compiler-libs -g -c frontend.ml
 - Makefile:160: depend: No such file or directory
+- ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
 - if [ "false" = "true" ]; then                 \
