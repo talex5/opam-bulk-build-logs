@@ -17,15 +17,15 @@ The following actions will be performed:
 [batteries: from default] Command started
 [lablgtk: from default] Command started
 [menhir: from default] Command started
-[batteries: from default] Command started
 [menhir: from default] Command started
+[default] http://opam-archive:8080/archives/menhir.20141215+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
+[batteries: from default] Command started
 [lablgtk: from default] Command started
 [default] http://opam-archive:8080/archives/batteries.2.3.1+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/menhir.20141215+opam.tar.gz downloaded
 [profound: from default] Command started
-[default] http://opam-archive:8080/archives/lablgtk.2.18.3+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/lablgtk.2.18.3+opam.tar.gz downloaded
 [profound: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/profound.0.4.2+opam.tar.gz downloaded
@@ -117,6 +117,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -162,11 +163,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -175,8 +177,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -228,6 +228,8 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -272,8 +274,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -340,8 +340,6 @@ The following actions will be performed:
 [batteries: ocaml setup.ml] Command started
 [lablgtk: ./configure] Command started
 + ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/batteries.2.3.1)
-[ERROR] The compilation of lablgtk failed at "./configure --prefix
-        /home/opam/.opam/system LABLGLDIR=/home/opam/.opam/system/lib/lablgl".
 - 
 - Configuration: 
 - ocamlfind: ..................................... /home/opam/.opam/system/bin/ocamlfind
@@ -447,6 +445,8 @@ The following actions will be performed:
 - *** exact error that occured. This usually means GTK+ is incorrectly installed.
 - configure: error: GTK+ is required
 [lablgtk: ocamlfind remove] Command started
+[ERROR] The compilation of lablgtk failed at "./configure --prefix
+        /home/opam/.opam/system LABLGLDIR=/home/opam/.opam/system/lib/lablgl".
 + ocamlfind "remove" "lablgtk2" (CWD=/home/opam/.opam/system/build/lablgtk.2.18.3)
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/lablgtk2
 [menhir: make] Command started
@@ -2242,12 +2242,12 @@ The following actions will be performed:
 - ocamlfind ocamlopt -c -g -annot -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batScanf.cmx src/batScanf.ml
 - ocamlfind ocamlopt -c -g -annot -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batSeq.cmx src/batSeq.ml
 - ocamlfind ocamlopt -c -g -annot -w z -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batSplay.cmx src/batSplay.ml
-- ocamlfind: Package `bisect' not found
 - ocamlfind ocamlopt -c -g -annot -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batStack.cmx src/batStack.ml
 - ocamlfind ocamlopt -c -g -annot -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batUnit.cmx src/batUnit.ml
 - ocamlfind ocamlopt -c -g -annot -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batUref.cmx src/batUref.ml
 - ocamlfind ocamlopt -c -g -annot -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batteries.cmx src/batteries.ml
 - ocamlfind ocamlopt -c -g -annot -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batOptParse.cmx src/batOptParse.ml
+- ocamlfind: Package `bisect' not found
 - ocamlfind ocamlopt -c -g -annot -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batteriesConfig.cmx src/batteriesConfig.ml
 - ocamlfind ocamlopt -c -g -annot -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batteriesPrint.cmx src/batteriesPrint.ml
 - ocamlfind ocamlopt -c -g -annot -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batteriesExceptionless.cmx src/batteriesExceptionless.ml
@@ -2258,16 +2258,6 @@ The following actions will be performed:
 - ocamlfind ocamlopt -c -g -annot -package bigarray,num,str -thread -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batRMutex.cmx src/batRMutex.ml
 - ocamlfind ocamlopt -c -g -annot -package bigarray,num,str -thread -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batteriesThread.cmx src/batteriesThread.ml
 - ocamlfind ocamlopt -a -package bigarray,num,str -thread -package bytes src/batMutex.cmx src/batRMutex.cmx src/batteriesThread.cmx -o src/batteriesThread.cmxa
-- ocamlfind ocamlopt -shared -linkall -package bigarray,num,str -thread -package bytes -o src/batteriesThread.cmxs src/batteriesThread.cmxa
-[batteries: make install] Command started
-+ make "install" (CWD=/home/opam/.opam/system/build/batteries.2.3.1)
-- Build mode: shared
-- ocamlbuild -no-links -use-ocamlfind src/batteries.cma src/batteriesHelp.cmo src/batteriesThread.cma META src/batteries.cmxs src/batteriesThread.cmxs
-- File "_tags", line 2, characters 32-42:
-- Warning: the tag "warn_Ae-29" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
-- ocamlfind remove batteries
-- ocamlfind install batteries _build/META _build/src/*.cma battop.ml _build/src/*.cmi _build/src/*.mli _build/src/batteriesHelp.cmo _build/src/batteriesConfig.cmo _build/src/batteriesPrint.cmo ocamlinit build/ocaml \
-- 	-optional _build/src/*.cmx _build/src/*.a _build/src/*.cmxa _build/src/*.cmxs _build/src/*.lib
 
 #=== ERROR while installing lablgtk.2.18.3 ====================================#
 # opam-version         1.2.2 (391297300524717e1475deaea37bca287c7f5e36)
@@ -2294,7 +2284,21 @@ The following actions will be performed:
 ### stderr ###
 # configure: error: GTK+ is required
 
+
+The former state can be restored with:
+    opam switch import "~/.opam/system/backup/state-20150422083920.export"
+'opam install profound' failed.
+- ocamlfind ocamlopt -shared -linkall -package bigarray,num,str -thread -package bytes -o src/batteriesThread.cmxs src/batteriesThread.cmxa
+[batteries: make install] Command started
++ make "install" (CWD=/home/opam/.opam/system/build/batteries.2.3.1)
+- Build mode: shared
+- ocamlbuild -no-links -use-ocamlfind src/batteries.cma src/batteriesHelp.cmo src/batteriesThread.cma META src/batteries.cmxs src/batteriesThread.cmxs
+- File "_tags", line 2, characters 32-42:
+- Warning: the tag "warn_Ae-29" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
 - ocamlfind: Package `bisect' not found
+- ocamlfind remove batteries
+- ocamlfind install batteries _build/META _build/src/*.cma battop.ml _build/src/*.cmi _build/src/*.mli _build/src/batteriesHelp.cmo _build/src/batteriesConfig.cmo _build/src/batteriesPrint.cmo ocamlinit build/ocaml \
+- 	-optional _build/src/*.cmx _build/src/*.a _build/src/*.cmxa _build/src/*.cmxs _build/src/*.lib
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/batteries
 - Installed /home/opam/.opam/system/lib/batteries/batteriesThread.cmxs
 - Installed /home/opam/.opam/system/lib/batteries/batteries.cmxs
@@ -2598,7 +2602,3 @@ The following changes have been performed
 
 =-=- lablgtk.2.18.3 troubleshooting -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 => This package requires gtk+ 2.0 development packages installed on your system
-
-The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150421182604.export"
-'opam install profound' failed.
