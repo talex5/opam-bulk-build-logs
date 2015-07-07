@@ -1,7 +1,7 @@
 + uname -m
+# Detecting depexts using flags: x86_64 linux centos
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=cil
-# Detecting depexts using flags: x86_64 linux centos
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=cil
 # No extra OS packages requirements found.
 The following actions will be performed:
@@ -102,6 +102,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -147,11 +149,16 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 	cp topfind.ml.in topfind.ml;                             \
+- else                                                             \
+- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 		> topfind.ml ;                                   \
+- fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -160,13 +167,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 	cp topfind.ml.in topfind.ml;                             \
-- else                                                             \
-- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 		> topfind.ml ;                                   \
-- fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -389,9 +389,9 @@ The following actions will be performed:
 - checking whether time.h and sys/time.h may both be included... yes
 - checking for working memcmp... yes
 - checking for mkdir... yes
-- checking for select... yes
-- checking for socket... 
+- checking for select... 
 - yes
+- checking for socket... yes
 - checking for __sysv_signal... yes
 - checking for real definition of size_t... unsigned long
 - checking for real definition of wchar_t... int
@@ -1129,7 +1129,8 @@ The following actions will be performed:
 - checking for gcc version... checking how to run the C preprocessor... gcc -E
 - checking for grep that handles long lines and -e... /usr/bin/grep
 - checking for egrep... /usr/bin/grep -E
-- checking for ANSI C header files... yes
+- checking for ANSI C header files... 
+- yes
 - checking for sys/types.h... yes
 - checking for sys/stat.h... yes
 - checking for stdlib.h... yes
@@ -1139,7 +1140,8 @@ The following actions will be performed:
 - checking for inttypes.h... yes
 - checking for stdint.h... yes
 - checking for unistd.h... yes
-- checking for __builtin_va_list... yes
+- checking for __builtin_va_list... 
+- yes
 - checking if __thread is a keyword... true
 - checking if gcc adds underscores to assembly labels.... false
 - checking for ANSI C header files... (cached) yes
@@ -1149,8 +1151,7 @@ The following actions will be performed:
 - checking sys/time.h presence... yes
 - checking for sys/time.h... yes
 - checking for unistd.h... (cached) yes
-- checking wchar.h usability... 
-- yes
+- checking wchar.h usability... yes
 - checking wchar.h presence... yes
 - checking for wchar.h... yes
 - checking stdbool.h usability... yes
@@ -1162,46 +1163,10 @@ The following actions will be performed:
 - checking for working memcmp... yes
 - checking for mkdir... yes
 - checking for select... yes
-- checking for socket... yes
+- checking for socket... 
+- yes
 - checking for __sysv_signal... yes
-- checking for real definition of size_t... 
-
-#=== ERROR while installing cil.1.7.3 =========================================#
-# opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
-# os                   linux
-# command              make
-# path                 /home/opam/.opam/system/build/cil.1.7.3
-# compiler             system (4.02.1)
-# exit-code            2
-# env-file             /home/opam/.opam/system/build/cil.1.7.3/cil-1-60459a.env
-# stdout-file          /home/opam/.opam/system/build/cil.1.7.3/cil-1-60459a.out
-# stderr-file          /home/opam/.opam/system/build/cil.1.7.3/cil-1-60459a.err
-### stdout ###
-# [...]
-# mv lib/App/Cilly.pm.tmp lib/App/Cilly.pm; \
-# if gcc -D_GNUCC -m32 src/machdep-ml.c -o _build/machdep-ml32.exe ;then \
-#   sed -e "s|nogcc32model|` _build/machdep-ml32.exe --env`|" lib/App/Cilly.pm > lib/App/Cilly.pm.tmp; \
-#   mv lib/App/Cilly.pm.tmp lib/App/Cilly.pm; \
-# fi
-# if gcc -D_GNUCC -m64 src/machdep-ml.c -o _build/machdep-ml64.exe ;then \
-#   sed -e "s|nogcc64model|` _build/machdep-ml64.exe --env`|" lib/App/Cilly.pm > lib/App/Cilly.pm.tmp; \
-#   mv lib/App/Cilly.pm.tmp lib/App/Cilly.pm; \
-# fi
-# cd lib; perl Makefile.PL
-### stderr ###
-# [...]
-# src/machdep-ml.c:178:22: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-#      alignof_double = (int)(&((struct s1*)0)->d);
-#                       ^
-# src/machdep-ml.c:187:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-#      alignof_longdouble = (int)(&((struct s1*)0)->ld);
-#                           ^
-# Generating CIL_MACHINE machine dependency information string (for CIL)
-# Can't locate ExtUtils/MakeMaker.pm in @INC (@INC contains: /home/opam/.opam/system/lib/perl5 /usr/local/lib64/perl5 /usr/local/share/perl5 /usr/lib64/perl5/vendor_perl /usr/share/perl5/vendor_perl /usr/lib64/perl5 /usr/share/perl5 .) at Makefile.PL line 4.
-# BEGIN failed--compilation aborted at Makefile.PL line 4.
-# make: *** [lib/Makefile] Error 2
-
-- unsigned long
+- checking for real definition of size_t... unsigned long
 - checking for real definition of wchar_t... int
 - checking whether to use CIL feature blockinggraph... no
 - checking whether to use CIL feature zrapp... no
@@ -1238,6 +1203,42 @@ The following actions will be performed:
 -   mv lib/App/Cilly.pm.tmp lib/App/Cilly.pm; \
 - fi
 - cd lib; perl Makefile.PL
+
+#=== ERROR while installing cil.1.7.3 =========================================#
+# opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
+# os                   linux
+# command              make
+# path                 /home/opam/.opam/system/build/cil.1.7.3
+# compiler             system (4.02.1)
+# exit-code            2
+# env-file             /home/opam/.opam/system/build/cil.1.7.3/cil-1-60459a.env
+# stdout-file          /home/opam/.opam/system/build/cil.1.7.3/cil-1-60459a.out
+# stderr-file          /home/opam/.opam/system/build/cil.1.7.3/cil-1-60459a.err
+### stdout ###
+# [...]
+# mv lib/App/Cilly.pm.tmp lib/App/Cilly.pm; \
+# if gcc -D_GNUCC -m32 src/machdep-ml.c -o _build/machdep-ml32.exe ;then \
+#   sed -e "s|nogcc32model|` _build/machdep-ml32.exe --env`|" lib/App/Cilly.pm > lib/App/Cilly.pm.tmp; \
+#   mv lib/App/Cilly.pm.tmp lib/App/Cilly.pm; \
+# fi
+# if gcc -D_GNUCC -m64 src/machdep-ml.c -o _build/machdep-ml64.exe ;then \
+#   sed -e "s|nogcc64model|` _build/machdep-ml64.exe --env`|" lib/App/Cilly.pm > lib/App/Cilly.pm.tmp; \
+#   mv lib/App/Cilly.pm.tmp lib/App/Cilly.pm; \
+# fi
+# cd lib; perl Makefile.PL
+### stderr ###
+# [...]
+# src/machdep-ml.c:178:22: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+#      alignof_double = (int)(&((struct s1*)0)->d);
+#                       ^
+# src/machdep-ml.c:187:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+#      alignof_longdouble = (int)(&((struct s1*)0)->ld);
+#                           ^
+# Generating CIL_MACHINE machine dependency information string (for CIL)
+# Can't locate ExtUtils/MakeMaker.pm in @INC (@INC contains: /home/opam/.opam/system/lib/perl5 /usr/local/lib64/perl5 /usr/local/share/perl5 /usr/lib64/perl5/vendor_perl /usr/share/perl5/vendor_perl /usr/lib64/perl5 /usr/share/perl5 .) at Makefile.PL line 4.
+# BEGIN failed--compilation aborted at Makefile.PL line 4.
+# make: *** [lib/Makefile] Error 2
+
 - In file included from /usr/include/features.h:399:0,
 -                  from /usr/include/stdio.h:27,
 -                  from src/machdep-ml.c:40:
@@ -1289,5 +1290,5 @@ The following changes have been performed
   - install ocamlfind 1.5.5
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150314005628.export"
+    opam switch import "~/.opam/system/backup/state-20150314133638.export"
 'opam install cil' failed.
