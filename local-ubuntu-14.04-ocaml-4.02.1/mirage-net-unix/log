@@ -1,16 +1,22 @@
++ uname -m
++ uname -s
++ lsb_release -i -s
 /usr/bin/lsb_release
++ opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=mirage-net-unix
 # Detecting depexts using flags: x86_64 linux ubuntu
 # The following system packages are needed:
 #  - m4
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=mirage-net-unix
 Not running as root, system installation will be done through "sudo"
++ sudo apt-get update
 Ign http://download.opensuse.org  InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
-Hit http://archive.ubuntu.com trusty Release.gpg
 Hit http://download.opensuse.org  Packages
+Hit http://archive.ubuntu.com trusty Release.gpg
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
 Hit http://archive.ubuntu.com trusty Release
@@ -22,23 +28,23 @@ Hit http://archive.ubuntu.com trusty/universe Sources
 Hit http://archive.ubuntu.com trusty/main amd64 Packages
 Hit http://archive.ubuntu.com trusty/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty/universe amd64 Packages
-Get:5 http://archive.ubuntu.com trusty-updates/main Sources [241 kB]
+Get:5 http://archive.ubuntu.com trusty-updates/main Sources [242 kB]
 Get:6 http://archive.ubuntu.com trusty-updates/restricted Sources [2310 B]
-Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [133 kB]
-Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [619 kB]
+Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [135 kB]
+Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [621 kB]
 Get:9 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [15.1 kB]
-Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [340 kB]
+Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [343 kB]
 Get:11 http://archive.ubuntu.com trusty-security/main Sources [94.3 kB]
 Get:12 http://archive.ubuntu.com trusty-security/restricted Sources [1874 B]
-Get:13 http://archive.ubuntu.com trusty-security/universe Sources [19.6 kB]
+Get:13 http://archive.ubuntu.com trusty-security/universe Sources [21.0 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [320 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
-Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [116 kB]
-Fetched 2046 kB in 5s (351 kB/s)
+Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [118 kB]
+Fetched 2057 kB in 5s (385 kB/s)
 Reading package lists...
-W# OS package update successful
++ sudo apt-get install -qq -yy m4
+# OS package update successful
 Not running as root, system installation will be done through "sudo"
-: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 619283 619284
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind       1.5.5                               [required by mirage-net-unix]
@@ -60,11 +66,11 @@ The following actions will be performed:
 [cstruct: http] Command started
 [io-page: from default] Command started
 [ipaddr: from default] Command started
-[ipaddr: from default] Command started
 [io-page: from default] Command started
-[default] http://opam-archive:8080/archives/ipaddr.2.5.0+opam.tar.gz downloaded
-[lwt: from default] Command started
+[ipaddr: from default] Command started
 [default] http://opam-archive:8080/archives/io-page.1.5.1+opam.tar.gz downloaded
+[lwt: from default] Command started
+[default] http://opam-archive:8080/archives/ipaddr.2.5.0+opam.tar.gz downloaded
 [mirage-net-unix: from default] Command started
 [lwt: from default] Command started
 [default] http://opam-archive:8080/archives/lwt.2.4.5+opam.tar.gz downloaded
@@ -180,6 +186,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -225,12 +233,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -239,8 +247,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -293,6 +299,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -337,7 +344,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -2440,6 +2446,27 @@ The following actions will be performed:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
 [tuntap: make install] Command started
++ make "PREFIX=/home/opam/.opam/system" "install" (CWD=/home/opam/.opam/system/build/tuntap.0.7.0)
+- ocaml setup.ml -install 
+- File "setup.ml", line 213, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "setup.ml", line 1793, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
+- Installed /home/opam/.opam/system/lib/tuntap/tuntap.mli
+- Installed /home/opam/.opam/system/lib/tuntap/libtuntap_stubs.a
+- Installed /home/opam/.opam/system/lib/tuntap/tuntap.cma
+- Installed /home/opam/.opam/system/lib/tuntap/tuntap.cmxa
+- Installed /home/opam/.opam/system/lib/tuntap/tuntap.a
+- Installed /home/opam/.opam/system/lib/tuntap/tuntap.cmxs
+- Installed /home/opam/.opam/system/lib/tuntap/tuntap.cmi
+- Installed /home/opam/.opam/system/lib/tuntap/tuntap.cmx
+- Installed /home/opam/.opam/system/lib/tuntap/META
+- Installed /home/opam/.opam/system/lib/stublibs/dlltuntap_stubs.so
+- Installed /home/opam/.opam/system/lib/stublibs/dlltuntap_stubs.so.owner
+- ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/system/lib/stublibs is not mentioned in ld.conf
+-> installed tuntap.0.7.0
 + make  (CWD=/home/opam/.opam/system/build/cstruct.1.5.0)
 - ocaml setup.ml -build 
 - /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
@@ -2505,27 +2532,6 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -a syntax/pa_cstruct.cmx -o syntax/cstruct-syntax.cmxa
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared syntax/cstruct-syntax.cmxa syntax/pa_cstruct.cmx -o syntax/cstruct-syntax.cmxs
 [cstruct: make install] Command started
-+ make "PREFIX=/home/opam/.opam/system" "install" (CWD=/home/opam/.opam/system/build/tuntap.0.7.0)
-- ocaml setup.ml -install 
-- File "setup.ml", line 213, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "setup.ml", line 1793, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
-- Installed /home/opam/.opam/system/lib/tuntap/tuntap.mli
-- Installed /home/opam/.opam/system/lib/tuntap/libtuntap_stubs.a
-- Installed /home/opam/.opam/system/lib/tuntap/tuntap.cma
-- Installed /home/opam/.opam/system/lib/tuntap/tuntap.cmxa
-- Installed /home/opam/.opam/system/lib/tuntap/tuntap.a
-- Installed /home/opam/.opam/system/lib/tuntap/tuntap.cmxs
-- Installed /home/opam/.opam/system/lib/tuntap/tuntap.cmi
-- Installed /home/opam/.opam/system/lib/tuntap/tuntap.cmx
-- Installed /home/opam/.opam/system/lib/tuntap/META
-- Installed /home/opam/.opam/system/lib/stublibs/dlltuntap_stubs.so
-- Installed /home/opam/.opam/system/lib/stublibs/dlltuntap_stubs.so.owner
-- ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/system/lib/stublibs is not mentioned in ld.conf
--> installed tuntap.0.7.0
 + make "install" (CWD=/home/opam/.opam/system/build/cstruct.1.5.0)
 - ocaml setup.ml -install 
 - Installed /home/opam/.opam/system/lib/cstruct/cstruct.mli
@@ -2765,7 +2771,7 @@ The following actions will be performed:
 [mirage-net-unix: make] Command started
 + make  (CWD=/home/opam/.opam/system/build/mirage-net-unix.2.2.0)
 - ocamlfind: Package `oUnit' not found
-- W: Field 'pkg_ounit' is not set: Command ''/home/opam/.opam/system/bin/ocamlfind' query -format %d oUnit > '/tmp/oasis-e22f0a.txt'' terminated with error code 2
+- W: Field 'pkg_ounit' is not set: Command ''/home/opam/.opam/system/bin/ocamlfind' query -format %d oUnit > '/tmp/oasis-99fc87.txt'' terminated with error code 2
 - E: Cannot find findlib package oUnit
 - E: Failure("1 configuration error")
 - make: *** [setup.data] Error 1
@@ -2786,7 +2792,7 @@ The following actions will be performed:
 # stderr-file          /home/opam/.opam/system/build/mirage-net-unix.2.2.0/mirage-net-unix-5-e1320e.err
 ### stderr ###
 # ocamlfind: Package `oUnit' not found
-# W: Field 'pkg_ounit' is not set: Command ''/home/opam/.opam/system/bin/ocamlfind' query -format %d oUnit > '/tmp/oasis-e22f0a.txt'' terminated with error code 2
+# W: Field 'pkg_ounit' is not set: Command ''/home/opam/.opam/system/bin/ocamlfind' query -format %d oUnit > '/tmp/oasis-99fc87.txt'' terminated with error code 2
 # E: Cannot find findlib package oUnit
 # E: Failure("1 configuration error")
 # make: *** [setup.data] Error 1
@@ -2811,5 +2817,5 @@ The following changes have been performed
   - install type_conv     112.01.01    
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150301044409.export"
+    opam switch import "~/.opam/system/backup/state-20150303211425.export"
 'opam install mirage-net-unix' failed.
