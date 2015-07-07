@@ -1,7 +1,7 @@
 + uname -m
+# Detecting depexts using flags: x86_64 linux centos
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=slap
-# Detecting depexts using flags: x86_64 linux centos
 # The following system packages are needed:
 #  - blas-devel
 #  - lapack-devel
@@ -10,9 +10,10 @@ Not running as root, the following command will be run through "sudo":
     yum -y update
 + sudo yum -y update
 Loaded plugins: fastestmirror
+Repodata is over 2 weeks old. Install yum-cron? Or run: yum makecache fast
 Determining fastest mirrors
- * base: mirrors.coreix.net
- * extras: anorien.csc.warwick.ac.uk
+ * base: anorien.csc.warwick.ac.uk
+ * extras: mirror.sov.uk.goscomb.net
  * updates: anorien.csc.warwick.ac.uk
 Resolving Dependencies
 --> Running transaction check
@@ -39,7 +40,8 @@ Running transaction check
 Running transaction test
 Transaction test succeeded
 Running transaction
-  Updating   : 1:openssl-libs-1.0.1e-42.el7.6.x86_64                        1/2 
+  Updating   : 1:openssl-libs-1.0.1e-42.el7.6.x86_64                        1/2+ sudo yum install -y blas-devel lapack-devel
+ 
   Cleanup    : 1:openssl-libs-1.0.1e-42.el7.4.x86_64                        2/2 
   Verifying  : 1:openssl-libs-1.0.1e-42.el7.6.x86_64                        1/2 
   Verifying  : 1:openssl-libs-1.0.1e-42.el7.4.x86_64                        2/2 
@@ -55,8 +57,8 @@ Not running as root, the following command will be run through "sudo":
     rpm -q blas-devel lapack-devel
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: mirrors.coreix.net
- * extras: anorien.csc.warwick.ac.uk
+ * base: anorien.csc.warwick.ac.uk
+ * extras: mirror.sov.uk.goscomb.net
  * updates: anorien.csc.warwick.ac.uk
 Resolving Dependencies
 --> Running transaction check
@@ -91,19 +93,17 @@ Install  2 Packages (+2 Dependent packages)
 Total download size: 5.9 M
 Installed size: 12 M
 Downloading packages:
-Repodata is over 2 weeks old. Install yum-cron? Or run: yum makecache fast
-+ sudo yum install -y blas-devel lapack-devel
 --------------------------------------------------------------------------------
-Total                                              4.4 MB/s | 5.9 MB  00:01     
+Total                                              4.9 MB/s | 5.9 MB  00:01     
 Running transaction check
 Running transaction test
 Transaction test succeeded
 Running transaction
   Installing : blas-3.4.2-4.el7.x86_64                                      1/4 
-  Installing : blas-devel-3.4.2-4.el7.x86_64                                2/4+ sudo rpm -q blas-devel lapack-devel
- 
+  Installing : blas-devel-3.4.2-4.el7.x86_64                                2/4 
   Installing : lapack-3.4.2-4.el7.x86_64                                    3/4 
-  Installing : lapack-devel-3.4.2-4.el7.x86_64                              4/4 
+  Installing : lapack-devel-3.4.2-4.el7.x86_64                              4/4+ sudo rpm -q blas-devel lapack-devel
+ 
   Verifying  : blas-devel-3.4.2-4.el7.x86_64                                1/4 
   Verifying  : blas-3.4.2-4.el7.x86_64                                      2/4 
   Verifying  : lapack-devel-3.4.2-4.el7.x86_64                              3/4 
@@ -130,15 +130,15 @@ The following actions will be performed:
 [cppo: from default] Command started
 [lacaml: from default] Command started
 [ocamlfind: from default] Command started
+[cppo: from default] Command started
+[default] http://opam-archive:8080/archives/cppo.1.1.2+opam.tar.gz downloaded
+[slap: from default] Command started
 [lacaml: from default] Command started
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/lacaml.7.1.5+opam.tar.gz downloaded
 [slap: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[slap: from default] Command started
-[cppo: from default] Command started
 [default] http://opam-archive:8080/archives/slap.1.0.1+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/cppo.1.1.2+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -171,8 +171,7 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) 
-- ok
+- Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib64/ocaml
@@ -276,6 +275,12 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 	cp topfind.ml.in topfind.ml;                             \
+- else                                                             \
+- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 		> topfind.ml ;                                   \
+- fi
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -284,12 +289,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 	cp topfind.ml.in topfind.ml;                             \
-- else                                                             \
-- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 		> topfind.ml ;                                   \
-- fi
 - ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
