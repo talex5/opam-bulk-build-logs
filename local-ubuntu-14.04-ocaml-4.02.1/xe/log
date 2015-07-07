@@ -1,18 +1,18 @@
 + uname -m
+# Detecting depexts using flags: x86_64 linux ubuntu
 + uname -s
 + lsb_release -i -s
-# Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=xe
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=xe
 # The following system packages are needed:
 #  - libpcre3-dev
 #  - libssl-dev
 #  - m4
 #  - pkg-config
 #  - time
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=xe
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
 Ign http://download.opensuse.org  InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
@@ -44,20 +44,23 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [24.5 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [341 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [130 kB]
-Fetched 2158 kB in 10s (214 kB/s)
-Reading package lists...+ sudo apt-get install -qq -yy libpcre3-dev libssl-dev m4 pkg-config time
-
+Fetched 2158 kB in 5s (366 kB/s)
+Reading package lists...
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_source_Sources.gz is not what the server reported 250796 250800
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_main_source_Sources.gz is not what the server reported 99937 99938
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_main_binary-amd64_Packages.gz is not what the server reported 340536 340605
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libpcre3-dev libssl-dev m4 pkg-config time
++ sudo apt-get install -qq -yy libpcre3-dev libssl-dev m4 pkg-config time
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
-Selecting previously unselected package libpcrecpp0:amd64.
 debconf: unable to initialize frontend: Readline
 debconf: (This frontend requires a controlling tty.)
 debconf: falling back to frontend: Teletype
 dpkg-preconfigure: unable to re-open stdin: 
+Selecting previously unselected package libpcrecpp0:amd64.
 (Reading database ... 22842 files and directories currently installed.)
 Preparing to unpack .../libpcrecpp0_1%3a8.31-2ubuntu2_amd64.deb ...
 Unpacking libpcrecpp0:amd64 (1:8.31-2ubuntu2) ...
@@ -118,11 +121,11 @@ The following actions will be performed:
 [base64: from default] Command started
 [cohttp: from default] Command started
 [conduit: http] Command started
-[base64: from default] Command started
 [cohttp: from default] Command started
-[default] http://opam-archive:8080/archives/cohttp.0.17.1+opam.tar.gz downloaded
-[cppo: from default] Command started
+[base64: from default] Command started
 [default] http://opam-archive:8080/archives/base64.2.0.0+opam.tar.gz downloaded
+[cppo: from default] Command started
+[default] http://opam-archive:8080/archives/cohttp.0.17.1+opam.tar.gz downloaded
 [cstruct: from default] Command started
 [cppo: from default] Command started
 [default] http://opam-archive:8080/archives/cppo.1.1.2+opam.tar.gz downloaded
@@ -277,6 +280,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -322,12 +327,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -336,8 +341,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -727,18 +730,8 @@ The following actions will be performed:
 - ocamlc: ........................................ /usr/bin/ocamlc.opt
 - ocamlfind: ..................................... /home/opam/.opam/system/bin/ocamlfind
 - 
-- I: Running command '/usr/bin/ocamlc.opt -config > /tmp/oasis-e28117.txt'
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %v findlib > /tmp/oasis-e9006c.txt'
-[ocamlify: ocaml setup.ml] Command started
-+ ocaml "setup.ml" "-build" (CWD=/home/opam/.opam/system/build/ocamlify.0.0.1)
-- /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
-- ocamlfind ocamldep -modules src/ocamlify.ml > src/ocamlify.ml.depends
-- ocamlfind ocamldep -modules src/OCamlifyConfig.ml > src/OCamlifyConfig.ml.depends
-- ocamlfind ocamlc -c -g -I src -o src/OCamlifyConfig.cmo src/OCamlifyConfig.ml
-- ocamlfind ocamlc -c -g -I src -o src/ocamlify.cmo src/ocamlify.ml
-- ocamlfind ocamlc -g -linkpkg src/OCamlifyConfig.cmo src/ocamlify.cmo -o src/ocamlify.byte
-- I: Running command '/usr/bin/ocamlbuild src/ocamlify.byte -tag debug'
-- I: Running command 'cp '_build/src/ocamlify.byte' '_build/src/ocamlify''
+- I: Running command '/usr/bin/ocamlc.opt -config > /tmp/oasis-0f7c8e.txt'
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %v findlib > /tmp/oasis-a9c34b.txt'
 [ocamlify: ocaml setup.ml] Command started
 + make  (CWD=/home/opam/.opam/system/build/magic-mime.1.0.0)
 - ocaml setup.ml -build 
@@ -757,6 +750,16 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -a mime_types.cmx magic_mime.cmx -o magic-mime.cmxa
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared magic-mime.cmxa mime_types.cmx magic_mime.cmx -o magic-mime.cmxs
 [magic-mime: make install] Command started
++ ocaml "setup.ml" "-build" (CWD=/home/opam/.opam/system/build/ocamlify.0.0.1)
+- /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
+- ocamlfind ocamldep -modules src/ocamlify.ml > src/ocamlify.ml.depends
+- ocamlfind ocamldep -modules src/OCamlifyConfig.ml > src/OCamlifyConfig.ml.depends
+- ocamlfind ocamlc -c -g -I src -o src/OCamlifyConfig.cmo src/OCamlifyConfig.ml
+- ocamlfind ocamlc -c -g -I src -o src/ocamlify.cmo src/ocamlify.ml
+- ocamlfind ocamlc -g -linkpkg src/OCamlifyConfig.cmo src/ocamlify.cmo -o src/ocamlify.byte
+- I: Running command '/usr/bin/ocamlbuild src/ocamlify.byte -tag debug'
+- I: Running command 'cp '_build/src/ocamlify.byte' '_build/src/ocamlify''
+[ocamlify: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/system/build/ocamlify.0.0.1)
 - I: Copying file '/home/opam/.opam/system/build/ocamlify.0.0.1/_build/src/ocamlify' to '/home/opam/.opam/system/bin/ocamlify'
 - I: Running command 'cp '/home/opam/.opam/system/build/ocamlify.0.0.1/_build/src/ocamlify' '/home/opam/.opam/system/bin/ocamlify''
@@ -1562,6 +1565,83 @@ The following actions will be performed:
 - config.status: creating src/Makefile
 - config.status: creating src/META
 [ssl: make] Command started
++ ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/system/build/re.1.3.2)
+- Installed /home/opam/.opam/system/lib/re/re.mli
+- Installed /home/opam/.opam/system/lib/re/re.cma
+- Installed /home/opam/.opam/system/lib/re/re.cmxa
+- Installed /home/opam/.opam/system/lib/re/re.a
+- Installed /home/opam/.opam/system/lib/re/re.cmxs
+- Installed /home/opam/.opam/system/lib/re/re.cmi
+- Installed /home/opam/.opam/system/lib/re/re.cmti
+- Installed /home/opam/.opam/system/lib/re/re.cmt
+- Installed /home/opam/.opam/system/lib/re/re.annot
+- Installed /home/opam/.opam/system/lib/re/re_automata.cmx
+- Installed /home/opam/.opam/system/lib/re/re_cset.cmx
+- Installed /home/opam/.opam/system/lib/re/re.cmx
+- Installed /home/opam/.opam/system/lib/re/re_str.mli
+- Installed /home/opam/.opam/system/lib/re/re_str.cma
+- Installed /home/opam/.opam/system/lib/re/re_str.cmxa
+- Installed /home/opam/.opam/system/lib/re/re_str.a
+- Installed /home/opam/.opam/system/lib/re/re_str.cmxs
+- Installed /home/opam/.opam/system/lib/re/re_str.cmi
+- Installed /home/opam/.opam/system/lib/re/re_str.cmti
+- Installed /home/opam/.opam/system/lib/re/re_str.cmt
+- Installed /home/opam/.opam/system/lib/re/re_str.annot
+- Installed /home/opam/.opam/system/lib/re/re_str.cmx
+- Installed /home/opam/.opam/system/lib/re/re_posix.mli
+- Installed /home/opam/.opam/system/lib/re/re_posix.cma
+- Installed /home/opam/.opam/system/lib/re/re_posix.cmxa
+- Installed /home/opam/.opam/system/lib/re/re_posix.a
+- Installed /home/opam/.opam/system/lib/re/re_posix.cmxs
+- Installed /home/opam/.opam/system/lib/re/re_posix.cmi
+- Installed /home/opam/.opam/system/lib/re/re_posix.cmti
+- Installed /home/opam/.opam/system/lib/re/re_posix.cmt
+- Installed /home/opam/.opam/system/lib/re/re_posix.annot
+- Installed /home/opam/.opam/system/lib/re/re_posix.cmx
+- Installed /home/opam/.opam/system/lib/re/re_perl.mli
+- Installed /home/opam/.opam/system/lib/re/re_perl.cma
+- Installed /home/opam/.opam/system/lib/re/re_perl.cmxa
+- Installed /home/opam/.opam/system/lib/re/re_perl.a
+- Installed /home/opam/.opam/system/lib/re/re_perl.cmxs
+- Installed /home/opam/.opam/system/lib/re/re_perl.cmi
+- Installed /home/opam/.opam/system/lib/re/re_perl.cmti
+- Installed /home/opam/.opam/system/lib/re/re_perl.cmt
+- Installed /home/opam/.opam/system/lib/re/re_perl.annot
+- Installed /home/opam/.opam/system/lib/re/re_perl.cmx
+- Installed /home/opam/.opam/system/lib/re/re_pcre.mli
+- Installed /home/opam/.opam/system/lib/re/re_pcre.cma
+- Installed /home/opam/.opam/system/lib/re/re_pcre.cmxa
+- Installed /home/opam/.opam/system/lib/re/re_pcre.a
+- Installed /home/opam/.opam/system/lib/re/re_pcre.cmxs
+- Installed /home/opam/.opam/system/lib/re/re_pcre.cmi
+- Installed /home/opam/.opam/system/lib/re/re_pcre.cmti
+- Installed /home/opam/.opam/system/lib/re/re_pcre.cmt
+- Installed /home/opam/.opam/system/lib/re/re_pcre.annot
+- Installed /home/opam/.opam/system/lib/re/re_pcre.cmx
+- Installed /home/opam/.opam/system/lib/re/re_glob.mli
+- Installed /home/opam/.opam/system/lib/re/re_glob.cma
+- Installed /home/opam/.opam/system/lib/re/re_glob.cmxa
+- Installed /home/opam/.opam/system/lib/re/re_glob.a
+- Installed /home/opam/.opam/system/lib/re/re_glob.cmxs
+- Installed /home/opam/.opam/system/lib/re/re_glob.cmi
+- Installed /home/opam/.opam/system/lib/re/re_glob.cmti
+- Installed /home/opam/.opam/system/lib/re/re_glob.cmt
+- Installed /home/opam/.opam/system/lib/re/re_glob.annot
+- Installed /home/opam/.opam/system/lib/re/re_glob.cmx
+- Installed /home/opam/.opam/system/lib/re/re_emacs.mli
+- Installed /home/opam/.opam/system/lib/re/re_emacs.cma
+- Installed /home/opam/.opam/system/lib/re/re_emacs.cmxa
+- Installed /home/opam/.opam/system/lib/re/re_emacs.a
+- Installed /home/opam/.opam/system/lib/re/re_emacs.cmxs
+- Installed /home/opam/.opam/system/lib/re/re_emacs.cmi
+- Installed /home/opam/.opam/system/lib/re/re_emacs.cmti
+- Installed /home/opam/.opam/system/lib/re/re_emacs.cmt
+- Installed /home/opam/.opam/system/lib/re/re_emacs.annot
+- Installed /home/opam/.opam/system/lib/re/re_emacs.cmx
+- Installed /home/opam/.opam/system/lib/re/META
+- W: Nothing to install for findlib library 'fort_unit'
+-> installed re.1.3.2
+[stringext: ocaml setup.ml] Command started
 + make  (CWD=/home/opam/.opam/system/build/ssl.0.4.7)
 - make -C src all
 - make[1]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
@@ -1713,83 +1793,6 @@ The following actions will be performed:
 - ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/system/lib/stublibs is not mentioned in ld.conf
 -> installed ssl.0.4.7
 [lwt: ./configure] Command started
-+ ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/system/build/re.1.3.2)
-- Installed /home/opam/.opam/system/lib/re/re.mli
-- Installed /home/opam/.opam/system/lib/re/re.cma
-- Installed /home/opam/.opam/system/lib/re/re.cmxa
-- Installed /home/opam/.opam/system/lib/re/re.a
-- Installed /home/opam/.opam/system/lib/re/re.cmxs
-- Installed /home/opam/.opam/system/lib/re/re.cmi
-- Installed /home/opam/.opam/system/lib/re/re.cmti
-- Installed /home/opam/.opam/system/lib/re/re.cmt
-- Installed /home/opam/.opam/system/lib/re/re.annot
-- Installed /home/opam/.opam/system/lib/re/re_automata.cmx
-- Installed /home/opam/.opam/system/lib/re/re_cset.cmx
-- Installed /home/opam/.opam/system/lib/re/re.cmx
-- Installed /home/opam/.opam/system/lib/re/re_str.mli
-- Installed /home/opam/.opam/system/lib/re/re_str.cma
-- Installed /home/opam/.opam/system/lib/re/re_str.cmxa
-- Installed /home/opam/.opam/system/lib/re/re_str.a
-- Installed /home/opam/.opam/system/lib/re/re_str.cmxs
-- Installed /home/opam/.opam/system/lib/re/re_str.cmi
-- Installed /home/opam/.opam/system/lib/re/re_str.cmti
-- Installed /home/opam/.opam/system/lib/re/re_str.cmt
-- Installed /home/opam/.opam/system/lib/re/re_str.annot
-- Installed /home/opam/.opam/system/lib/re/re_str.cmx
-- Installed /home/opam/.opam/system/lib/re/re_posix.mli
-- Installed /home/opam/.opam/system/lib/re/re_posix.cma
-- Installed /home/opam/.opam/system/lib/re/re_posix.cmxa
-- Installed /home/opam/.opam/system/lib/re/re_posix.a
-- Installed /home/opam/.opam/system/lib/re/re_posix.cmxs
-- Installed /home/opam/.opam/system/lib/re/re_posix.cmi
-- Installed /home/opam/.opam/system/lib/re/re_posix.cmti
-- Installed /home/opam/.opam/system/lib/re/re_posix.cmt
-- Installed /home/opam/.opam/system/lib/re/re_posix.annot
-- Installed /home/opam/.opam/system/lib/re/re_posix.cmx
-- Installed /home/opam/.opam/system/lib/re/re_perl.mli
-- Installed /home/opam/.opam/system/lib/re/re_perl.cma
-- Installed /home/opam/.opam/system/lib/re/re_perl.cmxa
-- Installed /home/opam/.opam/system/lib/re/re_perl.a
-- Installed /home/opam/.opam/system/lib/re/re_perl.cmxs
-- Installed /home/opam/.opam/system/lib/re/re_perl.cmi
-- Installed /home/opam/.opam/system/lib/re/re_perl.cmti
-- Installed /home/opam/.opam/system/lib/re/re_perl.cmt
-- Installed /home/opam/.opam/system/lib/re/re_perl.annot
-- Installed /home/opam/.opam/system/lib/re/re_perl.cmx
-- Installed /home/opam/.opam/system/lib/re/re_pcre.mli
-- Installed /home/opam/.opam/system/lib/re/re_pcre.cma
-- Installed /home/opam/.opam/system/lib/re/re_pcre.cmxa
-- Installed /home/opam/.opam/system/lib/re/re_pcre.a
-- Installed /home/opam/.opam/system/lib/re/re_pcre.cmxs
-- Installed /home/opam/.opam/system/lib/re/re_pcre.cmi
-- Installed /home/opam/.opam/system/lib/re/re_pcre.cmti
-- Installed /home/opam/.opam/system/lib/re/re_pcre.cmt
-- Installed /home/opam/.opam/system/lib/re/re_pcre.annot
-- Installed /home/opam/.opam/system/lib/re/re_pcre.cmx
-- Installed /home/opam/.opam/system/lib/re/re_glob.mli
-- Installed /home/opam/.opam/system/lib/re/re_glob.cma
-- Installed /home/opam/.opam/system/lib/re/re_glob.cmxa
-- Installed /home/opam/.opam/system/lib/re/re_glob.a
-- Installed /home/opam/.opam/system/lib/re/re_glob.cmxs
-- Installed /home/opam/.opam/system/lib/re/re_glob.cmi
-- Installed /home/opam/.opam/system/lib/re/re_glob.cmti
-- Installed /home/opam/.opam/system/lib/re/re_glob.cmt
-- Installed /home/opam/.opam/system/lib/re/re_glob.annot
-- Installed /home/opam/.opam/system/lib/re/re_glob.cmx
-- Installed /home/opam/.opam/system/lib/re/re_emacs.mli
-- Installed /home/opam/.opam/system/lib/re/re_emacs.cma
-- Installed /home/opam/.opam/system/lib/re/re_emacs.cmxa
-- Installed /home/opam/.opam/system/lib/re/re_emacs.a
-- Installed /home/opam/.opam/system/lib/re/re_emacs.cmxs
-- Installed /home/opam/.opam/system/lib/re/re_emacs.cmi
-- Installed /home/opam/.opam/system/lib/re/re_emacs.cmti
-- Installed /home/opam/.opam/system/lib/re/re_emacs.cmt
-- Installed /home/opam/.opam/system/lib/re/re_emacs.annot
-- Installed /home/opam/.opam/system/lib/re/re_emacs.cmx
-- Installed /home/opam/.opam/system/lib/re/META
-- W: Nothing to install for findlib library 'fort_unit'
--> installed re.1.3.2
-[stringext: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-configure" (CWD=/home/opam/.opam/system/build/stringext.1.3.1)
 - 
 - Configuration: 
@@ -4635,6 +4638,71 @@ The following actions will be performed:
 - Installed /home/opam/.opam/system/lib/oasis/META
 -> installed oasis.0.4.5
 [uri: ocaml setup.ml] Command started
++ ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/uri.1.8.0)
+- 
+- Configuration: 
+- ocamlfind: ........................................... /home/opam/.opam/system/bin/ocamlfind
+- ocamlc: .............................................. /usr/bin/ocamlc.opt
+- ocamlopt: ............................................ /usr/bin/ocamlopt.opt
+- ocamlbuild: .......................................... /usr/bin/ocamlbuild
+- Package name: ........................................ uri
+- Package version: ..................................... 1.8.0
+- os_type: ............................................. Unix
+- system: .............................................. linux
+- architecture: ........................................ amd64
+- ccomp_type: .......................................... cc
+- ocaml_version: ....................................... 4.02.1
+- standard_library_default: ............................ /usr/lib/ocaml
+- standard_library: .................................... /usr/lib/ocaml
+- standard_runtime: .................................... /usr/bin/ocamlrun
+- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
+- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
+- model: ............................................... default
+- ext_obj: ............................................. .o
+- ext_asm: ............................................. .s
+- ext_lib: ............................................. .a
+- ext_dll: ............................................. .so
+- default_executable_name: ............................. a.out
+- systhread_supported: ................................. true
+- Install architecture-independent files dir: .......... /home/opam/.opam/system
+- Install architecture-dependent files in dir: ......... $prefix
+- User executables: .................................... $exec_prefix/bin
+- System admin executables: ............................ $exec_prefix/sbin
+- Program executables: ................................. $exec_prefix/libexec
+- Read-only single-machine data: ....................... $prefix/etc
+- Modifiable architecture-independent data: ............ $prefix/com
+- Modifiable single-machine data: ...................... $prefix/var
+- Object code libraries: ............................... $exec_prefix/lib
+- Read-only arch-independent data root: ................ $prefix/share
+- Read-only architecture-independent data: ............. $datarootdir
+- Info documentation: .................................. $datarootdir/info
+- Locale-dependent data: ............................... $datarootdir/locale
+- Man documentation: ................................... $datarootdir/man
+- Documentation root: .................................. $datarootdir/doc/$pkg_name
+- HTML documentation: .................................. $docdir
+- DVI documentation: ................................... $docdir
+- PDF documentation: ................................... $docdir
+- PS documentation: .................................... $docdir
+- findlib_version: ..................................... 1.5.5
+- is_native: ........................................... true
+- suffix_program: ...................................... 
+- Remove a file.: ...................................... rm -f
+- Remove a directory.: ................................. rm -rf
+- Turn ocaml debug flag on: ............................ true
+- Turn ocaml profile flag on: .......................... false
+- Compiler support generation of .cmxs.: ............... true
+- OCamlbuild additional flags: ......................... 
+- build the full services library: ..................... false
+- Create documentations: ............................... true
+- Compile tests executable and library and run them: ... false
+- pkg_re_posix: ........................................ /home/opam/.opam/system/lib/re
+- pkg_stringext: ....................................... /home/opam/.opam/system/lib/stringext
+- pkg_sexplib_syntax: .................................. /home/opam/.opam/system/lib/sexplib
+- pkg_sexplib: ......................................... /home/opam/.opam/system/lib/sexplib
+- pkg_compiler_libs_toplevel: .......................... /usr/lib/ocaml/compiler-libs
+- ocamldoc: ............................................ /usr/bin/ocamldoc
+- 
+[uri: ocaml setup.ml] Command started
 + make "build" (CWD=/home/opam/.opam/system/build/ipaddr.2.6.1)
 - ocaml setup.ml -build 
 - /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
@@ -4711,71 +4779,6 @@ The following actions will be performed:
 - Installed /home/opam/.opam/system/lib/ipaddr/META
 -> installed ipaddr.2.6.1
 [uuidm: ocaml setup.ml] Command started
-+ ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/uri.1.8.0)
-- 
-- Configuration: 
-- ocamlfind: ........................................... /home/opam/.opam/system/bin/ocamlfind
-- ocamlc: .............................................. /usr/bin/ocamlc.opt
-- ocamlopt: ............................................ /usr/bin/ocamlopt.opt
-- ocamlbuild: .......................................... /usr/bin/ocamlbuild
-- Package name: ........................................ uri
-- Package version: ..................................... 1.8.0
-- os_type: ............................................. Unix
-- system: .............................................. linux
-- architecture: ........................................ amd64
-- ccomp_type: .......................................... cc
-- ocaml_version: ....................................... 4.02.1
-- standard_library_default: ............................ /usr/lib/ocaml
-- standard_library: .................................... /usr/lib/ocaml
-- standard_runtime: .................................... /usr/bin/ocamlrun
-- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
-- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
-- model: ............................................... default
-- ext_obj: ............................................. .o
-- ext_asm: ............................................. .s
-- ext_lib: ............................................. .a
-- ext_dll: ............................................. .so
-- default_executable_name: ............................. a.out
-- systhread_supported: ................................. true
-- Install architecture-independent files dir: .......... /home/opam/.opam/system
-- Install architecture-dependent files in dir: ......... $prefix
-- User executables: .................................... $exec_prefix/bin
-- System admin executables: ............................ $exec_prefix/sbin
-- Program executables: ................................. $exec_prefix/libexec
-- Read-only single-machine data: ....................... $prefix/etc
-- Modifiable architecture-independent data: ............ $prefix/com
-- Modifiable single-machine data: ...................... $prefix/var
-- Object code libraries: ............................... $exec_prefix/lib
-- Read-only arch-independent data root: ................ $prefix/share
-- Read-only architecture-independent data: ............. $datarootdir
-- Info documentation: .................................. $datarootdir/info
-- Locale-dependent data: ............................... $datarootdir/locale
-- Man documentation: ................................... $datarootdir/man
-- Documentation root: .................................. $datarootdir/doc/$pkg_name
-- HTML documentation: .................................. $docdir
-- DVI documentation: ................................... $docdir
-- PDF documentation: ................................... $docdir
-- PS documentation: .................................... $docdir
-- findlib_version: ..................................... 1.5.5
-- is_native: ........................................... true
-- suffix_program: ...................................... 
-- Remove a file.: ...................................... rm -f
-- Remove a directory.: ................................. rm -rf
-- Turn ocaml debug flag on: ............................ true
-- Turn ocaml profile flag on: .......................... false
-- Compiler support generation of .cmxs.: ............... true
-- OCamlbuild additional flags: ......................... 
-- build the full services library: ..................... false
-- Create documentations: ............................... true
-- Compile tests executable and library and run them: ... false
-- pkg_re_posix: ........................................ /home/opam/.opam/system/lib/re
-- pkg_stringext: ....................................... /home/opam/.opam/system/lib/stringext
-- pkg_sexplib_syntax: .................................. /home/opam/.opam/system/lib/sexplib
-- pkg_sexplib: ......................................... /home/opam/.opam/system/lib/sexplib
-- pkg_compiler_libs_toplevel: .......................... /usr/lib/ocaml/compiler-libs
-- ocamldoc: ............................................ /usr/bin/ocamldoc
-- 
-[uri: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/uuidm.0.9.5)
 - 
 - Configuration: 
@@ -5134,22 +5137,6 @@ The following actions will be performed:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
 [uuidm: ocaml setup.ml] Command started
-+ ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/system/build/uuidm.0.9.5)
-- File "/Users/dbuenzli/.odb/install-oasis/oasis-0.3.0/src/oasis/OASISString.ml", line 118, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "/Users/dbuenzli/.odb/install-oasis/oasis-0.3.0/src/oasis/OASISLibrary.ml", line 402, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
-- Installed /home/opam/.opam/system/lib/uuidm/uuidm.mli
-- Installed /home/opam/.opam/system/lib/uuidm/uuidm.cma
-- Installed /home/opam/.opam/system/lib/uuidm/uuidm.cmxa
-- Installed /home/opam/.opam/system/lib/uuidm/uuidm.a
-- Installed /home/opam/.opam/system/lib/uuidm/uuidm.cmxs
-- Installed /home/opam/.opam/system/lib/uuidm/uuidm.cmi
-- Installed /home/opam/.opam/system/lib/uuidm/uuidm.cmx
-- Installed /home/opam/.opam/system/lib/uuidm/META
--> installed uuidm.0.9.5
 + ocaml "setup.ml" "-build" (CWD=/home/opam/.opam/system/build/uri.1.8.0)
 - ocamlfind ocamlopt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa -linkpkg myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -modules lib/uri.mli > lib/uri.mli.depends
@@ -5184,6 +5171,22 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -a top/uri_top.cmx -o top/uri_top.cmxa
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared top/uri_top.cmxa top/uri_top.cmx -o top/uri_top.cmxs
 [uri: ocaml setup.ml] Command started
++ ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/system/build/uuidm.0.9.5)
+- File "/Users/dbuenzli/.odb/install-oasis/oasis-0.3.0/src/oasis/OASISString.ml", line 118, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "/Users/dbuenzli/.odb/install-oasis/oasis-0.3.0/src/oasis/OASISLibrary.ml", line 402, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
+- Installed /home/opam/.opam/system/lib/uuidm/uuidm.mli
+- Installed /home/opam/.opam/system/lib/uuidm/uuidm.cma
+- Installed /home/opam/.opam/system/lib/uuidm/uuidm.cmxa
+- Installed /home/opam/.opam/system/lib/uuidm/uuidm.a
+- Installed /home/opam/.opam/system/lib/uuidm/uuidm.cmxs
+- Installed /home/opam/.opam/system/lib/uuidm/uuidm.cmi
+- Installed /home/opam/.opam/system/lib/uuidm/uuidm.cmx
+- Installed /home/opam/.opam/system/lib/uuidm/META
+-> installed uuidm.0.9.5
 + ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/system/build/uri.1.8.0)
 - Installed /home/opam/.opam/system/lib/uri/uri.mli
 - Installed /home/opam/.opam/system/lib/uri/uri_re.mli
@@ -5811,8 +5814,8 @@ The following actions will be performed:
 - Warning: Element None not found
 - /home/opam/.opam/system/bin/ocamlfind ocamldoc -dump lib/code.odoc -package base64 -package bytes -package fieldslib -syntax camlp4o -package fieldslib.syntax -package re.emacs -package sexplib -syntax camlp4o -package sexplib.syntax -package stringext -package uri -package uri.services -I lib lib/code.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamldoc -dump lib/header.odoc -package base64 -package bytes -package fieldslib -syntax camlp4o -package fieldslib.syntax -package re.emacs -package sexplib -syntax camlp4o -package sexplib.syntax -package stringext -package uri -package uri.services -I lib lib/header.mli
-- /home/opam/.opam/system/bin/ocamlfind ocamldoc -dump lib/cookie.odoc -package base64 -package bytes -package fieldslib -syntax camlp4o -package fieldslib.syntax -package re.emacs -package sexplib -syntax camlp4o -package sexplib.syntax -package stringext -package uri -package uri.services -I lib lib/cookie.mli
 - W: Tests are turned off, consider enabling with 'ocaml setup.ml -configure --enable-tests'
+- /home/opam/.opam/system/bin/ocamlfind ocamldoc -dump lib/cookie.odoc -package base64 -package bytes -package fieldslib -syntax camlp4o -package fieldslib.syntax -package re.emacs -package sexplib -syntax camlp4o -package sexplib.syntax -package stringext -package uri -package uri.services -I lib lib/cookie.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamldoc -dump lib/request.odoc -package base64 -package bytes -package fieldslib -syntax camlp4o -package fieldslib.syntax -package re.emacs -package sexplib -syntax camlp4o -package sexplib.syntax -package stringext -package uri -package uri.services -I lib lib/request.mli
 - + /home/opam/.opam/system/bin/ocamlfind ocamldoc -dump lib/request.odoc -package base64 -package bytes -package fieldslib -syntax camlp4o -package fieldslib.syntax -package re.emacs -package sexplib -syntax camlp4o -package sexplib.syntax -package stringext -package uri -package uri.services -I lib lib/request.mli
 - Warning: Module type S.Http_io not found
