@@ -1,7 +1,7 @@
-# Detecting depexts using flags: x86_64 linux centos
 + uname -m
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=lambda-term
+# Detecting depexts using flags: x86_64 linux centos
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=lambda-term
 # No extra OS packages requirements found.
 The following actions will be performed:
@@ -22,13 +22,13 @@ The following actions will be performed:
 [lwt: from default] Command started
 [default] http://opam-archive:8080/archives/lambda-term.1.8+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
+[camomile: from default] Command started
 [default] http://opam-archive:8080/archives/lwt.2.4.8+opam.tar.gz downloaded
 [ppx_tools: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[react: from default] Command started
-[camomile: from default] Command started
 [default] http://opam-archive:8080/archives/camomile.0.8.5+opam.tar.gz downloaded
+[react: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [zed: from default] Command started
 [react: from default] Command started
 [default] http://opam-archive:8080/archives/react.1.2.0+opam.tar.gz downloaded
@@ -121,9 +121,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -169,9 +166,20 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -186,14 +194,6 @@ The following actions will be performed:
 - cat topfind_rd1.p | \
 - 	../../tools/patch '@SITELIB@' '/home/opam/.opam/system/lib' \
 -     	    >topfind
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -c num_top_printers.mli
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
 - ocamlc -I +compiler-libs -c num_top.mli
@@ -232,6 +232,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -276,7 +277,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -1662,13 +1662,6 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/en_MP.txt locales 
 - tools/camomilelocaledef.opt --file locales/nn_NO.txt locales 
 - tools/camomilelocaledef.opt --file locales/es__TRADITIONAL.txt locales 
-- tools/camomilelocaledef.opt --file locales/en_BW.txt locales 
-- tools/camomilelocaledef.opt --file locales/af.txt locales 
-- tools/camomilelocaledef.opt --file locales/fo.txt locales 
-- tools/camomilelocaledef.opt --file locales/eu_ES_PREEURO.txt locales 
-- tools/camomilelocaledef.opt --file locales/de_BE.txt locales 
-- tools/camomilelocaledef.opt --file locales/nb_NO.txt locales 
-- tools/camomilelocaledef.opt --file locales/en.txt locales 
 - File "internal/bitsvect.ml", line 74, characters 2-24:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
@@ -1909,6 +1902,13 @@ The following actions will be performed:
 - Warning : normalization option is not supported
 - Warning : normalization option is not supported
 - Warning : normalization option is not supported
+- tools/camomilelocaledef.opt --file locales/en_BW.txt locales 
+- tools/camomilelocaledef.opt --file locales/af.txt locales 
+- tools/camomilelocaledef.opt --file locales/fo.txt locales 
+- tools/camomilelocaledef.opt --file locales/eu_ES_PREEURO.txt locales 
+- tools/camomilelocaledef.opt --file locales/de_BE.txt locales 
+- tools/camomilelocaledef.opt --file locales/nb_NO.txt locales 
+- tools/camomilelocaledef.opt --file locales/en.txt locales 
 - tools/camomilelocaledef.opt --file locales/fi_FI_PREEURO.txt locales 
 - tools/camomilelocaledef.opt --file locales/am_ET.txt locales 
 - tools/camomilelocaledef.opt --file locales/en_BE_PREEURO.txt locales 
@@ -1924,12 +1924,12 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/kw_GB.txt locales 
 - tools/camomilelocaledef.opt --file locales/mn.txt locales 
 - tools/camomilelocaledef.opt --file locales/ko_KR.txt locales 
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/sv_SE.txt locales 
 - tools/camomilelocaledef.opt --file locales/iw_IL.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar_IQ.txt locales 
 - tools/camomilelocaledef.opt --file locales/sv_FI.txt locales 
 - tools/camomilelocaledef.opt --file locales/sa_IN.txt locales 
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/he.txt locales 
 - tools/camomilelocaledef.opt --file locales/div.txt locales 
 - tools/camomilelocaledef.opt --file locales/cs_CZ.txt locales 
@@ -1942,6 +1942,8 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/kok.txt locales 
 - tools/camomilelocaledef.opt --file locales/kok_IN.txt locales 
 - tools/camomilelocaledef.opt --file locales/ru_RU.txt locales 
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/de_CH.txt locales 
 - tools/camomilelocaledef.opt --file locales/es_GT.txt locales 
 - tools/camomilelocaledef.opt --file locales/es_HN.txt locales 
@@ -1951,8 +1953,6 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/ar_OM.txt locales 
 - tools/camomilelocaledef.opt --file locales/fa_IR.txt locales 
 - tools/camomilelocaledef.opt --file locales/ga_IE.txt locales 
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/it_IT_PREEURO.txt locales 
 - tools/camomilelocaledef.opt --file locales/mt.txt locales 
 - tools/camomilelocaledef.opt --file locales/en_HK.txt locales 
@@ -1983,15 +1983,16 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/lv_LV.txt locales 
 - tools/camomilelocaledef.opt --file locales/nb.txt locales 
 - tools/camomilelocaledef.opt --file locales/es_NI.txt locales 
-- Warning : normalization option is not supported
-- Warning : file loading is not supported.
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/mr_IN.txt locales 
 - tools/camomilelocaledef.opt --file locales/de__PHONEBOOK.txt locales 
 - tools/camomilelocaledef.opt --file locales/pa.txt locales 
 - tools/camomilelocaledef.opt --file locales/uk.txt locales 
 - tools/camomilelocaledef.opt --file locales/es_US.txt locales 
 - tools/camomilelocaledef.opt --file locales/pt_PT_PREEURO.txt locales 
+- Warning : normalization option is not supported
+- Warning : file loading is not supported.
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/hi__DIRECT.txt locales 
 - tools/camomilelocaledef.opt --file locales/fr_LU.txt locales 
 - tools/camomilelocaledef.opt --file locales/es_VE.txt locales 
@@ -2003,22 +2004,21 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/no_NO.txt locales 
 - tools/camomilelocaledef.opt --file locales/en_BZ.txt locales 
 - tools/camomilelocaledef.opt --file locales/so_ET.txt locales 
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/fa.txt locales 
 - tools/camomilelocaledef.opt --file locales/it_IT.txt locales 
 - tools/camomilelocaledef.opt --file locales/ur_PK.txt locales 
 - tools/camomilelocaledef.opt --file locales/ja_JP.txt locales 
 - tools/camomilelocaledef.opt --file locales/ky.txt locales 
 - tools/camomilelocaledef.opt --file locales/gu.txt locales 
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/ti_ER.txt locales 
 - tools/camomilelocaledef.opt --file locales/cs.txt locales 
 - tools/camomilelocaledef.opt --file locales/hi_IN.txt locales 
 - tools/camomilelocaledef.opt --file locales/fr_CA.txt locales 
 - tools/camomilelocaledef.opt --file locales/ko.txt locales 
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/tr_TR.txt locales 
 - tools/camomilelocaledef.opt --file locales/el_GR_PREEURO.txt locales 
 - tools/camomilelocaledef.opt --file locales/kn_IN.txt locales 
@@ -2035,7 +2035,6 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/so_SO.txt locales 
 - tools/camomilelocaledef.opt --file locales/ru.txt locales 
 - tools/camomilelocaledef.opt --file locales/af_ZA.txt locales 
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/lt_LT.txt locales 
 - tools/camomilelocaledef.opt --file locales/de_DE.txt locales 
 - tools/camomilelocaledef.opt --file locales/zh_CN.txt locales 
@@ -2045,6 +2044,9 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/en_TT.txt locales 
 - tools/camomilelocaledef.opt --file locales/ta.txt locales 
 - tools/camomilelocaledef.opt --file locales/sa.txt locales 
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/ar_QA.txt locales 
 - tools/camomilelocaledef.opt --file locales/fr_FR_PREEURO.txt locales 
 - tools/camomilelocaledef.opt --file locales/fr_FR.txt locales 
@@ -2055,10 +2057,10 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/nn.txt locales 
 - tools/camomilelocaledef.opt --file locales/ms.txt locales 
 - tools/camomilelocaledef.opt --file locales/ka.txt locales 
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/te_IN.txt locales 
 - tools/camomilelocaledef.opt --file locales/ja.txt locales 
+- Warning : normalization option is not supported
+- Warning : strength option is not supported
 - tools/camomilelocaledef.opt --file locales/gv.txt locales 
 - tools/camomilelocaledef.opt --file locales/es_BO.txt locales 
 - tools/camomilelocaledef.opt --file locales/en_MT.txt locales 
@@ -2068,8 +2070,6 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/ru_UA.txt locales 
 - tools/camomilelocaledef.opt --file locales/lv.txt locales 
 - tools/camomilelocaledef.opt --file locales/da.txt locales 
-- Warning : normalization option is not supported
-- Warning : strength option is not supported
 - tools/camomilelocaledef.opt --file locales/es_PR.txt locales 
 - tools/camomilelocaledef.opt --file locales/ca.txt locales 
 - tools/camomilelocaledef.opt --file locales/kk_KZ.txt locales 
