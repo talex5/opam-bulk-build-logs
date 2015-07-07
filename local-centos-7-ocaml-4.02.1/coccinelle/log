@@ -1,7 +1,7 @@
 + uname -m
+# Detecting depexts using flags: x86_64 linux centos
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=coccinelle
-# Detecting depexts using flags: x86_64 linux centos
 # The following system packages are needed:
 #  - pcre-devel
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=coccinelle
@@ -11,7 +11,7 @@ Not running as root, the following command will be run through "sudo":
 Loaded plugins: fastestmirror
 Repodata is over 2 weeks old. Install yum-cron? Or run: yum makecache fast
 Determining fastest mirrors
- * base: mirror.ukhost4u.com
+ * base: centos.openitc.uk
  * extras: anorien.csc.warwick.ac.uk
  * updates: anorien.csc.warwick.ac.uk
 Resolving Dependencies
@@ -129,7 +129,8 @@ Running transaction
   Cleanup    : nss-sysinit-3.16.2.3-5.el7.x86_64                          28/39 
   Cleanup    : nss-3.16.2.3-5.el7.x86_64                                  29/39 
   Cleanup    : nss-util-3.16.2.3-2.el7.x86_64                             30/39 
-  Cleanup    : openssh-clients-6.6.1p1-11.el7.x86_64                      31/39 
+  Cleanup    : openssh-clients-6.6.1p1-11.el7.x86_64                      31/39+ sudo yum install -y pcre-devel
+ 
   Cleanup    : openssh-6.6.1p1-11.el7.x86_64                              32/39 
   Cleanup    : util-linux-2.23.2-21.el7.x86_64                            33/39 
   Cleanup    : libmount-2.23.2-21.el7.x86_64                              34/39 
@@ -144,8 +145,7 @@ Running transaction
   Verifying  : systemtap-runtime-2.6-10.el7_1.x86_64                       4/39 
   Verifying  : libmount-2.23.2-22.el7_1.x86_64                             5/39 
   Verifying  : systemtap-devel-2.6-10.el7_1.x86_64                         6/39 
-  Verifying  : util-linux-2.23.2-22.el7_1.x86_64                           7/39+ sudo yum install -y pcre-devel
- 
+  Verifying  : util-linux-2.23.2-22.el7_1.x86_64                           7/39 
   Verifying  : ca-certificates-2015.2.4-70.0.el7_1.noarch                  8/39 
   Verifying  : nss-3.18.0-2.2.el7_1.x86_64                                 9/39 
   Verifying  : systemtap-client-2.6-10.el7_1.x86_64                       10/39 
@@ -210,9 +210,8 @@ Not running as root, the following command will be run through "sudo":
 Not running as root, the following command will be run through "sudo":
     rpm -q pcre-devel
 Loaded plugins: fastestmirror
-+ sudo rpm -q pcre-devel
 Loading mirror speeds from cached hostfile
- * base: mirror.ukhost4u.com
+ * base: centos.openitc.uk
  * extras: anorien.csc.warwick.ac.uk
  * updates: anorien.csc.warwick.ac.uk
 Resolving Dependencies
@@ -265,17 +264,17 @@ The following actions will be performed:
 [menhir: from default] Command started
 [ocamlfind: from default] Command started
 [ocamlfind: from default] Command started
-[menhir: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [parmap: from default] Command started
+[menhir: from default] Command started
 [default] http://opam-archive:8080/archives/menhir.20140422+opam.tar.gz downloaded
 [pcre: from default] Command started
-[coccinelle: from default] Command started
 [parmap: from default] Command started
-[default] http://opam-archive:8080/archives/coccinelle.1.0.0.1+opam.tar.gz downloaded
-[pcre: from default] Command started
 [default] http://opam-archive:8080/archives/parmap.1.0-rc6+opam.tar.gz downloaded
+[pcre: from default] Command started
+[coccinelle: from default] Command started
 [default] http://opam-archive:8080/archives/pcre.7.1.1+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/coccinelle.1.0.0.1+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [conf-pkg-config: pkg-config] Command started
@@ -332,7 +331,6 @@ The following actions will be performed:
 -                               ^
 - compilation terminated.
 + ./configure "-bindir" "/home/opam/.opam/system/bin" "-sitelib" "/home/opam/.opam/system/lib" "-mandir" "/home/opam/.opam/system/man" "-config" "/home/opam/.opam/system/lib/findlib.conf" "-no-topfind" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
-[ERROR] The compilation of conf-python-2-7-dev failed at "cc test.c".
 - Welcome to findlib version 1.5.5
 - Configuring core...
 - Checking for #remove_directory...
@@ -387,6 +385,8 @@ The following actions will be performed:
 - You can now do 'make all', and optionally 'make opt', to build ocamlfind.
 [ocamlfind: make all] Command started
 + make "all" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
++ sudo rpm -q pcre-devel
+[ERROR] The compilation of conf-python-2-7-dev failed at "cc test.c".
 - for p in findlib; do ( cd src/$p; make all ) || exit; done
 - make[1]: Entering directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
 - ocamllex fl_meta.mll
@@ -525,7 +525,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -570,6 +569,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -1959,6 +1959,23 @@ The following actions will be performed:
 - /usr/bin/ocamlopt.opt -c -g -inline 1000 -o back.cmx back.ml
 - /usr/bin/ocamlopt.opt -c -g -inline 1000 -o menhir.cmx menhir.ml
 - /usr/bin/ocamlopt.opt unix.cmxa -g Fix.cmx IO.cmx installation.cmx keyword.cmx lineCount.cmx positions.cmx stringSet.cmx version.cmx settings.cmx printer.cmx action.cmx mark.cmx stringMap.cmx misc.cmx breadth.cmx codeBits.cmx gSet.cmx compressedBitSet.cmx option.cmx dot.cmx error.cmx parameters.cmx parserAux.cmx parser.cmx lexer.cmx tarjan.cmx unionFind.cmx parameterizedGrammar.cmx partialGrammar.cmx time.cmx preFront.cmx tokenType.cmx interface.cmx lexdep.cmx lexmli.cmx infer.cmx listMonad.cmx nonTerminalDefinitionInlining.cmx reachability.cmx unparameterizedPrinter.cmx front.cmx gMap.cmx patricia.cmx grammar.cmx codePieces.cmx item.cmx derivation.cmx menhirLib.cmx lr0.cmx slr.cmx lr1.cmx lr1partial.cmx conflict.cmx invariant.cmx codeBackend.cmx coqBackend.cmx pprint.cmx cst.cmx traverse.cmx inliner.cmx referenceInterpreter.cmx sentenceParser.cmx sentenceLexer.cmx interpret.cmx tableBackend.cmx back.cmx menhir.cmx -o menhir.native
+
+#=== ERROR while installing conf-python-2-7-dev.1.0 ===========================#
+# opam-version         1.2.2 (391297300524717e1475deaea37bca287c7f5e36)
+# os                   linux
+# command              cc test.c
+# path                 /home/opam/.opam/system/build/conf-python-2-7-dev.1.0
+# compiler             system (4.02.1)
+# exit-code            1
+# env-file             /home/opam/.opam/system/build/conf-python-2-7-dev.1.0/conf-python-2-7-dev-1-865888.env
+# stdout-file          /home/opam/.opam/system/build/conf-python-2-7-dev.1.0/conf-python-2-7-dev-1-865888.out
+# stderr-file          /home/opam/.opam/system/build/conf-python-2-7-dev.1.0/conf-python-2-7-dev-1-865888.err
+### stderr ###
+# test.c:1:30: fatal error: python2.7/Python.h: No such file or directory
+#  #include "python2.7/Python.h"
+#                               ^
+# compilation terminated.
+
 - # Parallel statistics: { count(total): 19(281), max: 6, min: 2, average(total): 2.895(1.128) }
 - /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib64/ocaml/ocamlbuild /usr/lib64/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib64/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
 - File "_tags", line 10, characters 27-40:
@@ -1982,23 +1999,6 @@ The following actions will be performed:
 - /usr/bin/ocamlc.opt -c -o syntax.cmi syntax.mli
 - /usr/bin/ocamldep.opt -modules error.mli > error.mli.depends
 - /usr/bin/ocamldep.opt -modules misc.mli > misc.mli.depends
-
-#=== ERROR while installing conf-python-2-7-dev.1.0 ===========================#
-# opam-version         1.2.2 (391297300524717e1475deaea37bca287c7f5e36)
-# os                   linux
-# command              cc test.c
-# path                 /home/opam/.opam/system/build/conf-python-2-7-dev.1.0
-# compiler             system (4.02.1)
-# exit-code            1
-# env-file             /home/opam/.opam/system/build/conf-python-2-7-dev.1.0/conf-python-2-7-dev-1-865888.env
-# stdout-file          /home/opam/.opam/system/build/conf-python-2-7-dev.1.0/conf-python-2-7-dev-1-865888.out
-# stderr-file          /home/opam/.opam/system/build/conf-python-2-7-dev.1.0/conf-python-2-7-dev-1-865888.err
-### stderr ###
-# test.c:1:30: fatal error: python2.7/Python.h: No such file or directory
-#  #include "python2.7/Python.h"
-#                               ^
-# compilation terminated.
-
 - /usr/bin/ocamldep.opt -modules stringMap.mli > stringMap.mli.depends
 - /usr/bin/ocamldep.opt -modules stringSet.mli > stringSet.mli.depends
 - /usr/bin/ocamlc.opt -c -o stringSet.cmi stringSet.mli
@@ -2069,5 +2069,5 @@ The following changes have been performed
    installation for your system.
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150419214033.export"
+    opam switch import "~/.opam/system/backup/state-20150420120304.export"
 'opam install coccinelle' failed.
