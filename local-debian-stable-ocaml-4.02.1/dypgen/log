@@ -1,8 +1,8 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-# Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=dypgen
+# Detecting depexts using flags: x86_64 linux debian
 # The following system packages are needed:
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=dypgen
@@ -12,14 +12,14 @@ Not running as root, the following command will be run through "sudo":
 Hit http://security.debian.org stable/updates InRelease
 Ign http://download.opensuse.org  InRelease
 Hit http://httpredir.debian.org stable InRelease
-Hit http://httpredir.debian.org stable-updates InRelease
 Hit http://download.opensuse.org  Release.gpg
+Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
 Hit http://download.opensuse.org  Release
-Get:1 http://security.debian.org stable/updates/main amd64 Packages [108 kB]
-Get:2 http://httpredir.debian.org stable/main amd64 Packages [9038 kB]
-Get:3 http://download.opensuse.org  Packages [5783 B]
+Get:2 http://security.debian.org stable/updates/main amd64 Packages [115 kB]
+Get:3 http://httpredir.debian.org stable/main amd64 Packages [9038 kB]
 Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9155 kB in 4s (2004 kB/s)
+Get:5 http://download.opensuse.org  Packages [5783 B]
+Fetched 9287 kB in 4s (2015 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
@@ -111,6 +111,16 @@ The following actions will be performed:
 - 	     >findlib_config.ml
 - ocamlc -I +compiler-libs -g -c findlib_config.ml
 - ocamlc -I +compiler-libs -g -c fl_split.ml
+- ocamlc -I +compiler-libs -g -c fl_metatoken.ml
+- ocamlc -I +compiler-libs -g -c fl_meta.ml
+- ocamlc -I +compiler-libs -c fl_metascanner.mli
+- ocamlc -I +compiler-libs -g -c fl_metascanner.ml
+- ocamlc -I +compiler-libs -c fl_topo.mli
+- ocamlc -I +compiler-libs -g -c fl_topo.ml
+- ocamlc -I +compiler-libs -c fl_package_base.mli
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -141,19 +151,6 @@ The following actions will be performed:
 - File "fl_split.ml", line 140, characters 1-19:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc -I +compiler-libs -g -c fl_metatoken.ml
-- ocamlc -I +compiler-libs -g -c fl_meta.ml
-- ocamlc -I +compiler-libs -c fl_metascanner.mli
-- ocamlc -I +compiler-libs -g -c fl_metascanner.ml
-- ocamlc -I +compiler-libs -c fl_topo.mli
-- ocamlc -I +compiler-libs -g -c fl_topo.ml
-- ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - File "fl_meta.mll", line 57, characters 13-26:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -169,9 +166,10 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -180,6 +178,8 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -368,7 +368,6 @@ The following actions will be performed:
 - 360 states, 11307 transitions, table size 47388 bytes
 - 22672 additional bytes used for bindings
 - ocamlc -I ../dyplib -c extract_type.ml
-- ocamlc -I ../dyplib -c dypgen_parser.ml
 - File "extract_type.mll", line 69, characters 14-25:
 - Warning 3: deprecated: String.copy
 - File "extract_type.mll", line 100, characters 9-20:
@@ -388,25 +387,25 @@ The following actions will be performed:
 - File "extract_type.mll", line 167, characters 4-15:
 - Warning 3: deprecated: String.fill
 - Use Bytes.fill instead.
+- ocamlc -I ../dyplib -c dypgen_parser.ml
 - ocamllex dypgen_lexer.mll
 - 195 states, 1556 transitions, table size 7394 bytes
 - 2280 additional bytes used for bindings
 - ocamlc -I ../dyplib -c dypgen_lexer.ml
-- File "dypgen_lexer.mll", line 59, characters 38-48:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 - ocamllex insert_linenum.mll
 - 42 states, 273 transitions, table size 1344 bytes
 - ocamlc -I ../dyplib -c insert_linenum.ml
 - ocamlc -I ../dyplib -c dypgen.ml
+- File "dypgen_lexer.mll", line 59, characters 38-48:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 - ocamlc -I ../dyplib -o dypgen dyp.cma argument.cmo extract_type.cmo dypgen_parser.cmo dypgen_lexer.cmo insert_linenum.cmo dypgen.cmo
 - ocamlopt -I ../dyplib -c argument.ml
+- ocamlopt -I ../dyplib -c extract_type.ml
 - File "dypgen.ml", line 1623, characters 34-45:
 - Warning 3: deprecated: String.copy
 - File "dypgen.ml", line 1692, characters 27-38:
 - Warning 3: deprecated: String.copy
-- ocamlopt -I ../dyplib -c extract_type.ml
-- ocamlopt -I ../dyplib -c dypgen_parser.ml
 - File "extract_type.mll", line 69, characters 14-25:
 - Warning 3: deprecated: String.copy
 - File "extract_type.mll", line 100, characters 9-20:
@@ -426,12 +425,13 @@ The following actions will be performed:
 - File "extract_type.mll", line 167, characters 4-15:
 - Warning 3: deprecated: String.fill
 - Use Bytes.fill instead.
+- ocamlopt -I ../dyplib -c dypgen_parser.ml
 - ocamlopt -I ../dyplib -c dypgen_lexer.ml
-- ocamlopt -I ../dyplib -c insert_linenum.ml
-- ocamlopt -I ../dyplib -c dypgen.ml
 - File "dypgen_lexer.mll", line 59, characters 38-48:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlopt -I ../dyplib -c insert_linenum.ml
+- ocamlopt -I ../dyplib -c dypgen.ml
 - File "dypgen.ml", line 1623, characters 34-45:
 - Warning 3: deprecated: String.copy
 - File "dypgen.ml", line 1692, characters 27-38:
