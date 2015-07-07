@@ -3,20 +3,20 @@
 + lsb_release -i -s
 # Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=bolt
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=bolt
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=bolt
-+ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
++ sudo apt-get update
 Ign http://download.opensuse.org  InRelease
 Hit http://download.opensuse.org  Release.gpg
-Ign http://archive.ubuntu.com trusty InRelease
 Hit http://download.opensuse.org  Release
+Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
-Hit http://archive.ubuntu.com trusty Release.gpg
 Hit http://download.opensuse.org  Packages
+Hit http://archive.ubuntu.com trusty Release.gpg
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
 Hit http://archive.ubuntu.com trusty Release
@@ -37,16 +37,19 @@ Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [371 kB]
 Get:11 http://archive.ubuntu.com trusty-security/main Sources [105 kB]
 Get:12 http://archive.ubuntu.com trusty-security/restricted Sources [1874 B]
 Get:13 http://archive.ubuntu.com trusty-security/universe Sources [28.4 kB]
-Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [360 kB]
+Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [362 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [138 kB]
-Fetched 2252 kB in 5s (403 kB/s)
+Fetched 2254 kB in 7s (290 kB/s)
 Reading package lists...
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_source_Sources.gz is not what the server reported 261578 261598
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 672913 672928
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages.gz is not what the server reported 371395 371403
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_main_source_Sources.gz is not what the server reported 104775 104777
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_universe_binary-amd64_Packages.gz is not what the server reported 137655 137660
++ sudo apt-get install -qq -yy m4
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
-+ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install camlp4    4.02.1+system                             [required by bolt]
@@ -59,8 +62,8 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [ocamlfind: from default] Command started
 [bolt: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/bolt.1.4+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlp4: sh] Command started
@@ -146,7 +149,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_metascanner.ml
 - ocamlc -I +compiler-libs -c fl_topo.mli
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
-- ocamlc -I +compiler-libs -c fl_package_base.mli
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -192,6 +194,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
@@ -204,9 +207,6 @@ The following actions will be performed:
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
@@ -225,6 +225,9 @@ The following actions will be performed:
 - 	    	    >topfind
 - ocamlc -I +compiler-libs -c num_top_printers.mli
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -c num_top.mli
 - ocamlc -I +compiler-libs -g -c num_top.ml
 - ocamlc -I +compiler-libs -a -o num_top.cma num_top_printers.cmo num_top.cmo
@@ -415,7 +418,7 @@ The following actions will be performed:
 - /usr/bin/ocamldep.opt -modules src/library/layout.mli > src/library/layout.mli.depends
 - /usr/bin/ocamlc.opt -c -I src/library -I src -I src/threads -I src/syntax -I src/support -o src/library/layout.cmi src/library/layout.mli
 - /usr/bin/ocamldep.opt -modules src/library/layout.ml > src/library/layout.ml.depends
-- cp /tmp/version483583.ml src/library/version.ml
+- cp /tmp/version5c6745.ml src/library/version.ml
 - /usr/bin/ocamldep.opt -modules src/library/version.mli > src/library/version.mli.depends
 - /usr/bin/ocamlc.opt -c -I src/library -I src -I src/threads -I src/syntax -I src/support -o src/library/version.cmi src/library/version.mli
 - /usr/bin/ocamldep.opt -modules src/library/level.ml > src/library/level.ml.depends
@@ -489,7 +492,7 @@ The following actions will be performed:
 - Warning: the tag "warnings" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
 - File "_tags", line 30, characters 27-49:
 - Warning: the tag "src_library_version_ml" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
-- cp /tmp/version85a1fd.ml src/library/version.ml
+- cp /tmp/version3c9d65.ml src/library/version.ml
 - /usr/bin/ocamlopt.opt -c -for-pack Bolt -I src/library -I src -I src/threads -I src/syntax -I src/support -o src/library/utils.cmx src/library/utils.ml
 - /usr/bin/ocamlopt.opt -c -for-pack Bolt -I src/library -I src -I src/threads -I src/syntax -I src/support -o src/library/name.cmx src/library/name.ml
 - /usr/bin/ocamlopt.opt -c -for-pack Bolt -I src/library -I src -I src/threads -I src/syntax -I src/support -o src/library/configuration.cmx src/library/configuration.ml
@@ -534,7 +537,7 @@ The following actions will be performed:
 - Warning: the tag "warnings" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
 - File "_tags", line 30, characters 27-49:
 - Warning: the tag "src_library_version_ml" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
-- cp /tmp/versiond271b8.ml src/library/version.ml
+- cp /tmp/version79e049.ml src/library/version.ml
 - /usr/bin/ocamlc.opt -a bolt.cmo -o bolt.cma
 - /usr/bin/ocamlopt.opt -a bolt.cmx -o bolt.cmxa
 - WARNINGS=FALSE PATH_OCAML_PREFIX=/usr ocamlbuild -classic-display -no-links bolt_pp.cmo
@@ -552,14 +555,14 @@ The following actions will be performed:
 - /usr/bin/ocamldep.opt -modules src/threads/boltThread.mli > src/threads/boltThread.mli.depends
 - /usr/bin/ocamlc.opt -c -I src/threads -I src -I src/syntax -I src/support -I src/library -o src/threads/boltThread.cmi src/threads/boltThread.mli
 - /usr/bin/ocamldep.opt -modules src/threads/boltThread.ml > src/threads/boltThread.ml.depends
-- cp /tmp/versionfe6453.ml src/library/version.ml
+- cp /tmp/version587f0e.ml src/library/version.ml
 - /usr/bin/ocamlc.opt -c -thread -I src/threads -I src -I src/syntax -I src/support -I src/library -o src/threads/boltThread.cmo src/threads/boltThread.ml
 - WARNINGS=FALSE PATH_OCAML_PREFIX=/usr ocamlbuild -classic-display -no-links boltThread.cmx
 - File "_tags", line 27, characters 19-27:
 - Warning: the tag "warnings" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
 - File "_tags", line 30, characters 27-49:
 - Warning: the tag "src_library_version_ml" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
-- cp /tmp/versiond5ae6d.ml src/library/version.ml
+- cp /tmp/version00f8b7.ml src/library/version.ml
 - /usr/bin/ocamlopt.opt -c -thread -for-pack Bolt -I src/threads -I src -I src/syntax -I src/support -I src/library -o src/threads/boltThread.cmx src/threads/boltThread.ml
 [bolt: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/bolt.1.4)
