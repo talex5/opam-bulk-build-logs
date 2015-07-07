@@ -1,6 +1,6 @@
-# Detecting depexts using flags: x86_64 linux centos
 + uname -m
 + uname -s
+# Detecting depexts using flags: x86_64 linux centos
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=faad
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=faad
 # No extra OS packages requirements found.
@@ -14,8 +14,8 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [faad: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/faad.0.3.2+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/faad.0.3.2+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -102,6 +102,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -147,11 +148,17 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 	cp topfind.ml.in topfind.ml;                             \
+- else                                                             \
+- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 		> topfind.ml ;                                   \
+- fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -160,13 +167,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 	cp topfind.ml.in topfind.ml;                             \
-- else                                                             \
-- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 		> topfind.ml ;                                   \
-- fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -371,44 +371,8 @@ The following actions will be performed:
 - checking for caml/threads.h... no
 - checking for gcc option to produce PIC... -fPIC
 - checking how to run the C preprocessor... 
-- gcc -E
-- checking for grep that handles long lines and -e... /usr/bin/grep
-- checking for egrep... /usr/bin/grep -E
-- checking for ANSI C header files... yes
-- checking for sys/types.h... yes
-- checking for sys/stat.h... yes
-- checking for stdlib.h... yes
-- checking for string.h... yes
-- checking for memory.h... yes
-- checking for strings.h... yes
-- checking for inttypes.h... yes
-- checking for stdint.h... yes
-- checking for unistd.h... 
-- yes
-- checking errno.h usability... yes
-- checking errno.h presence... yes
-- checking for errno.h... yes
-- checking neaacdec.h usability... no
-- checking neaacdec.h presence... no
-- checking for neaacdec.h... no
 [ERROR] The compilation of faad failed at "./configure --prefix
         /home/opam/.opam/system".
-- configure: error: Cannot find libfaad.
-[faad: ocamlfind remove] Command started
-+ ocamlfind "remove" "faad" (CWD=/home/opam/.opam/system/build/faad.0.3.2)
-- ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/faad
-
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions failed
-  - install faad 0.3.2
-The following changes have been performed
-  - install ocamlfind 1.5.5
-
-=-=- faad.0.3.2 troobleshooting -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-=> This package relies on external (system) dependencies that may be missing.
-   `opam depext faad.0.3.2' may help you find the correct installation for your
-   system.
 
 #=== ERROR while installing faad.0.3.2 ========================================#
 # opam-version         1.2.2 (391297300524717e1475deaea37bca287c7f5e36)
@@ -437,5 +401,41 @@ The following changes have been performed
 
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150412225710.export"
+    opam switch import "~/.opam/system/backup/state-20150413113153.export"
 'opam install faad' failed.
+- gcc -E
+- checking for grep that handles long lines and -e... /usr/bin/grep
+- checking for egrep... /usr/bin/grep -E
+- checking for ANSI C header files... yes
+- checking for sys/types.h... yes
+- checking for sys/stat.h... yes
+- checking for stdlib.h... yes
+- checking for string.h... yes
+- checking for memory.h... yes
+- checking for strings.h... yes
+- checking for inttypes.h... yes
+- checking for stdint.h... yes
+- checking for unistd.h... 
+- yes
+- checking errno.h usability... yes
+- checking errno.h presence... yes
+- checking for errno.h... yes
+- checking neaacdec.h usability... no
+- checking neaacdec.h presence... no
+- checking for neaacdec.h... no
+- configure: error: Cannot find libfaad.
+[faad: ocamlfind remove] Command started
++ ocamlfind "remove" "faad" (CWD=/home/opam/.opam/system/build/faad.0.3.2)
+- ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/faad
+
+
+=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+The following actions failed
+  - install faad 0.3.2
+The following changes have been performed
+  - install ocamlfind 1.5.5
+
+=-=- faad.0.3.2 troobleshooting -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+=> This package relies on external (system) dependencies that may be missing.
+   `opam depext faad.0.3.2' may help you find the correct installation for your
+   system.
