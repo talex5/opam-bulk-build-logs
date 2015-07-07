@@ -1,28 +1,27 @@
 + uname -m
++ uname -s
++ lsb_release -i -s
 # Detecting depexts using flags: x86_64 linux ubuntu
++ opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=javalib
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=javalib
 # The following system packages are needed:
 #  - m4
 #  - zlib1g-dev
-+ uname -s
-+ lsb_release -i -s
-+ opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=javalib
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=javalib
 Not running as root, the following command will be run through "sudo":
     apt-get update
 + sudo apt-get update
-Ign http://download.opensuse.org  InRelease
-Hit http://download.opensuse.org  Release.gpg
-Hit http://download.opensuse.org  Release
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
-Hit http://download.opensuse.org  Packages
 Hit http://archive.ubuntu.com trusty Release.gpg
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
+Ign http://download.opensuse.org  InRelease
 Hit http://archive.ubuntu.com trusty-security Release.gpg
 Hit http://archive.ubuntu.com trusty Release
 Get:2 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
+Hit http://download.opensuse.org  Release.gpg
 Hit http://archive.ubuntu.com trusty-security Release
+Hit http://download.opensuse.org  Release
 Hit http://archive.ubuntu.com trusty/main Sources
 Hit http://archive.ubuntu.com trusty/restricted Sources
 Hit http://archive.ubuntu.com trusty/universe Sources
@@ -30,6 +29,7 @@ Hit http://archive.ubuntu.com trusty/main amd64 Packages
 Hit http://archive.ubuntu.com trusty/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty/universe amd64 Packages
 Get:3 http://archive.ubuntu.com trusty-updates/main Sources [253 kB]
+Hit http://download.opensuse.org  Packages
 Get:4 http://archive.ubuntu.com trusty-updates/restricted Sources [2310 B]
 Get:5 http://archive.ubuntu.com trusty-updates/universe Sources [142 kB]
 Get:6 http://archive.ubuntu.com trusty-updates/main amd64 Packages [650 kB]
@@ -41,12 +41,12 @@ Hit http://archive.ubuntu.com trusty-security/universe Sources
 Hit http://archive.ubuntu.com trusty-security/main amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/universe amd64 Packages
-Fetched 1487 kB in 4s (318 kB/s)
+Fetched 1487 kB in 3s (375 kB/s)
 Reading package lists...
 # OS package update successful
++ sudo apt-get install -qq -yy m4 zlib1g-dev
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4 zlib1g-dev
-+ sudo apt-get install -qq -yy m4 zlib1g-dev
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
@@ -72,12 +72,12 @@ The following actions will be performed:
 [camlzip: from default] Command started
 [extlib-compat: from default] Command started
 [javalib: from default] Command started
-[camlzip: from default] Command started
 [extlib-compat: from default] Command started
+[camlzip: from default] Command started
+[default] http://opam-archive:8080/archives/extlib-compat.1.6.1+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [javalib: from default] Command started
 [default] http://opam-archive:8080/archives/camlzip.1.05+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/extlib-compat.1.6.1+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/javalib.2.3+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
@@ -280,6 +280,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -324,7 +325,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -541,8 +541,6 @@ The following actions will be performed:
 - ocamlc -g -c optParse.mli optParse.ml
 - ocamlc -g -c dllist.mli dllist.ml
 - ocamlc -g -c extLib.ml
-- ocamlc -g -a -o extLib.cma enum.cmo bitSet.cmo dynArray.cmo extArray.cmo extHashtbl.cmo extList.cmo extString.cmo global.cmo IO.cmo option.cmo pMap.cmo std.cmo uChar.cmo uTF8.cmo base64.cmo unzip.cmo refList.cmo optParse.cmo dllist.cmo extLib.cmo
-- ocamlopt -g -c enum.mli enum.ml
 - File "bitSet.ml", line 23, characters 40-53:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -626,21 +624,22 @@ The following actions will be performed:
 - File "unzip.ml", line 436, characters 9-22:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- ocamlc -g -a -o extLib.cma enum.cmo bitSet.cmo dynArray.cmo extArray.cmo extHashtbl.cmo extList.cmo extString.cmo global.cmo IO.cmo option.cmo pMap.cmo std.cmo uChar.cmo uTF8.cmo base64.cmo unzip.cmo refList.cmo optParse.cmo dllist.cmo extLib.cmo
+- ocamlopt -g -c enum.mli enum.ml
 - ocamlopt -g -c bitSet.mli bitSet.ml
 - ocamlopt -g -c dynArray.mli dynArray.ml
 - ocamlopt -g -c extArray.mli extArray.ml
-- ocamlopt -g -c extHashtbl.mli extHashtbl.ml
-- ocamlopt -g -c extList.mli extList.ml
 - File "bitSet.ml", line 23, characters 40-53:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
 - File "bitSet.ml", line 28, characters 64-75:
 - Warning 3: deprecated: String.fill
 - Use Bytes.fill instead.
+- ocamlopt -g -c extHashtbl.mli extHashtbl.ml
+- ocamlopt -g -c extList.mli extList.ml
 - ocamlopt -g -c extString.mli extString.ml
 - ocamlopt -g -c global.mli global.ml
 - ocamlopt -g -c IO.mli IO.ml
-- ocamlopt -g -c option.mli option.ml
 - File "extString.ml", line 28, characters 9-15:
 - Warning 3: deprecated: create
 - Use Bytes.create instead.
@@ -670,34 +669,32 @@ The following actions will be performed:
 - Use Bytes.create instead.
 - File "extString.ml", line 250, characters 28-39:
 - Warning 3: deprecated: String.copy
-- File "IO.ml", line 65, characters 9-22:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "IO.ml", line 119, characters 9-22:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "IO.ml", line 180, characters 13-26:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "IO.ml", line 324, characters 6-23:
-- Warning 3: deprecated: String.unsafe_set
-- File "IO.ml", line 752, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "IO.ml", line 769, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "IO.ml", line 771, characters 2-19:
-- Warning 3: deprecated: String.unsafe_set
-- File "IO.ml", line 788, characters 4-21:
-- Warning 3: deprecated: String.unsafe_set
+- ocamlopt -g -c option.mli option.ml
 - ocamlopt -g -c pMap.mli pMap.ml
 - ocamlopt -g -c std.mli std.ml
 - ocamlopt -g -c uChar.mli uChar.ml
 - ocamlopt -g -c uTF8.mli uTF8.ml
-- ocamlopt -g -c base64.mli base64.ml
-- ocamlopt -g -c unzip.mli unzip.ml
-- ocamlopt -g -c refList.mli refList.ml
+- File "IO.ml", line 65, characters 9-22:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "IO.ml", line 119, characters 9-22:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "IO.ml", line 180, characters 13-26:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "IO.ml", line 324, characters 6-23:
+- Warning 3: deprecated: String.unsafe_set
+- File "IO.ml", line 752, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "IO.ml", line 769, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "IO.ml", line 771, characters 2-19:
+- Warning 3: deprecated: String.unsafe_set
+- File "IO.ml", line 788, characters 4-21:
+- Warning 3: deprecated: String.unsafe_set
 - File "std.ml", line 52, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -710,6 +707,10 @@ The following actions will be performed:
 - File "std.ml", line 162, characters 14-27:
 - Warning 3: deprecated: Obj.final_tag
 - Replaced by custom_tag.
+- ocamlopt -g -c base64.mli base64.ml
+- ocamlopt -g -c unzip.mli unzip.ml
+- ocamlopt -g -c refList.mli refList.ml
+- ocamlopt -g -c optParse.mli optParse.ml
 - File "base64.ml", line 98, characters 4-21:
 - Warning 3: deprecated: String.unsafe_set
 - File "unzip.ml", line 172, characters 12-25:
@@ -725,7 +726,6 @@ The following actions will be performed:
 - File "unzip.ml", line 436, characters 9-22:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlopt -g -c optParse.mli optParse.ml
 - ocamlopt -g -c dllist.mli dllist.ml
 - ocamlopt -g -c extLib.ml
 - ocamlopt -g -a -o extLib.cmxa enum.cmx bitSet.cmx dynArray.cmx extArray.cmx extHashtbl.cmx extList.cmx extString.cmx global.cmx IO.cmx option.cmx pMap.cmx std.cmx uChar.cmx uTF8.cmx base64.cmx unzip.cmx refList.cmx optParse.cmx dllist.cmx extLib.cmx
@@ -887,6 +887,8 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c jParseCode.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c jInstruction.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c jUnparse.mli
+- File "jClass.mli", line 25, characters 0-10:
+- Warning 33: unused open JCode.
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c jParseSignature.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c jParse.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c jLow2High.mli
@@ -903,8 +905,11 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c jParseCode.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c jInstruction.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c jUnparseSignature.ml
-- File "jClass.mli", line 25, characters 0-10:
-- Warning 33: unused open JCode.
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c jDumpLow.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c jHigh2Low.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c jDumpJasmin.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c jUnparse.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -package camlp4 -syntax camlp4o -c jParseSignature.ml
 - File "jBasicsLow.ml", line 22, characters 0-7:
 - Warning 44: this open statement shadows the value identifier output_string (which is later used)
 - File "jBasicsLow.ml", line 22, characters 0-7:
@@ -952,20 +957,6 @@ The following actions will be performed:
 - File "jInstruction.ml", line 447, characters 16-28:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c jDumpLow.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c jHigh2Low.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c jDumpJasmin.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c jUnparse.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -package camlp4 -syntax camlp4o -c jParseSignature.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c jLow2High.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c jParse.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c jFile.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c jManifest.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c jPrint.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c javalib.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -pack jBasics.cmo jBasicsLow.cmo jSignature.cmo jCode.cmo jClass.cmo jDumpBasics.cmo jParseCode.cmo jInstruction.cmo jUnparseSignature.cmo jDumpLow.cmo jHigh2Low.cmo jDumpJasmin.cmo jUnparse.cmo jParseSignature.cmo jLow2High.cmo jParse.cmo jFile.cmo jManifest.cmo jPrint.cmo javalib.cmo -o javalib_pack.cmo
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -a -o javalib.cma javalib_pack.cmo
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jBasics.ml
 - File "jDumpLow.ml", line 464, characters 35-45:
 - Warning 48: implicit elimination of optional argument ?jvm
 - File "jHigh2Low.ml", line 23, characters 0-10:
@@ -1000,6 +991,19 @@ The following actions will be performed:
 - Warning 44: this open statement shadows the value identifier close_out (which is later used)
 - File "jUnparse.ml", line 22, characters 0-17:
 - Warning 44: this open statement shadows the value identifier write_i32 (which is later used)
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c jLow2High.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c jParse.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c jFile.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c jManifest.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c jPrint.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -c javalib.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -pack jBasics.cmo jBasicsLow.cmo jSignature.cmo jCode.cmo jClass.cmo jDumpBasics.cmo jParseCode.cmo jInstruction.cmo jUnparseSignature.cmo jDumpLow.cmo jHigh2Low.cmo jDumpJasmin.cmo jUnparse.cmo jParseSignature.cmo jLow2High.cmo jParse.cmo jFile.cmo jManifest.cmo jPrint.cmo javalib.cmo -o javalib_pack.cmo
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package unix,str,extlib,ptrees,zip -a -o javalib.cma javalib_pack.cmo
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jBasics.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jBasicsLow.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jSignature.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jCode.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jClass.ml
 - File "jLow2High.ml", line 23, characters 0-10:
 - Warning 45: this open statement shadows the label c_max_stack (which is later used)
 - File "jLow2High.ml", line 23, characters 0-10:
@@ -1044,10 +1048,6 @@ The following actions will be performed:
 - Warning 48: implicit elimination of optional argument ?chars
 - File "jPrint.ml", line 43, characters 25-35:
 - Warning 48: implicit elimination of optional argument ?jvm
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jBasicsLow.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jSignature.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jCode.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jClass.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jDumpBasics.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jParseCode.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jInstruction.ml
