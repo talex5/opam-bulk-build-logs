@@ -4,9 +4,9 @@
 + lsb_release -i -s
 # Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=piqi
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=piqi
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=piqi
 + sudo apt-get update
 Not running as root, system installation will be done through "sudo"
 Ign http://archive.ubuntu.com trusty InRelease
@@ -37,7 +37,7 @@ Hit http://archive.ubuntu.com trusty-security/universe Sources
 Hit http://archive.ubuntu.com trusty-security/main amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/universe amd64 Packages
-Fetched 1431 kB in 4s (333 kB/s)
+Fetched 1431 kB in 4s (347 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
@@ -57,18 +57,18 @@ The following actions will be performed:
 [easy-format: from default] Command started
 [ocamlfind: from default] Command started
 [piqi: from default] Command started
-[easy-format: from default] Command started
 [ocamlfind: from default] Command started
 [piqi: from default] Command started
-[default] http://opam-archive:8080/archives/easy-format.1.0.2+opam.tar.gz downloaded
-[piqilib: from default] Command started
+[easy-format: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[ulex: from default] Command started
+[piqilib: from default] Command started
 [default] http://opam-archive:8080/archives/piqi.0.7.4+opam.tar.gz downloaded
+[ulex: from default] Command started
+[default] http://opam-archive:8080/archives/easy-format.1.0.2+opam.tar.gz downloaded
 [xmlm: from default] Command started
 [piqilib: from default] Command started
-[default] http://opam-archive:8080/archives/piqilib.0.6.6+opam.tar.gz downloaded
 [ulex: from default] Command started
+[default] http://opam-archive:8080/archives/piqilib.0.6.6+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ulex.1.1+opam.tar.gz downloaded
 [xmlm: from default] Command started
 [default] http://opam-archive:8080/archives/xmlm.1.2.0+opam.tar.gz downloaded
@@ -355,6 +355,19 @@ The following actions will be performed:
 - Warning 3: deprecated feature: operator (&); you should use (&&) instead
 - /usr/bin/ocamlc.opt -a utf8.cmo ulexing.cmo -o ulexing.cma
 [ulex: make all.opt] Command started
++ make "all.opt" (CWD=/home/opam/.opam/system/build/ulex.1.1)
+- ocamlbuild -byte-plugin pa_ulex.cma ulexing.cma pa_ulex.cmxa ulexing.cmxa
+- /usr/bin/ocamlopt.opt -c -o cset.cmx cset.ml
+- /usr/bin/ocamlopt.opt -c -o ulex.cmx ulex.ml
+- /usr/bin/ocamlopt.opt -c -I +camlp4 -pp camlp4orf -o pa_ulex.cmx pa_ulex.ml
+- /usr/bin/ocamlopt.opt -a cset.cmx ulex.cmx pa_ulex.cmx -o pa_ulex.cmxa
+- /usr/bin/ocamlopt.opt -c -o utf8.cmx utf8.ml
+- + /usr/bin/ocamlopt.opt -c -o utf8.cmx utf8.ml
+- File "utf8.ml", line 113, characters 20-21:
+- Warning 3: deprecated feature: operator (&); you should use (&&) instead
+- /usr/bin/ocamlopt.opt -c -o ulexing.cmx ulexing.ml
+- /usr/bin/ocamlopt.opt -a utf8.cmx ulexing.cmx -o ulexing.cmxa
+[ulex: make install] Command started
 + ./pkg/build "true" (CWD=/home/opam/.opam/system/build/xmlm.1.2.0)
 - ocamlfind ocamldep -modules src/xmlm.mli > src/xmlm.mli.depends
 - ocamlfind ocamlc -c -I src -I test -o src/xmlm.cmi src/xmlm.mli
@@ -372,19 +385,6 @@ The following actions will be performed:
 - ocamlfind ocamlopt -c -annot -bin-annot -I test -I src -o test/xmltrip.cmx test/xmltrip.ml
 - ocamlfind ocamlopt -linkpkg src/xmlm.cmx test/xhtml.cmx test/xmltrip.cmx -o test/xmltrip.native
 -> installed xmlm.1.2.0
-+ make "all.opt" (CWD=/home/opam/.opam/system/build/ulex.1.1)
-- ocamlbuild -byte-plugin pa_ulex.cma ulexing.cma pa_ulex.cmxa ulexing.cmxa
-- /usr/bin/ocamlopt.opt -c -o cset.cmx cset.ml
-- /usr/bin/ocamlopt.opt -c -o ulex.cmx ulex.ml
-- /usr/bin/ocamlopt.opt -c -I +camlp4 -pp camlp4orf -o pa_ulex.cmx pa_ulex.ml
-- /usr/bin/ocamlopt.opt -a cset.cmx ulex.cmx pa_ulex.cmx -o pa_ulex.cmxa
-- /usr/bin/ocamlopt.opt -c -o utf8.cmx utf8.ml
-- + /usr/bin/ocamlopt.opt -c -o utf8.cmx utf8.ml
-- File "utf8.ml", line 113, characters 20-21:
-- Warning 3: deprecated feature: operator (&); you should use (&&) instead
-- /usr/bin/ocamlopt.opt -c -o ulexing.cmx ulexing.ml
-- /usr/bin/ocamlopt.opt -a utf8.cmx ulexing.cmx -o ulexing.cmxa
-[ulex: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/ulex.1.1)
 - ocamlbuild -byte-plugin pa_ulex.cma ulexing.cma
 - cd _build && make -f ../Makefile realinstall
@@ -514,6 +514,14 @@ The following actions will be performed:
 - ocamlfind ocamlopt -package ulex,easy-format,xmlm -c -I +camlp4 piqi_json_gen.ml
 - ocamlfind ocamlopt -package ulex,easy-format,xmlm -c -I +camlp4 piqi_json.ml
 - ocamlfind ocamlopt -package ulex,easy-format,xmlm -c -I +camlp4 piqi_base64.ml
+- ocamlfind ocamlopt -package ulex,easy-format,xmlm -c -I +camlp4 piqobj_to_json.ml
+- ocamlfind ocamlopt -package ulex,easy-format,xmlm -c -I +camlp4 piqobj_of_json.ml
+- ocamlfind ocamlopt -package ulex,easy-format,xmlm -c -I +camlp4 piqi_xml.ml
+- ocamlfind ocamlopt -package ulex,easy-format,xmlm -c -I +camlp4 piqobj_to_xml.ml
+- ocamlfind ocamlopt -package ulex,easy-format,xmlm -c -I +camlp4 piqobj_of_xml.ml
+- ocamlfind ocamlopt -package ulex,easy-format,xmlm -c -I +camlp4 piqi_convert.ml
+- ocamlfind ocamlopt -package ulex,easy-format,xmlm -c -I +camlp4 piqi_compile.ml
+- ocamlfind ocamlopt -package ulex,easy-format,xmlm -c -I +camlp4 piqi_light.ml
 - File "piqi_base64.ml", line 332, characters 25-26:
 - Warning 3: deprecated feature: operator (&); you should use (&&) instead
 - File "piqi_base64.ml", line 332, characters 15-17:
@@ -526,14 +534,6 @@ The following actions will be performed:
 - Warning 3: deprecated feature: operator (&); you should use (&&) instead
 - File "piqi_base64.ml", line 325, characters 31-33:
 - Warning 3: deprecated feature: operator (or); you should use (||) instead
-- ocamlfind ocamlopt -package ulex,easy-format,xmlm -c -I +camlp4 piqobj_to_json.ml
-- ocamlfind ocamlopt -package ulex,easy-format,xmlm -c -I +camlp4 piqobj_of_json.ml
-- ocamlfind ocamlopt -package ulex,easy-format,xmlm -c -I +camlp4 piqi_xml.ml
-- ocamlfind ocamlopt -package ulex,easy-format,xmlm -c -I +camlp4 piqobj_to_xml.ml
-- ocamlfind ocamlopt -package ulex,easy-format,xmlm -c -I +camlp4 piqobj_of_xml.ml
-- ocamlfind ocamlopt -package ulex,easy-format,xmlm -c -I +camlp4 piqi_convert.ml
-- ocamlfind ocamlopt -package ulex,easy-format,xmlm -c -I +camlp4 piqi_compile.ml
-- ocamlfind ocamlopt -package ulex,easy-format,xmlm -c -I +camlp4 piqi_light.ml
 - ocamlfind ocamlopt -package ulex,easy-format,xmlm -c -I +camlp4 piqi_getopt.ml
 - ocamlfind ocamlopt -a     -I +camlp4        -cclib -lpiqilib_stubs    -o piqilib.cmxa piqi_version.cmx piqi_piqirun.cmx piqi_piqi.cmx piqloc.cmx piqi_util.cmx piq_ast.cmx piqi_impl_piqi.cmx piqi_boot.cmx piqi_c.cmx piqi_config.cmx piqi_iolist.cmx piqi_name.cmx piqi_common.cmx piqi_file.cmx piqi_command.cmx piqi_protobuf.cmx piqi_db.cmx piq_lexer.cmx piq_parser.cmx piq_gen.cmx piqi_objstore.cmx piqobj.cmx piqobj_common.cmx piqobj_to_protobuf.cmx piqobj_of_protobuf.cmx piqobj_to_piq.cmx piqobj_of_piq.cmx piq.cmx piqi.cmx piqi_pp.cmx piqi_json_parser.cmx piqi_json_gen.cmx piqi_json.cmx piqi_base64.cmx piqobj_to_json.cmx piqobj_of_json.cmx piqi_xml.cmx piqobj_to_xml.cmx piqobj_of_xml.cmx piqi_convert.cmx piqi_compile.cmx piqi_light.cmx piqi_getopt.cmx
 - make[2]: Leaving directory `/home/opam/.opam/system/build/piqilib.0.6.6/piqilib'
@@ -657,9 +657,9 @@ The following actions will be performed:
 - ocamlfind ocamlc -package ulex,easy-format,xmlm -c -I +camlp4 piqi_iolist.ml
 - ocamlfind ocamlc -package ulex,easy-format,xmlm -c -I +camlp4 piqi_name.ml
 - ocamlfind ocamlc -package ulex,easy-format,xmlm -c -I +camlp4 piqi_common.ml
+- ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/piqilib
 - ocamlfind ocamlc -package ulex,easy-format,xmlm -c -I +camlp4 piqi_file.ml
 - ocamlfind ocamlc -package ulex,easy-format,xmlm -c -I +camlp4 piqi_command.ml
-- ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/piqilib
 - ocamlfind ocamlc -package ulex,easy-format,xmlm -c -I +camlp4 piqi_protobuf.ml
 - ocamlfind ocamlc -package ulex,easy-format,xmlm -c -I +camlp4 piqi_db.ml
 - ocamlfind ocamlc -package ulex,easy-format,xmlm -c -pp "camlp4o -I /home/opam/.opam/system/lib/ulex pa_ulex.cma " -I +camlp4 piq_lexer.ml
