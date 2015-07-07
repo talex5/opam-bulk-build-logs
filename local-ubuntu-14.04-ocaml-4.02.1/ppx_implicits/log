@@ -1,32 +1,32 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-+ opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=ppx_implicits
 # Detecting depexts using flags: x86_64 linux ubuntu
++ opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=ppx_implicits
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=ppx_implicits
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=ppx_implicits
-+ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
++ sudo apt-get update
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
 Hit http://archive.ubuntu.com trusty Release.gpg
-Ign http://download.opensuse.org  InRelease
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Hit http://archive.ubuntu.com trusty-security Release.gpg
 Hit http://archive.ubuntu.com trusty Release
 Get:2 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
-Hit http://download.opensuse.org  Release.gpg
+Ign http://download.opensuse.org  InRelease
 Hit http://archive.ubuntu.com trusty-security Release
+Hit http://download.opensuse.org  Release.gpg
+Hit http://download.opensuse.org  Release
 Hit http://archive.ubuntu.com trusty/main Sources
 Hit http://archive.ubuntu.com trusty/restricted Sources
 Hit http://archive.ubuntu.com trusty/universe Sources
 Hit http://archive.ubuntu.com trusty/main amd64 Packages
 Hit http://archive.ubuntu.com trusty/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty/universe amd64 Packages
-Hit http://download.opensuse.org  Release
 Get:3 http://archive.ubuntu.com trusty-updates/main Sources [262 kB]
 Hit http://download.opensuse.org  Packages
 Get:4 http://archive.ubuntu.com trusty-updates/restricted Sources [3158 B]
@@ -40,8 +40,9 @@ Hit http://archive.ubuntu.com trusty-security/universe Sources
 Hit http://archive.ubuntu.com trusty-security/main amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/universe amd64 Packages
-Fetched 1540 kB in 3s (391 kB/s)
+Fetched 1540 kB in 3s (417 kB/s)
 Reading package lists...
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 673407 673409
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
@@ -60,10 +61,10 @@ The following actions will be performed:
 [ppx_implicits: from default] Command started
 [ppx_implicits: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[ppx_tools: from default] Command started
 [default] http://opam-archive:8080/archives/ppx_implicits.0.0.1+opam.tar.gz downloaded
+[ppx_tools: from default] Command started
 [omake: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [ppx_tools: from default] Command started
 [default] http://opam-archive:8080/archives/omake.0.9.8.6-0.rc1+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ppx_tools.0.99.2+opam.tar.gz downloaded
@@ -201,6 +202,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -209,8 +212,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -864,8 +865,6 @@ The following actions will be performed:
 - ocamlc -g -c lm_hash.ml
 - ocamlc -g -c lm_symbol.mli
 - ocamlc -g -c lm_symbol.ml
-- ocamlc -g -c lm_location.mli
-- ocamlc -g -c lm_location.ml
 - File "lm_hash.ml", line 105, characters 24-36:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
@@ -881,6 +880,8 @@ The following actions will be performed:
 - File "lm_hash.ml", line 1442, characters 12-52:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlc -g -c lm_location.mli
+- ocamlc -g -c lm_location.ml
 - ocamlc -g -c lm_position.mli
 - ocamlc -g -c lm_position.ml
 - ocamlc -g -c lm_filename_util.mli
@@ -936,11 +937,11 @@ The following actions will be performed:
 - File "lm_channel.ml", line 1239, characters 29-42:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -g -c lm_parser.mli
-- ocamlc -g -c lm_parser.ml
 - File "lm_lexer.ml", line 316, characters 28-40:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
+- ocamlc -g -c lm_parser.mli
+- ocamlc -g -c lm_parser.ml
 - File "lm_lexer.ml", line 1725, characters 18-30:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
@@ -981,6 +982,7 @@ The following actions will be performed:
 - ocamlc -g -c omake_magic.ml
 - ocamlc -g  -a -o magic.cma omake_magic.cmo
 - ocamlc -g -c fmarshal.ml
+- ocamlc -g -c omake_marshal.ml
 - File "lm_db.ml", line 129, characters 13-26:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -999,7 +1001,6 @@ The following actions will be performed:
 - File "fmarshal.ml", line 363, characters 14-27:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -g -c omake_marshal.ml
 - ocamlc -g -c omake_node_sig.ml
 - ocamlc -g -c omake_node.mli
 - ocamlc -g -c omake_ir.ml
@@ -1057,13 +1058,13 @@ The following actions will be performed:
 - ocamlc -g -c omake_print_util.mli
 - ocamlc -g -c omake_print_util.ml
 - ocamlc -g -c omake_readline.ml
-- File "omake_wild.ml", line 126, characters 13-26:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -g -c omake_printf.ml
 - ocamlc -g  -a -o util.cma fmarshal.cmo ocaml_patch.cmo omake_util.cmo omake_wild.cmo omake_print_util.cmo omake_readline.cmo omake_printf.cmo omake_marshal.cmo omake_handle_table.cmo
 - ocamlc -g -c omake_ast_util.mli
 - ocamlc -g -c omake_ast_util.ml
+- File "omake_wild.ml", line 126, characters 13-26:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -g -c omake_ast_print.ml
 - ocamlc -g  -a -o ast.cma omake_ast.cmo omake_ast_util.cmo omake_ast_print.cmo
 - ocamlc -g -c omake_options.ml
@@ -1079,10 +1080,10 @@ The following actions will be performed:
 - ocamlc -g -c omake_ir_print.ml
 - ocamlc -g -c omake_ir_free_vars.ml
 - ocamlc -g -c omake_value_print.ml
-- ocamlc -g -c omake_pos.ml
 - File "omake_var.ml", line 161, characters 18-30:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
+- ocamlc -g -c omake_pos.ml
 - ocamlc -g -c omake_command.mli
 - ocamlc -g -c omake_command.ml
 - ocamlc -g -c omake_cache.ml
@@ -1121,11 +1122,11 @@ The following actions will be performed:
 - ocamlc -g -c omake_ast_lex.ml
 - ocamlc -g -c omake_exp_parse.mli
 - ocamlc -g -c omake_exp_parse.ml
-- ocamlc -g -c omake_exp_lex.mli
-- ocamlc -g -c omake_exp_lex.ml
 - File "omake_ast_lex.mll", line 1035, characters 12-30:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlc -g -c omake_exp_lex.mli
+- ocamlc -g -c omake_exp_lex.ml
 - ocamlc -g -c omake_ir_ast.ml
 - ocamlc -g -c omake_ir_semant.mli
 - ocamlc -g -c omake_ir_semant.ml
@@ -1138,18 +1139,18 @@ The following actions will be performed:
 - ocamlc -g -c omake_exec_util.ml
 - ocamlc -g -c omake_exec_local.mli
 - ocamlc -g -c omake_exec_local.ml
-- File "omake_exec_local.ml", line 209, characters 33-46:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "omake_exec_local.ml", line 209, characters 53-66:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -g -c omake_exec_remote.ml
 - ocamlc -g -c omake_exec_notify.mli
 - ocamlc -g -c omake_exec_notify.ml
 - ocamlc -g -c omake_exec.ml
 - ocamlc -g  -a -o exec.cma omake_exec_id.cmo omake_exec_type.cmo omake_exec_print.cmo omake_exec_util.cmo omake_exec_local.cmo omake_exec_remote.cmo omake_exec_notify.cmo omake_exec.cmo
 - ocamlc -g -c omake_eval.ml
+- File "omake_exec_local.ml", line 209, characters 33-46:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "omake_exec_local.ml", line 209, characters 53-66:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -g -c omake_value.ml
 - ocamlc -g  -a -o eval.cma omake_eval.cmo omake_value.cmo
 - ocamlc -g -c omake_shell_parse.mli
@@ -1183,15 +1184,15 @@ The following actions will be performed:
 - File "omake_build.ml", line 2789, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -g -c omake_builtin_arith.mli
-- ocamlc -g -c omake_builtin_arith.ml
-- ocamlc -g -c omake_builtin_file.mli
-- ocamlc -g -c omake_builtin_file.ml
 - File "omake_builtin_base.ml", line 1004, characters 13-24:
 - Warning 3: deprecated: String.copy
 - File "omake_builtin_base.ml", line 1008, characters 12-27:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlc -g -c omake_builtin_arith.mli
+- ocamlc -g -c omake_builtin_arith.ml
+- ocamlc -g -c omake_builtin_file.mli
+- ocamlc -g -c omake_builtin_file.ml
 - File "omake_builtin_base.ml", line 1580, characters 20-33:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -1233,10 +1234,6 @@ The following actions will be performed:
 - ocamlc -g -c omake_builtin_test.ml
 - ocamlc -g -c omake_builtin_object.mli
 - ocamlc -g -c omake_builtin_object.ml
-- ocamlc -g -linkall -a -o builtin.cma omake_builtin_base.cmo omake_builtin_arith.cmo omake_builtin_file.cmo omake_builtin_fun.cmo omake_builtin_io.cmo omake_builtin_io_fun.cmo omake_builtin_sys.cmo omake_builtin_target.cmo omake_builtin_shell.cmo omake_builtin_rule.cmo omake_builtin_test.cmo omake_builtin_object.cmo
-- cc  -I"`ocamlc -where`" -c lm_heap.c
-- cc  -I"`ocamlc -where`" -c lm_channel.c
-- cc  -I"`ocamlc -where`" -c lm_printf.c
 - File "omake_builtin_object.ml", line 761, characters 31-44:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -1255,6 +1252,10 @@ The following actions will be performed:
 - File "omake_builtin_object.ml", line 779, characters 28-54:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlc -g -linkall -a -o builtin.cma omake_builtin_base.cmo omake_builtin_arith.cmo omake_builtin_file.cmo omake_builtin_fun.cmo omake_builtin_io.cmo omake_builtin_io_fun.cmo omake_builtin_sys.cmo omake_builtin_target.cmo omake_builtin_shell.cmo omake_builtin_rule.cmo omake_builtin_test.cmo omake_builtin_object.cmo
+- cc  -I"`ocamlc -where`" -c lm_heap.c
+- cc  -I"`ocamlc -where`" -c lm_channel.c
+- cc  -I"`ocamlc -where`" -c lm_printf.c
 - cc  -I"`ocamlc -where`" -c lm_ctype.c
 - cc  -I"`ocamlc -where`" -c lm_uname_ext.c
 - cc  -I"`ocamlc -where`" -c lm_unix_cutil.c
@@ -1289,9 +1290,9 @@ The following actions will be performed:
 - --- Checking for ocamlc.opt... (found /usr/bin/ocamlc.opt)
 - --- Checking for ocamlopt.opt... (found /usr/bin/ocamlopt.opt)
 - --- Checking whether ocamlc understands the "z" warnings... (yes)
-- --- Checking for ncurses... (found)
-- --- Checking for readline... 
-- (NOT found)
+- --- Checking for ncurses... 
+- (found)
+- --- Checking for readline... (NOT found)
 - --- Checking for FAM... (NOT found)
 - --- Checking if ocamldep understands -modules... (yes)
 - --- Checking for ocamlfind... (found /home/opam/.opam/system/bin/ocamlfind)
@@ -1302,25 +1303,26 @@ The following actions will be performed:
 - --- Checking for ncurses... (found)
 - --- Checking for readline... (NOT found)
 - --- Checking for FAM... (NOT found)
+- --- Checking for function snprintf... 
 - Updating the .config file.
-- --- Checking for function snprintf... (found)
+- (found)
 - --- Checking for optimal filesystem case-sensitivity test... (Generic)
 - --- Checking if ocamldep understands -modules... (yes)
 - --- Checking for hevea... (FAILED - no hevea found)
 - --- Checking for date... (found /bin/date)
 - --- Checking for date... (found /bin/date)
-- *** omake: finished reading OMakefiles (2.91 sec)
+- *** omake: finished reading OMakefiles (2.76 sec)
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
 - *** omake: saved .omakedb
 - *** omake: saved .omakedb
-- *** omake: done (38.81 sec, 234/234 scans, 343/505 rules, 788/2314 digests)
+- *** omake: done (38.38 sec, 234/234 scans, 343/505 rules, 788/2314 digests)
 - OMAKEFLAGS= OMAKEPATH=lib src/main/omake --dotomake .omake --force-dotomake -j2 all
 - *** omake: reading OMakefiles
 - *** omake: finished reading OMakefiles (0.07 sec)
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
-- *** omake: done (8.04 sec, 219/235 scans, 27/534 rules, 39/1842 digests)
+- *** omake: done (8.72 sec, 219/235 scans, 27/534 rules, 39/1842 digests)
 [omake: make install] Command started
 + make "install" "PREFIX=/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/omake.0.9.8.6-0.rc1)
 - make[1]: Entering directory `/home/opam/.opam/system/build/omake.0.9.8.6-0.rc1/boot'
@@ -1332,18 +1334,20 @@ The following actions will be performed:
 - touch .config
 - OMAKEFLAGS= OMAKEPATH=lib ./omake-boot --dotomake .omake --force-dotomake -j2 main
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.43 sec)
+- *** omake: finished reading OMakefiles (0.41 sec)
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
-- *** omake: done (5.03 sec, 0/234 scans, 0/505 rules, 1/1762 digests)
+- *** omake: done (4.88 sec, 0/234 scans, 0/505 rules, 1/1762 digests)
 - OMAKEFLAGS= OMAKEPATH=lib src/main/omake --dotomake .omake --force-dotomake -j2 all
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.07 sec)
-- *** omake: done (0.55 sec, 0/235 scans, 0/534 rules, 0/1821 digests)
+- *** omake: finished reading OMakefiles (0.08 sec)
+- *** omake: done (0.63 sec, 0/235 scans, 0/534 rules, 0/1821 digests)
 - OMAKEFLAGS= OMAKEPATH=lib src/main/omake --dotomake .omake --force-dotomake -j2 install
 - *** omake: reading OMakefiles
 - *** omake: finished reading OMakefiles (0.06 sec)
-- *** omake: done (0.64 sec, 0/235 scans, 2/536 rules, 0/1821 digests)
+- *** omake: warning: stdout is not a tty, disabling the progress bar
+-    (use --progress to override).
+- *** omake: done (0.67 sec, 0/235 scans, 2/536 rules, 0/1821 digests)
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
 -> installed omake.0.9.8.6-0.rc1
@@ -1409,7 +1413,7 @@ The following actions will be performed:
 - --- Checking for ocamlc.opt... (found /usr/bin/ocamlc.opt)
 - --- Checking for ocamlopt.opt... (found /usr/bin/ocamlopt.opt)
 - --- Checking whether ocamlc understands the "z" warnings... (yes)
-- *** omake: finished reading OMakefiles (0.18 sec)
+- *** omake: finished reading OMakefiles (0.10 sec)
 - --- Checking if ocamldep understands -modules... (yes)
 - - build ppx untypeast.cmi
 - + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common,ppx_tools.metaquot -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c untypeast.mli
@@ -1429,6 +1433,8 @@ The following actions will be performed:
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- *** omake: warning: stdout is not a tty, disabling the progress bar
+-    (use --progress to override).
 - - build ppx forge.o
 - + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common,ppx_tools.metaquot -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c forge.ml
 - - build ppx forge.o
@@ -1443,17 +1449,16 @@ The following actions will be performed:
 - + ocamlfind ocamlopt -annot -bin-annot -package compiler-libs.common,ppx_tools.metaquot -g -w A-3-4-9-40-42-44-45-48 -warn-error a -I . -c tysize.ml
 - - build ppx ppxx.o
 - + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common,ppx_tools.metaquot -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c ppxx.ml
-- *** omake: warning: stdout is not a tty, disabling the progress bar
--    (use --progress to override).
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
 - - build ppx ppxx.o
 - + ocamlfind ocamlopt -annot -bin-annot -package compiler-libs.common,ppx_tools.metaquot -g -w A-3-4-9-40-42-44-45-48 -warn-error a -I . -c ppxx.ml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
 - - build ppx policy.cmx
 - + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common,ppx_tools.metaquot -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c policy.ml
 - - build ppx policy.cmx
@@ -1464,14 +1469,14 @@ The following actions will be performed:
 - + ocamlfind ocamlopt -annot -bin-annot -package compiler-libs.common,ppx_tools.metaquot -g -w A-3-4-9-40-42-44-45-48 -warn-error a -I . -c pre.ml
 - - build ppx mod.o
 - + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common,ppx_tools.metaquot -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c mod.ml
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
 - - build ppx mod.o
 - + ocamlfind ocamlopt -annot -bin-annot -package compiler-libs.common,ppx_tools.metaquot -g -w A-3-4-9-40-42-44-45-48 -warn-error a -I . -c mod.ml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
 - - build ppx compile.cmx
 - + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common,ppx_tools.metaquot -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c compile.ml
 - - build ppx compile.cmx
@@ -1484,7 +1489,6 @@ The following actions will be performed:
 - + ocamlfind ocamlc -package compiler-libs.common,ppx_tools.metaquot -g -g -I . -o ppx_implicits.run utils.cmo untypeast.cmo ppxx.cmo forge.cmo policy.cmo pre.cmo tysize.cmo mod.cmo compile.cmo ppx.cmo -linkpkg
 - - build ppx ppx_implicits.opt
 - + ocamlfind ocamlopt -package compiler-libs.common,ppx_tools.metaquot -g -I . -o ppx_implicits.opt utils.cmx untypeast.cmx ppxx.cmx forge.cmx policy.cmx pre.cmx tysize.cmx mod.cmx compile.cmx ppx.cmx -linkpkg
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
 - findlib: [WARNING] Interface compile.cmi occurs in several directories: ., /usr/lib/ocaml/compiler-libs
@@ -1504,16 +1508,16 @@ The following actions will be performed:
 - Warning 16: this optional argument cannot be erased.
 - File "_none_", line 1:
 - Warning 16: this optional argument cannot be erased.
-- *** omake: done (5.61 sec, 11/11 scans, 40/68 rules, 102/275 digests)
+- *** omake: done (5.69 sec, 11/11 scans, 40/68 rules, 102/275 digests)
 [ppx_implicits: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/system/build/ppx_implicits.0.0.1)
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.04 sec)
+- *** omake: finished reading OMakefiles (0.06 sec)
 - - build ppx <install>
 - + ocamlfind remove ppx_implicits
 - - build ppx <install>
 - + ocamlfind install ppx_implicits META ppx_implicits.opt ppx_implicits.run ppx_implicits
-- *** omake: done (0.11 sec, 0/11 scans, 1/44 rules, 2/141 digests)
+- *** omake: done (0.16 sec, 0/11 scans, 1/44 rules, 2/141 digests)
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/ppx_implicits
 - Installed /home/opam/.opam/system/lib/ppx_implicits/ppx_implicits
 - Installed /home/opam/.opam/system/lib/ppx_implicits/ppx_implicits.run
