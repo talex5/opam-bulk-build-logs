@@ -1,31 +1,32 @@
-# Detecting depexts using flags: x86_64 linux debian
 + uname -m
+# Detecting depexts using flags: x86_64 linux debian
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=camldm
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=camldm
 # The following system packages are needed:
 #  - libdevmapper-dev
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=camldm
-Not running as root, system installation will be done through "sudo"
 + sudo apt-get update
+Not running as root, the following command will be run through "sudo":
+    apt-get update
 Hit http://http.debian.net stable Release.gpg
 Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
 Hit http://http.debian.net stable Release
 Get:2 http://http.debian.net stable-updates Release [124 kB]
 Hit http://http.debian.net stable/main amd64 Packages
 Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
-Get:4 http://security.debian.org stable/updates Release.gpg [836 B]
-Get:5 http://security.debian.org stable/updates Release [102 kB]
-Get:6 http://security.debian.org stable/updates/main amd64 Packages [382 kB]
-Fetched 614 kB in 3s (203 kB/s)
+Hit http://security.debian.org stable/updates Release.gpg
+Hit http://security.debian.org stable/updates Release
+Hit http://security.debian.org stable/updates/main amd64 Packages
+Fetched 129 kB in 1s (113 kB/s)
 Reading package lists...
-W: Size of file /var/lib/apt/lists/security.debian.org_dists_stable_updates_main_binary-amd64_Packages.gz is not what the server reported 382091 382217
 # OS package update successful
-Not running as root, system installation will be done through "sudo"
+Not running as root, the following command will be run through "sudo":
+    apt-get install -qq -yy libdevmapper-dev m4
 + sudo apt-get install -qq -yy libdevmapper-dev m4
 debconf: delaying package configuration, since apt-utils is not installed
 Selecting previously unselected package libudev0:amd64.
-(Reading database ... 20143 files and directories currently installed.)
+(Reading database ... 20141 files and directories currently installed.)
 Unpacking libudev0:amd64 (from .../libudev0_175-7.2_amd64.deb) ...
 Selecting previously unselected package dmsetup.
 Unpacking dmsetup (from .../dmsetup_2%3a1.02.74-8_amd64.deb) ...
@@ -72,8 +73,8 @@ The following actions will be performed:
 [xmlm: from default] Command started
 [rpc: from default] Command started
 [type_conv: from default] Command started
-[xmlm: from default] Command started
 [default] http://opam-archive:8080/archives/rpc.1.5.1+opam.tar.gz downloaded
+[xmlm: from default] Command started
 [default] http://opam-archive:8080/archives/type_conv.111.13.00+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/xmlm.1.2.0+opam.tar.gz downloaded
 
@@ -1024,9 +1025,9 @@ The following actions will be performed:
 - ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o rpc.o rpc.ml
 - ocamlfind ocamlc -annot -g -c -package camlp4 -pp "camlp4orf" -I /home/opam/.opam/4.01.0/lib/ocaml/camlp4 -o pa_module_conv.cmo pa_module_conv.ml
 - ocamlfind ocamlc -annot -g -c -package camlp4,type_conv -pp "camlp4orf" -I /home/opam/.opam/4.01.0/lib/ocaml/camlp4 -I /home/opam/.opam/4.01.0/lib/type_conv  p4_rpc.cmo p4_rpc.ml
+- ocamlfind ocamlc -annot -g -c -package camlp4,type_conv -pp "camlp4orf" -I /home/opam/.opam/4.01.0/lib/ocaml/camlp4 -I /home/opam/.opam/4.01.0/lib/type_conv  pa_rpc.cmo pa_rpc.ml
 - File "p4_rpc.ml", line 558, characters 6-14:
 - Warning 26: unused variable arg_path.
-- ocamlfind ocamlc -annot -g -c -package camlp4,type_conv -pp "camlp4orf" -I /home/opam/.opam/4.01.0/lib/ocaml/camlp4 -I /home/opam/.opam/4.01.0/lib/type_conv  pa_rpc.cmo pa_rpc.ml
 - ocamlfind ocamlc -a -I /home/opam/.opam/4.01.0/lib/ocaml/camlp4 -I /home/opam/.opam/4.01.0/lib/type_conv  -o pa_rpc.cma pa_module_conv.cmo rpc.cmo p4_rpc.cmo pa_rpc.cmo
 - ocamlfind ocamlc -annot -g -c -package camlp4,type_conv -pp "camlp4orf" -I /home/opam/.opam/4.01.0/lib/ocaml/camlp4 -I /home/opam/.opam/4.01.0/lib/type_conv  p4_idl.cmo p4_idl.ml
 - ocamlfind ocamlc -a -I /home/opam/.opam/4.01.0/lib/ocaml/camlp4 -I /home/opam/.opam/4.01.0/lib/type_conv  -o idl.cma p4_rpc.cmo p4_idl.cmo
@@ -1036,7 +1037,6 @@ The following actions will be performed:
 - ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o jsonrpc.cmi jsonrpc.mli
 - ocamlfind ocamlc -annot -g -package xmlm,lwt -c -o jsonrpc.cmo jsonrpc.ml
 - ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o jsonrpc.o jsonrpc.ml
-- ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o rpc_client.cmi rpc_client.mli
 - File "p4_idl.ml", line 112, characters 5-143:
 - Warning 8: this pattern-matching is not exhaustive.
 - Here is an example of a value that is not matched:
@@ -1049,6 +1049,7 @@ The following actions will be performed:
 - TySta (_, _, _)|TyVrnEq (_, _)|TyVrnSup (_, _)|TyVrnInf (_, _)|
 - TyVrnInfSup (_, _, _)|TyAmp (_, _, _)|TyOfAmp (_, _, _)|TyPkg (_, _)|
 - TyAnt (_, _))
+- ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o rpc_client.cmi rpc_client.mli
 - ocamlfind ocamlc -annot -g -package xmlm,lwt -c -o rpc_client.cmo rpc_client.ml
 - ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o rpc_client.o rpc_client.ml
 - make[1]: Leaving directory `/home/opam/.opam/4.01.0/build/rpc.1.5.1/lib'
