@@ -17,14 +17,14 @@ The following actions will be performed:
 [lwt: from default] Command started
 [ocamlfind: from default] Command started
 [ocamlfind: from default] Command started
-[lwt: from default] Command started
-[default] http://opam-archive:8080/archives/lwt.2.4.5+opam.tar.gz downloaded
-[ounit: from default] Command started
-[camltc: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/camltc.0.9.2+opam.tar.gz downloaded
 [ounit: from default] Command started
+[ounit: from default] Command started
+[lwt: from default] Command started
 [default] http://opam-archive:8080/archives/ounit.2.0.0+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/lwt.2.4.5+opam.tar.gz downloaded
+[camltc: from default] Command started
+[default] http://opam-archive:8080/archives/camltc.0.9.2+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlp4: sh] Command started
@@ -113,6 +113,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -158,18 +159,17 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -223,6 +223,9 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_split.ml
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
+- ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -261,16 +264,13 @@ The following actions will be performed:
 - File "fl_meta.mll", line 62, characters 11-22:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlopt -I +compiler-libs -c fl_metascanner.ml
-- ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
-- ocamlopt -I +compiler-libs -c findlib.ml
 - File "fl_metascanner.ml", line 111, characters 23-32:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
 - if [ 1 -gt 0 ]; then \
@@ -850,13 +850,6 @@ The following actions will be performed:
 - 
 - ./setup.exe -build 
 - /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib64/ocaml/ocamlbuild /usr/lib64/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib64/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
-- File "setup.ml", line 254, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "setup.ml", line 2419, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
-- ocamlfind: Package `wikidoc' not found
 - File "_tags", line 13, characters 116-125:
 - Warning: the tag "pkg_react" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
 - File "_tags", line 13, characters 84-101:
@@ -907,6 +900,13 @@ The following actions will be performed:
 - Use (||) instead.
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -a syntax/pa_optcomp.cmo -o syntax/optcomp.cma
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -package camlp4 -syntax camlp4o -package camlp4.extend -syntax camlp4o -package camlp4.quotations.o -syntax camlp4o -I syntax -o syntax/pa_optcomp.cmx syntax/pa_optcomp.ml
+- File "setup.ml", line 254, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "setup.ml", line 2419, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
+- ocamlfind: Package `wikidoc' not found
 - + /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -package camlp4 -syntax camlp4o -package camlp4.extend -syntax camlp4o -package camlp4.quotations.o -syntax camlp4o -I syntax -o syntax/pa_optcomp.cmx syntax/pa_optcomp.ml
 - File "syntax/pa_optcomp.ml", line 217, characters 50-52:
 - Warning 3: deprecated: Pervasives.or
@@ -1556,8 +1556,8 @@ The following actions will be performed:
 - ocamlfind ocamlmklib -o otc otc_wrapper.o
 - ocamlfind ocamldep -package lwt.preemptive -package lwt.unix -package lwt -package oUnit -modules camltc.ml > camltc.ml.depends
 - echo 'let git_revision = "tags/camltc-0.9.2-0-gfabaff1"
-- let compile_time = "23/05/2015 12:46:44 UTC"
-- let machine = "d4bfe65daaa4 3.13.0-37-generic x86_64 x86_64 x86_64 GNU/Linux"
+- let compile_time = "25/05/2015 19:25:59 UTC"
+- let machine = "40c373daadd0 3.13.0-37-generic x86_64 x86_64 x86_64 GNU/Linux"
 - let major = 0
 - let minor = 9
 - let patch = 2
