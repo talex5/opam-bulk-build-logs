@@ -12,22 +12,21 @@
 #  - m4
 #  - zlib1g-dev
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=why
-+ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-Ign http://download.opensuse.org  InRelease
-Hit http://download.opensuse.org  Release.gpg
-Hit http://download.opensuse.org  Release
++ sudo apt-get update
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
-Hit http://download.opensuse.org  Packages
 Hit http://archive.ubuntu.com trusty Release.gpg
+Ign http://download.opensuse.org  InRelease
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
+Hit http://download.opensuse.org  Release.gpg
 Hit http://archive.ubuntu.com trusty Release
 Get:3 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
 Get:4 http://archive.ubuntu.com trusty-security Release [63.5 kB]
+Hit http://download.opensuse.org  Release
 Hit http://archive.ubuntu.com trusty/main Sources
 Hit http://archive.ubuntu.com trusty/restricted Sources
 Hit http://archive.ubuntu.com trusty/universe Sources
@@ -38,6 +37,7 @@ Get:5 http://archive.ubuntu.com trusty-updates/main Sources [251 kB]
 Get:6 http://archive.ubuntu.com trusty-updates/restricted Sources [2310 B]
 Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [142 kB]
 Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [644 kB]
+Hit http://download.opensuse.org  Packages
 Get:9 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [15.1 kB]
 Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [359 kB]
 Get:11 http://archive.ubuntu.com trusty-security/main Sources [99.9 kB]
@@ -46,8 +46,11 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [24.5 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [337 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [130 kB]
-Fetched 2150 kB in 5s (399 kB/s)
+Fetched 2150 kB in 4s (534 kB/s)
 Reading package lists...
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 643906 643961
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages.gz is not what the server reported 358789 358790
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_main_binary-amd64_Packages.gz is not what the server reported 336529 336580
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libexpat1-dev libgmp-dev libgnomecanvas2-dev libgtk2.0-dev libgtksourceview2.0-dev m4 zlib1g-dev
@@ -584,16 +587,16 @@ The following actions will be performed:
 [lablgtk: from default] Command started
 [ocamlfind: from default] Command started
 [ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[ocamlgraph: from default] Command started
 [lablgtk: from default] Command started
 [default] http://opam-archive:8080/archives/lablgtk.2.18.3+opam.tar.gz downloaded
-[ocamlgraph: from default] Command started
-[frama-c: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [why: from default] Command started
-[default] http://opam-archive:8080/archives/frama-c.20150201+opam.tar.gz downloaded
-[why3: from default] Command started
 [ocamlgraph: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlgraph.1.8.6+opam.tar.gz downloaded
+[why3: from default] Command started
+[frama-c: from default] Command started
+[default] http://opam-archive:8080/archives/frama-c.20150201+opam.tar.gz downloaded
 [why: from default] Command started
 [default] http://opam-archive:8080/archives/why.2.35+opam.tar.gz downloaded
 [why3: from default] Command started
@@ -692,6 +695,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -737,11 +741,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -750,8 +755,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -803,6 +806,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -847,7 +851,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -958,11 +961,11 @@ The following actions will be performed:
 - checking for GLADE... no
 - checking for RSVG... no
 - checking for GNOMECANVAS... yes
-- checking for GNOMEUI... no
+- checking for GNOMEUI... 
+- no
 - checking for PANEL... no
 - checking for GTKSPELL... no
-- checking for GTKSOURCEVIEW... 
-- no
+- checking for GTKSOURCEVIEW... no
 - checking for GTKSOURCEVIEW2... yes
 - checking for GTKQUARTZ... no
 - checking for GTKALL... yes
@@ -1019,11 +1022,11 @@ The following actions will be performed:
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/usr/lib/ocaml' 'wrappers.c'
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/usr/lib/ocaml' 'ml_gtk.c'
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O' -verbose ml_pango.c
-- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/usr/lib/ocaml' 'ml_pango.c'
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O' -verbose ml_gtkaction.c
+- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/usr/lib/ocaml' 'ml_pango.c'
+- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/usr/lib/ocaml' 'ml_gtkaction.c'
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O' -verbose ml_gtkbin.c
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O' -verbose ml_gtkbroken.c
-- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/usr/lib/ocaml' 'ml_gtkaction.c'
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/usr/lib/ocaml' 'ml_gtkbin.c'
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/usr/lib/ocaml' 'ml_gtkbroken.c'
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O' -verbose ml_gtkbutton.c
@@ -1034,12 +1037,12 @@ The following actions will be performed:
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/usr/lib/ocaml' 'ml_gtkedit.c'
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O' -verbose ml_gtkfile.c
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O' -verbose ml_gtklist.c
+- ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O' -verbose ml_gtkmenu.c
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/usr/lib/ocaml' 'ml_gtkfile.c'
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/usr/lib/ocaml' 'ml_gtklist.c'
-- ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O' -verbose ml_gtkmenu.c
+- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/usr/lib/ocaml' 'ml_gtkmenu.c'
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O' -verbose ml_gtkmisc.c
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O' -verbose ml_gtkpack.c
-- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/usr/lib/ocaml' 'ml_gtkmenu.c'
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/usr/lib/ocaml' 'ml_gtkmisc.c'
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/usr/lib/ocaml' 'ml_gtkpack.c'
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O' -verbose ml_gtkrange.c
@@ -1062,6 +1065,11 @@ The following actions will be performed:
 - ocamlc.opt   -w s -c  gdkEnums.ml
 - ocamlc.opt   -w s -c  pangoEnums.ml
 - ocamlc.opt   -w s -c  gtkEnums.ml
+- ocamlc.opt   -w s -c  pango.ml
+- ocamlc.opt   -w s -c gdk.mli
+- ocamlc.opt   -w s -c  gdk.ml
+- ocamlc.opt   -w s -c  gdkEvent.ml
+- ocamlc.opt   -w s -c  gdkKeysyms.ml
 - File "gpointer.ml", line 144, characters 10-23:
 - Warning 3: deprecated: StdLabels.String.create
 - Use BytesLabels.create instead.
@@ -1080,11 +1088,6 @@ The following actions will be performed:
 - File "gutf8.ml", line 145, characters 11-23:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
-- ocamlc.opt   -w s -c  pango.ml
-- ocamlc.opt   -w s -c gdk.mli
-- ocamlc.opt   -w s -c  gdk.ml
-- ocamlc.opt   -w s -c  gdkEvent.ml
-- ocamlc.opt   -w s -c  gdkKeysyms.ml
 - ocamlc.opt   -w s -c gdkPixbuf.mli
 - ocamlc.opt   -w s -c  gdkPixbuf.ml
 - ocamlc.opt   -w s -c  gtk.ml
@@ -1124,11 +1127,6 @@ The following actions will be performed:
 - ./propcc gtkBroken.props
 - ocamlc.opt   -w s -c  gtkBrokenProps.ml
 - ./propcc gtkAssistant.props
-- Warning: no conversion for type PangoAttrList in class GtkLabel
-- Warning: no conversion for type GdkPixbufAnimation in class GtkImage
-- Warning: no conversion for type PangoTabArray in class GtkTextView
-- Warning: no conversion for type PangoTabArray in class GtkTextTag
-- Warning: no conversion for type PangoAttrList in class GtkCellRendererText
 - ocamlc.opt   -w s -c  gtkAssistantProps.ml
 - ocamlc.opt   -w s -c  gtkData.ml
 - ocamlc.opt   -w s -c  gtkBase.ml
@@ -1140,6 +1138,14 @@ The following actions will be performed:
 - ocamlc.opt   -w s -c  gtkWindow.ml
 - ocamlc.opt   -w s -c  gtkList.ml
 - ocamlc.opt   -w s -c  gtkBin.ml
+- Warning: no conversion for type PangoAttrList in class GtkLabel
+- Warning: no conversion for type GdkPixbufAnimation in class GtkImage
+- Warning: no conversion for type PangoTabArray in class GtkTextView
+- Warning: no conversion for type PangoTabArray in class GtkTextTag
+- Warning: no conversion for type PangoAttrList in class GtkCellRendererText
+- File "gtkList.ml", line 188, characters 14-26:
+- Warning 3: deprecated: StdLabels.Array.create
+- Use ArrayLabels.make instead.
 - ocamlc.opt   -w s -c  gtkEdit.ml
 - ocamlc.opt   -w s -c  gtkRange.ml
 - ocamlc.opt   -w s -c  gtkText.ml
@@ -1156,9 +1162,6 @@ The following actions will be performed:
 - ocamlc.opt   -w s -c gData.mli
 - ocamlc.opt   -w s -c  gData.ml
 - ocamlc.opt   -w s -c  ogtkBinProps.ml
-- File "gtkList.ml", line 188, characters 14-26:
-- Warning 3: deprecated: StdLabels.Array.create
-- Use ArrayLabels.make instead.
 - ocamlc.opt   -w s -c  ogtkButtonProps.ml
 - ocamlc.opt   -w s -c  ogtkEditProps.ml
 - ocamlc.opt   -w s -c  ogtkListProps.ml
@@ -1215,9 +1218,9 @@ The following actions will be performed:
 - + ar rc ./liblablgtk2.a  ml_gdkpixbuf.o ml_gdk.o ml_glib.o ml_gobject.o ml_gpointer.o ml_gvaluecaml.o wrappers.o ml_gtk.o ml_pango.o ml_gtkaction.o ml_gtkbin.o ml_gtkbroken.o ml_gtkbutton.o ml_gtkassistant.o ml_gtkedit.o ml_gtkfile.o ml_gtklist.o ml_gtkmenu.o ml_gtkmisc.o ml_gtkpack.o ml_gtkrange.o ml_gtkstock.o ml_gtktext.o ml_gtktree.o; ranlib ./liblablgtk2.a
 - + ocamlc.opt -a  -o lablgtk.cma  gaux.cmo gpointer.cmo gutf8.cmo glib.cmo gobject.cmo gdkEnums.cmo pangoEnums.cmo gtkEnums.cmo pango.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo gdkPixbuf.cmo gtk.cmo gtkSignal.cmo gtkStock.cmo gtkObject.cmo gtkBaseProps.cmo gtkBinProps.cmo gtkButtonProps.cmo gtkEditProps.cmo gtkListProps.cmo gtkMenuProps.cmo gtkMiscProps.cmo gtkPackProps.cmo gtkRangeProps.cmo gtkTextProps.cmo gtkTreeProps.cmo gtkFileProps.cmo gtkActionProps.cmo gtkBrokenProps.cmo gtkAssistantProps.cmo gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo gtkAssistant.cmo gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkList.cmo gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkText.cmo gtkTree.cmo gtkFile.cmo gtkMain.cmo gtkBroken.cmo gPango.cmo gDraw.cmo gObj.cmo ogtkBaseProps.cmo gData.cmo ogtkBinProps.cmo ogtkButtonProps.cmo ogtkEditProps.cmo ogtkListProps.cmo ogtkMenuProps.cmo ogtkMiscProps.cmo ogtkPackProps.cmo ogtkRangeProps.cmo ogtkTextProps.cmo ogtkTreeProps.cmo ogtkFileProps.cmo ogtkActionProps.cmo ogtkBrokenProps.cmo ogtkAssistantProps.cmo gMain.cmo gContainer.cmo gPack.cmo gButton.cmo gText.cmo gMenu.cmo gMisc.cmo gTree.cmo gList.cmo gFile.cmo gWindow.cmo gAssistant.cmo gBin.cmo gEdit.cmo gRange.cmo gAction.cmo gBroken.cmo gUtil.cmo gToolbox.cmo -dllib -llablgtk2 -cclib -llablgtk2   -cclib -lgtk-x11-2.0 -cclib -lgdk-x11-2.0 -cclib -latk-1.0 -cclib -lgio-2.0 -cclib -lpangoft2-1.0 -cclib -lpangocairo-1.0 -cclib -lgdk_pixbuf-2.0 -cclib -lcairo -cclib -lpango-1.0 -cclib -lfontconfig -cclib -lgobject-2.0 -cclib -lglib-2.0 -cclib -lfreetype 
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O' -verbose ml_gnomecanvas.c
-- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/usr/lib/ocaml' 'ml_gnomecanvas.c'
 - ocamlc.opt   -w s -c  gnomeCanvas.ml
 - ocamlc.opt   -w s -c gnoCanvas.mli
+- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/usr/lib/ocaml' 'ml_gnomecanvas.c'
 - ocamlc.opt   -w s -c  gnoCanvas.ml
 - ocamlmklib -verbose -ocamlc "ocamlc.opt" -ocamlopt "ocamlopt.opt" -o lablgnomecanvas ml_gnomecanvas.o gnomeCanvas.cmo gnoCanvas.cmo -lgnomecanvas-2 -lart_lgpl_2 -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lpangocairo-1.0 -lgdk_pixbuf-2.0 -lcairo -lpango-1.0 -lfontconfig -lgobject-2.0 -lglib-2.0 -lfreetype
 - + gcc -shared -o ./dlllablgnomecanvas.so ml_gnomecanvas.o    -lgnomecanvas-2 -lart_lgpl_2 -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lpangocairo-1.0 -lgdk_pixbuf-2.0 -lcairo -lpango-1.0 -lfontconfig -lgobject-2.0 -lglib-2.0 -lfreetype
@@ -1226,15 +1229,15 @@ The following actions will be performed:
 - ./varcc sourceView2_tags.var
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O' -verbose ml_gtksourceview2.c
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gail-1.0 -I/usr/include/libart-2.0 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/usr/lib/ocaml' 'ml_gtksourceview2.c'
+- <command-line>: In function 'ml_gtk_source_view_set_mark_category_pixbuf':
+- <command-line>:748:1: warning: 'gtk_source_view_set_mark_category_pixbuf' is deprecated (declared at /usr/include/gtksourceview-2.0/gtksourceview/gtksourceview.h:194) [-Wdeprecated-declarations]
+- <command-line>: In function 'ml_gtk_source_view_get_mark_category_pixbuf':
+- <command-line>:750:1: warning: 'gtk_source_view_get_mark_category_pixbuf' is deprecated (declared at /usr/include/gtksourceview-2.0/gtksourceview/gtksourceview.h:216) [-Wdeprecated-declarations]
 - ocamlc.opt   -w s -c  sourceView2Enums.ml
 - ocamlc.opt   -w s -c gtkSourceView2_types.mli
 - ./propcc gtkSourceView2.props
 - ocamlc.opt   -w s -c  gtkSourceView2Props.ml
 - ocamlc.opt   -w s -c  ogtkSourceView2Props.ml
-- <command-line>: In function 'ml_gtk_source_view_set_mark_category_pixbuf':
-- <command-line>:748:1: warning: 'gtk_source_view_set_mark_category_pixbuf' is deprecated (declared at /usr/include/gtksourceview-2.0/gtksourceview/gtksourceview.h:194) [-Wdeprecated-declarations]
-- <command-line>: In function 'ml_gtk_source_view_get_mark_category_pixbuf':
-- <command-line>:750:1: warning: 'gtk_source_view_get_mark_category_pixbuf' is deprecated (declared at /usr/include/gtksourceview-2.0/gtksourceview/gtksourceview.h:216) [-Wdeprecated-declarations]
 - ocamlc.opt   -w s -c  gtkSourceView2.ml
 - ocamlc.opt   -w s -c gSourceView2.mli
 - ocamlc.opt   -w s -c  gSourceView2.ml
@@ -1275,11 +1278,25 @@ The following actions will be performed:
 - ocamlc.opt   -w s -c  gtkInit.ml
 - ocamlopt.opt  -w s -c gaux.ml
 - ocamlopt.opt  -w s -c gpointer.ml
-- ocamlopt.opt  -w s -c gutf8.ml
-- ocamlopt.opt  -w s -c glib.ml
 - File "gpointer.ml", line 144, characters 10-23:
 - Warning 3: deprecated: StdLabels.String.create
 - Use BytesLabels.create instead.
+- ocamlopt.opt  -w s -c gutf8.ml
+- ocamlopt.opt  -w s -c glib.ml
+- ocamlopt.opt  -w s -c gobject.ml
+- ocamlopt.opt  -w s -c gdkEnums.ml
+- ocamlopt.opt  -w s -c pangoEnums.ml
+- ocamlopt.opt  -w s -c gtkEnums.ml
+- ocamlopt.opt  -w s -c pango.ml
+- ocamlopt.opt  -w s -c gdk.ml
+- ocamlopt.opt  -w s -c gdkEvent.ml
+- ocamlopt.opt  -w s -c gdkKeysyms.ml
+- ocamlopt.opt  -w s -c gdkPixbuf.ml
+- ocamlopt.opt  -w s -c gtk.ml
+- ocamlopt.opt  -w s -c gtkSignal.ml
+- ocamlopt.opt  -w s -c gtkStock.ml
+- ocamlopt.opt  -w s -c gtkObject.ml
+- ocamlopt.opt  -w s -c gtkBaseProps.ml
 - File "gutf8.ml", line 57, characters 4-21:
 - Warning 3: deprecated: String.unsafe_set
 - File "gutf8.ml", line 59, characters 4-21:
@@ -1295,20 +1312,6 @@ The following actions will be performed:
 - File "gutf8.ml", line 145, characters 11-23:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
-- ocamlopt.opt  -w s -c gobject.ml
-- ocamlopt.opt  -w s -c gdkEnums.ml
-- ocamlopt.opt  -w s -c pangoEnums.ml
-- ocamlopt.opt  -w s -c gtkEnums.ml
-- ocamlopt.opt  -w s -c pango.ml
-- ocamlopt.opt  -w s -c gdk.ml
-- ocamlopt.opt  -w s -c gdkEvent.ml
-- ocamlopt.opt  -w s -c gdkKeysyms.ml
-- ocamlopt.opt  -w s -c gdkPixbuf.ml
-- ocamlopt.opt  -w s -c gtk.ml
-- ocamlopt.opt  -w s -c gtkSignal.ml
-- ocamlopt.opt  -w s -c gtkStock.ml
-- ocamlopt.opt  -w s -c gtkObject.ml
-- ocamlopt.opt  -w s -c gtkBaseProps.ml
 - ocamlopt.opt  -w s -c gtkBinProps.ml
 - ocamlopt.opt  -w s -c gtkButtonProps.ml
 - ocamlopt.opt  -w s -c gtkEditProps.ml
@@ -1335,6 +1338,9 @@ The following actions will be performed:
 - ocamlopt.opt  -w s -c gtkBin.ml
 - ocamlopt.opt  -w s -c gtkEdit.ml
 - ocamlopt.opt  -w s -c gtkRange.ml
+- File "gtkList.ml", line 188, characters 14-26:
+- Warning 3: deprecated: StdLabels.Array.create
+- Use ArrayLabels.make instead.
 - ocamlopt.opt  -w s -c gtkText.ml
 - ocamlopt.opt  -w s -c gtkTree.ml
 - ocamlopt.opt  -w s -c gtkFile.ml
@@ -1342,9 +1348,6 @@ The following actions will be performed:
 - ocamlopt.opt  -w s -c gtkBroken.ml
 - ocamlopt.opt  -w s -c gPango.ml
 - ocamlopt.opt  -w s -c gDraw.ml
-- File "gtkList.ml", line 188, characters 14-26:
-- Warning 3: deprecated: StdLabels.Array.create
-- Use ArrayLabels.make instead.
 - ocamlopt.opt  -w s -c gObj.ml
 - ocamlopt.opt  -w s -c ogtkBaseProps.ml
 - ocamlopt.opt  -w s -c gData.ml
@@ -1404,16 +1407,16 @@ The following actions will be performed:
 - ocamlopt.opt  -w s -c -thread gtkThread.ml
 - ocamlopt.opt -verbose -o lablgtk.cmxs -shared -linkall -I . \
 -         -ccopt '' lablgtk.cmxa
-- + as -o 'lablgtk.cmxs.startup.o' '/tmp/camlstartupf83df4.s'
-- + gcc -shared -o 'lablgtk.cmxs'   '-L.' '-L/usr/lib/ocaml'  'lablgtk.cmxs.startup.o' 'lablgtk.a' '-llablgtk2' '-lgtk-x11-2.0' '-lgdk-x11-2.0' '-latk-1.0' '-lgio-2.0' '-lpangoft2-1.0' '-lpangocairo-1.0' '-lgdk_pixbuf-2.0' '-lcairo' '-lpango-1.0' '-lfontconfig' '-lgobject-2.0' '-lglib-2.0' '-lfreetype' 
 - ocamlopt.opt -verbose -o lablgnomecanvas.cmxs -shared -linkall -I . \
 -         -ccopt '' lablgnomecanvas.cmxa
 - ocamlopt.opt -verbose -o lablgtksourceview2.cmxs -shared -linkall -I . \
 -         -ccopt '' lablgtksourceview2.cmxa
 - make[1]: Leaving directory `/home/opam/.opam/system/build/lablgtk.2.18.3/src'
-- + as -o 'lablgnomecanvas.cmxs.startup.o' '/tmp/camlstartup8f2767.s'
+- + as -o 'lablgtk.cmxs.startup.o' '/tmp/camlstartupe89d08.s'
+- + gcc -shared -o 'lablgtk.cmxs'   '-L.' '-L/usr/lib/ocaml'  'lablgtk.cmxs.startup.o' 'lablgtk.a' '-llablgtk2' '-lgtk-x11-2.0' '-lgdk-x11-2.0' '-latk-1.0' '-lgio-2.0' '-lpangoft2-1.0' '-lpangocairo-1.0' '-lgdk_pixbuf-2.0' '-lcairo' '-lpango-1.0' '-lfontconfig' '-lgobject-2.0' '-lglib-2.0' '-lfreetype' 
+- + as -o 'lablgnomecanvas.cmxs.startup.o' '/tmp/camlstartupa8f913.s'
 - + gcc -shared -o 'lablgnomecanvas.cmxs'   '-L.' '-L/usr/lib/ocaml'  'lablgnomecanvas.cmxs.startup.o' 'lablgnomecanvas.a' '-llablgnomecanvas' '-lgnomecanvas-2' '-lart_lgpl_2' '-lgtk-x11-2.0' '-lgdk-x11-2.0' '-latk-1.0' '-lgio-2.0' '-lpangoft2-1.0' '-lpangocairo-1.0' '-lgdk_pixbuf-2.0' '-lcairo' '-lpango-1.0' '-lfontconfig' '-lgobject-2.0' '-lglib-2.0' '-lfreetype' 
-- + as -o 'lablgtksourceview2.cmxs.startup.o' '/tmp/camlstartup8f3f2b.s'
+- + as -o 'lablgtksourceview2.cmxs.startup.o' '/tmp/camlstartup6309bc.s'
 - + gcc -shared -o 'lablgtksourceview2.cmxs'   '-L.' '-L/usr/lib/ocaml'  'lablgtksourceview2.cmxs.startup.o' 'lablgtksourceview2.a' '-llablgtksourceview2' '-lgtksourceview-2.0' '-lgtk-x11-2.0' '-lgdk-x11-2.0' '-latk-1.0' '-lgio-2.0' '-lpangoft2-1.0' '-lpangocairo-1.0' '-lgdk_pixbuf-2.0' '-lcairo' '-lpango-1.0' '-lfontconfig' '-lgobject-2.0' '-lglib-2.0' '-lfreetype' 
 [lablgtk: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/lablgtk.2.18.3)
@@ -1914,9 +1917,6 @@ The following actions will be performed:
 - ocamlc.opt -c -I src -I lib -g -dtypes lib/heap.ml
 - ocamlc.opt -c -I src -I lib -g -dtypes lib/bitv.mli
 - ocamlc.opt -c -I src -I lib -g -dtypes lib/bitv.ml
-- File "lib/bitv.ml", line 464, characters 27-39:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 - ocamlc.opt -c -I src -I lib -g -dtypes src/version.ml
 - ocamlc.opt -c -I src -I lib -g -dtypes src/util.mli
 - ocamlc.opt -c -I src -I lib -g -dtypes src/util.ml
@@ -1933,6 +1933,9 @@ The following actions will be performed:
 - ocamlc.opt -c -I src -I lib -g -dtypes src/classic.ml
 - ocamlc.opt -c -I src -I lib -g -dtypes src/rand.mli
 - ocamlc.opt -c -I src -I lib -g -dtypes src/rand.ml
+- File "lib/bitv.ml", line 464, characters 27-39:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 - ocamlc.opt -c -I src -I lib -g -dtypes src/oper.mli
 - ocamlc.opt -c -I src -I lib -g -dtypes src/oper.ml
 - ocamlc.opt -c -I src -I lib -g -dtypes src/components.mli
@@ -1966,14 +1969,14 @@ The following actions will be performed:
 - ocamlc.opt -c -I src -I lib -g -dtypes src/dot.ml
 - ocamlc.opt -c -I src -I lib -g -dtypes src/pack.mli
 - ocamlc.opt -c -I src -I lib -g -dtypes src/pack.ml
+- ocamlc.opt -c -I src -I lib -g -dtypes src/gmap.mli
+- ocamlc.opt -c -I src -I lib -g -dtypes src/gmap.ml
 - File "src/gml.ml", line 418, characters 27-39:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
 - File "src/gml.ml", line 455, characters 27-39:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
-- ocamlc.opt -c -I src -I lib -g -dtypes src/gmap.mli
-- ocamlc.opt -c -I src -I lib -g -dtypes src/gmap.ml
 - ocamlc.opt -c -I src -I lib -g -dtypes src/minsep.mli
 - ocamlc.opt -c -I src -I lib -g -dtypes src/minsep.ml
 - ocamlc.opt -c -I src -I lib -g -dtypes src/cliquetree.mli
@@ -2003,10 +2006,10 @@ The following actions will be performed:
 - ocamlopt.opt -c -I src -I lib -for-pack Graph lib/unionfind.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph lib/heap.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph lib/bitv.ml
-- ocamlopt.opt -c -I src -I lib -for-pack Graph src/version.ml
 - File "lib/bitv.ml", line 464, characters 27-39:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlopt.opt -c -I src -I lib -for-pack Graph src/version.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/util.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/blocks.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/persistent.ml
@@ -2036,13 +2039,13 @@ The following actions will be performed:
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/minsep.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/cliquetree.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/mcs_m.ml
+- ocamlopt.opt -c -I src -I lib -for-pack Graph src/md.ml
 - File "src/gml.ml", line 418, characters 27-39:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
 - File "src/gml.ml", line 455, characters 27-39:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
-- ocamlopt.opt -c -I src -I lib -for-pack Graph src/md.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/strat.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/fixpoint.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/leaderlist.ml
@@ -2266,10 +2269,10 @@ The following actions will be performed:
 - checking for string.h... yes
 - checking for memory.h... yes
 - checking for strings.h... yes
-- checking for inttypes.h... 
-- yes
+- checking for inttypes.h... yes
 - checking for stdint.h... yes
-- checking for unistd.h... yes
+- checking for unistd.h... 
+- yes
 - checking for stdlib.h... (cached) yes
 - checking assert.h usability... yes
 - checking assert.h presence... yes
@@ -2493,9 +2496,9 @@ The following actions will be performed:
 - Generating   /home/opam/.opam/system/build/frama-c.20150201/lib/plugins/Wp.mli
 - Generating   /home/opam/.opam/system/build/frama-c.20150201/lib/plugins/gui/Wp.mli
 - Ocamldep     src/wp/.depend
-- Generating   .depend
 - 4 shift/reduce conflicts.
 - 7 shift/reduce conflicts.
+- Generating   .depend
 - Ocamlc       src/aorai/bool3.cmi
 - Ocamlc       src/aorai/bool3.cmo
 - Ocamlc       external/unmarshal.cmi
@@ -2804,6 +2807,9 @@ The following actions will be performed:
 - Ocamlc       src/lib/dynlink_common_interface.cmi
 - Ocamlc       src/lib/dynlink_common_interface.cmo
 - Ocamlc       src/type/structural_descr.cmo
+- File "src/wp/share/install.ml", line 44, characters 17-30:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - Ocamlc       src/type/type.cmo
 - Ocamlc       src/type/descr.cmo
 - Ocamlc       src/lib/FCSet.cmo
@@ -2817,9 +2823,6 @@ The following actions will be performed:
 - Ocamlc       src/lib/indexer.cmo
 - Ocamlc       src/lib/vector.cmo
 - Ocamlc       src/lib/bitvector.cmo
-- File "src/wp/share/install.ml", line 44, characters 17-30:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - Ocamlc       src/lib/qstack.cmi
 - Ocamlc       src/lib/qstack.cmo
 - Ocamlc       src/lib/integer.cmo
@@ -3768,14 +3771,12 @@ The following actions will be performed:
 - checking for ocamlfind... yes
 - checking for rubber... no
 - checking for emacs... no
-- checking for /usr/lib/ocaml/zarith/zarith.cma... no
-- checking for /usr/lib/ocaml/zip/zip.cma... no
+- checking for /usr/lib/ocaml/zarith/zarith.cma... 
 - configure: WARNING: unrecognized options: --disable-bench
 - configure: WARNING: Cannot find rubber, documentation disabled.
 - ocamlfind: Package `zarith' not found
-- configure: WARNING: Lib Zarith not found, using Nums instead.
-- ocamlfind: Package `zip' not found
-- configure: WARNING: Lib camlzip not found, sessions files will not be compressed.
+- no
+- checking for /usr/lib/ocaml/zip/zip.cma... no
 - ocamlfind found lablgtk2 in /home/opam/.opam/system/lib/lablgtk2
 - ocamlfind found lablgtksourceview2 in /home/opam/.opam/system/lib/lablgtk2
 - checking for coqc... no
@@ -3816,6 +3817,9 @@ The following actions will be performed:
 -     Data path               : ${prefix}/share/why3
 -     Ocaml Library           : /home/opam/.opam/system/lib/why3
 -     Relocatable             : no
+- configure: WARNING: Lib Zarith not found, using Nums instead.
+- ocamlfind: Package `zip' not found
+- configure: WARNING: Lib camlzip not found, sessions files will not be compressed.
 - configure: WARNING: Cannot find coqc.
 - configure: WARNING: Cannot find pvs.
 - configure: WARNING: Cannot find isabelle.
@@ -3905,7 +3909,6 @@ The following actions will be performed:
 - Ocamldep src/whyml/mlw_driver.ml
 - Ocamldep src/whyml/mlw_typing.ml
 - Ocamldep src/whyml/mlw_dexpr.ml
-- Ocamldep src/whyml/mlw_module.ml
 - Makefile:232: src/util/config.dep: No such file or directory
 - Makefile:232: src/util/bigInt.dep: No such file or directory
 - Makefile:232: src/util/util.dep: No such file or directory
@@ -4056,6 +4059,7 @@ The following actions will be performed:
 - Makefile:1321: src/why3doc/doc_def.dep: No such file or directory
 - Makefile:1321: src/why3doc/doc_lexer.dep: No such file or directory
 - Makefile:1321: src/why3doc/doc_main.dep: No such file or directory
+- Ocamldep src/whyml/mlw_module.ml
 - Ocamldep src/whyml/mlw_wp.ml
 - Ocamldep src/whyml/mlw_pretty.ml
 - Ocamldep src/whyml/mlw_decl.ml
@@ -4171,18 +4175,18 @@ The following actions will be performed:
 - Ocamlopt src/util/extset.ml
 - Ocamlc   src/util/exthtbl.mli
 - Ocamlopt src/util/exthtbl.ml
-- Ocamlc   src/util/weakhtbl.mli
-- Ocamlopt src/util/weakhtbl.ml
-- Ocamlc   src/util/hashcons.mli
-- Ocamlopt src/util/hashcons.ml
-- Ocamlc   src/util/stdlib.mli
-- Ocamlopt src/util/stdlib.ml
 - File "src/util/strings.ml", line 36, characters 12-25:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
 - File "src/util/strings.ml", line 38, characters 4-15:
 - Warning 3: deprecated: String.fill
 - Use Bytes.fill instead.
+- Ocamlc   src/util/weakhtbl.mli
+- Ocamlopt src/util/weakhtbl.ml
+- Ocamlc   src/util/hashcons.mli
+- Ocamlopt src/util/hashcons.ml
+- Ocamlc   src/util/stdlib.mli
+- Ocamlopt src/util/stdlib.ml
 - Ocamlc   src/util/exn_printer.mli
 - Ocamlopt src/util/exn_printer.ml
 - Ocamlc   src/util/pp.mli
@@ -4200,6 +4204,7 @@ The following actions will be performed:
 - Ocamlc   src/util/warning.mli
 - Ocamlopt src/util/warning.ml
 - Ocamlc   src/util/sysutil.mli
+- Ocamlopt src/util/sysutil.ml
 - File "src/util/pp.ml", line 180, characters 4-41:
 - Warning 3: deprecated: Format.pp_get_all_formatter_output_functions
 - Use Format.pp_get_formatter_out_functions instead.
@@ -4224,7 +4229,6 @@ The following actions will be performed:
 - File "src/util/cmdline.ml", line 48, characters 10-20:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- Ocamlopt src/util/sysutil.ml
 - Ocamlc   src/util/rc.mli
 - Ocamlopt src/util/rc.ml
 - Ocamlc   src/util/plugin.mli
@@ -4288,9 +4292,9 @@ The following actions will be performed:
 - Ocamlc   src/parser/glob.mli
 - Ocamlopt src/parser/glob.ml
 - Ocamlc   src/parser/parser.mli
+- Ocamlopt src/parser/parser.ml
 - File "src/driver/whyconf.ml", line 559, characters 4-18:
 - Warning 3: deprecated: Format.bprintf
-- Ocamlopt src/parser/parser.ml
 - Ocamlc   src/parser/typing.mli
 - Ocamlopt src/parser/typing.ml
 - Ocamlc   src/parser/lexer.mli
@@ -4309,12 +4313,12 @@ The following actions will be performed:
 - Ocamlopt src/transform/eliminate_algebraic.ml
 - Ocamlc   src/transform/eliminate_inductive.mli
 - Ocamlopt src/transform/eliminate_inductive.ml
-- File "src/transform/eliminate_definition.ml", line 281, characters 10-22:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
 - Ocamlc   src/transform/eliminate_let.mli
 - Ocamlopt src/transform/eliminate_let.ml
 - Ocamlc   src/transform/eliminate_if.mli
+- File "src/transform/eliminate_definition.ml", line 281, characters 10-22:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
 - Ocamlopt src/transform/eliminate_if.ml
 - Ocamlc   src/transform/libencoding.mli
 - Ocamlopt src/transform/libencoding.ml
@@ -4433,8 +4437,6 @@ The following actions will be performed:
 - Ocamlopt src/session/strategy.ml
 - Ocamlc   src/session/strategy_parser.mli
 - Ocamlopt src/session/strategy_parser.ml
-- Ocamlc   src/session/session_scheduler.mli
-- Ocamlopt src/session/session_scheduler.ml
 - File "src/session/session.ml", line 1517, characters 10-23:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -4443,6 +4445,8 @@ The following actions will be performed:
 - File "src/session/strategy_parser.mll", line 146, characters 16-28:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
+- Ocamlc   src/session/session_scheduler.mli
+- Ocamlopt src/session/session_scheduler.ml
 - Linking  lib/why3/why3.cmx
 - Ocamlopt plugins/parser/genequlin.ml
 - Linking  lib/plugins/genequlin.cmxs
@@ -4459,14 +4463,14 @@ The following actions will be performed:
 - Ocamlopt plugins/tptp/tptp_printer.ml
 - Linking  lib/plugins/tptp.cmxs
 - Ocamlopt plugins/transform/hypothesis_selection.ml
-- File "plugins/transform/hypothesis_selection.ml", line 52, characters 4-18:
-- Warning 3: deprecated: Format.bprintf
-- File "plugins/transform/hypothesis_selection.ml", line 365, characters 22-35:
-- Warning 48: implicit elimination of optional argument ?pos
 - Linking  lib/plugins/hypothesis_selection.cmxs
 - Linking  lib/why3/why3.cmxa
 - Ocamlopt src/tools/main.ml
 - Linking  bin/why3.opt
+- File "plugins/transform/hypothesis_selection.ml", line 52, characters 4-18:
+- Warning 3: deprecated: Format.bprintf
+- File "plugins/transform/hypothesis_selection.ml", line 365, characters 22-35:
+- Warning 48: implicit elimination of optional argument ?pos
 - Ocamlopt src/tools/why3config.ml
 - Linking  bin/why3config.opt
 - Ocamlopt src/tools/why3execute.ml
@@ -4566,10 +4570,10 @@ The following actions will be performed:
 - Ocamlc   src/why3session/why3session_lib.mli
 - Ocamlopt src/why3session/why3session_lib.ml
 - Ocamlopt src/why3session/why3session_copy.ml
-- Ocamlopt src/why3session/why3session_info.ml
 - File "src/why3session/why3session_lib.ml", line 253, characters 10-23:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- Ocamlopt src/why3session/why3session_info.ml
 - Ocamlopt src/why3session/why3session_latex.ml
 - Ocamlopt src/why3session/why3session_html.ml
 - Ocamlopt src/why3session/why3session_rm.ml
@@ -4595,6 +4599,7 @@ The following actions will be performed:
 - Ocamlopt src/why3doc/doc_lexer.ml
 - Ocamlopt src/why3doc/doc_main.ml
 - Linking  bin/why3doc.opt
+- Ocamlc   plugins/parser/genequlin.ml
 - File "src/why3doc/doc_def.ml", line 54, characters 12-25:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -4616,7 +4621,6 @@ The following actions will be performed:
 - File "src/why3doc/doc_lexer.mll", line 75, characters 15-26:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- Ocamlc   plugins/parser/genequlin.ml
 - Linking  lib/plugins/genequlin.cmo
 - Ocamlc   plugins/parser/dimacs.ml
 - Linking  lib/plugins/dimacs.cmo
@@ -4627,6 +4631,10 @@ The following actions will be performed:
 - Ocamlc   plugins/tptp/tptp_printer.ml
 - Linking  lib/plugins/tptp.cmo
 - Ocamlc   plugins/transform/hypothesis_selection.ml
+- File "plugins/transform/hypothesis_selection.ml", line 52, characters 4-18:
+- Warning 3: deprecated: Format.bprintf
+- File "plugins/transform/hypothesis_selection.ml", line 365, characters 22-35:
+- Warning 48: implicit elimination of optional argument ?pos
 - Linking  lib/plugins/hypothesis_selection.cmo
 - Ocamlc   src/util/config.ml
 - Ocamlc   src/util/bigInt.ml
@@ -4634,16 +4642,6 @@ The following actions will be performed:
 - Ocamlc   src/util/opt.ml
 - Ocamlc   src/util/lists.ml
 - Ocamlc   src/util/strings.ml
-- File "plugins/transform/hypothesis_selection.ml", line 52, characters 4-18:
-- Warning 3: deprecated: Format.bprintf
-- File "plugins/transform/hypothesis_selection.ml", line 365, characters 22-35:
-- Warning 48: implicit elimination of optional argument ?pos
-- File "src/util/strings.ml", line 36, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "src/util/strings.ml", line 38, characters 4-15:
-- Warning 3: deprecated: String.fill
-- Use Bytes.fill instead.
 - Ocamlc   src/util/extmap.ml
 - Ocamlc   src/util/extset.ml
 - Ocamlc   src/util/exthtbl.ml
@@ -4652,6 +4650,18 @@ The following actions will be performed:
 - Ocamlc   src/util/stdlib.ml
 - Ocamlc   src/util/exn_printer.ml
 - Ocamlc   src/util/pp.ml
+- File "src/util/strings.ml", line 36, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "src/util/strings.ml", line 38, characters 4-15:
+- Warning 3: deprecated: String.fill
+- Use Bytes.fill instead.
+- File "src/util/pp.ml", line 180, characters 4-41:
+- Warning 3: deprecated: Format.pp_get_all_formatter_output_functions
+- Use Format.pp_get_formatter_out_functions instead.
+- File "src/util/pp.ml", line 181, characters 2-39:
+- Warning 3: deprecated: Format.pp_set_all_formatter_output_functions
+- Use Format.pp_set_formatter_out_functions instead.
 - Ocamlc   src/util/debug.ml
 - Ocamlc   src/util/loc.ml
 - Ocamlc   src/util/lexlib.ml
@@ -4666,12 +4676,8 @@ The following actions will be performed:
 - Ocamlc   src/core/ident.ml
 - Ocamlc   src/core/ty.ml
 - Ocamlc   src/core/term.ml
-- File "src/util/pp.ml", line 180, characters 4-41:
-- Warning 3: deprecated: Format.pp_get_all_formatter_output_functions
-- Use Format.pp_get_formatter_out_functions instead.
-- File "src/util/pp.ml", line 181, characters 2-39:
-- Warning 3: deprecated: Format.pp_set_all_formatter_output_functions
-- Use Format.pp_set_formatter_out_functions instead.
+- Ocamlc   src/core/pattern.ml
+- Ocamlc   src/core/decl.ml
 - File "src/util/debug.ml", line 69, characters 4-48:
 - Warning 3: deprecated: Format.pp_get_all_formatter_output_functions
 - Use Format.pp_get_formatter_out_functions instead.
@@ -4702,8 +4708,6 @@ The following actions will be performed:
 - File "src/util/number.ml", line 161, characters 31-44:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- Ocamlc   src/core/pattern.ml
-- Ocamlc   src/core/decl.ml
 - Ocamlc   src/core/theory.ml
 - Ocamlc   src/core/task.ml
 - Ocamlc   src/core/pretty.ml
@@ -4770,6 +4774,7 @@ The following actions will be performed:
 - Ocamlc   src/printer/simplify.ml
 - Ocamlc   src/printer/gappa.ml
 - Ocamlc   src/printer/cvc3.ml
+- Ocamlc   src/printer/yices.ml
 - File "src/printer/coq.ml", line 136, characters 22-30:
 - Warning 48: implicit elimination of optional argument ?whytypes
 - File "src/printer/coq.ml", line 371, characters 38-46:
@@ -4781,7 +4786,6 @@ The following actions will be performed:
 - Warning 48: implicit elimination of optional arguments ?whytypes, ?implicit
 - File "src/printer/coq.ml", line 687, characters 31-46:
 - Warning 48: implicit elimination of optional arguments ?whytypes, ?implicit
-- Ocamlc   src/printer/yices.ml
 - Ocamlc   src/printer/mathematica.ml
 - Ocamlc   src/whyml/mlw_ty.ml
 - Ocamlc   src/whyml/mlw_expr.ml
@@ -4900,8 +4904,6 @@ The following actions will be performed:
 - Warning 48: implicit elimination of optional arguments ?from, ?fill, ?padding
 - File "src/ide/gmain.ml", line 219, characters 13-51:
 - Warning 48: implicit elimination of optional arguments ?from, ?fill, ?padding
-- Linking  bin/why3ide.byte
-- Ocamlc   src/why3session/why3session_lib.ml
 - File "src/ide/gmain.ml", line 227, characters 13-51:
 - Warning 48: implicit elimination of optional arguments ?from, ?fill, ?padding
 - File "src/ide/gmain.ml", line 335, characters 35-64:
@@ -4912,18 +4914,20 @@ The following actions will be performed:
 - Warning 3: deprecated: Format.bprintf
 - File "src/ide/gmain.ml", line 767, characters 11-37:
 - Warning 48: implicit elimination of optional arguments ?from, ?expand, ?padding
+- Linking  bin/why3ide.byte
+- Ocamlc   src/why3session/why3session_lib.ml
+- Ocamlc   src/why3session/why3session_copy.ml
 - File "src/ide/gmain.ml", line 2028, characters 14-27:
 - Warning 48: implicit elimination of optional argument ?destroy
-- Ocamlc   src/why3session/why3session_copy.ml
+- File "src/why3session/why3session_lib.ml", line 253, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - Ocamlc   src/why3session/why3session_info.ml
 - Ocamlc   src/why3session/why3session_latex.ml
 - Ocamlc   src/why3session/why3session_html.ml
 - Ocamlc   src/why3session/why3session_rm.ml
 - Ocamlc   src/why3session/why3session_output.ml
 - Ocamlc   src/why3session/why3session_run.ml
-- File "src/why3session/why3session_lib.ml", line 253, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - Ocamlc   src/why3session/why3session_csv.ml
 - Ocamlc   src/why3session/why3session_main.ml
 - Linking  bin/why3session.byte
@@ -5058,9 +5062,6 @@ The following actions will be performed:
 - configure: creating ./config.status
 - config.status: creating Makefile
 - config.status: creating bench/bench
-- configure: WARNING: Cannot find coqc.
-- configure: WARNING: Cannot find PVS.
-- configure: WARNING: Cannot find Mizar.
 - 
 -                  Summary
 - -----------------------------------------
@@ -5082,6 +5083,9 @@ The following actions will be performed:
 -     command 'pvs' not found
 - Mizar support            : no
 - Other provers support    : (via Why3)
+- configure: WARNING: Cannot find coqc.
+- configure: WARNING: Cannot find PVS.
+- configure: WARNING: Cannot find Mizar.
 [why: make] Command started
 + make  (CWD=/home/opam/.opam/system/build/why.2.35)
 - BINDIR=/home/opam/.opam/system/bin LIBDIR=/home/opam/.opam/system/lib COQVER= ./version.sh
@@ -5165,6 +5169,8 @@ The following actions will be performed:
 - 16 states, 364 transitions, table size 1552 bytes
 - ocamlyacc -v tools/simplify_parser.mly
 - ocamllex.opt tools/toolstat_lex.mll
+- 1 shift/reduce conflict.
+- 1 shift/reduce conflict, 24 reduce/reduce conflicts.
 - 223 states, 5431 transitions, table size 23062 bytes
 - 11960 additional bytes used for bindings
 - ocamlyacc -v tools/toolstat_pars.mly
@@ -5186,16 +5192,14 @@ The following actions will be performed:
 - printf "option=\"--eval \\\\\"(setq coq-load-path (cons '(\\\\\\\\\\\\\"/home/opam/.opam/system/lib/why/coq\\\\\\\\\\\\\" \\\\\\\\\\\\\"Why\\\\\\\\\\\\\") coq-load-path))\\\\\"\"\n"  >> lib/why3/why3.conf
 - rm -f .depend
 - ocamldep.opt -slash -I src -I jc -I c -I java -I intf -I tools -I mix -I ml src/*.ml src/*.mli jc/*.mli jc/*.ml c/*.mli c/*.ml java/*.mli java/*.ml intf/*.ml intf/*.mli tools/*.mli tools/*.ml mix/*.mli mix/*.ml ml/*.ml ml/*.mli > .depend
-- 1 shift/reduce conflict.
-- 1 shift/reduce conflict, 24 reduce/reduce conflicts.
 - ocamldep.opt -slash -I ml/utils -I ml/parsing -I ml/typing ml/parsing/*.ml ml/parsing/*.mli ml/typing/*.ml ml/typing/*.mli ml/utils/*.ml ml/utils/*.mli >> .depend
 - make -C frama-c-plugin depend
 - make[1]: Entering directory `/home/opam/.opam/system/build/why.2.35/frama-c-plugin'
 - Ocamldep     ./.depend
 - make[1]: Leaving directory `/home/opam/.opam/system/build/why.2.35/frama-c-plugin'
+- /home/opam/.opam/system/share/frama-c/Makefile.dynamic:298: .depend: No such file or directory
 - make[1]: Entering directory `/home/opam/.opam/system/build/why.2.35/frama-c-plugin'
 - Ocamldep     ./.depend
-- /home/opam/.opam/system/share/frama-c/Makefile.dynamic:298: .depend: No such file or directory
 - make[1]: Leaving directory `/home/opam/.opam/system/build/why.2.35/frama-c-plugin'
 - Ocamlopt src/version.ml
 - Ocamlc   src/lib.mli
@@ -5364,11 +5368,11 @@ The following actions will be performed:
 - make[2]: `jc/jc.cmo' is up to date.
 - make[2]: Leaving directory `/home/opam/.opam/system/build/why.2.35'
 - Ocamlc       interp.cmo
-- Ocamlc       register.cmo
 - File "interp.ml", line 1966, characters 14-4676:
 - Warning 8: this pattern-matching is not exhaustive.
 - Here is an example of a value that is not matched:
 - (Throw (_, _)|TryCatch (_, _, _))
+- Ocamlc       register.cmo
 - Ocamlc       Jessie.cmi
 - Packing      Jessie.cmo
 - Packing      Jessie.cma
@@ -5380,11 +5384,11 @@ The following actions will be performed:
 - Ocamlopt     norm.cmx
 - Ocamlopt     retype.cmx
 - Ocamlopt     interp.cmx
-- Ocamlopt     register.cmx
 - File "interp.ml", line 1966, characters 14-4676:
 - Warning 8: this pattern-matching is not exhaustive.
 - Here is an example of a value that is not matched:
 - (Throw (_, _)|TryCatch (_, _, _))
+- Ocamlopt     register.cmx
 - Packing      Jessie.cmx
 - Packing      Jessie.cmxs
 - make[1]: Leaving directory `/home/opam/.opam/system/build/why.2.35/frama-c-plugin'
