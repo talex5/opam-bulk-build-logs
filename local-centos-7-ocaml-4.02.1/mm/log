@@ -1,7 +1,7 @@
 + uname -m
+# Detecting depexts using flags: x86_64 linux centos
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=mm
-# Detecting depexts using flags: x86_64 linux centos
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=mm
 # No extra OS packages requirements found.
 The following actions will be performed:
@@ -12,10 +12,10 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [mm: from default] Command started
 [ocamlfind: from default] Command started
-[ocamlfind: from default] Command started
 [mm: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/mm.0.2.1+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -99,6 +99,11 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -144,14 +149,16 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 	cp topfind.ml.in topfind.ml;                             \
+- else                                                             \
+- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 		> topfind.ml ;                                   \
+- fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -160,13 +167,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 	cp topfind.ml.in topfind.ml;                             \
-- else                                                             \
-- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 		> topfind.ml ;                                   \
-- fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -332,8 +332,7 @@ The following actions will be performed:
 - checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
 - checking for gcc option to accept ISO C89... none needed
-- checking build system type... 
-- x86_64-unknown-linux-gnu
+- checking build system type... x86_64-unknown-linux-gnu
 - checking host system type... x86_64-unknown-linux-gnu
 - checking for a BSD-compatible install... /usr/bin/install -c
 - checking that calling user is not root... ok
@@ -397,8 +396,7 @@ The following actions will be performed:
 - checking sys/soundcard.h usability... yes
 - checking sys/soundcard.h presence... yes
 - checking for sys/soundcard.h... yes
-- checking libavcodec/avcodec.h usability... 
-- no
+- checking libavcodec/avcodec.h usability... no
 - checking libavcodec/avcodec.h presence... no
 - checking for libavcodec/avcodec.h... no
 - checking linux/videodev.h usability... no
@@ -463,21 +461,6 @@ The following actions will be performed:
 - ocamlc.opt -c -dtypes -I .. ringbuffer.mli
 - ocamlc.opt -c -dtypes -I .. ringbuffer.ml
 - ocamlc.opt -c -dtypes -I .. IO.ml
-- File "IO.ml", line 71, characters 14-27:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "IO.ml", line 129, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "IO.ml", line 131, characters 6-54:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "IO.ml", line 142, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "IO.ml", line 144, characters 6-64:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 - ocamlc.opt -c -dtypes -I .. audio.mli
 - ocamlc.opt -c -dtypes -I .. audio.ml
 - ocamlc.opt -c -dtypes -I .. image.mli
@@ -495,53 +478,6 @@ The following actions will be performed:
 - make[2]: Leaving directory `/home/opam/.opam/system/build/mm.0.2.1/src'
 - make[2]: Entering directory `/home/opam/.opam/system/build/mm.0.2.1/src'
 - ocamldep -native synth.mli > ._ncdi/synth.di
-- ocamldep -native MIDI.mli > ._ncdi/MIDI.di
-- ocamldep -native video.mli > ._ncdi/video.di
-- ocamldep -native image.mli > ._ncdi/image.di
-- ocamldep -native audio.mli > ._ncdi/audio.di
-- ocamldep -native ringbuffer.mli > ._ncdi/ringbuffer.di
-- make[2]: Leaving directory `/home/opam/.opam/system/build/mm.0.2.1/src'
-- make[2]: Entering directory `/home/opam/.opam/system/build/mm.0.2.1/src'
-- make[2]: `libmm_stubs.a' is up to date.
-- ocamlopt.opt -c -dtypes -I .. ringbuffer.ml
-- File "audio.ml", line 956, characters 15-28:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "MIDI.ml", line 101, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "MIDI.ml", line 107, characters 8-39:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "MIDI.ml", line 108, characters 8-22:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "MIDI.ml", line 109, characters 8-22:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "MIDI.ml", line 111, characters 8-39:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "MIDI.ml", line 112, characters 8-22:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "MIDI.ml", line 113, characters 8-22:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "MIDI.ml", line 153, characters 51-52:
-- Warning 3: deprecated: Pervasives.&
-- Use (&&) instead.
-- File "MIDI.ml", line 289, characters 15-28:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "MIDI.ml", line 292, characters 14-52:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- ocamlopt.opt -c -dtypes -I .. IO.ml
-- ocamlopt.opt -c -dtypes -I .. audio.ml
-- ocamlopt.opt -c -dtypes -I .. image.ml
-- ocamlopt.opt -c -dtypes -I .. video.ml
-- ocamlopt.opt -c -dtypes -I .. MIDI.ml
 - File "IO.ml", line 71, characters 14-27:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -590,10 +526,72 @@ The following actions will be performed:
 - File "MIDI.ml", line 292, characters 14-52:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamldep -native MIDI.mli > ._ncdi/MIDI.di
+- ocamldep -native video.mli > ._ncdi/video.di
+- ocamldep -native image.mli > ._ncdi/image.di
+- ocamldep -native audio.mli > ._ncdi/audio.di
+- ocamldep -native ringbuffer.mli > ._ncdi/ringbuffer.di
+- make[2]: Leaving directory `/home/opam/.opam/system/build/mm.0.2.1/src'
+- make[2]: Entering directory `/home/opam/.opam/system/build/mm.0.2.1/src'
+- make[2]: `libmm_stubs.a' is up to date.
+- ocamlopt.opt -c -dtypes -I .. ringbuffer.ml
+- ocamlopt.opt -c -dtypes -I .. IO.ml
+- ocamlopt.opt -c -dtypes -I .. audio.ml
+- ocamlopt.opt -c -dtypes -I .. image.ml
+- ocamlopt.opt -c -dtypes -I .. video.ml
+- File "IO.ml", line 71, characters 14-27:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "IO.ml", line 129, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "IO.ml", line 131, characters 6-54:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "IO.ml", line 142, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "IO.ml", line 144, characters 6-64:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "audio.ml", line 956, characters 15-28:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- ocamlopt.opt -c -dtypes -I .. MIDI.ml
 - ocamlopt.opt -c -dtypes -I .. synth.ml
 - ocamlopt.opt -a     -I .. -linkall       -cclib -lmm_stubs    -o mm.cmxa ringbuffer.cmx IO.cmx audio.cmx image.cmx video.cmx MIDI.cmx synth.cmx
 - make[2]: Leaving directory `/home/opam/.opam/system/build/mm.0.2.1/src'
 - make[1]: Leaving directory `/home/opam/.opam/system/build/mm.0.2.1/src'
+- File "MIDI.ml", line 101, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "MIDI.ml", line 107, characters 8-39:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "MIDI.ml", line 108, characters 8-22:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "MIDI.ml", line 109, characters 8-22:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "MIDI.ml", line 111, characters 8-39:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "MIDI.ml", line 112, characters 8-22:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "MIDI.ml", line 113, characters 8-22:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "MIDI.ml", line 153, characters 51-52:
+- Warning 3: deprecated: Pervasives.&
+- Use (&&) instead.
+- File "MIDI.ml", line 289, characters 15-28:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "MIDI.ml", line 292, characters 14-52:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 [mm: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/mm.0.2.1)
 - make -C src install
