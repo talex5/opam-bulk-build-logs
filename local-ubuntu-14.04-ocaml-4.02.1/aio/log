@@ -10,19 +10,18 @@
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=aio
 Not running as root, system installation will be done through "sudo"
 + sudo apt-get update
-Ign http://download.opensuse.org  InRelease
-Hit http://download.opensuse.org  Release.gpg
-Hit http://download.opensuse.org  Release
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
 Hit http://archive.ubuntu.com trusty Release.gpg
-Hit http://download.opensuse.org  Packages
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
+Ign http://download.opensuse.org  InRelease
 Hit http://archive.ubuntu.com trusty Release
 Get:3 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
+Hit http://download.opensuse.org  Release.gpg
 Get:4 http://archive.ubuntu.com trusty-security Release [63.5 kB]
+Hit http://download.opensuse.org  Release
 Hit http://archive.ubuntu.com trusty/main Sources
 Hit http://archive.ubuntu.com trusty/restricted Sources
 Hit http://archive.ubuntu.com trusty/universe Sources
@@ -33,6 +32,7 @@ Get:5 http://archive.ubuntu.com trusty-updates/main Sources [242 kB]
 Get:6 http://archive.ubuntu.com trusty-updates/restricted Sources [2310 B]
 Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [135 kB]
 Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [621 kB]
+Hit http://download.opensuse.org  Packages
 Get:9 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [15.1 kB]
 Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [343 kB]
 Get:11 http://archive.ubuntu.com trusty-security/main Sources [94.3 kB]
@@ -41,19 +41,19 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [21.0 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [320 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [118 kB]
-Fetched 2057 kB in 6s (320 kB/s)
+Fetched 2057 kB in 3s (599 kB/s)
 Reading package lists...
++ sudo apt-get install -qq -yy libaio-dev m4
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
-+ sudo apt-get install -qq -yy libaio-dev m4
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
+Selecting previously unselected package libaio1:amd64.
 debconf: unable to initialize frontend: Readline
 debconf: (This frontend requires a controlling tty.)
 debconf: falling back to frontend: Teletype
 dpkg-preconfigure: unable to re-open stdin: 
-Selecting previously unselected package libaio1:amd64.
 (Reading database ... 21935 files and directories currently installed.)
 Preparing to unpack .../libaio1_0.3.109-4_amd64.deb ...
 Unpacking libaio1:amd64 (0.3.109-4) ...
@@ -212,6 +212,13 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 		cp topfind.ml.in topfind.ml;                             \
+- 	else                                                             \
+- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 			> topfind.ml ;                                   \
+- 	fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -220,13 +227,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 		cp topfind.ml.in topfind.ml;                             \
-- 	else                                                             \
-- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 			> topfind.ml ;                                   \
-- 	fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -400,15 +400,15 @@ The following actions will be performed:
 - ocamlc -c aio_buffer.ml
 - ocamlc -c aio.mli
 - ocamlc -c aio.ml
+- aio_stubs.c: In function 'caml_aio_run':
+- aio_stubs.c:272:3: warning: ignoring return value of 'read', declared with attribute warn_unused_result [-Wunused-result]
+-    (void)read(ctx->fd, &num, sizeof(num));
+-    ^
 - ocamlmklib         \
 - 				-o aio_stubs  aio_stubs.o aio_buffer_stubs.o -laio  \
 - 				
 - ocamlc -a -cclib -laio_stubs -cclib -laio   -dllib dllaio_stubs.so -custom             -o aio.cma aio_buffer.cmo aio.cmo
 - make[2]: Leaving directory `/home/opam/.opam/system/build/aio.0.0.3/lib'
-- aio_stubs.c: In function 'caml_aio_run':
-- aio_stubs.c:272:3: warning: ignoring return value of 'read', declared with attribute warn_unused_result [-Wunused-result]
--    (void)read(ctx->fd, &num, sizeof(num));
--    ^
 - make[2]: Entering directory `/home/opam/.opam/system/build/aio.0.0.3/lib'
 - ocamldep -native aio.mli > ._ncdi/aio.di
 - make[2]: Leaving directory `/home/opam/.opam/system/build/aio.0.0.3/lib'
