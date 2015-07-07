@@ -13,10 +13,10 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: from default] Command started
 [schoca: from default] Command started
-[schoca: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/schoca.0.2.3+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[schoca: from default] Command started
+[default] http://opam-archive:8080/archives/schoca.0.2.3+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlp4: sh] Command started
@@ -157,6 +157,13 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 	cp topfind.ml.in topfind.ml;                             \
+- else                                                             \
+- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 		> topfind.ml ;                                   \
+- fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -165,13 +172,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 	cp topfind.ml.in topfind.ml;                             \
-- else                                                             \
-- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 		> topfind.ml ;                                   \
-- fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -217,6 +217,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -261,7 +262,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -388,13 +388,23 @@ The following actions will be performed:
 - Warning 26: unused variable i.
 - ocamlfind ocamlopt  -package camlp4     -syntax camlp4o  -c scmParser.ml
 - ocamlfind ocamlopt  -package camlp4     -syntax camlp4o  -c scmLexer.ml
+- ocamlfind ocamlopt  -package camlp4     -syntax camlp4o  -c scmEval.ml
 - File "scmTypes.ml", line 505, characters 10-22:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
-- ocamlfind ocamlopt  -package camlp4     -syntax camlp4o  -c scmEval.ml
-- ocamlfind ocamlopt  -package camlp4     -syntax camlp4o  -c scmSchoca.ml
 - File "scmLexer.mll", line 36, characters 7-24:
 - Warning 3: deprecated: String.unsafe_set
+- ocamlfind ocamlopt  -package camlp4     -syntax camlp4o  -c scmSchoca.ml
+- ocamlfind ocamlc -a -linkpkg -o schoca.cma -package camlp4   \
+- 	    \
+- 	scmConfig.cmo scmUtil.cmo scmDynnum.cmo scmTypes.cmo scmParser.cmo scmLexer.cmo scmEval.cmo scmSchoca.cmo -g  
+- ocamlfind ocamlopt -a -o schoca.cmxa -package camlp4   \
+- 	      \
+- 	scmConfig.cmx scmUtil.cmx scmDynnum.cmx scmTypes.cmx scmParser.cmx scmLexer.cmx scmEval.cmx scmSchoca.cmx  
+- make[1]: Leaving directory `/home/opam/.opam/system/build/schoca.0.2.3/lib'
+- make[1]: Entering directory `/home/opam/.opam/system/build/schoca.0.2.3/shell'
+- ocamlfind ocamldep  -I ../lib -package camlp4  -syntax camlp4o \
+-    scmMain.ml > .depend
 - File "scmEval.ml", line 778, characters 12-25:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -417,16 +427,6 @@ The following actions will be performed:
 - Warning 26: unused variable vs.
 - File "scmEval.ml", line 1312, characters 6-8:
 - Warning 26: unused variable ks.
-- ocamlfind ocamlc -a -linkpkg -o schoca.cma -package camlp4   \
-- 	    \
-- 	scmConfig.cmo scmUtil.cmo scmDynnum.cmo scmTypes.cmo scmParser.cmo scmLexer.cmo scmEval.cmo scmSchoca.cmo -g  
-- ocamlfind ocamlopt -a -o schoca.cmxa -package camlp4   \
-- 	      \
-- 	scmConfig.cmx scmUtil.cmx scmDynnum.cmx scmTypes.cmx scmParser.cmx scmLexer.cmx scmEval.cmx scmSchoca.cmx  
-- make[1]: Leaving directory `/home/opam/.opam/system/build/schoca.0.2.3/lib'
-- make[1]: Entering directory `/home/opam/.opam/system/build/schoca.0.2.3/shell'
-- ocamlfind ocamldep  -I ../lib -package camlp4  -syntax camlp4o \
--    scmMain.ml > .depend
 - make[1]: Leaving directory `/home/opam/.opam/system/build/schoca.0.2.3/shell'
 - make[1]: Entering directory `/home/opam/.opam/system/build/schoca.0.2.3/shell'
 - ocamlfind ocamlc -I ../lib -package camlp4  -I ../lib -g  -syntax camlp4o -c scmMain.ml
