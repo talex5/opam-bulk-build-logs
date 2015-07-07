@@ -1,30 +1,30 @@
 + uname -m
-+ uname -s
 # Detecting depexts using flags: x86_64 linux centos
++ uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=coccinelle
++ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=coccinelle
 # The following system packages are needed:
 #  - pcre-devel
-+ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=coccinelle
-+ sudo yum -y update
 Not running as root, the following command will be run through "sudo":
     yum -y update
++ sudo yum -y update
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
  * base: mirror.sov.uk.goscomb.net
- * extras: mirror.sov.uk.goscomb.net
- * updates: anorien.csc.warwick.ac.uk
+ * extras: anorien.csc.warwick.ac.uk
+ * updates: mirror.sov.uk.goscomb.net
 No packages marked for update
++ sudo yum install -y pcre-devel
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     yum install -y pcre-devel
 Not running as root, the following command will be run through "sudo":
     rpm -q pcre-devel
-+ sudo yum install -y pcre-devel
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: mirror.sov.uk.goscomb.net
- * extras: mirror.sov.uk.goscomb.net
- * updates: anorien.csc.warwick.ac.uk
+ * base: mirrors.coreix.net
+ * extras: anorien.csc.warwick.ac.uk
+ * updates: mirror.sov.uk.goscomb.net
 Resolving Dependencies
 --> Running transaction check
 ---> Package pcre-devel.x86_64 0:8.32-14.el7 will be installed
@@ -55,8 +55,8 @@ Running transaction
 Installed:
   pcre-devel.x86_64 0:8.32-14.el7                                               
 
-+ sudo rpm -q pcre-devel
 Complete!
++ sudo rpm -q pcre-devel
 pcre-devel-8.32-14.el7.x86_64
 # OS packages installation successful
 The following actions will be performed:
@@ -87,6 +87,10 @@ The following actions will be performed:
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [conf-pkg-config: pkg-config] Command started
 [conf-python-2-7: python2.7 print 'python2.7 is installed'] Command started
++ python2.7 "-c" "print 'python2.7 is installed'" (CWD=/home/opam/.opam/system/build/conf-python-2-7.1.0)
+- python2.7 is installed
+-> installed conf-python-2-7.1.0
+[conf-python-2-7-dev: cc test.c] Command started
 + pkg-config "--help" (CWD=/home/opam/.opam/system/build/conf-pkg-config.1.0)
 - Usage:
 -   pkg-config [OPTION...]
@@ -126,10 +130,6 @@ The following actions will be performed:
 - 
 -> installed conf-pkg-config.1.0
 [conf-libpcre: pkg-config libpcre] Command started
-+ python2.7 "-c" "print 'python2.7 is installed'" (CWD=/home/opam/.opam/system/build/conf-python-2-7.1.0)
-- python2.7 is installed
--> installed conf-python-2-7.1.0
-[conf-python-2-7-dev: cc test.c] Command started
 + pkg-config "libpcre" (CWD=/home/opam/.opam/system/build/conf-libpcre.1)
 -> installed conf-libpcre.1
 [ocamlfind: ./configure] Command started
@@ -169,7 +169,8 @@ The following actions will be performed:
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
 - Detecting compiler arguments: 
-- (extractor built) ok
+- (extractor built) 
+- ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib64/ocaml
@@ -198,6 +199,7 @@ The following actions will be performed:
 - for p in findlib; do ( cd src/$p; make all ) || exit; done
 - make[1]: Entering directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
 - ocamllex fl_meta.mll
+- Makefile:160: depend: No such file or directory
 - 22 states, 392 transitions, table size 1700 bytes
 - ocamldep *.ml *.mli >depend
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
@@ -217,8 +219,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_metascanner.mli
 - ocamlc -I +compiler-libs -g -c fl_metascanner.ml
 - ocamlc -I +compiler-libs -c fl_topo.mli
-- ocamlc -I +compiler-libs -g -c fl_topo.ml
-- Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -263,6 +263,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
@@ -276,6 +277,9 @@ The following actions will be performed:
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
@@ -293,9 +297,6 @@ The following actions will be performed:
 - 	../../tools/patch '@SITELIB@' '/home/opam/.opam/system/lib' \
 -     	    >topfind
 - ocamlc -I +compiler-libs -c num_top_printers.mli
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
 - ocamlc -I +compiler-libs -c num_top.mli
 - ocamlc -I +compiler-libs -g -c num_top.ml
@@ -1713,9 +1714,9 @@ The following actions will be performed:
 # path                 /home/opam/.opam/system/build/conf-python-2-7-dev.1.0
 # compiler             system (4.02.1)
 # exit-code            1
-# env-file             /home/opam/.opam/system/build/conf-python-2-7-dev.1.0/conf-python-2-7-dev-1-a00279.env
-# stdout-file          /home/opam/.opam/system/build/conf-python-2-7-dev.1.0/conf-python-2-7-dev-1-a00279.out
-# stderr-file          /home/opam/.opam/system/build/conf-python-2-7-dev.1.0/conf-python-2-7-dev-1-a00279.err
+# env-file             /home/opam/.opam/system/build/conf-python-2-7-dev.1.0/conf-python-2-7-dev-1-a71bb4.env
+# stdout-file          /home/opam/.opam/system/build/conf-python-2-7-dev.1.0/conf-python-2-7-dev-1-a71bb4.out
+# stderr-file          /home/opam/.opam/system/build/conf-python-2-7-dev.1.0/conf-python-2-7-dev-1-a71bb4.err
 ### stderr ###
 # test.c:1:30: fatal error: python2.7/Python.h: No such file or directory
 #  #include "python2.7/Python.h"
@@ -1743,5 +1744,5 @@ The following changes have been performed
    installation for your system.
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150326105946.export"
+    opam switch import "~/.opam/system/backup/state-20150328011451.export"
 'opam install coccinelle' failed.
