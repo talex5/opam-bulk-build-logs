@@ -7,22 +7,22 @@
 #  - m4
 #  - pkg-config
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=duppy
-+ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-Get:1 http://security.debian.org stable/updates Release.gpg [836 B]
++ sudo apt-get update
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Get:2 http://security.debian.org stable/updates Release [102 kB]
 Hit http://download.opensuse.org  Packages
-Get:3 http://security.debian.org stable/updates/main amd64 Packages [382 kB]
 Hit http://http.debian.net stable Release.gpg
-Get:4 http://http.debian.net stable-updates Release.gpg [836 B]
+Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
 Hit http://http.debian.net stable Release
-Get:5 http://http.debian.net stable-updates Release [124 kB]
+Get:2 http://http.debian.net stable-updates Release [124 kB]
+Hit http://security.debian.org stable/updates Release.gpg
 Hit http://http.debian.net stable/main amd64 Packages
-Get:6 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
-Fetched 614 kB in 3s (197 kB/s)
+Get:3 http://http.debian.net stable-updates/main amd64 Packages [4369 B]
+Hit http://security.debian.org stable/updates Release
+Hit http://security.debian.org stable/updates/main amd64 Packages
+Fetched 129 kB in 1s (89.4 kB/s)
 Reading package lists...
 + sudo apt-get install -qq -yy libpcre3-dev m4 pkg-config
 # OS package update successful
@@ -49,12 +49,12 @@ The following actions will be performed:
 [duppy: from default] Command started
 [ocamlfind: from default] Command started
 [pcre: from default] Command started
-[pcre: from default] Command started
 [duppy: from default] Command started
+[pcre: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/pcre.7.1.3+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/duppy.0.5.0+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/duppy.0.5.0+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/pcre.7.1.3+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [conf-pkg-config: pkg-config] Command started
@@ -147,9 +147,7 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: 
-- (extractor built) 
-- ok
+- Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /home/opam/.opam/4.02.1/lib/ocaml
@@ -535,6 +533,7 @@ The following actions will be performed:
 - Installed /home/opam/.opam/4.02.1/lib/stublibs/dllpcre_stubs.so
 - Installed /home/opam/.opam/4.02.1/lib/stublibs/dllpcre_stubs.so.owner
 - ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/4.02.1/lib/stublibs is not mentioned in ld.conf
+[ERROR] The compilation of duppy failed at "make".
 -> installed pcre.7.1.3
 [duppy: ./configure] Command started
 + ./configure "--prefix" "/home/opam/.opam/4.02.1" (CWD=/home/opam/.opam/4.02.1/build/duppy.0.5.0)
@@ -594,7 +593,30 @@ The following actions will be performed:
 - config.status: creating src/Makefile
 - config.status: creating examples/Makefile.telnet
 - config.status: creating examples/Makefile.http
-[ERROR] The compilation of duppy failed at "make".
+[duppy: make] Command started
++ make  (CWD=/home/opam/.opam/4.02.1/build/duppy.0.5.0)
+- make -C src all
+- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/duppy.0.5.0/src'
+- ocamlfind ocamlc -c -package camlp4 -package camlp4.quotations.o -package camlp4.extend -syntax camlp4o pa_duppy.mli
+- ocamlfind ocamlc -c -package camlp4 -package camlp4.quotations.o -package camlp4.extend -syntax camlp4o pa_duppy.ml
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/duppy.0.5.0/src'
+- File "pa_duppy.ml", line 24, characters 5-11:
+- Error: Unbound module Camlp4
+- make[1]: *** [pa_duppy.cmo] Error 2
+- make: *** [all] Error 2
+[duppy: ocamlfind remove] Command started
++ ocamlfind "remove" "duppy" (CWD=/home/opam/.opam/4.02.1/build/duppy.0.5.0)
+- ocamlfind: [WARNING] No such directory: /home/opam/.opam/4.02.1/lib/duppy
+
+
+=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+The following actions failed
+  - install duppy 0.5.0
+The following changes have been performed
+  - install conf-libpcre    1    
+  - install conf-pkg-config 1.0  
+  - install ocamlfind       1.5.5
+  - install pcre            7.1.3
 
 #=== ERROR while installing duppy.0.5.0 =======================================#
 # opam-version         1.2.2 (05903f71901dcc18c5f54e74ba07da71d67a9b2a)
@@ -620,29 +642,5 @@ The following actions will be performed:
 
 
 The former state can be restored with:
-    opam switch import "~/.opam/4.02.1/backup/state-20150320115308.export"
+    opam switch import "~/.opam/4.02.1/backup/state-20150321120528.export"
 'opam install duppy' failed.
-[duppy: make] Command started
-+ make  (CWD=/home/opam/.opam/4.02.1/build/duppy.0.5.0)
-- make -C src all
-- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/duppy.0.5.0/src'
-- ocamlfind ocamlc -c -package camlp4 -package camlp4.quotations.o -package camlp4.extend -syntax camlp4o pa_duppy.mli
-- ocamlfind ocamlc -c -package camlp4 -package camlp4.quotations.o -package camlp4.extend -syntax camlp4o pa_duppy.ml
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/duppy.0.5.0/src'
-- File "pa_duppy.ml", line 24, characters 5-11:
-- Error: Unbound module Camlp4
-- make[1]: *** [pa_duppy.cmo] Error 2
-- make: *** [all] Error 2
-[duppy: ocamlfind remove] Command started
-+ ocamlfind "remove" "duppy" (CWD=/home/opam/.opam/4.02.1/build/duppy.0.5.0)
-- ocamlfind: [WARNING] No such directory: /home/opam/.opam/4.02.1/lib/duppy
-
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions failed
-  - install duppy 0.5.0
-The following changes have been performed
-  - install conf-libpcre    1    
-  - install conf-pkg-config 1.0  
-  - install ocamlfind       1.5.5
-  - install pcre            7.1.3
