@@ -1,47 +1,47 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-+ opam list --safe --recursive --external=x86_64,linux,debian --required-by=bisect_ppx
 # Detecting depexts using flags: x86_64 linux debian
++ opam list --safe --recursive --external=x86_64,linux,debian --required-by=bisect_ppx
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=bisect_ppx
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=bisect_ppx
 Not running as root, the following command will be run through "sudo":
     apt-get update
 + sudo apt-get update
-Get:1 http://security.debian.org stable/updates InRelease [63.1 kB]
+Hit http://security.debian.org stable/updates InRelease
 Ign http://download.opensuse.org  InRelease
 Hit http://httpredir.debian.org stable InRelease
-Get:2 http://httpredir.debian.org stable-updates InRelease [126 kB]
+Hit http://httpredir.debian.org stable-updates InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Get:3 http://security.debian.org stable/updates/main amd64 Packages [79.2 kB]
-Get:4 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
-Get:5 http://download.opensuse.org  Packages [5783 B]
-Get:6 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9297 kB in 4s (2196 kB/s)
+Get:1 http://security.debian.org stable/updates/main amd64 Packages [79.2 kB]
+Get:2 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
+Get:3 http://download.opensuse.org  Packages [5783 B]
+Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
+Fetched 9108 kB in 4s (1913 kB/s)
 Reading package lists...
 # OS package update successful
-+ sudo apt-get install -qq -yy m4
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
++ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind  1.5.5                                    [required by bisect_ppx]
   - install ppx_tools  0.99.2                                   [required by bisect_ppx]
-  - install bisect_ppx 0.1   
+  - install bisect_ppx 0.2   
 ===== 3 to install =====
 
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [bisect_ppx: from default] Command started
 [ocamlfind: from default] Command started
 [ppx_tools: from default] Command started
-[ocamlfind: from default] Command started
 [ppx_tools: from default] Command started
+[ocamlfind: from default] Command started
 [bisect_ppx: from default] Command started
 [default] http://opam-archive:8080/archives/ppx_tools.0.99.2+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/bisect_ppx.0.1+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/bisect_ppx.0.2+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -121,6 +121,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_metascanner.ml
 - ocamlc -I +compiler-libs -c fl_topo.mli
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
+- ocamlc -I +compiler-libs -c fl_package_base.mli
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -166,8 +168,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
@@ -179,6 +179,9 @@ The following actions will be performed:
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
@@ -189,9 +192,6 @@ The following actions will be performed:
 - fi
 - ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
 - export USE_CYGPATH; \
@@ -381,10 +381,10 @@ The following actions will be performed:
 - Installed /home/opam/.opam/4.02.1/lib/ppx_tools/META
 -> installed ppx_tools.0.99.2
 [bisect_ppx: sh configure] Command started
-+ sh "configure" (CWD=/home/opam/.opam/4.02.1/build/bisect_ppx.0.1)
++ sh "configure" (CWD=/home/opam/.opam/4.02.1/build/bisect_ppx.0.2)
 - Makefile.config successfully created
 [bisect_ppx: make all] Command started
-+ make "all" (CWD=/home/opam/.opam/4.02.1/build/bisect_ppx.0.1)
++ make "all" (CWD=/home/opam/.opam/4.02.1/build/bisect_ppx.0.2)
 - echo 'bisect.cma' > bisect.itarget
 - (test -x /home/opam/.opam/4.02.1/bin/ocamlopt && echo 'bisect.cmxa' >> bisect.itarget) || true
 - (test -x /home/opam/.opam/4.02.1/bin/ocamljava && echo 'bisect.cmja' >> bisect.itarget) || true
@@ -485,7 +485,7 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -annot -I src/report -I src -I src/threads -I src/syntax -I src/library -I src/demo -I src/demo/img -o src/report/combineParser.cmi src/report/combineParser.mli
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -annot -I src/report -I src -I src/threads -I src/syntax -I src/library -I src/demo -I src/demo/img -o src/report/combineLexer.cmo src/report/combineLexer.ml
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules src/report/reportArgs.ml > src/report/reportArgs.ml.depends
-- cp /tmp/version722d03.ml src/library/version.ml
+- cp /tmp/versionae6c11.ml src/library/version.ml
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules src/library/version.mli > src/library/version.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -annot -I src/library -I src -I src/threads -I src/syntax -I src/report -I src/demo -I src/demo/img -o src/library/version.cmi src/library/version.mli
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules src/report/reportCSV.ml > src/report/reportCSV.ml.depends
@@ -520,7 +520,7 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -annot -for-pack Bisect -I src/report -I src -I src/threads -I src/syntax -I src/library -I src/demo -I src/demo/img -o src/report/combineParser.cmx src/report/combineParser.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -annot -for-pack Bisect -I src/report -I src -I src/threads -I src/syntax -I src/library -I src/demo -I src/demo/img -o src/report/combineLexer.cmx src/report/combineLexer.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -annot -for-pack Bisect -I src/report -I src -I src/threads -I src/syntax -I src/library -I src/demo -I src/demo/img -o src/report/reportUtils.cmx src/report/reportUtils.ml
-- cp /tmp/version0e12c8.ml src/library/version.ml
+- cp /tmp/version8f0ae0.ml src/library/version.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -annot -for-pack Bisect -I src/report -I src -I src/threads -I src/syntax -I src/library -I src/demo -I src/demo/img -o src/report/reportStat.cmx src/report/reportStat.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -annot -for-pack Bisect -I src/library -I src -I src/threads -I src/syntax -I src/report -I src/demo -I src/demo/img -o src/library/version.cmx src/library/version.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -annot -for-pack Bisect -I src/report -I src -I src/threads -I src/syntax -I src/library -I src/demo -I src/demo/img -o src/report/reportGeneric.cmx src/report/reportGeneric.ml
@@ -537,7 +537,7 @@ The following actions will be performed:
 - ln -fs `pwd`/_build/src/report/report.byte bisect-report
 - ln -fs `pwd`/_build/src/report/report.native bisect-report.opt
 [bisect_ppx: make install] Command started
-+ make "install" (CWD=/home/opam/.opam/4.02.1/build/bisect_ppx.0.1)
++ make "install" (CWD=/home/opam/.opam/4.02.1/build/bisect_ppx.0.2)
 - if [ -x "/home/opam/.opam/4.02.1/bin/ocamlfind" ]; then \
 -   /home/opam/.opam/4.02.1/bin/ocamlfind query bisect_ppx && /home/opam/.opam/4.02.1/bin/ocamlfind remove bisect_ppx || true; \
 -   /home/opam/.opam/4.02.1/bin/ocamlfind install bisect_ppx META -optional \
@@ -573,8 +573,8 @@ The following actions will be performed:
 - Installed /home/opam/.opam/4.02.1/lib/bisect_ppx/bisectThread.cmi
 - Installed /home/opam/.opam/4.02.1/lib/bisect_ppx/META
 [bisect_ppx: cp bisect-report] Command started
-+ cp "bisect-report" "/home/opam/.opam/4.02.1/bin" (CWD=/home/opam/.opam/4.02.1/build/bisect_ppx.0.1)
++ cp "bisect-report" "/home/opam/.opam/4.02.1/bin" (CWD=/home/opam/.opam/4.02.1/build/bisect_ppx.0.2)
 [bisect_ppx: cp bisect-report.opt] Command started
-+ cp "bisect-report.opt" "/home/opam/.opam/4.02.1/bin" (CWD=/home/opam/.opam/4.02.1/build/bisect_ppx.0.1)
--> installed bisect_ppx.0.1
++ cp "bisect-report.opt" "/home/opam/.opam/4.02.1/bin" (CWD=/home/opam/.opam/4.02.1/build/bisect_ppx.0.2)
+-> installed bisect_ppx.0.2
 Done.
