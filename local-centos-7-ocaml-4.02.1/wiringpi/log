@@ -10,9 +10,9 @@ Not running as root, the following command will be run through "sudo":
 + sudo yum -y update
 Loaded plugins: fastestmirror
 Determining fastest mirrors
- * base: mirror.vorboss.net
- * extras: mirror.vorboss.net
- * updates: mirror.sov.uk.goscomb.net
+ * base: mirror.sov.uk.goscomb.net
+ * extras: mirrors.coreix.net
+ * updates: mirrors.coreix.net
 Resolving Dependencies
 --> Running transaction check
 ---> Package openssl-libs.x86_64 1:1.0.1e-42.el7.4 will be updated
@@ -46,18 +46,18 @@ Running transaction
 Updated:
   openssl-libs.x86_64 1:1.0.1e-42.el7.6                                         
 
-Complete!
 + curl -L "https://gist.github.com/Leonidas-from-XIV/a1a7315ac01f7fbee3f0/raw" | bash -ex -
+Complete!
 # OS package update successful
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   200  100   200    0     0    195      0  0:00:01  0:00:01 --:--:--  1081
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+100   200  100   200    0     0    195      0  0:00:01  0:00:01 --:--:--   195
 + git clone git://git.drogon.net/wiringPi
 Cloning into 'wiringPi'...
 + cd wiringPi
-+ ./build
 wiringPi Build script
++ ./build
 =====================
 
 
@@ -71,8 +71,11 @@ WiringPi Library
 [Compile] wiringPiSPI.c
 [Compile] wiringPiI2C.c
 [Compile] softPwm.c
-wiringPi.c: In function 'wiringPiSetup':
+[Compile] mcp23008.c
 [Compile] softTone.c
+[Compile] mcp23016.c
+[Compile] mcp23017.c
+wiringPi.c: In function 'wiringPiSetup':
 wiringPi.c:1861:7: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
    if ((int32_t)gpio == -1)
        ^
@@ -85,15 +88,12 @@ wiringPi.c:1873:7: warning: cast from pointer to integer of different size [-Wpo
 wiringPi.c:1879:7: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
    if ((int32_t)pads == -1)
        ^
-[Compile] mcp23008.c
-[Compile] mcp23016.c
-[Compile] mcp23017.c
 [Compile] mcp23s08.c
 [Compile] mcp23s17.c
 [Compile] sr595.c
 [Compile] pcf8574.c
-[Compile] mcp3002.c
 [Compile] pcf8591.c
+[Compile] mcp3002.c
 [Compile] mcp3004.c
 [Compile] mcp4802.c
 [Compile] mcp3422.c
@@ -122,8 +122,8 @@ WiringPi Devices Library
 
 GPIO Utility
 [Compile] gpio.c
-[Compile] pins.c
 [Compile] readall.c
+[Compile] pins.c
 [Link]
 [Install]
 
@@ -147,8 +147,8 @@ The following actions will be performed:
 [wiringpi: from default] Command started
 [ocamlfind: from default] Command started
 [wiringpi: from default] Command started
-[default] http://opam-archive:8080/archives/wiringpi.0.0.1+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/wiringpi.0.0.1+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -181,8 +181,7 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) 
-- ok
+- Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib64/ocaml
@@ -235,7 +234,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -281,11 +279,19 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 	cp topfind.ml.in topfind.ml;                             \
+- else                                                             \
+- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 		> topfind.ml ;                                   \
+- fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -294,13 +300,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 	cp topfind.ml.in topfind.ml;                             \
-- else                                                             \
-- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 		> topfind.ml ;                                   \
-- fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -346,7 +345,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -391,6 +389,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
