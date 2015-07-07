@@ -7,25 +7,25 @@
 #  - libffi-dev
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=hardcaml-vpi
-+ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-Hit http://security.debian.org stable/updates InRelease
++ sudo apt-get update
 Ign http://download.opensuse.org  InRelease
+Hit http://security.debian.org stable/updates InRelease
 Hit http://download.opensuse.org  Release.gpg
-Hit http://httpredir.debian.org stable InRelease
-Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
-Get:2 http://security.debian.org stable/updates/main amd64 Packages [54.6 kB]
+Get:1 http://security.debian.org stable/updates/main amd64 Packages [55.3 kB]
 Hit http://download.opensuse.org  Release
+Get:2 http://httpredir.debian.org stable-updates InRelease [126 kB]
 Get:3 http://download.opensuse.org  Packages [5783 B]
-Get:4 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
-Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3618 B]
-Fetched 9209 kB in 5s (1669 kB/s)
+Hit http://httpredir.debian.org stable InRelease
+Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
+Get:5 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
+Fetched 9210 kB in 5s (1645 kB/s)
 Reading package lists...
++ sudo apt-get install -qq -yy libffi-dev m4
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libffi-dev m4
-+ sudo apt-get install -qq -yy libffi-dev m4
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
@@ -54,16 +54,16 @@ The following actions will be performed:
 [ctypes: from default] Command started
 [hardcaml: from default] Command started
 [ctypes: from default] Command started
+[hardcaml: from default] Command started
+[camlp4: from default] Command started
 [default] http://opam-archive:8080/archives/ctypes.0.4.1+opam.tar.gz downloaded
 [hardcaml-vpi: from default] Command started
-[camlp4: from default] Command started
-[hardcaml: from default] Command started
-[default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/hardcaml.1.1.1+opam.tar.gz downloaded
-[hardcaml-vpi: from default] Command started
-[default] http://opam-archive:8080/archives/hardcaml-vpi.0.2+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
+[hardcaml-vpi: from default] Command started
+[ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/hardcaml-vpi.0.2+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -148,7 +148,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -194,12 +193,11 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -208,6 +206,8 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -1303,8 +1303,6 @@ The following actions will be performed:
 - pkg_camlp4: .......................................... /home/opam/.opam/4.02.1/lib/ocaml/camlp4
 - 
 - ocaml setup.ml -build
-- W: Cannot find source file matching module 'HardCamlDynlink' in library HardCamlDynlink
-- W: Cannot find source file matching module 'HardCaml' in library HardCaml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt unix.cmxa -I /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -package bytes -package camlp4 -package dynlink -package num -modules src/utils.mli > src/utils.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I src -package bigarray -package bytes -package camlp4 -package dynlink -package num -I src -o src/utils.cmi src/utils.mli
@@ -1320,6 +1318,8 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -package bytes -package camlp4 -package dynlink -package num -modules src/bits_raw.ml > src/bits_raw.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -package bytes -package camlp4 -package dynlink -package num -modules src/bits_ext.mli > src/bits_ext.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I src -package bigarray -package bytes -package camlp4 -package dynlink -package num -I src -o src/bits_ext.cmi src/bits_ext.mli
+- W: Cannot find source file matching module 'HardCamlDynlink' in library HardCamlDynlink
+- W: Cannot find source file matching module 'HardCaml' in library HardCaml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -package bytes -package camlp4 -package dynlink -package num -modules src/bits_ext.ml > src/bits_ext.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -package bytes -package camlp4 -package dynlink -package num -modules src/signal.mli > src/signal.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I src -package bigarray -package bytes -package camlp4 -package dynlink -package num -I src -o src/signal.cmi src/signal.mli
@@ -1452,9 +1452,9 @@ The following actions will be performed:
 - ocaml setup.ml -build
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared src/HardCaml.cmxa src/HardCaml.cmx -o src/HardCaml.cmxs
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared src/HardCamlDynlink.cmxa src/HardCamlDynlink.cmx -o src/HardCamlDynlink.cmxs
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared src/pa_hardcaml.cmxa src/pa_hardcaml.cmx -o src/pa_hardcaml.cmxs
 - W: Cannot find source file matching module 'HardCamlDynlink' in library HardCamlDynlink
 - W: Cannot find source file matching module 'HardCaml' in library HardCaml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared src/pa_hardcaml.cmxa src/pa_hardcaml.cmx -o src/pa_hardcaml.cmxs
 - ocaml setup.ml -install
 - Installed /home/opam/.opam/4.02.1/lib/hardcaml/utils.mli
 - Installed /home/opam/.opam/4.02.1/lib/hardcaml/comb.mli
@@ -1594,6 +1594,7 @@ The following actions will be performed:
 - ocamlfind ocamlc -c -package 'ctypes.foreign, hardcaml' -o vpi.cmo vpi.ml
 - ocamlfind c -output-obj -package bigarray,num,hardcaml,ctypes.foreign -linkpkg -o cosim_o.o \
 - 	_build/vpi.cmo _build/cosim_icarus.cmo
+[ERROR] The compilation of hardcaml-vpi failed at "make all".
 - mv cosim_o.o _build/cosim_o.o
 - ocamlfind c -c -ccopt "`iverilog-vpi --cflags` -o _build/cosim_c.o" -g cosim_c.c 
 - Makefile:17: recipe for target 'vpi' failed
@@ -1603,7 +1604,6 @@ The following actions will be performed:
 -                       ^
 - compilation terminated.
 - make: *** [vpi] Error 2
-[ERROR] The compilation of hardcaml-vpi failed at "make all".
 [hardcaml-vpi: make uninstall] Command started
 + make "uninstall" (CWD=/home/opam/.opam/4.02.1/build/hardcaml-vpi.0.2)
 - ocamlfind remove hardcaml-vpi
@@ -1616,9 +1616,9 @@ The following actions will be performed:
 # path                 /home/opam/.opam/4.02.1/build/hardcaml-vpi.0.2
 # compiler             4.02.1
 # exit-code            2
-# env-file             /home/opam/.opam/4.02.1/build/hardcaml-vpi.0.2/hardcaml-vpi-5-a4abd5.env
-# stdout-file          /home/opam/.opam/4.02.1/build/hardcaml-vpi.0.2/hardcaml-vpi-5-a4abd5.out
-# stderr-file          /home/opam/.opam/4.02.1/build/hardcaml-vpi.0.2/hardcaml-vpi-5-a4abd5.err
+# env-file             /home/opam/.opam/4.02.1/build/hardcaml-vpi.0.2/hardcaml-vpi-6-a4abd5.env
+# stdout-file          /home/opam/.opam/4.02.1/build/hardcaml-vpi.0.2/hardcaml-vpi-6-a4abd5.out
+# stderr-file          /home/opam/.opam/4.02.1/build/hardcaml-vpi.0.2/hardcaml-vpi-6-a4abd5.err
 ### stdout ###
 # [...]
 # ocamlfind ocamlc -c -package 'ctypes.foreign, hardcaml' -o cosim_icarus.cmi cosim_icarus.mli
@@ -1658,5 +1658,5 @@ The following changes have been performed
    for your system.
 
 The former state can be restored with:
-    opam switch import "~/.opam/4.02.1/backup/state-20150405144256.export"
+    opam switch import "~/.opam/4.02.1/backup/state-20150405222735.export"
 'opam install hardcaml-vpi' failed.
