@@ -1,31 +1,31 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux debian
 + uname -s
+# Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=camltc
 # The following system packages are needed:
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=camltc
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
-Hit http://download.opensuse.org  Release.gpg
 Hit http://http.debian.net stable Release.gpg
-Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
-Hit http://http.debian.net stable Release
+Hit http://download.opensuse.org  Release.gpg
+Get:1 http://security.debian.org stable/updates Release.gpg [836 B]
+Get:2 http://http.debian.net stable-updates Release.gpg [836 B]
+Get:3 http://security.debian.org stable/updates Release [102 kB]
 Hit http://download.opensuse.org  Release
-Get:2 http://http.debian.net stable-updates Release [124 kB]
-Hit http://http.debian.net stable/main amd64 Packages
+Hit http://http.debian.net stable Release
+Get:4 http://http.debian.net stable-updates Release [124 kB]
 Hit http://download.opensuse.org  Packages
-Get:3 http://http.debian.net stable-updates/main amd64 Packages [4369 B]
-Hit http://security.debian.org stable/updates Release.gpg
-Hit http://security.debian.org stable/updates Release
-Hit http://security.debian.org stable/updates/main amd64 Packages
-Fetched 129 kB in 1s (121 kB/s)
-Reading package lists...
+Get:5 http://security.debian.org stable/updates/main amd64 Packages [382 kB]
+Hit http://http.debian.net stable/main amd64 Packages
+Get:6 http://http.debian.net stable-updates/main amd64 Packages [4369 B]
+Fetched 614 kB in 2s (235 kB/s)
+Reading package lists...+ sudo apt-get install -qq -yy m4
+
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
-+ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind 1.5.5                                     [required by camltc]
@@ -39,18 +39,18 @@ The following actions will be performed:
 [camltc: from default] Command started
 [lwt: from default] Command started
 [ocamlfind: from default] Command started
-[lwt: from default] Command started
 [ocamlfind: from default] Command started
+[lwt: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [ounit: from default] Command started
+[camltc: from default] Command started
 [default] http://opam-archive:8080/archives/lwt.2.4.8+opam.tar.gz downloaded
 [ppx_tools: from default] Command started
-[camltc: from default] Command started
-[ppx_tools: from default] Command started
-[default] http://opam-archive:8080/archives/camltc.0.9.2+opam.tar.gz downloaded
 [ounit: from default] Command started
-[default] http://opam-archive:8080/archives/ppx_tools.0.99.2+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/camltc.0.9.2+opam.tar.gz downloaded
+[ppx_tools: from default] Command started
 [default] http://opam-archive:8080/archives/ounit.2.0.0+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ppx_tools.0.99.2+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -83,7 +83,8 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) ok
+- Detecting compiler arguments: 
+- (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /home/opam/.opam/4.02.1/lib/ocaml
@@ -132,6 +133,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_metascanner.ml
 - ocamlc -I +compiler-libs -c fl_topo.mli
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
+- ocamlc -I +compiler-libs -c fl_package_base.mli
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -177,14 +180,14 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -193,8 +196,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -246,6 +247,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -290,7 +292,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -395,99 +396,6 @@ The following actions will be performed:
 - Installed /home/opam/.opam/4.02.1/lib/ppx_tools/META
 -> installed ppx_tools.0.99.2
 [lwt: ./configure] Command started
-+ ./configure "--prefix" "/home/opam/.opam/4.02.1" "--disable-libev" "--disable-camlp4" "--disable-react" "--disable-ssl" "--enable-unix" "--enable-preemptive" "--disable-glib" "--enable-ppx" (CWD=/home/opam/.opam/4.02.1/build/lwt.2.4.8)
-- not checking for pkg-config
-- not checking for libev
-- testing for pthread: ........................... available
-- not checking for glib
-- testing for eventfd: ........................... available
-- testing for fd passing: ........................ available
-- testing for sched_getcpu: ...................... available
-- testing for affinity getting/setting: .......... available
-- testing for credentials getting (Linux): ....... available
-- testing for credentials getting (NetBSD): ...... unavailable
-- testing for credentials getting (OpenBSD): ..... unavailable
-- testing for credentials getting (FreeBSD): ..... unavailable
-- testing for credentials getting (getpeereid): .. unavailable
-- testing for fdatasync: ......................... available
-- testing for netdb_reentrant: ................... available
-- Generating C stubs...
-- 
-- Configuration: 
-- ocamlfind: ........................................... /home/opam/.opam/4.02.1/bin/ocamlfind
-- ocamlc: .............................................. /home/opam/.opam/4.02.1/bin/ocamlc.opt
-- ocamlopt: ............................................ /home/opam/.opam/4.02.1/bin/ocamlopt.opt
-- ocamlbuild: .......................................... /home/opam/.opam/4.02.1/bin/ocamlbuild
-- Package name: ........................................ lwt
-- Package version: ..................................... 2.4.8
-- os_type: ............................................. Unix
-- system: .............................................. linux
-- architecture: ........................................ amd64
-- ccomp_type: .......................................... cc
-- ocaml_version: ....................................... 4.02.1
-- standard_library_default: ............................ /home/opam/.opam/4.02.1/lib/ocaml
-- standard_library: .................................... /home/opam/.opam/4.02.1/lib/ocaml
-- standard_runtime: .................................... /home/opam/.opam/4.02.1/bin/ocamlrun
-- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
-- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
-- model: ............................................... default
-- ext_obj: ............................................. .o
-- ext_asm: ............................................. .s
-- ext_lib: ............................................. .a
-- ext_dll: ............................................. .so
-- default_executable_name: ............................. a.out
-- systhread_supported: ................................. true
-- Install architecture-independent files dir: .......... /home/opam/.opam/4.02.1
-- Install architecture-dependent files in dir: ......... $prefix
-- User executables: .................................... $exec_prefix/bin
-- System admin executables: ............................ $exec_prefix/sbin
-- Program executables: ................................. $exec_prefix/libexec
-- Read-only single-machine data: ....................... $prefix/etc
-- Modifiable architecture-independent data: ............ $prefix/com
-- Modifiable single-machine data: ...................... $prefix/var
-- Object code libraries: ............................... $exec_prefix/lib
-- Read-only arch-independent data root: ................ $prefix/share
-- Read-only architecture-independent data: ............. $datarootdir
-- Info documentation: .................................. $datarootdir/info
-- Locale-dependent data: ............................... $datarootdir/locale
-- Man documentation: ................................... $datarootdir/man
-- Documentation root: .................................. $datarootdir/doc/$pkg_name
-- HTML documentation: .................................. $docdir
-- DVI documentation: ................................... $docdir
-- PDF documentation: ................................... $docdir
-- PS documentation: .................................... $docdir
-- findlib_version: ..................................... 1.5.5
-- is_native: ........................................... true
-- suffix_program: ...................................... 
-- Remove a file.: ...................................... rm -f
-- Remove a directory.: ................................. rm -rf
-- Turn ocaml debug flag on: ............................ true
-- Turn ocaml profile flag on: .......................... false
-- Compiler support generation of .cmxs.: ............... true
-- OCamlbuild additional flags: ......................... 
-- Compiles for Android: ................................ false
-- build and install everything: ........................ false
-- Build the syntax extension: .......................... false
-- Build the ppx syntax extension: ...................... true
-- Unix support: ........................................ true
-- React helpers: ....................................... false
-- Glib integration: .................................... false
-- SSL support: ......................................... false
-- Preemptive threads support: .......................... true
-- Compile with libev support: .......................... false
-- Use the libev backend by default: .................... true
-- Use pthread: ......................................... true
-- Create documentations: ............................... true
-- Compile tests executable and library and run them: ... false
-- pkg_bytes: ........................................... /home/opam/.opam/4.02.1/lib/bytes
-- pkg_unix: ............................................ /home/opam/.opam/4.02.1/lib/ocaml
-- pkg_bigarray: ........................................ /home/opam/.opam/4.02.1/lib/ocaml
-- pkg_compiler_libs_common: ............................ /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- pkg_threads: ......................................... /home/opam/.opam/4.02.1/lib/ocaml
-- pkg_ppx_tools_metaquot: .............................. /home/opam/.opam/4.02.1/lib/ppx_tools
-- ocamldoc: ............................................ /home/opam/.opam/4.02.1/bin/ocamldoc
-- 
-[lwt: make build] Command started
 + make "build" (CWD=/home/opam/.opam/4.02.1/build/ounit.2.0.0)
 - ocaml setup.ml -configure 
 - 
@@ -702,6 +610,99 @@ The following actions will be performed:
 - W: Cannot find source file matching module 'OUnitLoggerHTMLData' in library oUnitAdvanced
 - W: Cannot find source file matching module 'OUnitLoggerHTMLData' in library oUnitAdvanced
 [ounit: make install] Command started
++ ./configure "--prefix" "/home/opam/.opam/4.02.1" "--disable-libev" "--disable-camlp4" "--disable-react" "--disable-ssl" "--enable-unix" "--enable-preemptive" "--disable-glib" "--enable-ppx" (CWD=/home/opam/.opam/4.02.1/build/lwt.2.4.8)
+- not checking for pkg-config
+- not checking for libev
+- testing for pthread: ........................... available
+- not checking for glib
+- testing for eventfd: ........................... available
+- testing for fd passing: ........................ available
+- testing for sched_getcpu: ...................... available
+- testing for affinity getting/setting: .......... available
+- testing for credentials getting (Linux): ....... available
+- testing for credentials getting (NetBSD): ...... unavailable
+- testing for credentials getting (OpenBSD): ..... unavailable
+- testing for credentials getting (FreeBSD): ..... unavailable
+- testing for credentials getting (getpeereid): .. unavailable
+- testing for fdatasync: ......................... available
+- testing for netdb_reentrant: ................... available
+- Generating C stubs...
+- 
+- Configuration: 
+- ocamlfind: ........................................... /home/opam/.opam/4.02.1/bin/ocamlfind
+- ocamlc: .............................................. /home/opam/.opam/4.02.1/bin/ocamlc.opt
+- ocamlopt: ............................................ /home/opam/.opam/4.02.1/bin/ocamlopt.opt
+- ocamlbuild: .......................................... /home/opam/.opam/4.02.1/bin/ocamlbuild
+- Package name: ........................................ lwt
+- Package version: ..................................... 2.4.8
+- os_type: ............................................. Unix
+- system: .............................................. linux
+- architecture: ........................................ amd64
+- ccomp_type: .......................................... cc
+- ocaml_version: ....................................... 4.02.1
+- standard_library_default: ............................ /home/opam/.opam/4.02.1/lib/ocaml
+- standard_library: .................................... /home/opam/.opam/4.02.1/lib/ocaml
+- standard_runtime: .................................... /home/opam/.opam/4.02.1/bin/ocamlrun
+- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
+- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
+- model: ............................................... default
+- ext_obj: ............................................. .o
+- ext_asm: ............................................. .s
+- ext_lib: ............................................. .a
+- ext_dll: ............................................. .so
+- default_executable_name: ............................. a.out
+- systhread_supported: ................................. true
+- Install architecture-independent files dir: .......... /home/opam/.opam/4.02.1
+- Install architecture-dependent files in dir: ......... $prefix
+- User executables: .................................... $exec_prefix/bin
+- System admin executables: ............................ $exec_prefix/sbin
+- Program executables: ................................. $exec_prefix/libexec
+- Read-only single-machine data: ....................... $prefix/etc
+- Modifiable architecture-independent data: ............ $prefix/com
+- Modifiable single-machine data: ...................... $prefix/var
+- Object code libraries: ............................... $exec_prefix/lib
+- Read-only arch-independent data root: ................ $prefix/share
+- Read-only architecture-independent data: ............. $datarootdir
+- Info documentation: .................................. $datarootdir/info
+- Locale-dependent data: ............................... $datarootdir/locale
+- Man documentation: ................................... $datarootdir/man
+- Documentation root: .................................. $datarootdir/doc/$pkg_name
+- HTML documentation: .................................. $docdir
+- DVI documentation: ................................... $docdir
+- PDF documentation: ................................... $docdir
+- PS documentation: .................................... $docdir
+- findlib_version: ..................................... 1.5.5
+- is_native: ........................................... true
+- suffix_program: ...................................... 
+- Remove a file.: ...................................... rm -f
+- Remove a directory.: ................................. rm -rf
+- Turn ocaml debug flag on: ............................ true
+- Turn ocaml profile flag on: .......................... false
+- Compiler support generation of .cmxs.: ............... true
+- OCamlbuild additional flags: ......................... 
+- Compiles for Android: ................................ false
+- build and install everything: ........................ false
+- Build the syntax extension: .......................... false
+- Build the ppx syntax extension: ...................... true
+- Unix support: ........................................ true
+- React helpers: ....................................... false
+- Glib integration: .................................... false
+- SSL support: ......................................... false
+- Preemptive threads support: .......................... true
+- Compile with libev support: .......................... false
+- Use the libev backend by default: .................... true
+- Use pthread: ......................................... true
+- Create documentations: ............................... true
+- Compile tests executable and library and run them: ... false
+- pkg_bytes: ........................................... /home/opam/.opam/4.02.1/lib/bytes
+- pkg_unix: ............................................ /home/opam/.opam/4.02.1/lib/ocaml
+- pkg_bigarray: ........................................ /home/opam/.opam/4.02.1/lib/ocaml
+- pkg_compiler_libs_common: ............................ /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- pkg_threads: ......................................... /home/opam/.opam/4.02.1/lib/ocaml
+- pkg_ppx_tools_metaquot: .............................. /home/opam/.opam/4.02.1/lib/ppx_tools
+- ocamldoc: ............................................ /home/opam/.opam/4.02.1/bin/ocamldoc
+- 
+[lwt: make build] Command started
 + make "install" (CWD=/home/opam/.opam/4.02.1/build/ounit.2.0.0)
 - ocaml setup.ml -install 
 - File "/home/gildor/programmation/oasis/src/oasis/OASISString.ml", line 118, characters 8-26:
@@ -813,7 +814,8 @@ The following actions will be performed:
 - not checking for glib
 - testing for eventfd: ........................... available
 - testing for fd passing: ........................ available
-- testing for sched_getcpu: ...................... available
+- testing for sched_getcpu:
+-  ...................... available
 - testing for affinity getting/setting: .......... available
 - testing for credentials getting (Linux): ....... available
 - testing for credentials getting (NetBSD): ...... unavailable
@@ -821,7 +823,8 @@ The following actions will be performed:
 - testing for credentials getting (FreeBSD): ..... unavailable
 - testing for credentials getting (getpeereid): .. unavailable
 - testing for fdatasync: ......................... available
-- testing for netdb_reentrant: ................... available
+- testing for netdb_reentrant:
+-  ................... available
 - Generating C stubs...
 - 
 - Configuration: 
@@ -923,6 +926,7 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bytes -modules src/core/lwt_mvar.ml > src/core/lwt_mvar.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bytes -modules src/core/lwt_pool.mli > src/core/lwt_pool.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -safe-string -package bytes -I src/core -o src/core/lwt_pool.cmi src/core/lwt_pool.mli
+- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bytes -modules src/core/lwt_pool.ml > src/core/lwt_pool.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bytes -modules src/core/lwt_sequence.ml > src/core/lwt_sequence.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bytes -modules src/core/lwt_stream.mli > src/core/lwt_stream.mli.depends
@@ -953,7 +957,6 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -safe-string -package bytes -I src/core -o src/core/lwt_mvar.cmx src/core/lwt_mvar.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -safe-string -package bytes -I src/core -o src/core/lwt_pool.cmx src/core/lwt_pool.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -safe-string -package bytes -I src/core -o src/core/lwt_stream.cmx src/core/lwt_stream.ml
-- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -safe-string -package bytes -I src/core -o src/core/lwt_switch.cmx src/core/lwt_switch.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -safe-string -package bytes -I src/core -o src/core/lwt_pqueue.cmx src/core/lwt_pqueue.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a src/core/lwt_sequence.cmx src/core/lwt.cmx src/core/lwt_mutex.cmx src/core/lwt_condition.cmx src/core/lwt_list.cmx src/core/lwt_mvar.cmx src/core/lwt_pool.cmx src/core/lwt_stream.cmx src/core/lwt_switch.cmx src/core/lwt_pqueue.cmx -o src/core/lwt.cmxa
@@ -1510,8 +1513,8 @@ The following actions will be performed:
 - ocamlfind ocamlmklib -o otc otc_wrapper.o
 - ocamlfind ocamldep -package lwt.preemptive -package lwt.unix -package lwt -package oUnit -modules camltc.ml > camltc.ml.depends
 - echo 'let git_revision = "tags/camltc-0.9.2-0-gfabaff1"
-- let compile_time = "23/04/2015 05:03:44 UTC"
-- let machine = "589b04f221fd 3.13.0-37-generic x86_64 unknown unknown GNU/Linux"
+- let compile_time = "23/04/2015 23:44:56 UTC"
+- let machine = "adac7b1a9a61 3.13.0-37-generic x86_64 unknown unknown GNU/Linux"
 - let major = 0
 - let minor = 9
 - let patch = 2
