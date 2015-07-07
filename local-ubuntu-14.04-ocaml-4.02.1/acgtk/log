@@ -1,14 +1,14 @@
 + uname -m
+# Detecting depexts using flags: x86_64 linux ubuntu
 + uname -s
-/usr/bin/lsb_release
 + lsb_release -i -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=acgtk
-# Detecting depexts using flags: x86_64 linux ubuntu
 # The following system packages are needed:
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=acgtk
+Not running as root, the following command will be run through "sudo":
+    apt-get update
 + sudo apt-get update
-Not running as root, system installation will be done through "sudo"
 Ign http://download.opensuse.org  InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
@@ -40,18 +40,19 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [22.5 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [329 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [123 kB]
-Fetched 2109 kB in 8s (261 kB/s)
+Fetched 2109 kB in 5s (360 kB/s)
 Reading package lists...
 # OS package update successful
-Not running as root, system installation will be done through "sudo"
+Not running as root, the following command will be run through "sudo":
+    apt-get install -qq -yy m4
 + sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
-  - install ocamlfind    1.5.5                                  [required by bolt, ANSITerminal, dypgen]
   - install camlp4       4.02.1+system                          [required by bolt]
+  - install ocamlfind    1.5.5                                  [required by bolt, ANSITerminal, dypgen]
   - install dypgen       20120619-1                             [required by acgtk]
-  - install ANSITerminal 0.6.5                                  [required by acgtk]
   - install bolt         1.4                                    [required by acgtk]
+  - install ANSITerminal 0.6.5                                  [required by acgtk]
   - install acgtk        1.1          
 ===== 6 to install =====
 
@@ -60,9 +61,9 @@ The following actions will be performed:
 [ANSITerminal: from default] Command started
 [bolt: from default] Command started
 [ANSITerminal: from default] Command started
-[acgtk: from default] Command started
 [default] http://opam-archive:8080/archives/ANSITerminal.0.6.5+opam.tar.gz downloaded
 [dypgen: from default] Command started
+[acgtk: from default] Command started
 [bolt: from default] Command started
 [default] http://opam-archive:8080/archives/acgtk.1.1+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
@@ -160,9 +161,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -208,17 +206,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
-- if [ "true" = "true" ]; then                 \
-- 		cp topfind.ml.in topfind.ml;                             \
-- 	else                                                             \
-- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 			> topfind.ml ;                                   \
-- 	fi
-- ocamlc -I +compiler-libs -c topfind.mli
-- ocamlc -I +compiler-libs -g -c topfind.ml
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -227,6 +220,14 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- if [ "true" = "true" ]; then                 \
+- 		cp topfind.ml.in topfind.ml;                             \
+- 	else                                                             \
+- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 			> topfind.ml ;                                   \
+- 	fi
+- ocamlc -I +compiler-libs -c topfind.mli
+- ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
 - 	export USE_CYGPATH; \
@@ -271,6 +272,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -315,7 +317,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -483,6 +484,28 @@ The following actions will be performed:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
 [ANSITerminal: ocaml setup.ml] Command started
++ ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/system/build/ANSITerminal.0.6.5)
+- File "setup.ml", line 215, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "setup.ml", line 1795, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
+- Installed /home/opam/.opam/system/lib/ANSITerminal/ANSITerminal.mli
+- Installed /home/opam/.opam/system/lib/ANSITerminal/libANSITerminal_stubs.a
+- Installed /home/opam/.opam/system/lib/ANSITerminal/ANSITerminal.cma
+- Installed /home/opam/.opam/system/lib/ANSITerminal/ANSITerminal.cmxa
+- Installed /home/opam/.opam/system/lib/ANSITerminal/ANSITerminal.a
+- Installed /home/opam/.opam/system/lib/ANSITerminal/ANSITerminal.cmxs
+- Installed /home/opam/.opam/system/lib/ANSITerminal/ANSITerminal.cmi
+- Installed /home/opam/.opam/system/lib/ANSITerminal/ANSITerminal.cmx
+- Installed /home/opam/.opam/system/lib/ANSITerminal/ANSITerminal_common.cmx
+- Installed /home/opam/.opam/system/lib/ANSITerminal/META
+- Installed /home/opam/.opam/system/lib/stublibs/dllANSITerminal_stubs.so
+- Installed /home/opam/.opam/system/lib/stublibs/dllANSITerminal_stubs.so.owner
+- ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/system/lib/stublibs is not mentioned in ld.conf
+-> installed ANSITerminal.0.6.5
+[dypgen: make] Command started
 + make "all" (CWD=/home/opam/.opam/system/build/bolt.1.4)
 - echo 'bolt.cma' > bolt.itarget
 - (which ocamlopt && echo 'bolt.cmxa' >> bolt.itarget) || true
@@ -525,7 +548,7 @@ The following actions will be performed:
 - /usr/bin/ocamldep.opt -modules src/library/layout.mli > src/library/layout.mli.depends
 - /usr/bin/ocamlc.opt -c -I src/library -I src -I src/threads -I src/syntax -I src/support -o src/library/layout.cmi src/library/layout.mli
 - /usr/bin/ocamldep.opt -modules src/library/layout.ml > src/library/layout.ml.depends
-- cp /tmp/versionf1b974.ml src/library/version.ml
+- cp /tmp/version5590d8.ml src/library/version.ml
 - /usr/bin/ocamldep.opt -modules src/library/version.mli > src/library/version.mli.depends
 - /usr/bin/ocamlc.opt -c -I src/library -I src -I src/threads -I src/syntax -I src/support -o src/library/version.cmi src/library/version.mli
 - /usr/bin/ocamldep.opt -modules src/library/level.ml > src/library/level.ml.depends
@@ -599,7 +622,7 @@ The following actions will be performed:
 - Warning: the tag "warnings" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
 - File "_tags", line 30, characters 27-49:
 - Warning: the tag "src_library_version_ml" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
-- cp /tmp/version1e77ca.ml src/library/version.ml
+- cp /tmp/versionf11e51.ml src/library/version.ml
 - /usr/bin/ocamlopt.opt -c -for-pack Bolt -I src/library -I src -I src/threads -I src/syntax -I src/support -o src/library/utils.cmx src/library/utils.ml
 - /usr/bin/ocamlopt.opt -c -for-pack Bolt -I src/library -I src -I src/threads -I src/syntax -I src/support -o src/library/name.cmx src/library/name.ml
 - /usr/bin/ocamlopt.opt -c -for-pack Bolt -I src/library -I src -I src/threads -I src/syntax -I src/support -o src/library/configuration.cmx src/library/configuration.ml
@@ -644,7 +667,7 @@ The following actions will be performed:
 - Warning: the tag "warnings" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
 - File "_tags", line 30, characters 27-49:
 - Warning: the tag "src_library_version_ml" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
-- cp /tmp/versionad09bd.ml src/library/version.ml
+- cp /tmp/versionb1f00f.ml src/library/version.ml
 - /usr/bin/ocamlc.opt -a bolt.cmo -o bolt.cma
 - /usr/bin/ocamlopt.opt -a bolt.cmx -o bolt.cmxa
 - WARNINGS=FALSE PATH_OCAML_PREFIX=/usr ocamlbuild -classic-display -no-links bolt_pp.cmo
@@ -662,14 +685,14 @@ The following actions will be performed:
 - /usr/bin/ocamldep.opt -modules src/threads/boltThread.mli > src/threads/boltThread.mli.depends
 - /usr/bin/ocamlc.opt -c -I src/threads -I src -I src/syntax -I src/support -I src/library -o src/threads/boltThread.cmi src/threads/boltThread.mli
 - /usr/bin/ocamldep.opt -modules src/threads/boltThread.ml > src/threads/boltThread.ml.depends
-- cp /tmp/version3aa936.ml src/library/version.ml
+- cp /tmp/version49a952.ml src/library/version.ml
 - /usr/bin/ocamlc.opt -c -thread -I src/threads -I src -I src/syntax -I src/support -I src/library -o src/threads/boltThread.cmo src/threads/boltThread.ml
 - WARNINGS=FALSE PATH_OCAML_PREFIX=/usr ocamlbuild -classic-display -no-links boltThread.cmx
 - File "_tags", line 27, characters 19-27:
 - Warning: the tag "warnings" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
 - File "_tags", line 30, characters 27-49:
 - Warning: the tag "src_library_version_ml" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
-- cp /tmp/version8dbba1.ml src/library/version.ml
+- cp /tmp/versionede5b3.ml src/library/version.ml
 - /usr/bin/ocamlopt.opt -c -thread -for-pack Bolt -I src/threads -I src -I src/syntax -I src/support -I src/library -o src/threads/boltThread.cmx src/threads/boltThread.ml
 [bolt: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/bolt.1.4)
@@ -710,28 +733,6 @@ The following actions will be performed:
 - Installed /home/opam/.opam/system/lib/bolt/bolt_pp.cmo
 - Installed /home/opam/.opam/system/lib/bolt/META
 -> installed bolt.1.4
-[dypgen: make] Command started
-+ ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/system/build/ANSITerminal.0.6.5)
-- File "setup.ml", line 215, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "setup.ml", line 1795, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
-- Installed /home/opam/.opam/system/lib/ANSITerminal/ANSITerminal.mli
-- Installed /home/opam/.opam/system/lib/ANSITerminal/libANSITerminal_stubs.a
-- Installed /home/opam/.opam/system/lib/ANSITerminal/ANSITerminal.cma
-- Installed /home/opam/.opam/system/lib/ANSITerminal/ANSITerminal.cmxa
-- Installed /home/opam/.opam/system/lib/ANSITerminal/ANSITerminal.a
-- Installed /home/opam/.opam/system/lib/ANSITerminal/ANSITerminal.cmxs
-- Installed /home/opam/.opam/system/lib/ANSITerminal/ANSITerminal.cmi
-- Installed /home/opam/.opam/system/lib/ANSITerminal/ANSITerminal.cmx
-- Installed /home/opam/.opam/system/lib/ANSITerminal/ANSITerminal_common.cmx
-- Installed /home/opam/.opam/system/lib/ANSITerminal/META
-- Installed /home/opam/.opam/system/lib/stublibs/dllANSITerminal_stubs.so
-- Installed /home/opam/.opam/system/lib/stublibs/dllANSITerminal_stubs.so.owner
-- ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/system/lib/stublibs is not mentioned in ld.conf
--> installed ANSITerminal.0.6.5
 + make  (CWD=/home/opam/.opam/system/build/dypgen.20120619-1)
 - cd dyplib; make
 - make[1]: Entering directory `/home/opam/.opam/system/build/dypgen.20120619-1/dyplib'
@@ -761,9 +762,9 @@ The following actions will be performed:
 - 360 states, 11307 transitions, table size 47388 bytes
 - 22672 additional bytes used for bindings
 - ocamlc -I ../dyplib -c extract_type.ml
-- ocamlc -I ../dyplib -c dypgen_parser.ml
 - File "extract_type.mll", line 69, characters 14-25:
 - Warning 3: deprecated: String.copy
+- ocamlc -I ../dyplib -c dypgen_parser.ml
 - File "extract_type.mll", line 100, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "extract_type.mll", line 126, characters 6-29:
