@@ -3,26 +3,26 @@
 + lsb_release -i -s
 # Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=bookaml
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=bookaml
 # The following system packages are needed:
 #  - libpcre3-dev
 #  - m4
 #  - pkg-config
 #  - zlib1g-dev
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=bookaml
 Not running as root, the following command will be run through "sudo":
     apt-get update
 + sudo apt-get update
-Hit http://security.debian.org stable/updates InRelease
 Ign http://download.opensuse.org  InRelease
-Hit http://httpredir.debian.org stable InRelease
+Hit http://security.debian.org stable/updates InRelease
 Hit http://download.opensuse.org  Release.gpg
-Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
 Hit http://download.opensuse.org  Release
-Get:2 http://security.debian.org stable/updates/main amd64 Packages [88.8 kB]
+Get:1 http://security.debian.org stable/updates/main amd64 Packages [88.8 kB]
+Get:2 http://download.opensuse.org  Packages [5783 B]
+Hit http://httpredir.debian.org stable InRelease
+Hit http://httpredir.debian.org stable-updates InRelease
 Get:3 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
-Get:4 http://download.opensuse.org  Packages [5783 B]
-Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9243 kB in 4s (2305 kB/s)
+Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
+Fetched 9118 kB in 4s (2094 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
@@ -67,29 +67,29 @@ The following actions will be performed:
 [batteries: from default] Command started
 [bookaml: from default] Command started
 [calendar: from default] Command started
-[bookaml: from default] Command started
 [batteries: from default] Command started
-[calendar: from default] Command started
-[default] http://opam-archive:8080/archives/bookaml.2.1+opam.tar.gz downloaded
-[camlp4: from default] Command started
 [default] http://opam-archive:8080/archives/batteries.2.3.1+opam.tar.gz downloaded
-[cryptokit: from default] Command started
-[default] http://opam-archive:8080/archives/calendar.2.03.2+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
 [camlp4: from default] Command started
+[bookaml: from default] Command started
+[calendar: from default] Command started
+[default] http://opam-archive:8080/archives/calendar.2.03.2+opam.tar.gz downloaded
 [cryptokit: from default] Command started
+[camlp4: from default] Command started
+[default] http://opam-archive:8080/archives/bookaml.2.1+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
 [ocamlnet: from default] Command started
-[ocamlfind: from default] Command started
+[cryptokit: from default] Command started
 [default] http://opam-archive:8080/archives/cryptokit.1.10+opam.tar.gz downloaded
 [tyxml: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [uutf: from default] Command started
-[tyxml: from default] Command started
 [uutf: from default] Command started
-[default] http://opam-archive:8080/archives/tyxml.3.4.0+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/uutf.0.9.4+opam.tar.gz downloaded
+[tyxml: from default] Command started
 [ocamlnet: from default] Command started
+[default] http://opam-archive:8080/archives/tyxml.3.4.0+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlnet.4.0.2+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -154,7 +154,6 @@ The following actions will be performed:
 - ocamllex fl_meta.mll
 - 22 states, 392 transitions, table size 1700 bytes
 - ocamldep *.ml *.mli >depend
-- Makefile:160: depend: No such file or directory
 - USE_CYGPATH="0"; \
 - export USE_CYGPATH; \
 - cat findlib_config.mlp | \
@@ -168,6 +167,12 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_metatoken.ml
 - ocamlc -I +compiler-libs -g -c fl_meta.ml
 - ocamlc -I +compiler-libs -c fl_metascanner.mli
+- ocamlc -I +compiler-libs -g -c fl_metascanner.ml
+- ocamlc -I +compiler-libs -c fl_topo.mli
+- ocamlc -I +compiler-libs -g -c fl_topo.ml
+- ocamlc -I +compiler-libs -c fl_package_base.mli
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -206,11 +211,6 @@ The following actions will be performed:
 - File "fl_meta.mll", line 62, characters 11-22:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc -I +compiler-libs -g -c fl_metascanner.ml
-- ocamlc -I +compiler-libs -c fl_topo.mli
-- ocamlc -I +compiler-libs -g -c fl_topo.ml
-- ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - File "fl_metascanner.ml", line 111, characters 23-32:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
@@ -282,6 +282,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -320,7 +321,6 @@ The following actions will be performed:
 - File "fl_meta.mll", line 62, characters 11-22:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_metascanner.ml", line 111, characters 23-32:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
@@ -4846,6 +4846,33 @@ The following actions will be performed:
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netsys -I ../../src/netstring -package "unix"  -w -3-25 -c -p -o `basename uq_multiplex.cmx .cmx`.p.cmx  uq_multiplex.ml
 - ocamlfind ocamlopt -g  -I ../../src/netsys -I ../../src/netstring -package "unix"  -w -3-25 -c  uq_transfer.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netsys -I ../../src/netstring -package "unix"  -w -3-25 -c -p -o `basename uq_transfer.cmx .cmx`.p.cmx  uq_transfer.ml
+- make[1]: Circular netsys_signal.cmx <- netlog.cmx dependency dropped.
+- make[1]: Circular netsys_posix.cmx <- netlog.cmx dependency dropped.
+- File "netsys.ml", line 271, characters 6-39:
+- Warning 26: unused variable addr.
+- File "netsys.ml", line 271, characters 6-39:
+- Warning 26: unused variable addr.
+- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c  -O -g  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'netsys_c_gprof.c'
+- File "nethtml.ml", line 620, characters 4-16:
+- Warning 21: this statement never returns (or has an unsound type.)
+- File "nethtml.ml", line 620, characters 4-16:
+- Warning 21: this statement never returns (or has an unsound type.)
+- File "netmime_channels.ml", line 137, characters 33-65:
+- Warning 18: this ground coercion is not principal.
+- File "netmime_channels.ml", line 137, characters 33-65:
+- Warning 18: this ground coercion is not principal.
+- File "netgssapi_auth.ml", line 100, characters 8-17:
+- Warning 26: unused variable mech_type.
+- File "netgssapi_auth.ml", line 100, characters 8-17:
+- Warning 26: unused variable mech_type.
+- File "netmech_scram_sasl.ml", line 76, characters 14-15:
+- Warning 11: this match case is unused.
+- File "netmech_scram_sasl.ml", line 76, characters 14-15:
+- Warning 11: this match case is unused.
+- File "netmech_crammd5_sasl.ml", line 92, characters 10-14:
+- Warning 26: unused variable resp.
+- File "netmech_crammd5_sasl.ml", line 92, characters 10-14:
+- Warning 26: unused variable resp.
 - ocamlfind ocamlopt -g  -I ../../src/netsys -I ../../src/netstring -package "unix"  -w -3-25 -c  uq_io.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netsys -I ../../src/netstring -package "unix"  -w -3-25 -c -p -o `basename uq_io.cmx .cmx`.p.cmx  uq_io.ml
 - ocamlfind ocamlopt -g  -I ../../src/netsys -I ../../src/netstring -package "unix"  -w -3-25 -c  uq_lwt.ml
@@ -4928,6 +4955,10 @@ The following actions will be performed:
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netstring -package "unix"  -w -3-25 -c -p -o `basename rename.cmx .cmx`.p.cmx  rename.ml
 - ocamlfind ocamlopt -g  -I ../../src/netstring -package "unix"  -w -3-25 -c  generate.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netstring -package "unix"  -w -3-25 -c -p -o `basename generate.cmx .cmx`.p.cmx  generate.ml
+- File "generate.ml", line 612, characters 6-22:
+- Warning 26: unused variable get_type_of_decl.
+- File "generate.ml", line 612, characters 6-22:
+- Warning 26: unused variable get_type_of_decl.
 - ocamlfind ocamlopt -g  -I ../../src/netstring -package "unix"  -w -3-25 -c  direct.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netstring -package "unix"  -w -3-25 -c -p -o `basename direct.cmx .cmx`.p.cmx  direct.ml
 - if [ "X" = "X" ]; then \
@@ -4998,6 +5029,14 @@ The following actions will be performed:
 - 	../../tools/mkstublib -o rpc.p rpc.p.cmx rpc_common.p.cmx rpc_program.p.cmx rpc_util.p.cmx rpc_portmapper_aux.p.cmx rpc_packer.p.cmx rpc_transport.p.cmx rpc_client_pre.p.cmx rpc_portmapper_clnt.p.cmx rpc_portmapper_impl.p.cmx rpc_client.p.cmx rpc_simple_client.p.cmx rpc_portmapper.p.cmx rpc_server.p.cmx rpc_auth_sys.p.cmx rpc_auth_gssapi_aux.p.cmx rpc_auth_gssapi.p.cmx rpc_proxy.p.cmx  ; \
 - fi
 - make[1]: Leaving directory '/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc'
+- File "rpc_auth_gssapi.ml", line 1072, characters 10-19:
+- Warning 26: unused variable get_props.
+- File "rpc_auth_gssapi.ml", line 1078, characters 12-16:
+- Warning 26: unused variable prog.
+- File "rpc_auth_gssapi.ml", line 1072, characters 10-19:
+- Warning 26: unused variable get_props.
+- File "rpc_auth_gssapi.ml", line 1078, characters 12-16:
+- Warning 26: unused variable prog.
 - make[1]: Entering directory '/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc-auth-local'
 - make[2]: Entering directory '/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc-auth-local'
 - make[2]: Nothing to be done for 'realgenerate'.
@@ -5124,45 +5163,6 @@ The following actions will be performed:
 - ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -package "unix"  -w -3-25 -c  netplex_log.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -package "unix"  -w -3-25 -c -p -o `basename netplex_log.cmx .cmx`.p.cmx  netplex_log.ml
 - ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -package "unix"  -w -3-25 -c  netplex_container.ml
-- make[1]: Circular netsys_signal.cmx <- netlog.cmx dependency dropped.
-- make[1]: Circular netsys_posix.cmx <- netlog.cmx dependency dropped.
-- File "netsys.ml", line 271, characters 6-39:
-- Warning 26: unused variable addr.
-- File "netsys.ml", line 271, characters 6-39:
-- Warning 26: unused variable addr.
-- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c  -O -g  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'netsys_c_gprof.c'
-- File "nethtml.ml", line 620, characters 4-16:
-- Warning 21: this statement never returns (or has an unsound type.)
-- File "nethtml.ml", line 620, characters 4-16:
-- Warning 21: this statement never returns (or has an unsound type.)
-- File "netmime_channels.ml", line 137, characters 33-65:
-- Warning 18: this ground coercion is not principal.
-- File "netmime_channels.ml", line 137, characters 33-65:
-- Warning 18: this ground coercion is not principal.
-- File "netgssapi_auth.ml", line 100, characters 8-17:
-- Warning 26: unused variable mech_type.
-- File "netgssapi_auth.ml", line 100, characters 8-17:
-- Warning 26: unused variable mech_type.
-- File "netmech_scram_sasl.ml", line 76, characters 14-15:
-- Warning 11: this match case is unused.
-- File "netmech_scram_sasl.ml", line 76, characters 14-15:
-- Warning 11: this match case is unused.
-- File "netmech_crammd5_sasl.ml", line 92, characters 10-14:
-- Warning 26: unused variable resp.
-- File "netmech_crammd5_sasl.ml", line 92, characters 10-14:
-- Warning 26: unused variable resp.
-- File "generate.ml", line 612, characters 6-22:
-- Warning 26: unused variable get_type_of_decl.
-- File "generate.ml", line 612, characters 6-22:
-- Warning 26: unused variable get_type_of_decl.
-- File "rpc_auth_gssapi.ml", line 1072, characters 10-19:
-- Warning 26: unused variable get_props.
-- File "rpc_auth_gssapi.ml", line 1078, characters 12-16:
-- Warning 26: unused variable prog.
-- File "rpc_auth_gssapi.ml", line 1072, characters 10-19:
-- Warning 26: unused variable get_props.
-- File "rpc_auth_gssapi.ml", line 1078, characters 12-16:
-- Warning 26: unused variable prog.
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -package "unix"  -w -3-25 -c -p -o `basename netplex_container.cmx .cmx`.p.cmx  netplex_container.ml
 - ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -package "unix"  -w -3-25 -c  netplex_sockserv.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -package "unix"  -w -3-25 -c -p -o `basename netplex_sockserv.cmx .cmx`.p.cmx  netplex_sockserv.ml
@@ -5311,9 +5311,9 @@ The following actions will be performed:
 - ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c  nethttpd_engine.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c -p -o `basename nethttpd_engine.cmx .cmx`.p.cmx  nethttpd_engine.ml
 - ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c  nethttpd_services.ml
-- [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c -p -o `basename nethttpd_services.cmx .cmx`.p.cmx  nethttpd_services.ml
 - File "nethttpd_services.ml", line 1118, characters 4-5:
 - Warning 11: this match case is unused.
+- [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c -p -o `basename nethttpd_services.cmx .cmx`.p.cmx  nethttpd_services.ml
 - ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c  nethttpd_plex.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c -p -o `basename nethttpd_plex.cmx .cmx`.p.cmx  nethttpd_plex.ml
 - File "nethttpd_services.ml", line 1118, characters 4-5:
