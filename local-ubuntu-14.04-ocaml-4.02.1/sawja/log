@@ -3,20 +3,18 @@
 + lsb_release -i -s
 # Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=sawja
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=sawja
 # The following system packages are needed:
 #  - m4
 #  - zlib1g-dev
-+ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
 Ign http://download.opensuse.org  InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Hit http://download.opensuse.org  Packages
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
+Hit http://download.opensuse.org  Packages
 Hit http://archive.ubuntu.com trusty Release.gpg
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
@@ -27,6 +25,8 @@ Hit http://archive.ubuntu.com trusty/main Sources
 Hit http://archive.ubuntu.com trusty/restricted Sources
 Hit http://archive.ubuntu.com trusty/universe Sources
 Hit http://archive.ubuntu.com trusty/main amd64 Packages
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=sawja
++ sudo apt-get update
 Hit http://archive.ubuntu.com trusty/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty/universe amd64 Packages
 Get:5 http://archive.ubuntu.com trusty-updates/main Sources [260 kB]
@@ -38,17 +38,16 @@ Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [366 kB]
 Get:11 http://archive.ubuntu.com trusty-security/main Sources [101 kB]
 Get:12 http://archive.ubuntu.com trusty-security/restricted Sources [1874 B]
 Get:13 http://archive.ubuntu.com trusty-security/universe Sources [28.4 kB]
-Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [346 kB]
+Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [345 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [134 kB]
-Fetched 2213 kB in 2min 4s (17.7 kB/s)
+Fetched 2213 kB in 5s (427 kB/s)
 Reading package lists...
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_source_Sources.gz is not what the server reported 260326 260328
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages.gz is not what the server reported 365894 365896
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_universe_binary-amd64_Packages.gz is not what the server reported 133815 133816
-# OS package update successful
+W# OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4 zlib1g-dev
+: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages.gz is not what the server reported 366459 366463
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_universe_binary-amd64_Packages.gz is not what the server reported 134388 134395
 + sudo apt-get install -qq -yy m4 zlib1g-dev
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
@@ -79,11 +78,11 @@ The following actions will be performed:
 [camlzip: from default] Command started
 [extlib-compat: from default] Command started
 [javalib: from default] Command started
-[default] http://opam-archive:8080/archives/javalib.2.3+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/extlib-compat.1.6.1+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/camlzip.1.05+opam.tar.gz downloaded
 [sawja: from default] Command started
-[default] http://opam-archive:8080/archives/extlib-compat.1.6.1+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/javalib.2.3+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [sawja: from default] Command started
@@ -124,7 +123,8 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) ok
+- Detecting compiler arguments: (extractor built) 
+- ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib/ocaml
@@ -176,6 +176,9 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -221,11 +224,10 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -234,8 +236,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -288,6 +288,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -332,7 +333,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -550,6 +550,7 @@ The following actions will be performed:
 - ocamlc -g -c extLib.ml
 - ocamlc -g -a -o extLib.cma enum.cmo bitSet.cmo dynArray.cmo extArray.cmo extHashtbl.cmo extList.cmo extString.cmo global.cmo IO.cmo option.cmo pMap.cmo std.cmo uChar.cmo uTF8.cmo base64.cmo unzip.cmo refList.cmo optParse.cmo dllist.cmo extLib.cmo
 - ocamlopt -g -c enum.mli enum.ml
+- ocamlopt -g -c bitSet.mli bitSet.ml
 - File "bitSet.ml", line 23, characters 40-53:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -633,17 +634,16 @@ The following actions will be performed:
 - File "unzip.ml", line 436, characters 9-22:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlopt -g -c bitSet.mli bitSet.ml
-- ocamlopt -g -c dynArray.mli dynArray.ml
-- ocamlopt -g -c extArray.mli extArray.ml
-- ocamlopt -g -c extHashtbl.mli extHashtbl.ml
-- ocamlopt -g -c extList.mli extList.ml
 - File "bitSet.ml", line 23, characters 40-53:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
 - File "bitSet.ml", line 28, characters 64-75:
 - Warning 3: deprecated: String.fill
 - Use Bytes.fill instead.
+- ocamlopt -g -c dynArray.mli dynArray.ml
+- ocamlopt -g -c extArray.mli extArray.ml
+- ocamlopt -g -c extHashtbl.mli extHashtbl.ml
+- ocamlopt -g -c extList.mli extList.ml
 - ocamlopt -g -c extString.mli extString.ml
 - ocamlopt -g -c global.mli global.ml
 - ocamlopt -g -c IO.mli IO.ml
@@ -703,7 +703,6 @@ The following actions will be performed:
 - ocamlopt -g -c uChar.mli uChar.ml
 - ocamlopt -g -c uTF8.mli uTF8.ml
 - ocamlopt -g -c base64.mli base64.ml
-- ocamlopt -g -c unzip.mli unzip.ml
 - File "std.ml", line 52, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -718,9 +717,9 @@ The following actions will be performed:
 - Replaced by custom_tag.
 - File "base64.ml", line 98, characters 4-21:
 - Warning 3: deprecated: String.unsafe_set
+- ocamlopt -g -c unzip.mli unzip.ml
 - ocamlopt -g -c refList.mli refList.ml
 - ocamlopt -g -c optParse.mli optParse.ml
-- ocamlopt -g -c dllist.mli dllist.ml
 - File "unzip.ml", line 172, characters 12-25:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -734,6 +733,7 @@ The following actions will be performed:
 - File "unzip.ml", line 436, characters 9-22:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- ocamlopt -g -c dllist.mli dllist.ml
 - ocamlopt -g -c extLib.ml
 - ocamlopt -g -a -o extLib.cmxa enum.cmx bitSet.cmx dynArray.cmx extArray.cmx extHashtbl.cmx extList.cmx extString.cmx global.cmx IO.cmx option.cmx pMap.cmx std.cmx uChar.cmx uTF8.cmx base64.cmx unzip.cmx refList.cmx optParse.cmx dllist.cmx extLib.cmx
 - ocamlopt -g -shared -linkall extLib.cmxa -o extLib.cmxs
@@ -1013,6 +1013,7 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jClass.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jDumpBasics.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jParseCode.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jInstruction.ml
 - File "jLow2High.ml", line 23, characters 0-10:
 - Warning 45: this open statement shadows the label c_max_stack (which is later used)
 - File "jLow2High.ml", line 23, characters 0-10:
@@ -1065,7 +1066,9 @@ The following actions will be performed:
 - File "jParseCode.ml", line 374, characters 13-25:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jInstruction.ml
+- File "jInstruction.ml", line 447, characters 16-28:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jUnparseSignature.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jDumpLow.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jHigh2Low.ml
@@ -1073,20 +1076,12 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jUnparse.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -package camlp4 -syntax camlp4o -for-pack Javalib_pack -c jParseSignature.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jLow2High.ml
-- File "jInstruction.ml", line 447, characters 16-28:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
-- File "jHigh2Low.ml", line 141, characters 17-35:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jParse.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jFile.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jManifest.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jPrint.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c javalib.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -pack jBasics.cmx jBasicsLow.cmx jSignature.cmx jCode.cmx jClass.cmx jDumpBasics.cmx jParseCode.cmx jInstruction.cmx jUnparseSignature.cmx jDumpLow.cmx jHigh2Low.cmx jDumpJasmin.cmx jUnparse.cmx jParseSignature.cmx jLow2High.cmx jParse.cmx jFile.cmx jManifest.cmx jPrint.cmx javalib.cmx -o javalib_pack.cmx
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -a -o javalib.cmxa javalib_pack.cmx
-- make[1]: Leaving directory `/home/opam/.opam/system/build/javalib.2.3/src'
+- File "jHigh2Low.ml", line 141, characters 17-35:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
 - File "jParse.ml", line 373, characters 22-40:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
@@ -1113,6 +1108,11 @@ The following actions will be performed:
 - File "jFile.ml", line 431, characters 43-45:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c jPrint.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -for-pack Javalib_pack -c javalib.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -pack jBasics.cmx jBasicsLow.cmx jSignature.cmx jCode.cmx jClass.cmx jDumpBasics.cmx jParseCode.cmx jInstruction.cmx jUnparseSignature.cmx jDumpLow.cmx jHigh2Low.cmx jDumpJasmin.cmx jUnparse.cmx jParseSignature.cmx jLow2High.cmx jParse.cmx jFile.cmx jManifest.cmx jPrint.cmx javalib.cmx -o javalib_pack.cmx
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package unix,str,extlib,ptrees,zip -a -o javalib.cmxa javalib_pack.cmx
+- make[1]: Leaving directory `/home/opam/.opam/system/build/javalib.2.3/src'
 [javalib: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/javalib.2.3)
 - make -C src install
@@ -1204,6 +1204,10 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jBir.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jBirPP.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c a3Bir.mli
+- File "jCodePP.mli", line 23, characters 0-17:
+- Warning 33: unused open JControlFlow.
+- File "jBirPP.mli", line 24, characters 0-17:
+- Warning 33: unused open JControlFlow.
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c a3BirPP.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jBirSSA.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jBirSSAPP.mli
@@ -1227,10 +1231,13 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c dataflow_analyses/availableExpr.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c dataflow_analyses/iter.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jUtil.ml
-- File "jCodePP.mli", line 23, characters 0-17:
-- Warning 33: unused open JControlFlow.
-- File "jBirPP.mli", line 24, characters 0-17:
-- Warning 33: unused open JControlFlow.
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c wlist.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jProgram.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c classDomain.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jsrInline.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jControlFlow.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jPrintUtil.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -pp "/usr/bin/perl -p -e 'BEGIN{open(CSS,\"style.css\");\$css=\"\\\"\\\"\";while(<CSS>){chomp(\$_);\$css=\"\$css^\\n\\\"\$_\\\\n\\\"\";} print \"# 1 \\\"jPrintHtml.ml\\\"\n\";}s/\\\"\(\* CSS \*\)\\\"/\$css/;'" -c jPrintHtml.ml
 - File "a3BirPP.mli", line 23, characters 0-17:
 - Warning 33: unused open JControlFlow.
 - File "jBirSSAPP.mli", line 23, characters 0-17:
@@ -1245,18 +1252,6 @@ The following actions will be performed:
 - Warning 33: unused open Javalib_pack.Javalib.
 - File "jRRTA.mli", line 28, characters 0-12:
 - Warning 33: unused open Javalib_pack.Javalib.
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c wlist.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jProgram.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c classDomain.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jsrInline.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jControlFlow.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jPrintUtil.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -pp "/usr/bin/perl -p -e 'BEGIN{open(CSS,\"style.css\");\$css=\"\\\"\\\"\";while(<CSS>){chomp(\$_);\$css=\"\$css^\\n\\\"\$_\\\\n\\\"\";} print \"# 1 \\\"jPrintHtml.ml\\\"\n\";}s/\\\"\(\* CSS \*\)\\\"/\$css/;'" -c jPrintHtml.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jPrintPlugin.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c argPlugin.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jCodePP.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c cmn.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c bir.ml
 - File "jProgram.ml", line 220, characters 9-21:
 - Warning 41: i_interfaces belongs to several types: interface_node Javalib_pack.Javalib.jinterface
 - The first one was selected. Please disambiguate if this is wrong.
@@ -1295,6 +1290,12 @@ The following actions will be performed:
 - Warning 44: this open statement shadows the module identifier JPrint (which is later used)
 - File "jPrintHtml.ml", line 25, characters 0-13:
 - Warning 44: this open statement shadows the value identifier get_name (which is later used)
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jPrintPlugin.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c argPlugin.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jCodePP.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c cmn.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c bir.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c birA3.ml
 - File "jPrintPlugin.ml", line 23, characters 0-12:
 - Warning 44: this open statement shadows the module identifier JPrint (which is later used)
 - File "jPrintPlugin.ml", line 23, characters 0-12:
@@ -1326,18 +1327,6 @@ The following actions will be performed:
 - File "bir.ml", line 1214, characters 39-41:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c birA3.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jBir.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jBirPP.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c a3Bir.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c a3BirPP.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c dataflow_analyses/live_bir.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c dataflow_analyses/live_a3bir.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jBirSSA.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jBirSSAPP.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c a3BirSSA.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c a3BirSSAPP.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c safe.ml
 - File "bir.ml", line 2123, characters 23-25:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
@@ -1402,6 +1391,21 @@ The following actions will be performed:
 - Warning 44: this open statement shadows the module identifier JPrint (which is later used)
 - File "birA3.ml", line 472, characters 15-26:
 - Warning 48: implicit elimination of optional argument ?show_type
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jBir.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jBirPP.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c a3Bir.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c a3BirPP.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c dataflow_analyses/live_bir.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c dataflow_analyses/live_a3bir.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jBirSSA.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jBirSSAPP.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c a3BirSSA.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c a3BirSSAPP.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c safe.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c reachableMethods.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -package camlp4 -syntax camlp4o -c jNativeStubs.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jType.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c heap_parser//parserType.ml
 - File "jBirPP.ml", line 22, characters 0-13:
 - Warning 44: this open statement shadows the value identifier get_name (which is later used)
 - File "a3BirPP.ml", line 21, characters 0-13:
@@ -1422,10 +1426,11 @@ The following actions will be performed:
 - Warning 44: this open statement shadows the module identifier Javalib (which is later used)
 - File "safe_var.ml", line 115, characters 2-14:
 - Warning 44: this open statement shadows the module identifier JPrint (which is later used)
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c reachableMethods.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -package camlp4 -syntax camlp4o -c jNativeStubs.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jType.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c heap_parser//parserType.ml
+- File "reachableMethods.ml", line 41, characters 17-19:
+- Warning 3: deprecated: Pervasives.or
+- Use (||) instead.
+- File "reachableMethods.ml", line 23, characters 0-13:
+- Warning 44: this open statement shadows the value identifier get_name (which is later used)
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c heap_parser//parse_heap.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c heap_parser/lex_heap.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c heap_parser/heapParser.ml
@@ -1434,11 +1439,6 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jRTAWithHeap.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c jRRTA.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c XTA.ml
-- File "reachableMethods.ml", line 41, characters 17-19:
-- Warning 3: deprecated: Pervasives.or
-- Use (||) instead.
-- File "reachableMethods.ml", line 23, characters 0-13:
-- Warning 44: this open statement shadows the value identifier get_name (which is later used)
 - File "heap_parser/parse_heap.mly", line 24, characters 0-15:
 - Warning 45: this open statement shadows the constructor VLong (which is later used)
 - File "heap_parser/parse_heap.mly", line 24, characters 0-15:
@@ -1473,18 +1473,6 @@ The following actions will be performed:
 - Warning 44: this open statement shadows the value identifier get_method (which is later used)
 - File "jRRTA.ml", line 25, characters 0-12:
 - Warning 44: this open statement shadows the module identifier JPrint (which is later used)
-- File "XTA.ml", line 23, characters 0-13:
-- Warning 44: this open statement shadows the value identifier get_field (which is later used)
-- File "XTA.ml", line 23, characters 0-13:
-- Warning 44: this open statement shadows the value identifier get_name (which is later used)
-- File "XTA.ml", line 252, characters 7-9:
-- Warning 3: deprecated: Pervasives.or
-- Use (||) instead.
-- File "XTA.ml", line 252, characters 14-16:
-- Warning 3: deprecated: Pervasives.or
-- Use (||) instead.
-- File "XTA.ml", line 23, characters 0-13:
-- Warning 44: this open statement shadows the value identifier get_method (which is later used)
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c dataflow_analyses/reachDef.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c dataflow_analyses/availableExpr.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -w Aer -annot -package javalib -I dataflow_analyses/ -I heap_parser/ -c dataflow_analyses/availableExprSSA.ml
@@ -1498,6 +1486,19 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package javalib -I dataflow_analyses/ -I heap_parser/ -for-pack Sawja_pack -c jsrInline.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package javalib -I dataflow_analyses/ -I heap_parser/ -for-pack Sawja_pack -c jControlFlow.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package javalib -I dataflow_analyses/ -I heap_parser/ -for-pack Sawja_pack -c jPrintUtil.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package javalib -I dataflow_analyses/ -I heap_parser/ -pp "/usr/bin/perl -p -e 'BEGIN{open(CSS,\"style.css\");\$css=\"\\\"\\\"\";while(<CSS>){chomp(\$_);\$css=\"\$css^\\n\\\"\$_\\\\n\\\"\";} print \"# 1 \\\"jPrintHtml.ml\\\"\n\";}s/\\\"\(\* CSS \*\)\\\"/\$css/;'" -for-pack Sawja_pack -c jPrintHtml.ml
+- File "XTA.ml", line 23, characters 0-13:
+- Warning 44: this open statement shadows the value identifier get_field (which is later used)
+- File "XTA.ml", line 23, characters 0-13:
+- Warning 44: this open statement shadows the value identifier get_name (which is later used)
+- File "XTA.ml", line 252, characters 7-9:
+- Warning 3: deprecated: Pervasives.or
+- Use (||) instead.
+- File "XTA.ml", line 252, characters 14-16:
+- Warning 3: deprecated: Pervasives.or
+- Use (||) instead.
+- File "XTA.ml", line 23, characters 0-13:
+- Warning 44: this open statement shadows the value identifier get_method (which is later used)
 - File "dataflow_analyses/availableExprSSA.ml", line 115, characters 16-19:
 - Warning 41: Nop belongs to several types: transfer JBirSSA.instr
 - The first one was selected. Please disambiguate if this is wrong.
@@ -1507,7 +1508,6 @@ The following actions will be performed:
 - File "dataflow_analyses/availableExprSSA.ml", line 135, characters 29-32:
 - Warning 41: Nop belongs to several types: transfer JBirSSA.instr
 - The first one was selected. Please disambiguate if this is wrong.
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package javalib -I dataflow_analyses/ -I heap_parser/ -pp "/usr/bin/perl -p -e 'BEGIN{open(CSS,\"style.css\");\$css=\"\\\"\\\"\";while(<CSS>){chomp(\$_);\$css=\"\$css^\\n\\\"\$_\\\\n\\\"\";} print \"# 1 \\\"jPrintHtml.ml\\\"\n\";}s/\\\"\(\* CSS \*\)\\\"/\$css/;'" -for-pack Sawja_pack -c jPrintHtml.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package javalib -I dataflow_analyses/ -I heap_parser/ -for-pack Sawja_pack -c jPrintPlugin.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package javalib -I dataflow_analyses/ -I heap_parser/ -for-pack Sawja_pack -c argPlugin.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package javalib -I dataflow_analyses/ -I heap_parser/ -for-pack Sawja_pack -c jCodePP.ml
@@ -1542,31 +1542,31 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package javalib -I dataflow_analyses/ -I heap_parser/ -for-pack Sawja_pack -c safe.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package javalib -I dataflow_analyses/ -I heap_parser/ -for-pack Sawja_pack -c reachableMethods.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package javalib -I dataflow_analyses/ -I heap_parser/ -package camlp4 -syntax camlp4o -for-pack Sawja_pack -c jNativeStubs.ml
-- File "reachableMethods.ml", line 41, characters 17-19:
-- Warning 3: deprecated: Pervasives.or
-- Use (||) instead.
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package javalib -I dataflow_analyses/ -I heap_parser/ -for-pack Sawja_pack -c jType.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package javalib -I dataflow_analyses/ -I heap_parser/ -for-pack Sawja_pack -c heap_parser//parserType.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package javalib -I dataflow_analyses/ -I heap_parser/ -for-pack Sawja_pack -c heap_parser//parse_heap.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package javalib -I dataflow_analyses/ -I heap_parser/ -for-pack Sawja_pack -c heap_parser/lex_heap.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package javalib -I dataflow_analyses/ -I heap_parser/ -for-pack Sawja_pack -c heap_parser/heapParser.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package javalib -I dataflow_analyses/ -I heap_parser/ -for-pack Sawja_pack -c jCRA.ml
+- File "reachableMethods.ml", line 41, characters 17-19:
+- Warning 3: deprecated: Pervasives.or
+- Use (||) instead.
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package javalib -I dataflow_analyses/ -I heap_parser/ -for-pack Sawja_pack -c jRTA.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package javalib -I dataflow_analyses/ -I heap_parser/ -for-pack Sawja_pack -c jRTAWithHeap.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package javalib -I dataflow_analyses/ -I heap_parser/ -for-pack Sawja_pack -c jRRTA.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package javalib -I dataflow_analyses/ -I heap_parser/ -for-pack Sawja_pack -c XTA.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package javalib -I dataflow_analyses/ -I heap_parser/ -for-pack Sawja_pack -c dataflow_analyses/reachDef.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package javalib -I dataflow_analyses/ -I heap_parser/ -for-pack Sawja_pack -c dataflow_analyses/availableExpr.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package javalib -I dataflow_analyses/ -I heap_parser/ -for-pack Sawja_pack -c dataflow_analyses/availableExprSSA.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -pack dataflow_analyses/iter.cmx jUtil.cmx wlist.cmx jProgram.cmx classDomain.cmx jsrInline.cmx jControlFlow.cmx jPrintUtil.cmx jPrintHtml.cmx jPrintPlugin.cmx argPlugin.cmx jCodePP.cmx cmn.cmx bir.cmx birA3.cmx jBir.cmx jBirPP.cmx a3Bir.cmx a3BirPP.cmx dataflow_analyses/live_bir.cmx dataflow_analyses/live_a3bir.cmx jBirSSA.cmx jBirSSAPP.cmx a3BirSSA.cmx a3BirSSAPP.cmx safe.cmx reachableMethods.cmx jNativeStubs.cmx jType.cmx heap_parser//parserType.cmx heap_parser//parse_heap.cmx heap_parser/lex_heap.cmx heap_parser/heapParser.cmx jCRA.cmx jRTA.cmx jRTAWithHeap.cmx jRRTA.cmx XTA.cmx dataflow_analyses/reachDef.cmx dataflow_analyses/availableExpr.cmx dataflow_analyses/availableExprSSA.cmx -o sawja_pack.cmx
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -a -o sawja.cmxa sawja_pack.cmx
+- make[1]: Leaving directory `/home/opam/.opam/system/build/sawja.1.5/src'
 - File "XTA.ml", line 252, characters 7-9:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
 - File "XTA.ml", line 252, characters 14-16:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package javalib -I dataflow_analyses/ -I heap_parser/ -for-pack Sawja_pack -c dataflow_analyses/availableExpr.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -package javalib -I dataflow_analyses/ -I heap_parser/ -for-pack Sawja_pack -c dataflow_analyses/availableExprSSA.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -pack dataflow_analyses/iter.cmx jUtil.cmx wlist.cmx jProgram.cmx classDomain.cmx jsrInline.cmx jControlFlow.cmx jPrintUtil.cmx jPrintHtml.cmx jPrintPlugin.cmx argPlugin.cmx jCodePP.cmx cmn.cmx bir.cmx birA3.cmx jBir.cmx jBirPP.cmx a3Bir.cmx a3BirPP.cmx dataflow_analyses/live_bir.cmx dataflow_analyses/live_a3bir.cmx jBirSSA.cmx jBirSSAPP.cmx a3BirSSA.cmx a3BirSSAPP.cmx safe.cmx reachableMethods.cmx jNativeStubs.cmx jType.cmx heap_parser//parserType.cmx heap_parser//parse_heap.cmx heap_parser/lex_heap.cmx heap_parser/heapParser.cmx jCRA.cmx jRTA.cmx jRTAWithHeap.cmx jRRTA.cmx XTA.cmx dataflow_analyses/reachDef.cmx dataflow_analyses/availableExpr.cmx dataflow_analyses/availableExprSSA.cmx -o sawja_pack.cmx
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -a -o sawja.cmxa sawja_pack.cmx
-- make[1]: Leaving directory `/home/opam/.opam/system/build/sawja.1.5/src'
 [sawja: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/sawja.1.5)
 - make -C src install
