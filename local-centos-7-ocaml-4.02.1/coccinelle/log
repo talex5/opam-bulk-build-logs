@@ -1,18 +1,18 @@
 + uname -m
 + uname -s
-+ opam list --safe --recursive --external=x86_64,linux,centos --required-by=coccinelle
 # Detecting depexts using flags: x86_64 linux centos
++ opam list --safe --recursive --external=x86_64,linux,centos --required-by=coccinelle
++ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=coccinelle
 # The following system packages are needed:
 #  - pcre-devel
-+ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=coccinelle
 + sudo yum -y update
 Not running as root, the following command will be run through "sudo":
     yum -y update
 Loaded plugins: fastestmirror
 Determining fastest mirrors
- * base: anorien.csc.warwick.ac.uk
- * extras: mirror.sov.uk.goscomb.net
- * updates: mirror.vorboss.net
+ * base: centos.mirroring.pulsant.co.uk
+ * extras: mirror.econdc.com
+ * updates: anorien.csc.warwick.ac.uk
 Resolving Dependencies
 --> Running transaction check
 ---> Package openssl-libs.x86_64 1:1.0.1e-42.el7.4 will be updated
@@ -52,15 +52,15 @@ Not running as root, the following command will be run through "sudo":
     yum install -y pcre-devel
 Not running as root, the following command will be run through "sudo":
     rpm -q pcre-devel
-+ sudo yum install -y pcre-devel
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: anorien.csc.warwick.ac.uk
- * extras: mirror.sov.uk.goscomb.net
- * updates: mirror.vorboss.net
+ * base: centos.mirroring.pulsant.co.uk
+ * extras: mirror.econdc.com
+ * updates: anorien.csc.warwick.ac.uk
 Resolving Dependencies
 --> Running transaction check
 ---> Package pcre-devel.x86_64 0:8.32-14.el7 will be installed
++ sudo yum install -y pcre-devel
 --> Finished Dependency Resolution
 
 Dependencies Resolved
@@ -79,12 +79,12 @@ Total download size: 477 k
 Installed size: 1.4 M
 Downloading packages:
 Running transaction check
++ sudo rpm -q pcre-devel
 Running transaction test
 Transaction test succeeded
 Running transaction
   Installing : pcre-devel-8.32-14.el7.x86_64                                1/1 
-  Verifying  : pcre-devel-8.32-14.el7.x86_64                                1/1+ sudo rpm -q pcre-devel
- 
+  Verifying  : pcre-devel-8.32-14.el7.x86_64                                1/1 
 
 Installed:
   pcre-devel.x86_64 0:8.32-14.el7                                               
@@ -108,17 +108,17 @@ The following actions will be performed:
 [coccinelle: from default] Command started
 [menhir: from default] Command started
 [ocamlfind: from default] Command started
-[ocamlfind: from default] Command started
 [menhir: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[parmap: from default] Command started
 [coccinelle: from default] Command started
+[default] http://opam-archive:8080/archives/coccinelle.1.0.0.1+opam.tar.gz downloaded
+[parmap: from default] Command started
 [default] http://opam-archive:8080/archives/menhir.20140422+opam.tar.gz downloaded
 [pcre: from default] Command started
 [parmap: from default] Command started
-[default] http://opam-archive:8080/archives/coccinelle.1.0.0.1+opam.tar.gz downloaded
-[pcre: from default] Command started
 [default] http://opam-archive:8080/archives/parmap.1.0-rc6+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
+[pcre: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/pcre.7.1.1+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -163,6 +163,7 @@ The following actions will be performed:
 - 
 -> installed conf-pkg-config.1.0
 [conf-libpcre: pkg-config libpcre] Command started
+[ERROR] The compilation of conf-python-2-7-dev failed at "cc test.c".
 + python2.7 "-c" "print 'python2.7 is installed'" (CWD=/home/opam/.opam/system/build/conf-python-2-7.1.0)
 - python2.7 is installed
 -> installed conf-python-2-7.1.0
@@ -175,7 +176,6 @@ The following actions will be performed:
 -  #include "python2.7/Python.h"
 -                               ^
 - compilation terminated.
-[ERROR] The compilation of conf-python-2-7-dev failed at "cc test.c".
 + ./configure "-bindir" "/home/opam/.opam/system/bin" "-sitelib" "/home/opam/.opam/system/lib" "-mandir" "/home/opam/.opam/system/man" "-config" "/home/opam/.opam/system/lib/findlib.conf" "-no-topfind" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
 - Welcome to findlib version 1.5.5
 - Configuring core...
@@ -369,6 +369,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -413,7 +414,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -1838,23 +1838,6 @@ The following actions will be performed:
 - /usr/bin/ocamlc.opt -c -g -o parameters.cmo parameters.ml
 - /usr/bin/ocamlc.opt -c -o parserAux.cmi parserAux.mli
 - /home/opam/.opam/system/build/menhir.20140422/src/_stage2/menhir.native -v -lg 1 -la 1 -lc 1 --comment --infer --error-recovery --stdlib . --strict --fixed-exception --ocamlc /usr/bin/ocamlc.opt --infer parser.mly
-
-#=== ERROR while installing conf-python-2-7-dev.1.0 ===========================#
-# opam-version         1.2.2 (c30ed46b7e70bcf0f872e482cbcbf6a1fa0c60b3)
-# os                   linux
-# command              cc test.c
-# path                 /home/opam/.opam/system/build/conf-python-2-7-dev.1.0
-# compiler             system (4.02.1)
-# exit-code            1
-# env-file             /home/opam/.opam/system/build/conf-python-2-7-dev.1.0/conf-python-2-7-dev-1-865888.env
-# stdout-file          /home/opam/.opam/system/build/conf-python-2-7-dev.1.0/conf-python-2-7-dev-1-865888.out
-# stderr-file          /home/opam/.opam/system/build/conf-python-2-7-dev.1.0/conf-python-2-7-dev-1-865888.err
-### stderr ###
-# test.c:1:30: fatal error: python2.7/Python.h: No such file or directory
-#  #include "python2.7/Python.h"
-#                               ^
-# compilation terminated.
-
 - + /home/opam/.opam/system/build/menhir.20140422/src/_stage2/menhir.native -v -lg 1 -la 1 -lc 1 --comment --infer --error-recovery --stdlib . --strict --fixed-exception --ocamlc /usr/bin/ocamlc.opt --infer parser.mly
 - Grammar has 31 nonterminal symbols, among which 1 start symbols.
 - Grammar has 26 terminal symbols.
@@ -1892,6 +1875,23 @@ The following actions will be performed:
 - Installed /home/opam/.opam/system/lib/menhirLib/META
 -> installed menhir.20140422
 
+#=== ERROR while installing conf-python-2-7-dev.1.0 ===========================#
+# opam-version         1.2.2 (c30ed46b7e70bcf0f872e482cbcbf6a1fa0c60b3)
+# os                   linux
+# command              cc test.c
+# path                 /home/opam/.opam/system/build/conf-python-2-7-dev.1.0
+# compiler             system (4.02.1)
+# exit-code            1
+# env-file             /home/opam/.opam/system/build/conf-python-2-7-dev.1.0/conf-python-2-7-dev-1-865888.env
+# stdout-file          /home/opam/.opam/system/build/conf-python-2-7-dev.1.0/conf-python-2-7-dev-1-865888.out
+# stderr-file          /home/opam/.opam/system/build/conf-python-2-7-dev.1.0/conf-python-2-7-dev-1-865888.err
+### stderr ###
+# test.c:1:30: fatal error: python2.7/Python.h: No such file or directory
+#  #include "python2.7/Python.h"
+#                               ^
+# compilation terminated.
+
+
 
 =-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 The following actions were aborted
@@ -1913,5 +1913,5 @@ The following changes have been performed
    installation for your system.
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150507193854.export"
+    opam switch import "~/.opam/system/backup/state-20150508050500.export"
 'opam install coccinelle' failed.
