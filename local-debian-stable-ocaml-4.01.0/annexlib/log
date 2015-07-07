@@ -1,13 +1,13 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-+ opam list --safe --recursive --external=x86_64,linux,debian --required-by=annexlib
 # Detecting depexts using flags: x86_64 linux debian
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=annexlib
++ opam list --safe --recursive --external=x86_64,linux,debian --required-by=annexlib
 # The following system packages are needed:
 #  - libpcre3-dev
 #  - m4
 #  - pkg-config
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=annexlib
 Not running as root, the following command will be run through "sudo":
     apt-get update
 + sudo apt-get update
@@ -17,7 +17,7 @@ Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
 Get:2 http://security.debian.org stable/updates/main amd64 Packages [79.2 kB]
 Get:3 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
 Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9228 kB in 6s (1412 kB/s)
+Fetched 9228 kB in 5s (1612 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
@@ -54,11 +54,11 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [pcre: from default] Command started
 [annexlib: from default] Command started
-[pcre: from default] Command started
-[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/annexlib.0.13.5+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/pcre.7.1.5+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
+[pcre: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/pcre.7.1.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [conf-pkg-config: pkg-config] Command started
@@ -132,7 +132,10 @@ The following actions will be performed:
 - Configuration for camlp4 written to site-lib-src/camlp4/META
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
-- Detecting compiler arguments: (extractor built) ok
+- Detecting compiler arguments: (extractor built) 
+- File "itest-aux/ppx.ml", line 1, characters 0-25:
+- Error: Unbound value Toploop.preprocess_phrase
+- ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /home/opam/.opam/4.01.0/lib/ocaml
@@ -156,8 +159,6 @@ The following actions will be performed:
 - Configuration has been written to Makefile.config
 - 
 - You can now do 'make all', and optionally 'make opt', to build ocamlfind.
-- File "itest-aux/ppx.ml", line 1, characters 0-25:
-- Error: Unbound value Toploop.preprocess_phrase
 [ocamlfind: make all] Command started
 + make "all" (CWD=/home/opam/.opam/4.01.0/build/ocamlfind.1.5.5)
 - for p in findlib bytes; do ( cd src/$p; make all ) || exit; done
@@ -460,9 +461,9 @@ The following actions will be performed:
 - checking for memory.h... yes
 - checking for strings.h... yes
 - checking for inttypes.h... yes
-- checking for stdint.h... yes
-- checking for unistd.h... 
+- checking for stdint.h... 
 - yes
+- checking for unistd.h... yes
 - checking for unistd.h... (cached) yes
 - checking netdb.h usability... yes
 - checking netdb.h presence... yes
@@ -480,9 +481,9 @@ The following actions will be performed:
 - checking features.h usability... yes
 - checking features.h presence... yes
 - checking for features.h... yes
-- checking for setservent... 
+- checking for setservent... yes
+- checking for getservent... 
 - yes
-- checking for getservent... yes
 - checking for endservent... yes
 - checking for strptime... yes
 - checking for pread... yes
@@ -491,7 +492,8 @@ The following actions will be performed:
 - checking for getrusage... yes
 - checking for setrlimit... yes
 - checking for getrlimit... yes
-- checking for setpgid... yes
+- checking for setpgid... 
+- yes
 - checking for getpgid... yes
 - checking for setpgrp... yes
 - checking for getpgrp... yes
@@ -530,13 +532,6 @@ The following actions will be performed:
 - making ._d/arrayExtras.d from arrayExtras.ml
 - ocamlc -c -cc "gcc" -ccopt "-fPIC -DPIC -g -O2 -fPIC -DPIC -Wall -Wno-unused \
 - 			    -o util_stubs.o " util_stubs.c 
-- util_stubs.c: In function 'stew_strptime_tm':
-- util_stubs.c:400:3: warning: implicit declaration of function 'strptime' [-Wimplicit-function-declaration]
--    s = strptime(String_val(time_str), String_val(fmt), &tm);
--    ^
-- util_stubs.c:400:5: warning: assignment makes pointer from integer without a cast
--    s = strptime(String_val(time_str), String_val(fmt), &tm);
--      ^
 - ar rcs libannexlib_stubs.a  util_stubs.o
 - ocamlfind ocamlc -package pcre,unix -c arrayExtras.mli
 - ocamlfind ocamlc -package pcre,unix -c arrayExtras.ml
@@ -550,6 +545,15 @@ The following actions will be performed:
 - ocamlfind ocamlc -package pcre,unix -c charExtras.ml
 - ocamlfind ocamlc -package pcre,unix -c strExtras.mli
 - ocamlfind ocamlc -package pcre,unix -c strExtras.ml
+- util_stubs.c: In function 'stew_strptime_tm':
+- util_stubs.c:400:3: warning: implicit declaration of function 'strptime' [-Wimplicit-function-declaration]
+-    s = strptime(String_val(time_str), String_val(fmt), &tm);
+-    ^
+- util_stubs.c:400:5: warning: assignment makes pointer from integer without a cast
+-    s = strptime(String_val(time_str), String_val(fmt), &tm);
+-      ^
+- File "charExtras.ml", line 31, characters 35-37:
+- Warning 3: deprecated feature: operator (or); you should use (||) instead
 - ocamlfind ocamlc -package pcre,unix -c iOExtras.mli
 - ocamlfind ocamlc -package pcre,unix -c iOExtras.ml
 - ocamlfind ocamlc -package pcre,unix -c time.mli
@@ -567,8 +571,9 @@ The following actions will be performed:
 - ocamlmklib          \
 - 			-o annexlib_stubs  util_stubs.o  \
 - 			
-- File "charExtras.ml", line 31, characters 35-37:
-- Warning 3: deprecated feature: operator (or); you should use (||) instead
+- ocamlfind ocamlc -a -dllib dllannexlib_stubs.so              \
+- 			-cclib -lannexlib_stubs   -o annexlib.cma  arrayExtras.cmo listExtras.cmo option.cmo locale.cmo charExtras.cmo strExtras.cmo iOExtras.cmo time.cmo unixExtras.cmo glob.cmo find.cmo syslog.cmo variant.cmo
+- make[1]: Leaving directory '/home/opam/.opam/4.01.0/build/annexlib.0.13.5'
 - File "unixExtras.ml", line 71, characters 17-19:
 - Warning 3: deprecated feature: operator (or); you should use (||) instead
 - File "glob.ml", line 44, characters 8-10:
@@ -577,9 +582,6 @@ The following actions will be performed:
 - Warning 3: deprecated feature: operator (or); you should use (||) instead
 - File "glob.ml", line 26, characters 8-10:
 - Warning 3: deprecated feature: operator (or); you should use (||) instead
-- ocamlfind ocamlc -a -dllib dllannexlib_stubs.so              \
-- 			-cclib -lannexlib_stubs   -o annexlib.cma  arrayExtras.cmo listExtras.cmo option.cmo locale.cmo charExtras.cmo strExtras.cmo iOExtras.cmo time.cmo unixExtras.cmo glob.cmo find.cmo syslog.cmo variant.cmo
-- make[1]: Leaving directory '/home/opam/.opam/4.01.0/build/annexlib.0.13.5'
 [annexlib: make opt] Command started
 + make "opt" (CWD=/home/opam/.opam/4.01.0/build/annexlib.0.13.5)
 - make[1]: Entering directory '/home/opam/.opam/4.01.0/build/annexlib.0.13.5'
