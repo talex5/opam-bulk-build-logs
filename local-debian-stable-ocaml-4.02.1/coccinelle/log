@@ -14,17 +14,17 @@
 + sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-Ign http://download.opensuse.org  InRelease
 Hit http://security.debian.org stable/updates InRelease
-Hit http://download.opensuse.org  Release.gpg
+Ign http://download.opensuse.org  InRelease
 Hit http://httpredir.debian.org stable InRelease
+Hit http://httpredir.debian.org stable-updates InRelease
+Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
-Get:2 http://security.debian.org stable/updates/main amd64 Packages [51.7 kB]
+Get:1 http://security.debian.org stable/updates/main amd64 Packages [53.7 kB]
+Get:2 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
 Get:3 http://download.opensuse.org  Packages [5783 B]
-Get:4 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
-Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3618 B]
-Fetched 9206 kB in 7s (1264 kB/s)
+Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3618 B]
+Fetched 9083 kB in 4s (2246 kB/s)
 Reading package lists...
 # OS package update successful
 + sudo apt-get install -qq -yy autoconf libpcre3-dev m4 pkg-config python2.7 python2.7-dev
@@ -92,12 +92,12 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [parmap: from default] Command started
-[coccinelle: from default] Command started
 [menhir: from default] Command started
-[default] http://opam-archive:8080/archives/coccinelle.1.0.0.1+opam.tar.gz downloaded
-[pcre: from default] Command started
-[parmap: from default] Command started
 [default] http://opam-archive:8080/archives/menhir.20140422+opam.tar.gz downloaded
+[pcre: from default] Command started
+[coccinelle: from default] Command started
+[parmap: from default] Command started
+[default] http://opam-archive:8080/archives/coccinelle.1.0.0.1+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/parmap.1.0-rc6+opam.tar.gz downloaded
 [pcre: from default] Command started
 [default] http://opam-archive:8080/archives/pcre.7.1.1+opam.tar.gz downloaded
@@ -229,6 +229,10 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_metascanner.ml
 - ocamlc -I +compiler-libs -c fl_topo.mli
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
+- ocamlc -I +compiler-libs -c fl_package_base.mli
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -274,14 +278,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -290,8 +292,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -1856,14 +1856,10 @@ The following actions will be performed:
 - checking for gawk... no
 - checking for mawk... mawk
 - checking whether make sets $(MAKE)... yes
-- checking whether make supports nested variables... 
-- /home/opam/.opam/4.02.1/build/coccinelle.1.0.0.1/setup/missing: Unknown '--is-lightweight' option
-- Try '/home/opam/.opam/4.02.1/build/coccinelle.1.0.0.1/setup/missing --help' for more information
-- configure: WARNING: 'missing' script is too old or missing
-- yes
+- checking whether make supports nested variables... yes
 - configure: determining version suffix
 - checking for date... /bin/date
-- configure: version suffix set to Thu, 30 Apr 2015 14:02:01 +0000
+- configure: version suffix set to Mon, 04 May 2015 00:39:37 +0000
 - configure: this configure program uses pkg-config m4 macros
 - configure: this configure program uses ocaml m4 macros (see setup/ocaml.m4)
 - configure: this configure program uses custom m4 macros (see setup/cocci.m4)
@@ -1878,7 +1874,11 @@ The following actions will be performed:
 - checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
-- checking for gcc option to accept ISO C89... none needed
+- checking for gcc option to accept ISO C89... 
+- /home/opam/.opam/4.02.1/build/coccinelle.1.0.0.1/setup/missing: Unknown '--is-lightweight' option
+- Try '/home/opam/.opam/4.02.1/build/coccinelle.1.0.0.1/setup/missing --help' for more information
+- configure: WARNING: 'missing' script is too old or missing
+- none needed
 - checking whether gcc understands -c and -o together... yes
 - checking dependency style of gcc... none
 - checking how to run the C preprocessor... gcc -E
@@ -1946,8 +1946,7 @@ The following actions will be performed:
 - configure: OCaml package pycaml is not available
 - checking for a bundled substitute of pycaml... yes
 - configure: using bundled substitute for pycaml in /home/opam/.opam/4.02.1/build/coccinelle.1.0.0.1/bundles/pycaml/
-- checking for PCRE... 
-- yes
+- checking for PCRE... yes
 - configure: configuring package pcre
 - checking for OCaml findlib package pcre... found
 - configure: support for pcre syntax is enabled
@@ -2238,12 +2237,12 @@ The following actions will be performed:
 - make[5]: Entering directory '/home/opam/.opam/4.02.1/build/coccinelle.1.0.0.1/bundles/pycaml'
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -unsafe -pp "camlp4o -parser Camlp4MacroParser -D PYMAJOR2" -g -ccopt -I/usr/include/python2.7 -ccopt -I/usr/include/x86_64-linux-gnu/python2.7 -cclib -lpython2.7 -cc "gcc -g -O2" -I chemoelectric-pycaml-8614105 -i chemoelectric-pycaml-8614105/pycaml.ml > chemoelectric-pycaml-8614105/pycaml.mli
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -unsafe -pp "camlp4o -parser Camlp4MacroParser -D PYMAJOR2" -g -ccopt -I/usr/include/python2.7 -ccopt -I/usr/include/x86_64-linux-gnu/python2.7 -cclib -lpython2.7 -cc "gcc -g -O2" -I chemoelectric-pycaml-8614105 -c chemoelectric-pycaml-8614105/pycaml.mli -o chemoelectric-pycaml-8614105/pycaml.cmi
-- Warning: option -unsafe used with a preprocessor returning a syntax tree
 - cp -f chemoelectric-pycaml-8614105/pycaml.cmi pycaml.cmi
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -pp "camlp4o -parser Camlp4MacroParser -D PYMAJOR2" -g -ccopt -I/usr/include/python2.7 -ccopt -I/usr/include/x86_64-linux-gnu/python2.7 -cclib -lpython2.7  -I chemoelectric-pycaml-8614105 -c chemoelectric-pycaml-8614105/pycaml.ml
 - Warning: option -unsafe used with a preprocessor returning a syntax tree
-- /home/opam/.opam/4.02.1/bin/ocamlc.opt -unsafe -pp "camlp4o -parser Camlp4MacroParser -D PYMAJOR2" -g -ccopt -I/usr/include/python2.7 -ccopt -I/usr/include/x86_64-linux-gnu/python2.7 -cclib -lpython2.7 -cc "gcc -g -O2" -I chemoelectric-pycaml-8614105 -ccopt -shared -ccopt -fPIC chemoelectric-pycaml-8614105/pycaml_stubs.c -o pycaml_stubs.o
 - Warning: option -unsafe used with a preprocessor returning a syntax tree
+- Warning: option -unsafe used with a preprocessor returning a syntax tree
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -unsafe -pp "camlp4o -parser Camlp4MacroParser -D PYMAJOR2" -g -ccopt -I/usr/include/python2.7 -ccopt -I/usr/include/x86_64-linux-gnu/python2.7 -cclib -lpython2.7 -cc "gcc -g -O2" -I chemoelectric-pycaml-8614105 -ccopt -shared -ccopt -fPIC chemoelectric-pycaml-8614105/pycaml_stubs.c -o pycaml_stubs.o
 - /home/opam/.opam/4.02.1/bin/ocamlmklib -linkall -ldopt -lpython2.7 -o pycaml_stubs pycaml_stubs.o
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -pp "camlp4o -parser Camlp4MacroParser -D PYMAJOR2" -g -ccopt -I/usr/include/python2.7 -ccopt -I/usr/include/x86_64-linux-gnu/python2.7 -cclib -lpython2.7  -I chemoelectric-pycaml-8614105 -I chemoelectric-pycaml-8614105 -a -o pycaml.cmxa chemoelectric-pycaml-8614105/pycaml.cmx
 - make[5]: Leaving directory '/home/opam/.opam/4.02.1/build/coccinelle.1.0.0.1/bundles/pycaml'
@@ -2421,6 +2420,9 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c parser_cocci_menhir.mli
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c parser_cocci_menhir.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c lexer_cocci.ml
+- File "lexer_cocci.ml", line 2691, characters 27-39:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c lexer_cli.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c lexer_script.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c cocci_grep.mli
@@ -2437,9 +2439,6 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c commas_on_lists.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c parse_cocci.mli
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c parse_cocci.ml
-- File "lexer_cocci.ml", line 2691, characters 27-39:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c command_line.mli
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c command_line.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -I /home/opam/.opam/4.02.1/lib/menhirLib -a -o cocci_parser.cmxa menhirLib.cmx flag_parsing_cocci.cmx type_cocci.cmx ast_cocci.cmx ast0_cocci.cmx pretty_print_cocci.cmx unparse_ast0.cmx visitor_ast0_types.cmx visitor_ast.cmx visitor_ast0.cmx compute_lines.cmx comm_assoc.cmx iso_pattern.cmx iso_compile.cmx single_statement.cmx simple_assignments.cmx get_metas.cmx ast0toast.cmx check_meta.cmx top_level.cmx type_infer.cmx test_exps.cmx unitary_ast0.cmx arity.cmx index.cmx context_neg.cmx adjust_pragmas.cmx insert_plus.cmx function_prototypes.cmx unify_ast.cmx semantic_cocci.cmx data.cmx free_vars.cmx safe_for_multi_decls.cmx parse_printf.cmx parse_aux.cmx disjdistr.cmx lexer_cocci.cmx parser_cocci_menhir.cmx lexer_cli.cmx lexer_script.cmx cocci_grep.cmx dpll.cmx get_constants2.cmx id_utils.cmx adjacency.cmx commas_on_lists.cmx parse_cocci.cmx command_line.cmx
@@ -2695,11 +2694,11 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c lexer_cocci.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c lexer_script.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c adjacency.ml
-- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c commas_on_lists.ml
-- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c parse_cocci.ml
 - File "lexer_cocci.ml", line 2691, characters 27-39:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c commas_on_lists.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c parse_cocci.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -I /home/opam/.opam/4.02.1/lib/menhirLib -a -o cocci_parser.cmxa menhirLib.cmx flag_parsing_cocci.cmx type_cocci.cmx ast_cocci.cmx ast0_cocci.cmx pretty_print_cocci.cmx unparse_ast0.cmx visitor_ast0_types.cmx visitor_ast.cmx visitor_ast0.cmx compute_lines.cmx comm_assoc.cmx iso_pattern.cmx iso_compile.cmx single_statement.cmx simple_assignments.cmx get_metas.cmx ast0toast.cmx check_meta.cmx top_level.cmx type_infer.cmx test_exps.cmx unitary_ast0.cmx arity.cmx index.cmx context_neg.cmx adjust_pragmas.cmx insert_plus.cmx function_prototypes.cmx unify_ast.cmx semantic_cocci.cmx data.cmx free_vars.cmx safe_for_multi_decls.cmx parse_printf.cmx parse_aux.cmx disjdistr.cmx lexer_cocci.cmx parser_cocci_menhir.cmx lexer_cli.cmx lexer_script.cmx cocci_grep.cmx dpll.cmx get_constants2.cmx id_utils.cmx adjacency.cmx commas_on_lists.cmx parse_cocci.cmx command_line.cmx
 - make[4]: Leaving directory '/home/opam/.opam/4.02.1/build/coccinelle.1.0.0.1/parsing_cocci'
 - make[3]: Leaving directory '/home/opam/.opam/4.02.1/build/coccinelle.1.0.0.1/parsing_cocci'
