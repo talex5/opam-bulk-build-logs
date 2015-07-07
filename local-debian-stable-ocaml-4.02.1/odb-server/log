@@ -6,25 +6,25 @@
 # The following system packages are needed:
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=odb-server
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
-Hit http://security.debian.org stable/updates InRelease
 Ign http://download.opensuse.org  InRelease
+Hit http://security.debian.org stable/updates InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://httpredir.debian.org stable InRelease
 Hit http://httpredir.debian.org stable-updates InRelease
-Hit http://download.opensuse.org  Release
 Get:1 http://security.debian.org stable/updates/main amd64 Packages [121 kB]
+Hit http://download.opensuse.org  Release
 Get:2 http://httpredir.debian.org stable/main amd64 Packages [9038 kB]
 Get:3 http://download.opensuse.org  Packages [5783 B]
 Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9168 kB in 5s (1725 kB/s)
+Fetched 9168 kB in 5s (1616 kB/s)
 Reading package lists...
++ sudo apt-get install -qq -yy m4
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
-+ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind  1.5.5                                    [required by camlp4]
@@ -120,6 +120,11 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_metascanner.mli
 - ocamlc -I +compiler-libs -g -c fl_metascanner.ml
 - ocamlc -I +compiler-libs -c fl_topo.mli
+- ocamlc -I +compiler-libs -g -c fl_topo.ml
+- ocamlc -I +compiler-libs -c fl_package_base.mli
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -165,22 +170,20 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c fl_topo.ml
-- ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -199,9 +202,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
 - ocamlc -I +compiler-libs -c num_top.mli
 - ocamlc -I +compiler-libs -g -c num_top.ml
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -a -o num_top.cma num_top_printers.cmo num_top.cmo
 - make[1]: Leaving directory '/home/opam/.opam/4.02.1/build/ocamlfind.1.5.5/src/findlib'
 - make all-config
@@ -234,6 +234,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -278,7 +279,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -967,8 +967,8 @@ The following actions will be performed:
 - ocamlc -g  -I +threads -annot -thread -c client.ml
 - ocamlopt -g  -I +threads -annot -thread -c client.ml
 - ocamlopt -g -o odb-client -I +threads -annot -thread unix.cmxa threads.cmxa dynlink.cmxa str.cmxa odb.cmxa client.cmx
-- + as -o '/tmp/camlstartup05de06.o' '/tmp/camlstartupc26a51.s'
-- + gcc -o 'odb-server'   '-L/home/opam/.opam/4.02.1/lib/ocaml/threads' '-L/home/opam/.opam/4.02.1/lib/ocaml/threads' '-L/home/opam/.opam/4.02.1/lib/ocaml' -Wl,-E '/tmp/camlstartup05de06.o' '/home/opam/.opam/4.02.1/lib/ocaml/std_exit.o' 'server.o' 'odb.a' '/home/opam/.opam/4.02.1/lib/ocaml/str.a' '/home/opam/.opam/4.02.1/lib/ocaml/dynlink.a' '/home/opam/.opam/4.02.1/lib/ocaml/threads/threads.a' '/home/opam/.opam/4.02.1/lib/ocaml/unix.a' '/home/opam/.opam/4.02.1/lib/ocaml/stdlib.a' '-lcamlstr' '-lthreadsnat' '-lpthread' '-lunix' '/home/opam/.opam/4.02.1/lib/ocaml/libasmrun.a' -lm  -ldl
+- + as -o '/tmp/camlstartup160f62.o' '/tmp/camlstartupc994c6.s'
+- + gcc -o 'odb-server'   '-L/home/opam/.opam/4.02.1/lib/ocaml/threads' '-L/home/opam/.opam/4.02.1/lib/ocaml/threads' '-L/home/opam/.opam/4.02.1/lib/ocaml' -Wl,-E '/tmp/camlstartup160f62.o' '/home/opam/.opam/4.02.1/lib/ocaml/std_exit.o' 'server.o' 'odb.a' '/home/opam/.opam/4.02.1/lib/ocaml/str.a' '/home/opam/.opam/4.02.1/lib/ocaml/dynlink.a' '/home/opam/.opam/4.02.1/lib/ocaml/threads/threads.a' '/home/opam/.opam/4.02.1/lib/ocaml/unix.a' '/home/opam/.opam/4.02.1/lib/ocaml/stdlib.a' '-lcamlstr' '-lthreadsnat' '-lpthread' '-lunix' '/home/opam/.opam/4.02.1/lib/ocaml/libasmrun.a' -lm  -ldl
 - if test -f `dirname odb_config.ml`/`basename odb_config.ml .ml`.mli && test ! -f `dirname odb_config.ml`/`basename odb_config.ml .ml`.cmi ; then \
 - ocamlc -g  -I +threads -annot -thread -c `dirname odb_config.ml`/`basename odb_config.ml .ml`.mli; fi
 - ocamlc -g  -I +threads -annot -thread -c odb_config.ml
