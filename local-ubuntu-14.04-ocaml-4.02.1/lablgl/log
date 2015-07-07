@@ -1,13 +1,14 @@
 + uname -m
+# Detecting depexts using flags: x86_64 linux ubuntu
 + uname -s
 + lsb_release -i -s
-# Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=lablgl
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=lablgl
 # The following system packages are needed:
 #  - freeglut3-dev
 #  - libglu1-mesa-dev
 #  - mesa-common-dev
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=lablgl
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
 Ign http://download.opensuse.org  InRelease
@@ -16,10 +17,10 @@ Hit http://download.opensuse.org  Release
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
-Hit http://download.opensuse.org  Packages
 Hit http://archive.ubuntu.com trusty Release.gpg
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
+Hit http://download.opensuse.org  Packages
 Hit http://archive.ubuntu.com trusty Release
 Get:3 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
 Get:4 http://archive.ubuntu.com trusty-security Release [63.5 kB]
@@ -40,22 +41,23 @@ Get:12 http://archive.ubuntu.com trusty-security/restricted Sources [1874 B]
 Get:13 http://archive.ubuntu.com trusty-security/universe Sources [22.5 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [329 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_source_Sources.gz is not what the server reported 248011 248014
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_universe_binary-amd64_Packages.gz is not what the server reported 123361 123365
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [123 kB]
-Fetched 2109 kB in 5s (400 kB/s)
+Fetched 2109 kB in 4s (452 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy freeglut3-dev libglu1-mesa-dev mesa-common-dev
-+ sudo apt-get update
 + sudo apt-get install -qq -yy freeglut3-dev libglu1-mesa-dev mesa-common-dev
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
-Selecting previously unselected package libelf1:amd64.
 debconf: unable to initialize frontend: Readline
 debconf: (This frontend requires a controlling tty.)
 debconf: falling back to frontend: Teletype
 dpkg-preconfigure: unable to re-open stdin: 
+Selecting previously unselected package libelf1:amd64.
 (Reading database ... 21936 files and directories currently installed.)
 Preparing to unpack .../libelf1_0.158-0ubuntu5.2_amd64.deb ...
 Unpacking libelf1:amd64 (0.158-0ubuntu5.2) ...
@@ -329,8 +331,6 @@ The following actions will be performed:
 - ocamlrun ../src/var2def < glu_tags.var > glu_tags.h
 - ocamlrun ../src/var2switch GLU_ < glu_tags.var > glu_tags.c
 - ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_glu.c
-- ocamlrun ../src/var2def < raw_tags.var > raw_tags.h
-- ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_raw.c
 - ml_gl.c: In function 'ml_glGetString':
 - ml_gl.c:225:1: warning: pointer targets in passing argument 1 of 'lablgl_copy_string_check' differ in signedness [-Wpointer-sign]
 -  ML_1_ (glGetString, GLenum_val, copy_string_check)
@@ -361,6 +361,8 @@ The following actions will be performed:
 - ml_gl.h:10:7: note: in expansion of macro 'copy_string_check'
 -  value copy_string_check (const char *str);
 -        ^
+- ocamlrun ../src/var2def < raw_tags.var > raw_tags.h
+- ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_raw.c
 - ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_glarray.c
 - ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_glutess.c
 - ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_shader.c
@@ -368,6 +370,9 @@ The following actions will be performed:
 - ocamlc -c -w s -I +labltk raw.ml
 - ocamlc -c -w s -I +labltk gl.mli
 - ocamlc -c -w s -I +labltk gl.ml
+- File "raw.ml", line 24, characters 13-15:
+- Warning 3: deprecated: Pervasives.or
+- Use (||) instead.
 - ocamlc -c -w s -I +labltk glLight.mli
 - ocamlc -c -w s -I +labltk glLight.ml
 - ocamlc -c -w s -I +labltk glList.mli
@@ -375,9 +380,6 @@ The following actions will be performed:
 - ocamlc -c -w s -I +labltk glMap.mli
 - ocamlc -c -w s -I +labltk glMap.ml
 - ocamlc -c -w s -I +labltk glMat.mli
-- File "raw.ml", line 24, characters 13-15:
-- Warning 3: deprecated: Pervasives.or
-- Use (||) instead.
 - ocamlc -c -w s -I +labltk glMat.ml
 - ocamlc -c -w s -I +labltk glMisc.mli
 - ocamlc -c -w s -I +labltk glMisc.ml
@@ -426,6 +428,22 @@ The following actions will be performed:
 - File "gluNurbs.ml", line 57, characters 23-25:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
+- ocamlc -c -w s  glut.mli
+- ocamlc -c -w s  glut.ml
+- ocamlmklib -o lablglut wrap_glut.o glut.cmo -lglut -lGL -lGLU 
+- ocamlmktop  -I . -I ../../src  -o lablgluttop \
+- 	  lablglut.cma lablgl.cma
+- make INSTALLDIR="`ocamlc -where`/lablGL" real-lablglut
+- make[2]: Entering directory `/home/opam/.opam/system/build/lablgl.1.05/LablGlut/src'
+- generate lablglut
+- echo "#!/bin/sh" > lablglut
+- echo "# toplevel with lablGL and LablGlut" >> lablglut
+- if test -f dlllablglut.so; then \
+- 	    echo 'exec ocaml -I "/usr/lib/ocaml/lablGL" lablgl.cma lablglut.cma $*' >> lablglut; \
+- 	 else echo 'exec "/usr/lib/ocaml/lablGL/lablgluttop" -I "/usr/lib/ocaml/lablGL" $*' >> lablglut; fi
+- chmod 755 lablglut
+- make[2]: Leaving directory `/home/opam/.opam/system/build/lablgl.1.05/LablGlut/src'
+- make[1]: Leaving directory `/home/opam/.opam/system/build/lablgl.1.05/LablGlut/src'
 - wrap_glut.c: In function 'ml_glutBitmapLength':
 - wrap_glut.c:393:3: warning: pointer targets in passing argument 2 of 'glutBitmapLength' differ in signedness [-Wpointer-sign]
 -    return Val_int(glutBitmapLength(i2font(Int_val(font)), String_val(str)));
@@ -444,22 +462,6 @@ The following actions will be performed:
 - /usr/include/GL/freeglut_std.h:518:26: note: expected 'const unsigned char *' but argument is of type 'char *'
 -  FGAPI int     FGAPIENTRY glutStrokeLength( void* font, const unsigned char* string );
 -                           ^
-- ocamlc -c -w s  glut.mli
-- ocamlc -c -w s  glut.ml
-- ocamlmklib -o lablglut wrap_glut.o glut.cmo -lglut -lGL -lGLU 
-- ocamlmktop  -I . -I ../../src  -o lablgluttop \
-- 	  lablglut.cma lablgl.cma
-- make INSTALLDIR="`ocamlc -where`/lablGL" real-lablglut
-- make[2]: Entering directory `/home/opam/.opam/system/build/lablgl.1.05/LablGlut/src'
-- generate lablglut
-- echo "#!/bin/sh" > lablglut
-- echo "# toplevel with lablGL and LablGlut" >> lablglut
-- if test -f dlllablglut.so; then \
-- 	    echo 'exec ocaml -I "/usr/lib/ocaml/lablGL" lablgl.cma lablglut.cma $*' >> lablglut; \
-- 	 else echo 'exec "/usr/lib/ocaml/lablGL/lablgluttop" -I "/usr/lib/ocaml/lablGL" $*' >> lablglut; fi
-- chmod 755 lablglut
-- make[2]: Leaving directory `/home/opam/.opam/system/build/lablgl.1.05/LablGlut/src'
-- make[1]: Leaving directory `/home/opam/.opam/system/build/lablgl.1.05/LablGlut/src'
 [lablgl: make glutopt] Command started
 + make "glutopt" (CWD=/home/opam/.opam/system/build/lablgl.1.05)
 - cd src && make opt
@@ -480,6 +482,7 @@ The following actions will be performed:
 - ocamlopt -c -I +labltk gluNurbs.ml
 - ocamlopt -c -I +labltk gluQuadric.ml
 - ocamlopt -c -I +labltk gluTess.ml
+- ocamlopt -c -I +labltk gluMat.ml
 - File "raw.ml", line 24, characters 13-15:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
@@ -498,7 +501,6 @@ The following actions will be performed:
 - File "gluNurbs.ml", line 57, characters 23-25:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
-- ocamlopt -c -I +labltk gluMat.ml
 - ocamlopt -c -I +labltk glArray.ml
 - ocamlopt -c -I +labltk glShader.ml
 - ocamlmklib -o lablgl ml_gl.o	ml_glu.o	ml_raw.o ml_glarray.o ml_glutess.o	ml_shader.o raw.cmx gl.cmx glLight.cmx glList.cmx glMap.cmx glMat.cmx glMisc.cmx glPix.cmx glClear.cmx glTex.cmx glDraw.cmx glFunc.cmx gluMisc.cmx gluNurbs.cmx gluQuadric.cmx gluTess.cmx gluMat.cmx glArray.cmx glShader.cmx -lGL -lGLU 
