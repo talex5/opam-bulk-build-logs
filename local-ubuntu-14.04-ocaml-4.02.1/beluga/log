@@ -1,11 +1,11 @@
 + uname -m
+# Detecting depexts using flags: x86_64 linux ubuntu
 + uname -s
 + lsb_release -i -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=beluga
-# Detecting depexts using flags: x86_64 linux ubuntu
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=beluga
 # The following system packages are needed:
 #  - m4
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=beluga
 + sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
@@ -40,8 +40,12 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [24.5 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [341 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [130 kB]
-Fetched 2158 kB in 6s (319 kB/s)
+Fetched 2158 kB in 5s (401 kB/s)
 Reading package lists...
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_source_Sources.gz is not what the server reported 250787 250796
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 647958 647962
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_main_source_Sources.gz is not what the server reported 99929 99937
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_main_binary-amd64_Packages.gz is not what the server reported 340533 340536
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
@@ -59,13 +63,13 @@ The following actions will be performed:
 [beluga: from default] Command started
 [extlib-compat: from default] Command started
 [ocamlfind: from default] Command started
-[extlib-compat: from default] Command started
-[beluga: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/beluga.0.8+opam.tar.gz downloaded
-[ulex: from default] Command started
-[default] http://opam-archive:8080/archives/extlib-compat.1.6.1+opam.tar.gz downloaded
+[beluga: from default] Command started
+[extlib-compat: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[ulex: from default] Command started
+[default] http://opam-archive:8080/archives/beluga.0.8+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/extlib-compat.1.6.1+opam.tar.gz downloaded
 [ulex: from default] Command started
 [default] http://opam-archive:8080/archives/ulex.1.1+opam.tar.gz downloaded
 
@@ -155,6 +159,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -200,14 +206,10 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -216,6 +218,8 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -504,6 +508,7 @@ The following actions will be performed:
 - ocamlopt -g -c dynArray.mli dynArray.ml
 - ocamlopt -g -c extArray.mli extArray.ml
 - ocamlopt -g -c extHashtbl.mli extHashtbl.ml
+- ocamlopt -g -c extList.mli extList.ml
 - File "bitSet.ml", line 23, characters 40-53:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -593,7 +598,6 @@ The following actions will be performed:
 - File "bitSet.ml", line 28, characters 64-75:
 - Warning 3: deprecated: String.fill
 - Use Bytes.fill instead.
-- ocamlopt -g -c extList.mli extList.ml
 - ocamlopt -g -c extString.mli extString.ml
 - ocamlopt -g -c global.mli global.ml
 - ocamlopt -g -c IO.mli IO.ml
@@ -665,11 +669,11 @@ The following actions will be performed:
 - File "std.ml", line 162, characters 14-27:
 - Warning 3: deprecated: Obj.final_tag
 - Replaced by custom_tag.
+- File "base64.ml", line 98, characters 4-21:
+- Warning 3: deprecated: String.unsafe_set
 - ocamlopt -g -c unzip.mli unzip.ml
 - ocamlopt -g -c refList.mli refList.ml
 - ocamlopt -g -c optParse.mli optParse.ml
-- File "base64.ml", line 98, characters 4-21:
-- Warning 3: deprecated: String.unsafe_set
 - File "unzip.ml", line 172, characters 12-25:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -824,11 +828,11 @@ The following actions will be performed:
 - ocamlfind ocamlc -c -annot -package extlib -package camlp4 -w Azep-44 -w Azep-44 -warn-error A-37-48 -I src/core -o src/core/subord.cmi src/core/subord.mli
 - ocamlfind ocamldep -package camlp4 -modules src/core/trail.mli > src/core/trail.mli.depends
 - ocamlfind ocamlc -c -annot -package camlp4 -w Azep-44 -w Azep-44 -warn-error A-37-48 -I src/core -o src/core/trail.cmi src/core/trail.mli
+- fatal: Not a git repository (or any of the parent directories): .git
 - ocamlfind ocamlc -c -annot -package camlp4 -w Azep-44 -w Azep-44 -warn-error A-37-48 -I src/core -o src/core/apxnorm.cmo src/core/apxnorm.ml
 - ocamlfind ocamlc -c -annot -package camlp4 -w Azep-44 -w Azep-44 -warn-error A-37-48 -I src/core -o src/core/check.cmi src/core/check.mli
 - ocamlfind ocamlc -c -annot -package camlp4 -w Azep-44 -w Azep-44 -warn-error A-37-48 -I src/core -o src/core/ctxsub.cmi src/core/ctxsub.mli
 - ocamlfind ocamlc -c -annot -package extlib -package camlp4 -w Azep-44 -w Azep-44 -warn-error A-37-48 -I src/core -o src/core/unify.cmo src/core/unify.ml
-- fatal: Not a git repository (or any of the parent directories): .git
 - ocamlfind ocamldep -package camlp4 -modules src/core/locs.mli > src/core/locs.mli.depends
 - ocamlfind ocamldep -package camlp4 -modules src/core/loctesting.ml > src/core/loctesting.ml.depends
 - ocamlfind ocamlc -c -annot -package camlp4 -w Azep-44 -w Azep-44 -warn-error A-37-48 -I src/core -o src/core/locs.cmi src/core/locs.mli
