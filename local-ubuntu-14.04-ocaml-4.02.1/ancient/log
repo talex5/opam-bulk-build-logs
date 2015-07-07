@@ -4,9 +4,9 @@
 + lsb_release -i -s
 # Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=ancient
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=ancient
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=ancient
 Not running as root, system installation will be done through "sudo"
 + sudo apt-get update
 Ign http://download.opensuse.org  InRelease
@@ -34,21 +34,17 @@ Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [135 kB]
 Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [621 kB]
 Get:9 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [15.1 kB]
 Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [343 kB]
-Get:11 http://archive.ubuntu.com trusty-security/main Sources [94.3 kB]
+Get:11 http://archive.ubuntu.com trusty-security/main Sources [94.7 kB]
 Get:12 http://archive.ubuntu.com trusty-security/restricted Sources [1874 B]
 Get:13 http://archive.ubuntu.com trusty-security/universe Sources [21.5 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [320 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [119 kB]
-Fetched 2060 kB in 5s (362 kB/s)
-Reading package lists...
+Fetched 2061 kB in 11s (180 kB/s)
+Reading package lists...+ sudo apt-get install -qq -yy m4
+
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_source_Sources.gz is not what the server reported 241974 241975
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 621186 621189
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages.gz is not what the server reported 343406 343409
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_main_source_Sources.gz is not what the server reported 94266 94268
-+ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind 1.5.5                                     [required by ancient]
@@ -58,8 +54,8 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ancient: from default] Command started
 [ocamlfind: from default] Command started
-[ocamlfind: from default] Command started
 [ancient: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ancient.0.9.0+opam.tar.gz downloaded
 
@@ -94,7 +90,8 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) ok
+- Detecting compiler arguments: (extractor built) 
+- ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib/ocaml
@@ -147,6 +144,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -192,18 +190,9 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
@@ -214,6 +203,14 @@ The following actions will be performed:
 - 	fi
 - ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
 - 	export USE_CYGPATH; \
@@ -381,7 +378,8 @@ The following actions will be performed:
 - checking for ranlib... ranlib
 - checking how to run the C preprocessor... gcc -E
 - checking for egrep... grep -E
-- checking for ANSI C header files... yes
+- checking for ANSI C header files... 
+- yes
 - checking for sys/types.h... yes
 - checking for sys/stat.h... yes
 - checking for stdlib.h... yes
@@ -390,13 +388,13 @@ The following actions will be performed:
 - checking for strings.h... yes
 - checking for inttypes.h... yes
 - checking for stdint.h... yes
-- checking for unistd.h... yes
+- checking for unistd.h... 
+- yes
 - checking for stdlib.h... (cached) yes
 - checking for unistd.h... (cached) yes
 - checking for getpagesize... yes
 - checking for working mmap... yes
-- checking limits.h usability... 
-- yes
+- checking limits.h usability... yes
 - checking limits.h presence... yes
 - checking for limits.h... yes
 - checking stddef.h usability... yes
