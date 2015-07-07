@@ -1,18 +1,18 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux centos
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=conf-libuv
+# Detecting depexts using flags: x86_64 linux centos
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=conf-libuv
-+ sudo yum -y update
 # The following scripts need to be run:
 #  - https://gist.githubusercontent.com/fdopen/cbfb14114f4ec423a1a4/raw/09d2f8139950447f3c6fccaaa8483cfddc1ccb24/install-libuv.sh
 Not running as root, the following command will be run through "sudo":
     yum -y update
++ sudo yum -y update
 Loaded plugins: fastestmirror
 Determining fastest mirrors
- * base: mirrors.melbourne.co.uk
+ * base: mirror.sov.uk.goscomb.net
  * extras: mirrors.melbourne.co.uk
- * updates: centos.serverspace.co.uk
+ * updates: mirror.sov.uk.goscomb.net
 Resolving Dependencies
 --> Running transaction check
 ---> Package binutils.x86_64 0:2.23.52.0.1-30.el7_1.1 will be updated
@@ -93,7 +93,7 @@ Total download size: 28 M
 Downloading packages:
 Delta RPMs disabled because /usr/bin/applydeltarpm not installed.
 --------------------------------------------------------------------------------
-Total                                              5.3 MB/s |  28 MB  00:05     
+Total                                              7.8 MB/s |  28 MB  00:03     
 Running transaction check
 Running transaction test
 Transaction test succeeded
@@ -137,7 +137,8 @@ Running transaction
   Cleanup    : nspr-4.10.6-3.el7.x86_64                                   37/39 
   Cleanup    : binutils-2.23.52.0.1-30.el7_1.1.x86_64                     38/39 
   Cleanup    : libgcrypt-1.5.3-12.el7.x86_64                              39/39 
-  Verifying  : kernel-devel-3.10.0-229.4.2.el7.x86_64                      1/39 
+  Verifying  : kernel-devel-3.10.0-229.4.2.el7.x86_64                      1/39+ curl -L "https://gist.githubusercontent.com/fdopen/cbfb14114f4ec423a1a4/raw/09d2f8139950447f3c6fccaaa8483cfddc1ccb24/install-libuv.sh" | bash -ex -
+ 
   Verifying  : libblkid-2.23.2-22.el7_1.x86_64                             2/39 
   Verifying  : systemtap-2.6-10.el7_1.x86_64                               3/39 
   Verifying  : systemtap-runtime-2.6-10.el7_1.x86_64                       4/39 
@@ -203,10 +204,9 @@ Updated:
 
 Complete!
 # OS package update successful
-+ curl -L "https://gist.githubusercontent.com/fdopen/cbfb14114f4ec423a1a4/raw/09d2f8139950447f3c6fccaaa8483cfddc1ccb24/install-libuv.sh" | bash -ex -
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   725  100   725    0     0    851      0 --:--:-- --:--:-- --:--:--   851
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   725  100   725    0     0   1379      0 --:--:-- --:--:-- --:--:--  1380
 + set -e
 + set -u
 + set -x
@@ -218,7 +218,7 @@ Complete!
 + curl -OL http://libuv.org/dist/v1.4.2/libuv-v1.4.2.tar.gz
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  988k  100  988k    0     0  2424k      0 --:--:-- --:--:-- --:--:-- 2429k
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  988k  100  988k    0     0  2814k      0 --:--:-- --:--:-- --:--:-- 2809k
 + tar -zxf libuv-v1.4.2.tar.gz
 + cd libuv-v1.4.2
 + which sudo
@@ -337,7 +337,6 @@ checking for pthread_mutex_init in -lpthread... yes
 checking for clock_gettime in -lrt... yes
 checking for sendfile in -lsendfile... no
 checking for socket in -lsocket... no
-+ make
 checking for special C compiler options needed for large files... no
 checking for _FILE_OFFSET_BITS value needed for large files... no
 checking for pkg-config... yes
@@ -362,7 +361,6 @@ config.status: executing libtool commands
   CC       src/unix/libuv_la-loop.lo
   CC       src/unix/libuv_la-pipe.lo
   CC       src/unix/libuv_la-poll.lo
-+ sudo make install
   CC       src/unix/libuv_la-process.lo
   CC       src/unix/libuv_la-signal.lo
   CC       src/unix/libuv_la-stream.lo
@@ -376,6 +374,8 @@ config.status: executing libtool commands
   CC       src/unix/libuv_la-linux-syscalls.lo
   CC       src/unix/libuv_la-proctitle.lo
   CCLD     libuv.la
++ make
++ sudo make install
 make[1]: Entering directory `/home/opam/opam-repository/libuv-v1.4.2'
  /usr/bin/mkdir -p '/usr/local/lib'
  /bin/sh ./libtool   --mode=install /usr/bin/install -c   libuv.la '/usr/local/lib'
@@ -411,14 +411,14 @@ more information, such as the ld(1) and ld.so(8) manual pages.
  /usr/bin/install -c -m 644 libuv.pc '/usr/local/lib/pkgconfig'
 make[1]: Leaving directory `/home/opam/opam-repository/libuv-v1.4.2'
 Source installation scripts run successfully
+[ERROR] The compilation of conf-libuv failed at "pkg-config libuv
+        --atleast-version=1".
 The following actions will be performed:
   - install conf-libuv 1
 
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-[ERROR] The compilation of conf-libuv failed at "pkg-config libuv
-        --atleast-version=1".
 [conf-libuv: pkg-config libuv] Command started
 + pkg-config "libuv" "--atleast-version=1" (CWD=/home/opam/.opam/system/build/conf-libuv.1)
 
