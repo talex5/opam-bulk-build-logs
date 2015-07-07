@@ -1,25 +1,26 @@
 + uname -m
-+ uname -s
 /usr/bin/lsb_release
++ uname -s
 + lsb_release -i -s
-# Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=lwt
+# Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=lwt
 # The following system packages are needed:
 #  - m4
-+ sudo apt-get update
 Not running as root, system installation will be done through "sudo"
++ sudo apt-get update
+Ign http://download.opensuse.org  InRelease
+Hit http://download.opensuse.org  Release.gpg
+Hit http://download.opensuse.org  Release
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
-Ign http://download.opensuse.org  InRelease
+Hit http://download.opensuse.org  Packages
 Hit http://archive.ubuntu.com trusty Release.gpg
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
-Hit http://download.opensuse.org  Release.gpg
 Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
 Hit http://archive.ubuntu.com trusty Release
 Get:3 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
-Hit http://download.opensuse.org  Release
 Get:4 http://archive.ubuntu.com trusty-security Release [63.5 kB]
 Hit http://archive.ubuntu.com trusty/main Sources
 Hit http://archive.ubuntu.com trusty/restricted Sources
@@ -31,7 +32,6 @@ Get:5 http://archive.ubuntu.com trusty-updates/main Sources [242 kB]
 Get:6 http://archive.ubuntu.com trusty-updates/restricted Sources [2310 B]
 Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [135 kB]
 Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [621 kB]
-Hit http://download.opensuse.org  Packages
 Get:9 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [15.1 kB]
 Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [343 kB]
 Get:11 http://archive.ubuntu.com trusty-security/main Sources [94.3 kB]
@@ -40,11 +40,11 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [21.0 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [320 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [118 kB]
-Fetched 2057 kB in 3s (525 kB/s)
+Fetched 2057 kB in 7s (277 kB/s)
 Reading package lists...
 # OS package update successful
-Not running as root, system installation will be done through "sudo"
 + sudo apt-get install -qq -yy m4
+Not running as root, system installation will be done through "sudo"
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind 1.5.5                                     [required by lwt]
@@ -58,8 +58,8 @@ The following actions will be performed:
 [ppx_tools: from default] Command started
 [ppx_tools: from default] Command started
 [lwt: from default] Command started
-[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ppx_tools.0.99.2+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/lwt.2.4.8+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
@@ -94,8 +94,7 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: 
-- (extractor built) ok
+- Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib/ocaml
@@ -147,6 +146,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -192,11 +192,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -205,8 +206,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -259,6 +258,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -303,7 +303,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -409,19 +408,18 @@ The following actions will be performed:
 + ./configure "--prefix" "/home/opam/.opam/system" "--disable-libev" "--disable-camlp4" "--disable-react" "--disable-ssl" "--enable-unix" "--enable-preemptive" "--disable-glib" "--enable-ppx" (CWD=/home/opam/.opam/system/build/lwt.2.4.8)
 - not checking for pkg-config
 - not checking for libev
-- testing for pthread:
--  ........................... available
+- testing for pthread: ........................... available
 - not checking for glib
 - testing for eventfd: ........................... available
 - testing for fd passing: ........................ available
 - testing for sched_getcpu: ...................... available
 - testing for affinity getting/setting: .......... available
-- testing for credentials getting (Linux): ....... available
+- testing for credentials getting (Linux):
+-  ....... available
 - testing for credentials getting (NetBSD): ...... unavailable
 - testing for credentials getting (OpenBSD): ..... unavailable
 - testing for credentials getting (FreeBSD): ..... unavailable
-- testing for credentials getting (getpeereid):
--  .. unavailable
+- testing for credentials getting (getpeereid): .. unavailable
 - testing for fdatasync: ......................... available
 - testing for netdb_reentrant: ................... available
 - Generating C stubs...
@@ -511,16 +509,15 @@ The following actions will be performed:
 - not checking for glib
 - testing for eventfd: ........................... available
 - testing for fd passing: ........................ available
-- testing for sched_getcpu:
--  ...................... available
+- testing for sched_getcpu: ...................... available
 - testing for affinity getting/setting: .......... available
-- testing for credentials getting (Linux): ....... available
+- testing for credentials getting (Linux):
+-  ....... available
 - testing for credentials getting (NetBSD): ...... unavailable
 - testing for credentials getting (OpenBSD): ..... unavailable
 - testing for credentials getting (FreeBSD): ..... unavailable
 - testing for credentials getting (getpeereid): .. unavailable
-- testing for fdatasync:
--  ......................... available
+- testing for fdatasync: ......................... available
 - testing for netdb_reentrant: ................... available
 - Generating C stubs...
 - 
@@ -614,6 +611,7 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -safe-string -package bytes -I src/core -o src/core/lwt_condition.cmi src/core/lwt_condition.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bytes -modules src/core/lwt_condition.ml > src/core/lwt_condition.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bytes -modules src/core/lwt_list.mli > src/core/lwt_list.mli.depends
+- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -safe-string -package bytes -I src/core -o src/core/lwt_list.cmi src/core/lwt_list.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bytes -modules src/core/lwt_list.ml > src/core/lwt_list.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bytes -modules src/core/lwt.ml > src/core/lwt.ml.depends
@@ -633,7 +631,6 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bytes -modules src/core/lwt_switch.ml > src/core/lwt_switch.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bytes -modules src/core/lwt_pqueue.mli > src/core/lwt_pqueue.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -safe-string -package bytes -I src/core -o src/core/lwt_pqueue.cmi src/core/lwt_pqueue.mli
-- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bytes -modules src/core/lwt_pqueue.ml > src/core/lwt_pqueue.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -safe-string -package bytes -I src/core -o src/core/lwt_condition.cmo src/core/lwt_condition.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -safe-string -package bytes -I src/core -o src/core/lwt_list.cmo src/core/lwt_list.ml
