@@ -1,6 +1,6 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux centos
 + uname -s
+# Detecting depexts using flags: x86_64 linux centos
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=bisect
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=bisect
 # No extra OS packages requirements found.
@@ -13,9 +13,9 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [bisect: from default] Command started
 [ocamlfind: from default] Command started
+[ocamlfind: from default] Command started
 [bisect: from default] Command started
 [default] http://opam-archive:8080/archives/bisect.1.3+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -100,6 +100,9 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_meta.ml
 - ocamlc -I +compiler-libs -c fl_metascanner.mli
 - ocamlc -I +compiler-libs -g -c fl_metascanner.ml
+- ocamlc -I +compiler-libs -c fl_topo.mli
+- ocamlc -I +compiler-libs -g -c fl_topo.ml
+- ocamlc -I +compiler-libs -c fl_package_base.mli
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -145,9 +148,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c fl_topo.mli
-- ocamlc -I +compiler-libs -g -c fl_topo.ml
-- ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
@@ -155,13 +155,16 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -178,9 +181,6 @@ The following actions will be performed:
 -     	    >topfind
 - ocamlc -I +compiler-libs -c num_top_printers.mli
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -c num_top.mli
 - ocamlc -I +compiler-libs -g -c num_top.ml
 - ocamlc -I +compiler-libs -a -o num_top.cma num_top_printers.cmo num_top.cmo
@@ -216,7 +216,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -261,6 +260,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -370,9 +370,9 @@ The following actions will be performed:
 - File "_tags", line 36, characters 27-49:
 - Warning: the tag "src_library_version_ml" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
 - /usr/bin/ocamldep.opt -modules src/syntax/exclusions.mli > src/syntax/exclusions.mli.depends
+- which: no ocamljava in (/home/opam/.opam/system/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin)
 - /usr/bin/ocamlc.opt -c -I src/syntax -I src -I src/threads -I src/report -I src/library -o src/syntax/exclusions.cmi src/syntax/exclusions.mli
 - /usr/bin/ocamldep.opt -modules src/syntax/exclusions.ml > src/syntax/exclusions.ml.depends
-- which: no ocamljava in (/home/opam/.opam/system/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin)
 - /usr/bin/ocamldep.opt -modules src/syntax/exclude.mli > src/syntax/exclude.mli.depends
 - /usr/bin/ocamllex.opt -q src/syntax/excludeLexer.mll
 - /usr/bin/ocamldep.opt -modules src/syntax/excludeLexer.ml > src/syntax/excludeLexer.ml.depends
@@ -458,7 +458,7 @@ The following actions will be performed:
 - /usr/bin/ocamlc.opt -c -I src/report -I src -I src/threads -I src/syntax -I src/library -o src/report/combineParser.cmi src/report/combineParser.mli
 - /usr/bin/ocamlc.opt -c -I src/report -I src -I src/threads -I src/syntax -I src/library -o src/report/combineLexer.cmo src/report/combineLexer.ml
 - /usr/bin/ocamldep.opt -modules src/report/reportArgs.ml > src/report/reportArgs.ml.depends
-- cp /tmp/version9b4386.ml src/library/version.ml
+- cp /tmp/versiond8458d.ml src/library/version.ml
 - /usr/bin/ocamldep.opt -modules src/library/version.mli > src/library/version.mli.depends
 - /usr/bin/ocamlc.opt -c -I src/library -I src -I src/threads -I src/syntax -I src/report -o src/library/version.cmi src/library/version.mli
 - /usr/bin/ocamldep.opt -modules src/report/reportCSV.ml > src/report/reportCSV.ml.depends
@@ -497,7 +497,7 @@ The following actions will be performed:
 - /usr/bin/ocamlopt.opt -c -for-pack Bisect -I src/report -I src -I src/threads -I src/syntax -I src/library -o src/report/combineParser.cmx src/report/combineParser.ml
 - /usr/bin/ocamlopt.opt -c -for-pack Bisect -I src/report -I src -I src/threads -I src/syntax -I src/library -o src/report/combineLexer.cmx src/report/combineLexer.ml
 - /usr/bin/ocamlopt.opt -c -for-pack Bisect -I src/report -I src -I src/threads -I src/syntax -I src/library -o src/report/reportUtils.cmx src/report/reportUtils.ml
-- cp /tmp/version1b919b.ml src/library/version.ml
+- cp /tmp/version24ed75.ml src/library/version.ml
 - /usr/bin/ocamlopt.opt -c -for-pack Bisect -I src/report -I src -I src/threads -I src/syntax -I src/library -o src/report/reportStat.cmx src/report/reportStat.ml
 - /usr/bin/ocamlopt.opt -c -for-pack Bisect -I src/library -I src -I src/threads -I src/syntax -I src/report -o src/library/version.cmx src/library/version.ml
 - /usr/bin/ocamlopt.opt -c -for-pack Bisect -I src/report -I src -I src/threads -I src/syntax -I src/library -o src/report/reportGeneric.cmx src/report/reportGeneric.ml
