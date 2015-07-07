@@ -1,30 +1,30 @@
 + uname -m
 + uname -s
-+ opam list --safe --recursive --external=x86_64,linux,debian --required-by=libvirt
 # Detecting depexts using flags: x86_64 linux debian
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=libvirt
++ opam list --safe --recursive --external=x86_64,linux,debian --required-by=libvirt
 # The following system packages are needed:
 #  - libvirt-dev
 #  - m4
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=libvirt
 Not running as root, system installation will be done through "sudo"
 + sudo apt-get update
-Hit http://download.opensuse.org  Release.gpg
-Hit http://http.debian.net stable Release.gpg
-Hit http://download.opensuse.org  Release
-Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
-Get:2 http://http.debian.net stable Release [168 kB]
-Get:3 http://http.debian.net stable-updates Release [124 kB]
-Hit http://download.opensuse.org  Packages
-Get:4 http://http.debian.net stable/main amd64 Packages [7625 kB]
 Hit http://security.debian.org stable/updates Release.gpg
-Get:5 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
+Get:1 http://http.debian.net stable Release.gpg [1655 B]
+Hit http://download.opensuse.org  Release.gpg
+Get:2 http://http.debian.net stable-updates Release.gpg [836 B]
 Hit http://security.debian.org stable/updates Release
+Get:3 http://http.debian.net stable Release [168 kB]
+Hit http://download.opensuse.org  Release
+Get:4 http://http.debian.net stable-updates Release [124 kB]
 Hit http://security.debian.org stable/updates/main amd64 Packages
-Fetched 7922 kB in 1s (4024 kB/s)
+Hit http://download.opensuse.org  Packages
+Get:5 http://http.debian.net stable/main amd64 Packages [7625 kB]
+Get:6 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
+Fetched 7924 kB in 2s (3670 kB/s)
 Reading package lists...
++ sudo apt-get install -qq -yy libvirt-dev m4
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
-+ sudo apt-get install -qq -yy libvirt-dev m4
 debconf: delaying package configuration, since apt-utils is not installed
 Selecting previously unselected package libudev0:amd64.
 (Reading database ... 19958 files and directories currently installed.)
@@ -89,6 +89,7 @@ Setting up libnetcf1 (0.1.9-2) ...
 Setting up libnuma1 (2.0.8~rc4-1) ...
 Setting up libxenstore3.0 (4.1.4-3+deb7u5) ...
 Setting up libxen-4.1 (4.1.4-3+deb7u5) ...
+invoke-rc.d: policy-rc.d denied execution of start.
 Setting up libxen-dev (4.1.4-3+deb7u5) ...
 Setting up libdevmapper1.02.1:amd64 (2:1.02.74-8) ...
 Setting up libdevmapper-event1.02.1:amd64 (2:1.02.74-8) ...
@@ -96,7 +97,6 @@ Setting up libvirt0 (0.9.12.3-1+deb7u1) ...
 Setting up libvirt-dev (0.9.12.3-1+deb7u1) ...
 Setting up dmsetup (2:1.02.74-8) ...
 Setting up lvm2 (2.02.95-8) ...
-invoke-rc.d: policy-rc.d denied execution of start.
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind 1.5.5                                     [required by libvirt]
@@ -106,10 +106,10 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [libvirt: from default] Command started
 [ocamlfind: from default] Command started
-[libvirt: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/libvirt.0.6.1.2+opam.tar.gz downloaded
+[libvirt: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/libvirt.0.6.1.2+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -194,6 +194,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -239,12 +240,13 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -253,8 +255,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -425,8 +425,7 @@ The following actions will be performed:
 - checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
-- checking for gcc option to accept ISO C89... 
-- none needed
+- checking for gcc option to accept ISO C89... none needed
 - checking for a BSD-compatible install... /usr/bin/install -c
 - checking how to run the C preprocessor... gcc -E
 - checking for function prototypes... yes
@@ -437,14 +436,15 @@ The following actions will be performed:
 - checking for virConnectOpen in -lvirt... yes
 - checking for grep that handles long lines and -e... /bin/grep
 - checking for egrep... /bin/grep -E
-- checking for ANSI C header files... yes
+- checking for ANSI C header files... 
+- yes
 - checking for sys/types.h... yes
 - checking for sys/stat.h... yes
 - checking for stdlib.h... yes
 - checking for string.h... yes
-- checking for memory.h... 
+- checking for memory.h... yes
+- checking for strings.h... 
 - yes
-- checking for strings.h... yes
 - checking for inttypes.h... yes
 - checking for stdint.h... yes
 - checking for unistd.h... yes
@@ -481,8 +481,7 @@ The following actions will be performed:
 - checking for virStoragePoolCreateXML... yes
 - checking for virStoragePoolDefineXML... yes
 - checking for virStoragePoolBuild... yes
-- checking for virStoragePoolUndefine... 
-- yes
+- checking for virStoragePoolUndefine... yes
 - checking for virStoragePoolCreate... yes
 - checking for virStoragePoolDestroy... yes
 - checking for virStoragePoolDelete... yes
@@ -492,31 +491,30 @@ The following actions will be performed:
 - yes
 - checking for virStoragePoolGetUUID... yes
 - checking for virStoragePoolGetUUIDString... yes
-- checking for virStoragePoolGetInfo... 
-- yes
+- checking for virStoragePoolGetInfo... yes
 - checking for virStoragePoolGetXMLDesc... yes
-- checking for virStoragePoolGetAutostart... yes
+- checking for virStoragePoolGetAutostart... 
+- yes
 - checking for virStoragePoolSetAutostart... yes
 - checking for virStoragePoolNumOfVolumes... yes
 - checking for virStoragePoolListVolumes... yes
 - checking for virStorageVolLookupByName... yes
 - checking for virStorageVolLookupByKey... yes
-- checking for virStorageVolLookupByPath... yes
-- checking for virStorageVolGetName... 
+- checking for virStorageVolLookupByPath... 
 - yes
+- checking for virStorageVolGetName... yes
 - checking for virStorageVolGetKey... yes
 - checking for virStorageVolCreateXML... yes
 - checking for virStorageVolDelete... yes
 - checking for virStorageVolFree... yes
-- checking for virStorageVolGetInfo... 
-- yes
+- checking for virStorageVolGetInfo... yes
 - checking for virStorageVolGetXMLDesc... yes
 - checking for virStorageVolGetPath... yes
 - checking for virDomainBlockPeek... yes
-- checking for virDomainMemoryPeek... yes
-- checking for virDomainGetCPUStats... yes
-- checking for virStoragePoolPtr... 
+- checking for virDomainMemoryPeek... 
 - yes
+- checking for virDomainGetCPUStats... yes
+- checking for virStoragePoolPtr... yes
 - checking for virStorageVolPtr... yes
 - checking for ocamlc... ocamlc
 - OCaml version is 4.02.1
@@ -569,15 +567,15 @@ The following actions will be performed:
 - 	  -package unix -I ../libvirt -g -linkpkg \
 - 	  ../libvirt/mllibvirt.cma -o node_info node_info.cmo
 - ocamlfind ocamlc -g -package unix -I ../libvirt -c get_cpu_stats.ml
-- ocamlfind ocamlc \
-- 	  -package unix -I ../libvirt -g -linkpkg \
-- 	  ../libvirt/mllibvirt.cma -o get_cpu_stats get_cpu_stats.cmo
 - File "libvirt.ml", line 95, characters 4-87:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
 - File "libvirt.ml", line 98, characters 4-95:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlfind ocamlc \
+- 	  -package unix -I ../libvirt -g -linkpkg \
+- 	  ../libvirt/mllibvirt.cma -o get_cpu_stats get_cpu_stats.cmo
 - make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/libvirt.0.6.1.2/examples'
 [libvirt: make opt] Command started
 + make "opt" (CWD=/home/opam/.opam/4.02.1/build/libvirt.0.6.1.2)
