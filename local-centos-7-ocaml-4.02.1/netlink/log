@@ -1,19 +1,19 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux centos
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=netlink
+# Detecting depexts using flags: x86_64 linux centos
++ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=netlink
 # The following system packages are needed:
 #  - libffi-devel
-+ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=netlink
++ sudo yum -y update
 Not running as root, the following command will be run through "sudo":
     yum -y update
-+ sudo yum -y update
 Loaded plugins: fastestmirror
 Repodata is over 2 weeks old. Install yum-cron? Or run: yum makecache fast
 Determining fastest mirrors
- * base: centos.serverspace.co.uk
+ * base: anorien.csc.warwick.ac.uk
  * extras: mirror.econdc.com
- * updates: mirror.sov.uk.goscomb.net
+ * updates: anorien.csc.warwick.ac.uk
 Resolving Dependencies
 --> Running transaction check
 ---> Package binutils.x86_64 0:2.23.52.0.1-30.el7_1.1 will be updated
@@ -94,7 +94,7 @@ Total download size: 28 M
 Downloading packages:
 Delta RPMs disabled because /usr/bin/applydeltarpm not installed.
 --------------------------------------------------------------------------------
-Total                                              5.1 MB/s |  28 MB  00:05     
+Total                                              2.9 MB/s |  28 MB  00:09     
 Running transaction check
 Running transaction test
 Transaction test succeeded
@@ -143,7 +143,8 @@ Running transaction
   Verifying  : systemtap-2.6-10.el7_1.x86_64                               3/39 
   Verifying  : systemtap-runtime-2.6-10.el7_1.x86_64                       4/39 
   Verifying  : libmount-2.23.2-22.el7_1.x86_64                             5/39 
-  Verifying  : systemtap-devel-2.6-10.el7_1.x86_64                         6/39 
+  Verifying  : systemtap-devel-2.6-10.el7_1.x86_64                         6/39+ sudo yum install -y libffi-devel
+ 
   Verifying  : util-linux-2.23.2-22.el7_1.x86_64                           7/39 
   Verifying  : ca-certificates-2015.2.4-70.0.el7_1.noarch                  8/39 
   Verifying  : nss-3.18.0-2.2.el7_1.x86_64                                 9/39 
@@ -210,9 +211,9 @@ Not running as root, the following command will be run through "sudo":
     rpm -q libffi-devel
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: centos.serverspace.co.uk
+ * base: anorien.csc.warwick.ac.uk
  * extras: mirror.econdc.com
- * updates: mirror.sov.uk.goscomb.net
+ * updates: anorien.csc.warwick.ac.uk
 Resolving Dependencies
 --> Running transaction check
 ---> Package libffi-devel.x86_64 0:3.0.13-11.el7 will be installed
@@ -240,17 +241,16 @@ Running transaction
   Installing : libffi-devel-3.0.13-11.el7.x86_64                            1/1 
 install-info: No such file or directory for /usr/share/info/libffi.info.gz
 warning: %post(libffi-devel-3.0.13-11.el7.x86_64) scriptlet failed, exit status 1
+Non-fatal POSTIN scriptlet failure in rpm package libffi-devel-3.0.13-11.el7.x86_64
   Verifying  : libffi-devel-3.0.13-11.el7.x86_64                            1/1 
 
 Installed:
   libffi-devel.x86_64 0:3.0.13-11.el7                                           
 
++ sudo rpm -q libffi-devel
 Complete!
 libffi-devel-3.0.13-11.el7.x86_64
 # OS packages installation successful
-+ sudo yum install -y libffi-devel
-Non-fatal POSTIN scriptlet failure in rpm package libffi-devel-3.0.13-11.el7.x86_64
-+ sudo rpm -q libffi-devel
 The following actions will be performed:
   - install obuild    0.1.1                                     [required by netlink]
   - install ocamlfind 1.5.5                                     [required by netlink]
@@ -262,13 +262,13 @@ The following actions will be performed:
 [ctypes: from default] Command started
 [netlink: from default] Command started
 [obuild: from default] Command started
-[ctypes: from default] Command started
 [netlink: from default] Command started
 [obuild: from default] Command started
-[default] http://opam-archive:8080/archives/ctypes.0.2.3+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/netlink.0.1.0+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
+[ctypes: from default] Command started
 [default] http://opam-archive:8080/archives/obuild.0.1.1+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ctypes.0.2.3+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
@@ -578,9 +578,9 @@ The following actions will be performed:
 - Use Bytes.create instead.
 - 
 - 
-- real	0m3.509s
-- user	0m2.449s
-- sys	0m1.616s
+- real	0m3.362s
+- user	0m2.528s
+- sys	0m1.557s
 -> installed obuild.0.1.1
 + make "opt" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
 - for p in findlib; do ( cd src/$p; make opt ) || exit; done
@@ -746,7 +746,6 @@ The following actions will be performed:
 - cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -o ctypes_bigarray_stubs.o ../../../src/ctypes/ctypes_bigarray_stubs.c
 - cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -o type_info_stubs.o ../../../src/ctypes/type_info_stubs.c
 - cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -o raw_pointer_stubs.o ../../../src/ctypes/raw_pointer_stubs.c
-- cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -o posix_types_stubs.o ../../../src/ctypes/posix_types_stubs.c
 - File "src/ctypes/structs_computed.ml", line 28, characters 2-591:
 - Warning 8: this pattern-matching is not exhaustive.
 - Here is an example of a value that is not matched:
@@ -776,6 +775,7 @@ The following actions will be performed:
 -    case Int64_t: snprintf(buf, sizeof buf, "%" PRId64, Int64_val(v)); break;
 -    ^
 - ../../../src/ctypes/type_info_stubs.c:146:3: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'int64' [-Wformat=]
+- cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -o posix_types_stubs.o ../../../src/ctypes/posix_types_stubs.c
 - cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -o unsigned_stubs.o ../../../src/ctypes/unsigned_stubs.c
 - ocamlmklib -o _build/ctypes_stubs _build/src/ctypes/managed_buffer_stubs.o _build/src/ctypes/ctypes_bigarray_stubs.o _build/src/ctypes/type_info_stubs.o _build/src/ctypes/raw_pointer_stubs.o _build/src/ctypes/posix_types_stubs.o _build/src/ctypes/unsigned_stubs.o 
 - ocamlfind opt -c -o _build/src/ctypes/common.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/common.ml
@@ -794,6 +794,19 @@ The following actions will be performed:
 - ocamlfind opt -c -o _build/src/ctypes/structs_computed.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/structs_computed.ml
 - ocamlfind opt -c -o _build/src/ctypes/type_printing.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/type_printing.ml
 - ocamlfind opt -c -o _build/src/ctypes/memory.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/memory.ml
+- ocamlfind opt -c -o _build/src/ctypes/coerce.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/coerce.ml
+- ocamlfind opt -c -o _build/src/ctypes/std_views.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/std_views.ml
+- ocamlfind opt -c -o _build/src/ctypes/value_printing.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/value_printing.ml
+- ocamlfind opt -c -o _build/src/ctypes/ctypes.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/ctypes.ml
+- ocamlfind opt -c -o _build/src/ctypes/posixTypes.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/posixTypes.ml
+- ocamlfind opt -a -linkall  -package bigarray  -cclib -lctypes_stubs  -o _build/ctypes.cmxa _build/src/ctypes/common.cmx _build/src/ctypes/unsigned.cmx _build/src/ctypes/signed.cmx _build/src/ctypes/primitives.cmx _build/src/ctypes/ctypes_primitives.cmx _build/src/ctypes/ctypes_raw.cmx _build/src/ctypes/memory_stubs.cmx _build/src/ctypes/std_view_stubs.cmx _build/src/ctypes/value_printing_stubs.cmx _build/src/ctypes/bigarray_stubs.cmx _build/src/ctypes/ctypes_bigarray.cmx _build/src/ctypes/static.cmx _build/src/ctypes/structs.cmx _build/src/ctypes/structs_computed.cmx _build/src/ctypes/type_printing.cmx _build/src/ctypes/memory.cmx _build/src/ctypes/coerce.cmx _build/src/ctypes/std_views.cmx _build/src/ctypes/value_printing.cmx _build/src/ctypes/ctypes.cmx _build/src/ctypes/posixTypes.cmx
+- ocamlfind opt -shared -linkall  -package bigarray   -o _build/ctypes.cmxs _build/src/ctypes/common.cmx _build/src/ctypes/unsigned.cmx _build/src/ctypes/signed.cmx _build/src/ctypes/primitives.cmx _build/src/ctypes/ctypes_primitives.cmx _build/src/ctypes/ctypes_raw.cmx _build/src/ctypes/memory_stubs.cmx _build/src/ctypes/std_view_stubs.cmx _build/src/ctypes/value_printing_stubs.cmx _build/src/ctypes/bigarray_stubs.cmx _build/src/ctypes/ctypes_bigarray.cmx _build/src/ctypes/static.cmx _build/src/ctypes/structs.cmx _build/src/ctypes/structs_computed.cmx _build/src/ctypes/type_printing.cmx _build/src/ctypes/memory.cmx _build/src/ctypes/coerce.cmx _build/src/ctypes/std_views.cmx _build/src/ctypes/value_printing.cmx _build/src/ctypes/ctypes.cmx _build/src/ctypes/posixTypes.cmx
+- ocamlfind ocamlc -c -o _build/src/ctypes-foreign-base/closure_properties.cmi -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/closure_properties.mli
+- ocamlfind ocamlc     -c -o _build/src/ctypes-foreign-base/closure_properties.cmo -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/closure_properties.ml
+- ocamlfind ocamlc -c -o _build/src/ctypes-foreign-base/dl.cmi -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/dl.mli
+- ocamlfind ocamlc     -c -o _build/src/ctypes-foreign-base/dl.cmo -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/dl.ml
+- ocamlfind ocamlc     -c -o _build/src/ctypes-foreign-base/ffi_stubs.cmo -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/ffi_stubs.ml
+- ocamlfind ocamlc -c -o _build/src/ctypes-foreign-base/weakRef.cmi -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/weakRef.mli
 - File "src/ctypes/structs_computed.ml", line 28, characters 2-591:
 - Warning 8: this pattern-matching is not exhaustive.
 - Here is an example of a value that is not matched:
@@ -810,25 +823,6 @@ The following actions will be performed:
 - Warning 8: this pattern-matching is not exhaustive.
 - Here is an example of a value that is not matched:
 - {reftype=Array (Primitive _, _)}
-- ocamlfind opt -c -o _build/src/ctypes/coerce.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/coerce.ml
-- ocamlfind opt -c -o _build/src/ctypes/std_views.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/std_views.ml
-- ocamlfind opt -c -o _build/src/ctypes/value_printing.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/value_printing.ml
-- ocamlfind opt -c -o _build/src/ctypes/ctypes.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/ctypes.ml
-- ocamlfind opt -c -o _build/src/ctypes/posixTypes.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/posixTypes.ml
-- ocamlfind opt -a -linkall  -package bigarray  -cclib -lctypes_stubs  -o _build/ctypes.cmxa _build/src/ctypes/common.cmx _build/src/ctypes/unsigned.cmx _build/src/ctypes/signed.cmx _build/src/ctypes/primitives.cmx _build/src/ctypes/ctypes_primitives.cmx _build/src/ctypes/ctypes_raw.cmx _build/src/ctypes/memory_stubs.cmx _build/src/ctypes/std_view_stubs.cmx _build/src/ctypes/value_printing_stubs.cmx _build/src/ctypes/bigarray_stubs.cmx _build/src/ctypes/ctypes_bigarray.cmx _build/src/ctypes/static.cmx _build/src/ctypes/structs.cmx _build/src/ctypes/structs_computed.cmx _build/src/ctypes/type_printing.cmx _build/src/ctypes/memory.cmx _build/src/ctypes/coerce.cmx _build/src/ctypes/std_views.cmx _build/src/ctypes/value_printing.cmx _build/src/ctypes/ctypes.cmx _build/src/ctypes/posixTypes.cmx
-- ocamlfind opt -shared -linkall  -package bigarray   -o _build/ctypes.cmxs _build/src/ctypes/common.cmx _build/src/ctypes/unsigned.cmx _build/src/ctypes/signed.cmx _build/src/ctypes/primitives.cmx _build/src/ctypes/ctypes_primitives.cmx _build/src/ctypes/ctypes_raw.cmx _build/src/ctypes/memory_stubs.cmx _build/src/ctypes/std_view_stubs.cmx _build/src/ctypes/value_printing_stubs.cmx _build/src/ctypes/bigarray_stubs.cmx _build/src/ctypes/ctypes_bigarray.cmx _build/src/ctypes/static.cmx _build/src/ctypes/structs.cmx _build/src/ctypes/structs_computed.cmx _build/src/ctypes/type_printing.cmx _build/src/ctypes/memory.cmx _build/src/ctypes/coerce.cmx _build/src/ctypes/std_views.cmx _build/src/ctypes/value_printing.cmx _build/src/ctypes/ctypes.cmx _build/src/ctypes/posixTypes.cmx
-- ocamlfind ocamlc -c -o _build/src/ctypes-foreign-base/closure_properties.cmi -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/closure_properties.mli
-- ocamlfind ocamlc     -c -o _build/src/ctypes-foreign-base/closure_properties.cmo -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/closure_properties.ml
-- ocamlfind ocamlc -c -o _build/src/ctypes-foreign-base/dl.cmi -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/dl.mli
-- ocamlfind ocamlc     -c -o _build/src/ctypes-foreign-base/dl.cmo -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/dl.ml
-- ocamlfind ocamlc     -c -o _build/src/ctypes-foreign-base/ffi_stubs.cmo -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/ffi_stubs.ml
-- ocamlfind ocamlc -c -o _build/src/ctypes-foreign-base/weakRef.cmi -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/weakRef.mli
-- ocamlfind ocamlc     -c -o _build/src/ctypes-foreign-base/weakRef.cmo -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/weakRef.ml
-- ocamlfind ocamlc -c -o _build/src/ctypes-foreign-base/ffi.cmi -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/ffi.mli
-- ocamlfind ocamlc     -c -o _build/src/ctypes-foreign-base/ffi.cmo -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/ffi.ml
-- ocamlfind ocamlc     -c -o _build/src/ctypes-foreign-base/foreign_basis.cmo -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/foreign_basis.ml
-- ocamlfind ocamlc -a  -cclib -lctypes-foreign-base_stubs -dllib -lctypes-foreign-base_stubs   -cclib -lffi -o _build/ctypes-foreign-base.cma _build/src/ctypes-foreign-base/closure_properties.cmo _build/src/ctypes-foreign-base/dl.cmo _build/src/ctypes-foreign-base/ffi_stubs.cmo _build/src/ctypes-foreign-base/weakRef.cmo _build/src/ctypes-foreign-base/ffi.cmo _build/src/ctypes-foreign-base/foreign_basis.cmo
-- cd _build/src/ctypes-foreign-base && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -o ffi_call_stubs.o ../../../src/ctypes-foreign-base/ffi_call_stubs.c
 - File "src/ctypes/value_printing.ml", line 25, characters 12-182:
 - Warning 8: this pattern-matching is not exhaustive.
 - Here is an example of a value that is not matched:
@@ -837,8 +831,12 @@ The following actions will be performed:
 - Warning 8: this pattern-matching is not exhaustive.
 - Here is an example of a value that is not matched:
 - {structured={reftype=Primitive _}}
-- File "src/ctypes-foreign-base/ffi.ml", line 135, characters 41-43:
-- Warning 10: this expression should have type unit.
+- ocamlfind ocamlc     -c -o _build/src/ctypes-foreign-base/weakRef.cmo -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/weakRef.ml
+- ocamlfind ocamlc -c -o _build/src/ctypes-foreign-base/ffi.cmi -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/ffi.mli
+- ocamlfind ocamlc     -c -o _build/src/ctypes-foreign-base/ffi.cmo -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/ffi.ml
+- ocamlfind ocamlc     -c -o _build/src/ctypes-foreign-base/foreign_basis.cmo -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/foreign_basis.ml
+- ocamlfind ocamlc -a  -cclib -lctypes-foreign-base_stubs -dllib -lctypes-foreign-base_stubs   -cclib -lffi -o _build/ctypes-foreign-base.cma _build/src/ctypes-foreign-base/closure_properties.cmo _build/src/ctypes-foreign-base/dl.cmo _build/src/ctypes-foreign-base/ffi_stubs.cmo _build/src/ctypes-foreign-base/weakRef.cmo _build/src/ctypes-foreign-base/ffi.cmo _build/src/ctypes-foreign-base/foreign_basis.cmo
+- cd _build/src/ctypes-foreign-base && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -o ffi_call_stubs.o ../../../src/ctypes-foreign-base/ffi_call_stubs.c
 - cd _build/src/ctypes-foreign-base && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -o dl_stubs.o ../../../src/ctypes-foreign-base/dl_stubs.c
 - cd _build/src/ctypes-foreign-base && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -o ffi_type_stubs.o ../../../src/ctypes-foreign-base/ffi_type_stubs.c
 - ocamlmklib -o _build/ctypes-foreign-base_stubs _build/src/ctypes-foreign-base/ffi_call_stubs.o _build/src/ctypes-foreign-base/dl_stubs.o _build/src/ctypes-foreign-base/ffi_type_stubs.o -lffi
@@ -850,6 +848,10 @@ The following actions will be performed:
 - ocamlfind opt -c -o _build/src/ctypes-foreign-base/foreign_basis.cmx     -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/foreign_basis.ml
 - ocamlfind opt -a -linkall    -cclib -lctypes-foreign-base_stubs -cclib -lffi -o _build/ctypes-foreign-base.cmxa _build/src/ctypes-foreign-base/closure_properties.cmx _build/src/ctypes-foreign-base/dl.cmx _build/src/ctypes-foreign-base/ffi_stubs.cmx _build/src/ctypes-foreign-base/weakRef.cmx _build/src/ctypes-foreign-base/ffi.cmx _build/src/ctypes-foreign-base/foreign_basis.cmx
 - ocamlfind opt -shared -linkall    -cclib -lffi -o _build/ctypes-foreign-base.cmxs _build/src/ctypes-foreign-base/closure_properties.cmx _build/src/ctypes-foreign-base/dl.cmx _build/src/ctypes-foreign-base/ffi_stubs.cmx _build/src/ctypes-foreign-base/weakRef.cmx _build/src/ctypes-foreign-base/ffi.cmx _build/src/ctypes-foreign-base/foreign_basis.cmx
+- File "src/ctypes-foreign-base/ffi.ml", line 135, characters 41-43:
+- Warning 10: this expression should have type unit.
+- File "src/ctypes-foreign-base/ffi.ml", line 135, characters 41-43:
+- Warning 10: this expression should have type unit.
 - ocamlfind ocamlc -c -o _build/src/ctypes-foreign-threaded/foreign.cmi -I _build/src/ctypes-foreign-threaded -I _build/src/ctypes -I _build/src/ctypes-foreign-base src/ctypes-foreign-threaded/foreign.mli
 - ocamlfind ocamlc  -package threads -thread  -c -o _build/src/ctypes-foreign-threaded/foreign.cmo -I _build/src/ctypes-foreign-threaded -I _build/src/ctypes -I _build/src/ctypes-foreign-base src/ctypes-foreign-threaded/foreign.ml
 - ocamlfind ocamlc -a -thread   -package threads -cclib -lffi -o _build/ctypes-foreign-threaded.cma _build/src/ctypes-foreign-threaded/foreign.cmo
@@ -859,8 +861,6 @@ The following actions will be performed:
 - ocamlfind ocamlc     -c -o _build/src/ctypes-foreign-unthreaded/gc_mutex.cmo -I _build/src/ctypes-foreign-unthreaded -I _build/src/ctypes -I _build/src/ctypes-foreign-base src/ctypes-foreign-unthreaded/gc_mutex.ml
 - ocamlfind ocamlc -c -o _build/src/ctypes-foreign-unthreaded/foreign.cmi -I _build/src/ctypes-foreign-unthreaded -I _build/src/ctypes -I _build/src/ctypes-foreign-base src/ctypes-foreign-unthreaded/foreign.mli
 - ocamlfind ocamlc     -c -o _build/src/ctypes-foreign-unthreaded/foreign.cmo -I _build/src/ctypes-foreign-unthreaded -I _build/src/ctypes -I _build/src/ctypes-foreign-base src/ctypes-foreign-unthreaded/foreign.ml
-- File "src/ctypes-foreign-base/ffi.ml", line 135, characters 41-43:
-- Warning 10: this expression should have type unit.
 - ocamlfind ocamlc -a     -cclib -lffi -o _build/ctypes-foreign-unthreaded.cma _build/src/ctypes-foreign-unthreaded/gc_mutex.cmo _build/src/ctypes-foreign-unthreaded/foreign.cmo
 - ocamlfind opt -c -o _build/src/ctypes-foreign-unthreaded/gc_mutex.cmx     -I _build/src/ctypes-foreign-unthreaded -I _build/src/ctypes -I _build/src/ctypes-foreign-base src/ctypes-foreign-unthreaded/gc_mutex.ml
 - ocamlfind opt -c -o _build/src/ctypes-foreign-unthreaded/foreign.cmx     -I _build/src/ctypes-foreign-unthreaded -I _build/src/ctypes -I _build/src/ctypes-foreign-base src/ctypes-foreign-unthreaded/foreign.ml
@@ -980,6 +980,7 @@ The following actions will be performed:
 - [3 of 6] Checking dist/build/lib-netlink
 - [4 of 6] Compiling Test                          
 - [5 of 6] Linking executable dist/build/test/test
+- [6 of 6] Checking dist/build/test
 - warning: obuild META search paths and ocaml config mismatch
 - 
 -   The ocamlfind configuration file used doesn't list the ocaml standard library 
@@ -989,7 +990,6 @@ The following actions will be performed:
 -   * making sure that the ocamlfind program in your path is the right one (ocamlfind printconf)
 - 
 -   this is likely to cause various compilation problems
-- [6 of 6] Checking dist/build/test
 - warning: obuild META search paths and ocaml config mismatch
 - 
 -   The ocamlfind configuration file used doesn't list the ocaml standard library 
