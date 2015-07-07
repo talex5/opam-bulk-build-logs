@@ -2,9 +2,9 @@
 # Detecting depexts using flags: x86_64 linux centos
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=gsasl
-+ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=gsasl
 # The following system packages are needed:
 #  - libffi-devel
++ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=gsasl
 + sudo yum -y update
 Not running as root, the following command will be run through "sudo":
     yum -y update
@@ -12,7 +12,7 @@ Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
  * base: mirror.sov.uk.goscomb.net
  * extras: mirror.econdc.com
- * updates: centos.serverspace.co.uk
+ * updates: mirror.sov.uk.goscomb.net
 No packages marked for update
 + sudo yum install -y libffi-devel
 # OS package update successful
@@ -22,9 +22,9 @@ Not running as root, the following command will be run through "sudo":
     rpm -q libffi-devel
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: mirror.sov.uk.goscomb.net
+ * base: mirrors.melbourne.co.uk
  * extras: mirrors.melbourne.co.uk
- * updates: mirror.sov.uk.goscomb.net
+ * updates: mirrors.melbourne.co.uk
 Resolving Dependencies
 --> Running transaction check
 ---> Package libffi-devel.x86_64 0:3.0.13-11.el7 will be installed
@@ -46,22 +46,22 @@ Total download size: 22 k
 Installed size: 27 k
 Downloading packages:
 Running transaction check
+Non-fatal POSTIN scriptlet failure in rpm package libffi-devel-3.0.13-11.el7.x86_64
 Running transaction test
 Transaction test succeeded
 Running transaction
   Installing : libffi-devel-3.0.13-11.el7.x86_64                            1/1 
 install-info: No such file or directory for /usr/share/info/libffi.info.gz
 warning: %post(libffi-devel-3.0.13-11.el7.x86_64) scriptlet failed, exit status 1
-Non-fatal POSTIN scriptlet failure in rpm package libffi-devel-3.0.13-11.el7.x86_64  Verifying  : libffi-devel-3.0.13-11.el7.x86_64                            1/1 
+  Verifying  : libffi-devel-3.0.13-11.el7.x86_64                            1/1 
 
 Installed:
   libffi-devel.x86_64 0:3.0.13-11.el7                                           
 
 Complete!
++ sudo rpm -q libffi-devel
 libffi-devel-3.0.13-11.el7.x86_64
 # OS packages installation successful
-
-+ sudo rpm -q libffi-devel
 The following actions will be performed:
   - install ctypes-foreign 0.4.0                                [required by gsasl]
   - install conf-libgsasl  1                                    [required by gsasl]
@@ -73,15 +73,14 @@ The following actions will be performed:
 
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ctypes: from default] Command started
-[ERROR] The compilation of conf-libgsasl failed at "cc -c test.c".
 [gsasl: from default] Command started
 [ocamlfind: from default] Command started
+[ctypes: from default] Command started
+[ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/ctypes.0.3.4+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [gsasl: from default] Command started
 [default] http://opam-archive:8080/archives/gsasl.0.10.0+opam.tar.gz downloaded
-[ctypes: from default] Command started
-[default] http://opam-archive:8080/archives/ctypes.0.3.4+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [conf-libgsasl: cc test.c] Command started
@@ -93,6 +92,7 @@ The following actions will be performed:
 -                    ^
 - compilation terminated.
 + ./configure "-bindir" "/home/opam/.opam/system/bin" "-sitelib" "/home/opam/.opam/system/lib" "-mandir" "/home/opam/.opam/system/man" "-config" "/home/opam/.opam/system/lib/findlib.conf" "-no-topfind" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
+[ERROR] The compilation of conf-libgsasl failed at "cc -c test.c".
 - Welcome to findlib version 1.5.5
 - Configuring core...
 - Checking for #remove_directory...
@@ -173,6 +173,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -218,19 +220,9 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
@@ -240,6 +232,14 @@ The following actions will be performed:
 - 		> topfind.ml ;                                   \
 - fi
 - ocamlc -I +compiler-libs -c topfind.mli
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -447,14 +447,14 @@ The following actions will be performed:
 - cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -ccopt -I -ccopt /home/opam/opam-repository/src -ccopt -I -ccopt /home/opam/opam-repository/tests -o ctypes_bigarray_stubs.o  /home/opam/.opam/system/build/ctypes.0.3.4/src/ctypes/ctypes_bigarray_stubs.c
 - cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -ccopt -I -ccopt /home/opam/opam-repository/src -ccopt -I -ccopt /home/opam/opam-repository/tests -o type_info_stubs.o  /home/opam/.opam/system/build/ctypes.0.3.4/src/ctypes/type_info_stubs.c
 - cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -ccopt -I -ccopt /home/opam/opam-repository/src -ccopt -I -ccopt /home/opam/opam-repository/tests -o complex_stubs.o  /home/opam/.opam/system/build/ctypes.0.3.4/src/ctypes/complex_stubs.c
-- cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -ccopt -I -ccopt /home/opam/opam-repository/src -ccopt -I -ccopt /home/opam/opam-repository/tests -o raw_pointer_stubs.o  /home/opam/.opam/system/build/ctypes.0.3.4/src/ctypes/raw_pointer_stubs.c
-- cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -ccopt -I -ccopt /home/opam/opam-repository/src -ccopt -I -ccopt /home/opam/opam-repository/tests -o posix_types_stubs.o  /home/opam/.opam/system/build/ctypes.0.3.4/src/ctypes/posix_types_stubs.c
-- cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -ccopt -I -ccopt /home/opam/opam-repository/src -ccopt -I -ccopt /home/opam/opam-repository/tests -o unsigned_stubs.o  /home/opam/.opam/system/build/ctypes.0.3.4/src/ctypes/unsigned_stubs.c
 - /home/opam/.opam/system/build/ctypes.0.3.4/src/ctypes/type_info_stubs.c: In function 'ctypes_string_of_prim':
 - /home/opam/.opam/system/build/ctypes.0.3.4/src/ctypes/type_info_stubs.c:130:3: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'int64' [-Wformat=]
 -    case Int64_t: len = snprintf(buf, sizeof buf, "%" PRId64, Int64_val(v)); break;
 -    ^
 - /home/opam/.opam/system/build/ctypes.0.3.4/src/ctypes/type_info_stubs.c:130:3: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'int64' [-Wformat=]
+- cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -ccopt -I -ccopt /home/opam/opam-repository/src -ccopt -I -ccopt /home/opam/opam-repository/tests -o raw_pointer_stubs.o  /home/opam/.opam/system/build/ctypes.0.3.4/src/ctypes/raw_pointer_stubs.c
+- cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -ccopt -I -ccopt /home/opam/opam-repository/src -ccopt -I -ccopt /home/opam/opam-repository/tests -o posix_types_stubs.o  /home/opam/.opam/system/build/ctypes.0.3.4/src/ctypes/posix_types_stubs.c
+- cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -ccopt -I -ccopt /home/opam/opam-repository/src -ccopt -I -ccopt /home/opam/opam-repository/tests -o unsigned_stubs.o  /home/opam/.opam/system/build/ctypes.0.3.4/src/ctypes/unsigned_stubs.c
 - ocamlmklib -o _build/ctypes_stubs _build/src/ctypes/managed_buffer_stubs.o _build/src/ctypes/ctypes_bigarray_stubs.o _build/src/ctypes/type_info_stubs.o _build/src/ctypes/complex_stubs.o _build/src/ctypes/raw_pointer_stubs.o _build/src/ctypes/posix_types_stubs.o _build/src/ctypes/unsigned_stubs.o 
 - ocamlfind opt -c -o _build/src/ctypes/common.cmx -package str -package bigarray -package bytes    -package str -package bigarray -package bytes   -I _build/src/ctypes  src/ctypes/common.ml
 - ocamlfind opt -c -o _build/src/ctypes/ctypes_path.cmx -package str -package bigarray -package bytes    -package str -package bigarray -package bytes   -I _build/src/ctypes  src/ctypes/ctypes_path.ml
@@ -529,10 +529,10 @@ The following actions will be performed:
 - ocamlfind opt -c -o _build/src/ctypes-foreign-base/ffi_stubs.cmx        -I _build/src/ctypes-foreign-base  -I _build/src/ctypes src/ctypes-foreign-base/ffi_stubs.ml
 - ocamlfind opt -c -o _build/src/ctypes-foreign-base/libffi_abi.cmx        -I _build/src/ctypes-foreign-base  -I _build/src/ctypes src/ctypes-foreign-base/libffi_abi.ml
 - ocamlfind opt -c -o _build/src/ctypes-foreign-base/weakRef.cmx        -I _build/src/ctypes-foreign-base  -I _build/src/ctypes src/ctypes-foreign-base/weakRef.ml
+- Unknown option -Wl,--no-as-needed
 - ocamlfind opt -c -o _build/src/ctypes-foreign-base/ffi.cmx        -I _build/src/ctypes-foreign-base  -I _build/src/ctypes src/ctypes-foreign-base/ffi.ml
 - ocamlfind opt -c -o _build/src/ctypes-foreign-base/foreign_basis.cmx        -I _build/src/ctypes-foreign-base  -I _build/src/ctypes src/ctypes-foreign-base/foreign_basis.ml
 - ocamlfind opt -a -linkall     -cclib -lctypes-foreign-base_stubs -o _build/ctypes-foreign-base.cmxa _build/src/ctypes-foreign-base/closure_properties.cmx _build/src/ctypes-foreign-base/dl.cmx _build/src/ctypes-foreign-base/ffi_stubs.cmx _build/src/ctypes-foreign-base/libffi_abi.cmx _build/src/ctypes-foreign-base/weakRef.cmx _build/src/ctypes-foreign-base/ffi.cmx _build/src/ctypes-foreign-base/foreign_basis.cmx -cclib -Wl,--no-as-needed -cclib -lffi
-- Unknown option -Wl,--no-as-needed
 - ocamlfind opt -shared -linkall     -o _build/ctypes-foreign-base.cmxs _build/src/ctypes-foreign-base/closure_properties.cmx _build/src/ctypes-foreign-base/dl.cmx _build/src/ctypes-foreign-base/ffi_stubs.cmx _build/src/ctypes-foreign-base/libffi_abi.cmx _build/src/ctypes-foreign-base/weakRef.cmx _build/src/ctypes-foreign-base/ffi.cmx _build/src/ctypes-foreign-base/foreign_basis.cmx _build/src/ctypes-foreign-base/dl_stubs.o _build/src/ctypes-foreign-base/ffi_call_stubs.o _build/src/ctypes-foreign-base/ffi_type_stubs.o -cclib -Wl,--no-as-needed -cclib -lffi
 - ocamlfind ocamlc -c -o _build/src/ctypes-foreign-threaded/foreign.cmi  -thread -package threads  -I _build/src/ctypes-foreign-threaded  -I _build/src/ctypes  -I _build/src/ctypes-foreign-base src/ctypes-foreign-threaded/foreign.mli
 - ocamlfind ocamlc  -thread -package threads  -thread  -c -o _build/src/ctypes-foreign-threaded/foreign.cmo -I _build/src/ctypes-foreign-threaded  -I _build/src/ctypes  -I _build/src/ctypes-foreign-base src/ctypes-foreign-threaded/foreign.ml
@@ -553,14 +553,14 @@ The following actions will be performed:
 - ocamlfind ocamlc -package compiler-libs     -c -o _build/src/ctypes-top/install_printers.cmo -I _build/src/ctypes-top  -I _build/src/ctypes src/ctypes-top/install_printers.ml
 - ocamlfind ocamlc -a    -package compiler-libs  -o _build/ctypes-top.cma _build/src/ctypes-top/ctypes_printers.cmo _build/src/ctypes-top/install_printers.cmo 
 - ocamlfind opt -c -o _build/src/ctypes-top/ctypes_printers.cmx -package compiler-libs    -package compiler-libs   -I _build/src/ctypes-top  -I _build/src/ctypes src/ctypes-top/ctypes_printers.ml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
 - ocamlfind opt -c -o _build/src/ctypes-top/install_printers.cmx -package compiler-libs    -package compiler-libs   -I _build/src/ctypes-top  -I _build/src/ctypes src/ctypes-top/install_printers.ml
 - ocamlfind opt -a -linkall   -package compiler-libs   -o _build/ctypes-top.cmxa _build/src/ctypes-top/ctypes_printers.cmx _build/src/ctypes-top/install_printers.cmx 
 - ocamlfind opt -shared -linkall   -package compiler-libs  -o _build/ctypes-top.cmxs _build/src/ctypes-top/ctypes_printers.cmx _build/src/ctypes-top/install_printers.cmx  
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
@@ -678,9 +678,6 @@ The following actions will be performed:
 - Installed /home/opam/.opam/system/lib/ctypes/ctypes-top.cma
 -> installed ctypes.0.3.4
 
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
 #=== ERROR while installing conf-libgsasl.1 ===================================#
 # opam-version         1.2.2 (391297300524717e1475deaea37bca287c7f5e36)
 # os                   linux
@@ -697,6 +694,9 @@ The following actions will be performed:
 #                    ^
 # compilation terminated.
 
+
+
+=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 The following actions were aborted
   - install gsasl 0.10.0
 The following actions failed
@@ -713,5 +713,5 @@ The following changes have been performed
    your system.
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150411094606.export"
+    opam switch import "~/.opam/system/backup/state-20150411194622.export"
 'opam install gsasl' failed.
