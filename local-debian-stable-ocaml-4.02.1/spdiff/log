@@ -1,31 +1,31 @@
 + uname -m
+# Detecting depexts using flags: x86_64 linux debian
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=spdiff
-# Detecting depexts using flags: x86_64 linux debian
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=spdiff
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=spdiff
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
 Hit http://http.debian.net stable Release.gpg
 Hit http://download.opensuse.org  Release.gpg
 Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
-Hit http://http.debian.net stable Release
 Hit http://download.opensuse.org  Release
+Hit http://http.debian.net stable Release
 Get:2 http://http.debian.net stable-updates Release [124 kB]
-Hit http://http.debian.net stable/main amd64 Packages
-Hit http://security.debian.org stable/updates Release.gpg
 Hit http://download.opensuse.org  Packages
-Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
-Hit http://security.debian.org stable/updates Release
-Hit http://security.debian.org stable/updates/main amd64 Packages
-Fetched 129 kB in 1s (106 kB/s)
+Get:3 http://security.debian.org stable/updates Release.gpg [836 B]
+Hit http://http.debian.net stable/main amd64 Packages
+Get:4 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
+Get:5 http://security.debian.org stable/updates Release [102 kB]
+Get:6 http://security.debian.org stable/updates/main amd64 Packages [382 kB]
+Fetched 614 kB in 2s (243 kB/s)
 Reading package lists...
++ sudo apt-get install -qq -yy m4
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
-+ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind 1.5.5                                     [required by menhir]
@@ -38,8 +38,8 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [spdiff: from default] Command started
 [ocamlfind: from default] Command started
-[menhir: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[menhir: from default] Command started
 [default] http://opam-archive:8080/archives/menhir.20140422+opam.tar.gz downloaded
 [spdiff: from default] Command started
 [default] http://opam-archive:8080/archives/spdiff.0.1+opam.tar.gz downloaded
@@ -177,6 +177,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -185,8 +187,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -238,7 +238,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -283,6 +282,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -1437,10 +1437,10 @@ The following actions will be performed:
 - ocamlopt  -I ocamlextra -I ocollection   -c ocamlextra/mapb.ml
 - ocamlopt  -I ocamlextra -I ocollection   -c ocamlextra/setPt.ml
 - ocamlc -g -dtypes -I ocamlextra -I ocollection   -c common.mli
+- ocamlopt  -I ocamlextra -I ocollection   -c common.ml
 - File "ocamlextra/dumper.ml", line 81, characters 16-25:
 - Warning 3: deprecated: Obj.final_tag
 - Replaced by custom_tag.
-- ocamlopt  -I ocamlextra -I ocollection   -c common.ml
 - File "common.ml", line 361, characters 16-25:
 - Warning 3: deprecated: Obj.final_tag
 - Replaced by custom_tag.
@@ -1506,7 +1506,6 @@ The following actions will be performed:
 - make[1]: Entering directory `/home/opam/.opam/4.02.1/build/spdiff.0.1/localcocci/menhirlib'
 - ocamlopt  -for-pack MenhirLib     -c infiniteArray.ml
 - ocamlopt  -for-pack MenhirLib     -c packedIntArray.ml
-- ocamlopt  -for-pack MenhirLib     -c rowDisplacement.ml
 - File "ocamlextra/suffix_tree.ml", line 52, characters 13-14:
 - Warning 3: deprecated: Pervasives.&
 - Use (&&) instead.
@@ -1537,18 +1536,7 @@ The following actions will be performed:
 - File "ocamlextra/suffix_tree_ext.ml", line 272, characters 24-25:
 - Warning 3: deprecated: Pervasives.&
 - Use (&&) instead.
-- File "packedIntArray.ml", line 91, characters 6-19:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "packedIntArray.ml", line 115, characters 6-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "packedIntArray.ml", line 137, characters 6-19:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "packedIntArray.ml", line 145, characters 1-46:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
+- ocamlopt  -for-pack MenhirLib     -c rowDisplacement.ml
 - ocamlopt  -for-pack MenhirLib     -c engineTypes.ml
 - ocamlopt  -for-pack MenhirLib     -c engine.ml
 - ocamlopt  -for-pack MenhirLib     -c tableFormat.ml
@@ -1563,15 +1551,27 @@ The following actions will be performed:
 - ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c type_cocci.ml
 - ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c ast_cocci.mli
 - ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c ast_cocci.ml
+- File "packedIntArray.ml", line 91, characters 6-19:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "packedIntArray.ml", line 115, characters 6-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "packedIntArray.ml", line 137, characters 6-19:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "packedIntArray.ml", line 145, characters 1-46:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 - ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c ast0_cocci.mli
 - ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c ast0_cocci.ml
 - ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c pretty_print_cocci.mli
 - ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c pretty_print_cocci.ml
-- ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c unparse_ast0.mli
-- ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c unparse_ast0.ml
 - File "pretty_print_cocci.ml", line 45, characters 66-68:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
+- ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c unparse_ast0.mli
+- ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c unparse_ast0.ml
 - ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c visitor_ast.mli
 - ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c visitor_ast.ml
 - ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c visitor_ast0.mli
@@ -1658,6 +1658,10 @@ The following actions will be performed:
 - ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c iso_compile.ml
 - ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c single_statement.mli
 - ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c single_statement.ml
+- ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c simple_assignments.mli
+- ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c simple_assignments.ml
+- ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c ast0toast.mli
+- ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c ast0toast.ml
 - File "single_statement.ml", line 88, characters 17-19:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
@@ -1679,14 +1683,10 @@ The following actions will be performed:
 - File "single_statement.ml", line 231, characters 16-18:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
-- ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c simple_assignments.mli
-- ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c simple_assignments.ml
-- ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c ast0toast.mli
-- ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c ast0toast.ml
+- ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c check_meta.mli
 - File "ast0toast.ml", line 53, characters 8-10:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
-- ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c check_meta.mli
 - ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c check_meta.ml
 - ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c top_level.mli
 - ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c top_level.ml
@@ -1724,6 +1724,8 @@ The following actions will be performed:
 - ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c adjust_pragmas.ml
 - ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c insert_plus.mli
 - ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c insert_plus.ml
+- ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c function_prototypes.mli
+- ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c function_prototypes.ml
 - File "insert_plus.ml", line 811, characters 38-40:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
@@ -1733,22 +1735,20 @@ The following actions will be performed:
 - File "insert_plus.ml", line 833, characters 54-56:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
-- ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c function_prototypes.mli
-- ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c function_prototypes.ml
 - ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c unify_ast.mli
 - ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c unify_ast.ml
-- File "unify_ast.ml", line 56, characters 21-23:
-- Warning 3: deprecated: Pervasives.or
-- Use (||) instead.
 - ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c semantic_cocci.ml
 - ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c data.mli
 - ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c data.ml
 - ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c free_vars.mli
 - ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c free_vars.ml
-- File "free_vars.ml", line 354, characters 28-30:
+- File "unify_ast.ml", line 56, characters 21-23:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
 - ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c parse_aux.ml
+- File "free_vars.ml", line 354, characters 28-30:
+- Warning 3: deprecated: Pervasives.or
+- Use (||) instead.
 - ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c disjdistr.mli
 - ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c disjdistr.ml
 - ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c semantic_cocci.ml
@@ -1757,12 +1757,12 @@ The following actions will be performed:
 - ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c parser_cocci_menhir.mli
 - ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c parser_cocci_menhir.ml
 - ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c lexer_cocci.ml
-- ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c lexer_script.ml
-- ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c get_constants.mli
-- ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c get_constants.ml
 - File "lexer_cocci.mll", line 152, characters 19-21:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
+- ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c lexer_script.ml
+- ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c get_constants.mli
+- ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c get_constants.ml
 - File "lexer_cocci.mll", line 414, characters 26-28:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
