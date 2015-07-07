@@ -8,8 +8,10 @@
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=ocp-indent
 Not running as root, the following command will be run through "sudo":
     apt-get update
++ sudo apt-get update
 Ign http://download.opensuse.org  InRelease
 Hit http://download.opensuse.org  Release.gpg
++ sudo apt-get install -qq -yy m4
 Hit http://download.opensuse.org  Release
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
@@ -27,24 +29,21 @@ Hit http://archive.ubuntu.com trusty/universe Sources
 Hit http://archive.ubuntu.com trusty/main amd64 Packages
 Hit http://archive.ubuntu.com trusty/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty/universe amd64 Packages
-Get:5 http://archive.ubuntu.com trusty-updates/main Sources [253 kB]
+Get:5 http://archive.ubuntu.com trusty-updates/main Sources [254 kB]
 Get:6 http://archive.ubuntu.com trusty-updates/restricted Sources [2310 B]
 Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [142 kB]
 Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [652 kB]
 Get:9 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [15.1 kB]
 Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [362 kB]
-Get:11 http://archive.ubuntu.com trusty-security/main Sources [99.9 kB]
+Get:11 http://archive.ubuntu.com trusty-security/main Sources [100 kB]
 Get:12 http://archive.ubuntu.com trusty-security/restricted Sources [1874 B]
-Get:13 http://archive.ubuntu.com trusty-security/universe Sources [24.5 kB]
-+ sudo apt-get update
+Get:13 http://archive.ubuntu.com trusty-security/universe Sources [24.9 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [341 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
-Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [130 kB]
-Fetched 2167 kB in 5s (393 kB/s)
+Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [131 kB]
+Fetched 2170 kB in 5s (427 kB/s)
 Reading package lists...
-W# OS package update successful
-: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 651869 651871
-+ sudo apt-get install -qq -yy m4
+# OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
 # OS packages installation successful
@@ -60,11 +59,11 @@ The following actions will be performed:
 [ocp-build: from default] Command started
 [ocp-indent: from default] Command started
 [ocp-indent: from default] Command started
-[default] http://opam-archive:8080/archives/ocp-indent.1.5+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
 [ocp-build: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocp-build.1.99.9-beta+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocp-indent.1.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlp4: sh] Command started
@@ -154,6 +153,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -199,10 +199,11 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -211,8 +212,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -381,8 +380,7 @@ The following actions will be performed:
 - checking for suffix of executables... 
 - checking whether we are cross compiling... no
 - checking for suffix of object files... o
-- checking whether we are using the GNU C compiler... 
-- yes
+- checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
 - checking for gcc option to accept ISO C89... none needed
 - checking for ocamlc... ocamlc
@@ -534,7 +532,6 @@ The following actions will be performed:
 - ocamlopt.opt -c -o src/ocplib/system/debug.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/system/debug.ml
 - ocamlc.opt -c -o src/ocplib/system/configParser.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/system/configParser.mli
 - ocamlopt.opt -c -o src/ocplib/system/configParser.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/system/configParser.ml
-- ocamlc.opt -c -o src/ocplib/system/simpleConfig.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/system/simpleConfig.mli
 - File "src/ocplib/lang/stringTemplate.ml", line 44, characters 14-26:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
@@ -547,6 +544,7 @@ The following actions will be performed:
 - File "src/ocplib/system/fileLabels.ml", line 25, characters 10-23:
 - Warning 3: deprecated: OcpLang.String.create
 - Use Bytes.create instead.
+- ocamlc.opt -c -o src/ocplib/system/simpleConfig.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/system/simpleConfig.mli
 - ocamlopt.opt -c -o src/ocplib/system/simpleConfig.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/system/simpleConfig.ml
 - ocamlc.opt -c -o src/ocplib/system/fileTemplate.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/system/fileTemplate.mli
 - ocamlopt.opt -c -o src/ocplib/system/fileTemplate.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocplib/system/fileTemplate.ml
@@ -573,7 +571,6 @@ The following actions will be performed:
 - ocamlopt.opt -c -o src/ocp-build/buildOCPVariable.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOCPVariable.ml
 - ocamlc.opt -c -o src/ocp-build/buildOCPParse.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOCPParse.mli
 - ocamlopt.opt -c -o src/ocp-build/buildOCPParse.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOCPParse.ml
-- ocamlc.opt -c -o src/ocp-build/buildOCPInterp.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOCPInterp.mli
 - File "src/ocplib/system/simpleConfig.ml4", line 206, characters 42-55:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -600,6 +597,7 @@ The following actions will be performed:
 - File "src/ocp-build/buildOCPParser.mly", line 253, characters 30-59:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlc.opt -c -o src/ocp-build/buildOCPInterp.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOCPInterp.mli
 - ocamlopt.opt -c -o src/ocp-build/buildOCPInterp.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOCPInterp.ml
 - ocamlc.opt -c -o src/ocp-build/buildOCPPrinter.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOCPPrinter.mli
 - ocamlopt.opt -c -o src/ocp-build/buildOCPPrinter.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOCPPrinter.ml
@@ -621,8 +619,6 @@ The following actions will be performed:
 - ocamlopt.opt -c -o src/ocp-build/buildObjectInspector.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildObjectInspector.ml
 - ocamlopt.opt -c -o src/ocp-build/buildVersion.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildVersion.ml
 - ocamlopt.opt -c -o src/ocp-build/buildTypes.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildTypes.ml
-- ocamlc.opt -c -o src/ocp-build/buildOptions.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOptions.mli
-- ocamlopt.opt -c -o src/ocp-build/buildOptions.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOptions.ml
 - File "src/ocp-build/buildOCP.ml", line 1013, characters 23-36:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -637,6 +633,8 @@ The following actions will be performed:
 - File "src/ocp-build/buildObjectInspector.ml", line 226, characters 14-27:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- ocamlc.opt -c -o src/ocp-build/buildOptions.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOptions.mli
+- ocamlopt.opt -c -o src/ocp-build/buildOptions.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOptions.ml
 - ocamlopt.opt -c -o src/ocp-build/buildGlobals.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildGlobals.ml
 - ocamlc.opt -c -o src/ocp-build/buildConfig.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildConfig.mli
 - ocamlopt.opt -c -o src/ocp-build/buildConfig.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildConfig.ml
@@ -694,17 +692,6 @@ The following actions will be performed:
 - File "src/ocp-build/buildOCamlRules.ml", line 532, characters 7-48:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "src/ocp-build/buildOCamlRules.ml", line 1204, characters 18-45:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "src/ocp-build/buildOCamlRules.ml", line 1205, characters 18-45:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "src/ocp-build/buildOCamlRules.ml", line 1596, characters 20-31:
-- Warning 3: deprecated: String.copy
-- File "src/ocp-build/buildOCamlRules.ml", line 1597, characters 6-47:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 - ocamlc.opt -c -o src/ocp-build/buildOCamlInstall.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOCamlInstall.mli
 - ocamlopt.opt -c -o src/ocp-build/buildOCamlInstall.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOCamlInstall.ml
 - ocamlc.opt -c -o src/ocp-build/buildOCamlMeta.cmi -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildOCamlMeta.mli
@@ -719,7 +706,17 @@ The following actions will be performed:
 - ocamlopt.opt -c -o src/ocp-build/buildActionRoot.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildActionRoot.ml
 - ocamlopt.opt -c -o src/ocp-build/buildActionPrefs.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildActionPrefs.ml
 - ocamlopt.opt -c -o src/ocp-build/buildActionConfigure.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildActionConfigure.ml
-- ocamlopt.opt -c -o src/ocp-build/buildActionBuild.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildActionBuild.ml
+- File "src/ocp-build/buildOCamlRules.ml", line 1204, characters 18-45:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "src/ocp-build/buildOCamlRules.ml", line 1205, characters 18-45:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "src/ocp-build/buildOCamlRules.ml", line 1596, characters 20-31:
+- Warning 3: deprecated: String.copy
+- File "src/ocp-build/buildOCamlRules.ml", line 1597, characters 6-47:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 - File "src/ocp-build/buildOCamlRules.ml", line 2537, characters 25-37:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
@@ -736,6 +733,7 @@ The following actions will be performed:
 - File "src/ocp-build/buildOasis.ml", line 122, characters 18-47:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlopt.opt -c -o src/ocp-build/buildActionBuild.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildActionBuild.ml
 - ocamlopt.opt -c -o src/ocp-build/buildActionInstall.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildActionInstall.ml
 - ocamlopt.opt -c -o src/ocp-build/buildActionClean.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildActionClean.ml
 - ocamlopt.opt -c -o src/ocp-build/buildActionTests.cmx -I src/ocplib/debug -I src/ocplib/lang -I src/ocplib/system -I src/ocplib/unix -I src/ocp-build src/ocp-build/buildActionTests.ml
@@ -803,48 +801,48 @@ The following actions will be performed:
 - Warning: 2 missing and 16 disabled (use -print-missing)
 - Warning: 16 incomplete packages (will not be built):
 -   Hidden: 16 incomplete packages in META files (use -print-incomplete-meta).
-- 0.04s ocp-indent.lexer/indentExtend.mlimods                            [ done ]
-- 0.04s ocp-indent.lexer/indentExtend.mlmods                             [ done ]
-- 0.04s ocp-indent.lexer/approx_tokens.mlmods                            [ done ]
-- 0.04s ocp-indent.lexer/temp/approx_lexer.ml                            [ done ]
+- 0.08s ocp-indent.lexer/indentExtend.mlimods                            [ done ]
+- 0.08s ocp-indent.lexer/indentExtend.mlmods                             [ done ]
+- 0.08s ocp-indent.lexer/approx_tokens.mlmods                            [ done ]
+- 0.08s ocp-indent.lexer/temp/approx_lexer.ml                            [ done ]
 - -- stdout of ocamllex.opt --
 - 209 states, 5156 transitions, table size 21878 bytes
 - 2468 additional bytes used for bindings
-- 0.04s ocp-indent.utils/pos.mlimods                                     [ done ]
-- 0.04s ocp-indent.utils/pos.mlmods                                      [ done ]
-- 0.03s ocp-indent.utils/util.mlmods                                     [ done ]
-- 0.03s ocp-indent.utils/nstream.mlimods                                 [ done ]
-- 0.03s ocp-indent.utils/nstream.mlmods                                  [ done ]
-- 0.03s ocp-indent.utils/compat.mlmods                                   [ done ]
-- 0.03s ocp-indent.lib/indentConfig.mlimods                              [ done ]
-- 0.03s ocp-indent.lib/indentConfig.mlmods                               [ done ]
-- 0.03s ocp-indent.lib/indentBlock.mlimods                               [ done ]
-- 0.03s ocp-indent.lib/indentBlock.mlmods                                [ done ]
-- 0.03s ocp-indent.lib/indentPrinter.mlimods                             [ done ]
-- 0.03s ocp-indent.lib/indentPrinter.mlmods                              [ done ]
-- 0.02s ocp-indent.dynlink/indentLoader.mlimods                          [ done ]
-- 0.02s ocp-indent.dynlink/indentLoader.mlmods                           [ done ]
-- 0.02s ocp-indent/indentVersion.mlmods                                  [ done ]
-- 0.02s ocp-indent/indentArgs.mlimods                                    [ done ]
-- 0.02s ocp-indent/indentArgs.mlmods                                     [ done ]
-- 0.02s ocp-indent/indentMain.mlmods                                     [ done ]
+- 0.08s ocp-indent.utils/pos.mlimods                                     [ done ]
+- 0.08s ocp-indent.utils/pos.mlmods                                      [ done ]
+- 0.07s ocp-indent.utils/util.mlmods                                     [ done ]
+- 0.07s ocp-indent.utils/nstream.mlimods                                 [ done ]
+- 0.07s ocp-indent.utils/nstream.mlmods                                  [ done ]
+- 0.07s ocp-indent.utils/compat.mlmods                                   [ done ]
+- 0.06s ocp-indent.lib/indentConfig.mlimods                              [ done ]
+- 0.06s ocp-indent.lib/indentConfig.mlmods                               [ done ]
+- 0.06s ocp-indent.lib/indentBlock.mlimods                               [ done ]
+- 0.06s ocp-indent.lib/indentBlock.mlmods                                [ done ]
+- 0.06s ocp-indent.lib/indentPrinter.mlimods                             [ done ]
+- 0.06s ocp-indent.lib/indentPrinter.mlmods                              [ done ]
+- 0.05s ocp-indent.dynlink/indentLoader.mlimods                          [ done ]
+- 0.03s ocp-indent.dynlink/indentLoader.mlmods                           [ done ]
+- 0.03s ocp-indent/indentVersion.mlmods                                  [ done ]
+- 0.03s ocp-indent/indentArgs.mlimods                                    [ done ]
+- 0.03s ocp-indent/indentArgs.mlmods                                     [ done ]
+- 0.03s ocp-indent/indentMain.mlmods                                     [ done ]
 - 0.02s ocp-indent.lexer/approx_tokens.cmo                               [ done ]
-- 0.02s ocp-indent.utils/pos.cmi                                         [ done ]
 - 0.02s ocp-indent.lexer/approx_lexer.mlmods                             [ done ]
-- 0.02s ocp-indent.utils/util.cmo                                        [ done ]
+- 0.02s ocp-indent.utils/pos.cmi                                         [ done ]
 - 0.02s ocp-indent.utils/compat.cmo                                      [ done ]
+- 0.03s ocp-indent.utils/util.cmo                                        [ done ]
 - 0.02s ocp-indent.lib/indentConfig.cmi                                  [ done ]
 - 0.02s ocp-indent.dynlink/indentLoader.cmi                              [ done ]
 - 0.02s ocp-indent/indentVersion.cmo                                     [ done ]
 - 0.02s ocp-indent.lexer/indentExtend.cmi                                [ done ]
-- 0.03s ocp-indent.utils/pos.cmo                                         [ done ]
+- 0.02s ocp-indent.utils/pos.cmo                                         [ done ]
+- 0.01s ocp-indent.lexer/indentExtend.cmo                                [ done ]
 - 0.03s ocp-indent.lexer/approx_tokens.cmx                               [ done ]
 - 0.02s ocp-indent.dynlink/indentLoader.cmo                              [ done ]
-- 0.02s ocp-indent.lexer/indentExtend.cmo                                [ done ]
-- 0.01s ocp-indent.dynlink/ocp-indent.dynlink.cma                        [ done ]
 - 0.04s ocp-indent.utils/pos.cmx                                         [ done ]
-- 0.03s ocp-indent/indentVersion.cmx                                     [ done ]
 - 0.04s ocp-indent.utils/compat.cmx                                      [ done ]
+- 0.01s ocp-indent.dynlink/ocp-indent.dynlink.cma                        [ done ]
+- 0.04s ocp-indent/indentVersion.cmx                                     [ done ]
 - 0.04s ocp-indent.lib/indentConfig.cmo                                  [ done ]
 - -- stderr of ocamlc.opt --
 - File "src/indentConfig.ml", line 189, characters 34-45:
@@ -852,7 +850,7 @@ The following actions will be performed:
 - File "src/indentConfig.ml", line 191, characters 11-30:
 - Warning 3: deprecated: Compat.String.set
 - Use Bytes.set instead.
-- 0.04s ocp-indent.utils/util.cmx                                        [ done ]
+- 0.05s ocp-indent.utils/util.cmx                                        [ done ]
 - 0.03s ocp-indent.lexer/indentExtend.cmx                                [ done ]
 - 0.06s ocp-indent.lexer/approx_lexer.cmo                                [ done ]
 - -- stderr of ocamlc.opt --
@@ -867,17 +865,9 @@ The following actions will be performed:
 - File "src/approx_lexer.mll", line 228, characters 15-27:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- 0.05s ocp-indent.dynlink/indentLoader.cmx                              [ done ]
 - 0.01s ocp-indent.lexer/ocp-indent.lexer.cma                            [ done ]
 - 0.01s ocp-indent.utils/nstream.cmi                                     [ done ]
-- 0.02s ocp-indent.dynlink/ocp-indent.dynlink.cmxa                       [ done ]
-- 0.07s ocp-indent.lib/indentConfig.cmx                                  [ done ]
-- -- stderr of ocamlopt.opt --
-- File "src/indentConfig.ml", line 189, characters 34-45:
-- Warning 3: deprecated: Compat.String.copy
-- File "src/indentConfig.ml", line 191, characters 11-30:
-- Warning 3: deprecated: Compat.String.set
-- Use Bytes.set instead.
+- 0.04s ocp-indent.dynlink/indentLoader.cmx                              [ done ]
 - 0.01s ocp-indent.lib/indentBlock.cmi                                   [ done ]
 - 0.02s ocp-indent.utils/nstream.cmo                                     [ done ]
 - -- stderr of ocamlc.opt --
@@ -889,9 +879,16 @@ The following actions will be performed:
 - Use Lazy.from_val instead.
 - 0.01s ocp-indent.lib/indentPrinter.cmi                                 [ done ]
 - 0.01s ocp-indent.utils/ocp-indent.utils.cma                            [ done ]
-- 0.01s ocp-indent/indentArgs.cmi                                        [ done ]
-- 0.03s ocp-indent.lib/indentPrinter.cmo                                 [ done ]
-- 0.06s ocp-indent.dynlink/ocp-indent.dynlink.cmxa                       [ done ]
+- 0.07s ocp-indent.lib/indentConfig.cmx                                  [ done ]
+- -- stderr of ocamlopt.opt --
+- File "src/indentConfig.ml", line 189, characters 34-45:
+- Warning 3: deprecated: Compat.String.copy
+- File "src/indentConfig.ml", line 191, characters 11-30:
+- Warning 3: deprecated: Compat.String.set
+- Use Bytes.set instead.
+- 0.03s ocp-indent.dynlink/ocp-indent.dynlink.cmxa                       [ done ]
+- 0.02s ocp-indent/indentArgs.cmi                                        [ done ]
+- 0.04s ocp-indent.lib/indentPrinter.cmo                                 [ done ]
 - 0.02s ocp-indent/indentMain.cmo                                        [ done ]
 - -- stderr of ocamlc.opt --
 - File "src/indentMain.ml", line 55, characters 10-41:
@@ -899,7 +896,8 @@ The following actions will be performed:
 - File "src/indentMain.ml", line 68, characters 10-41:
 - Warning 48: implicit elimination of optional argument ?extra
 - 0.03s ocp-indent/indentArgs.cmo                                        [ done ]
-- 0.12s ocp-indent.lexer/approx_lexer.cmx                                [ done ]
+- 0.09s ocp-indent.dynlink/ocp-indent.dynlink.cmxa                       [ done ]
+- 0.14s ocp-indent.lexer/approx_lexer.cmx                                [ done ]
 - -- stderr of ocamlopt.opt --
 - File "src/approx_lexer.mll", line 110, characters 28-41:
 - Warning 3: deprecated: String.create
@@ -912,8 +910,11 @@ The following actions will be performed:
 - File "src/approx_lexer.mll", line 228, characters 15-27:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- 0.02s ocp-indent.lexer/ocp-indent.lexer.cmxa                           [ done ]
-- 0.05s ocp-indent.utils/nstream.cmx                                     [ done ]
+- cp _obuild/ocp-indent/ocp-indent.asm ocp-indent
+- mkdir -p man/man1
+- ./ocp-indent --help=groff >man/man1/ocp-indent.1
+- 0.03s ocp-indent.lexer/ocp-indent.lexer.cmxa                           [ done ]
+- 0.07s ocp-indent.utils/nstream.cmx                                     [ done ]
 - -- stderr of ocamlopt.opt --
 - File "src/nstream.ml", line 112, characters 18-36:
 - Warning 3: deprecated: Lazy.lazy_from_val
@@ -921,28 +922,25 @@ The following actions will be performed:
 - File "src/nstream.ml", line 113, characters 17-35:
 - Warning 3: deprecated: Lazy.lazy_from_val
 - Use Lazy.from_val instead.
-- 0.15s ocp-indent.lib/indentBlock.cmo                                   [ done ]
-- 0.02s ocp-indent.utils/ocp-indent.utils.cmxa                           [ done ]
+- 0.19s ocp-indent.lib/indentBlock.cmo                                   [ done ]
 - 0.01s ocp-indent.lib/ocp-indent.lib.cma                                [ done ]
-- 0.06s ocp-indent.lexer/ocp-indent.lexer.cmxa                           [ done ]
+- 0.02s ocp-indent.utils/ocp-indent.utils.cmxa                           [ done ]
+- 0.07s ocp-indent.lexer/ocp-indent.lexer.cmxa                           [ done ]
 - 0.03s ocp-indent/ocp-indent.byte                                       [ done ]
-- 0.05s ocp-indent.utils/ocp-indent.utils.cmxa                           [ done ]
-- 0.30s ocp-indent.lib/indentBlock.cmx                                   [ done ]
-- 0.07s ocp-indent.lib/indentPrinter.cmx                                 [ done ]
+- 0.08s ocp-indent.utils/ocp-indent.utils.cmxa                           [ done ]
+- 0.35s ocp-indent.lib/indentBlock.cmx                                   [ done ]
+- 0.06s ocp-indent.lib/indentPrinter.cmx                                 [ done ]
 - 0.02s ocp-indent.lib/ocp-indent.lib.cmxa                               [ done ]
 - 0.07s ocp-indent/indentArgs.cmx                                        [ done ]
-- 0.07s ocp-indent.lib/ocp-indent.lib.cmxa                               [ done ]
-- 0.05s ocp-indent/indentMain.cmx                                        [ done ]
+- 0.04s ocp-indent/indentMain.cmx                                        [ done ]
 - -- stderr of ocamlopt.opt --
 - File "src/indentMain.ml", line 55, characters 10-41:
 - Warning 48: implicit elimination of optional argument ?extra
 - File "src/indentMain.ml", line 68, characters 10-41:
 - Warning 48: implicit elimination of optional argument ?extra
-- cp _obuild/ocp-indent/ocp-indent.asm ocp-indent
-- mkdir -p man/man1
-- ./ocp-indent --help=groff >man/man1/ocp-indent.1
-- 0.20s ocp-indent/ocp-indent.asm                                        [ done ]
-- Build Successful in 1.12s. 73 jobs (parallelism 2.6x), 115 files generated.
+- 0.09s ocp-indent.lib/ocp-indent.lib.cmxa                               [ done ]
+- 0.17s ocp-indent/ocp-indent.asm                                        [ done ]
+- Build Successful in 1.22s. 73 jobs (parallelism 3.1x), 115 files generated.
 -> installed ocp-indent.1.5
 Done.
 
