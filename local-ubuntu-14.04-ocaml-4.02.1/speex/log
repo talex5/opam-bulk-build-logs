@@ -8,19 +8,19 @@ Not running as root, system installation will be done through "sudo"
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
-Ign http://download.opensuse.org  InRelease
 Hit http://archive.ubuntu.com trusty Release.gpg
+Ign http://download.opensuse.org  InRelease
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
-Hit http://download.opensuse.org  Release.gpg
 Hit http://archive.ubuntu.com trusty Release
 Get:3 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
-Hit http://download.opensuse.org  Release
+Hit http://download.opensuse.org  Release.gpg
 Get:4 http://archive.ubuntu.com trusty-security Release [63.5 kB]
+Hit http://download.opensuse.org  Release
 Hit http://archive.ubuntu.com trusty/main Sources
 Hit http://archive.ubuntu.com trusty/restricted Sources
-Hit http://download.opensuse.org  Packages
 Hit http://archive.ubuntu.com trusty/universe Sources
+Hit http://download.opensuse.org  Packages
 Hit http://archive.ubuntu.com trusty/main amd64 Packages
 Hit http://archive.ubuntu.com trusty/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty/universe amd64 Packages
@@ -36,8 +36,9 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [19.6 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [320 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [116 kB]
-Fetched 2046 kB in 4s (489 kB/s)
+Fetched 2046 kB in 3s (534 kB/s)
 Reading package lists...
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 619283 619284
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
 debconf: unable to initialize frontend: Dialog
@@ -76,12 +77,12 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [ogg: from default] Command started
 [speex: from default] Command started
-[speex: from default] Command started
 [ocamlfind: from default] Command started
 [ogg: from default] Command started
-[default] http://opam-archive:8080/archives/speex.0.2.0+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[speex: from default] Command started
 [default] http://opam-archive:8080/archives/ogg.0.4.3+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/speex.0.2.0+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -166,7 +167,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -212,17 +212,21 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -262,9 +266,6 @@ The following actions will be performed:
 - 		echo 'ocamldoc="ocamldoc.opt"' >>findlib.conf; \
 - 	fi
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5'
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 [ocamlfind: make opt] Command started
 + make "opt" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
 - for p in findlib; do ( cd src/$p; make opt ) || exit; done
@@ -398,8 +399,7 @@ The following actions will be performed:
 - checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
 - checking for gcc option to accept ISO C89... none needed
-- checking build system type... 
-- x86_64-unknown-linux-gnu
+- checking build system type... x86_64-unknown-linux-gnu
 - checking host system type... x86_64-unknown-linux-gnu
 - checking for a BSD-compatible install... /usr/bin/install -c
 - checking that calling user is not root... ok
@@ -476,9 +476,6 @@ The following actions will be performed:
 - make[2]: `libogg_stubs.a' is up to date.
 - ocamlopt.opt -c ogg.ml
 - ocamlopt.opt -c ogg_demuxer.ml
-- ocamlopt.opt -a        -ccopt -L/home/opam/.opam/system/lib/lib  -ccopt -L/home/opam/.opam/system/lib/lib   -cclib -logg_stubs -cclib -logg   -o ogg.cmxa ogg.cmx ogg_demuxer.cmx
-- make[2]: Leaving directory `/home/opam/.opam/system/build/ogg.0.4.3/src'
-- make[1]: Leaving directory `/home/opam/.opam/system/build/ogg.0.4.3/src'
 - File "ogg.ml", line 164, characters 24-37:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -488,6 +485,9 @@ The following actions will be performed:
 - File "ogg.ml", line 164, characters 24-37:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- ocamlopt.opt -a        -ccopt -L/home/opam/.opam/system/lib/lib  -ccopt -L/home/opam/.opam/system/lib/lib   -cclib -logg_stubs -cclib -logg   -o ogg.cmxa ogg.cmx ogg_demuxer.cmx
+- make[2]: Leaving directory `/home/opam/.opam/system/build/ogg.0.4.3/src'
+- make[1]: Leaving directory `/home/opam/.opam/system/build/ogg.0.4.3/src'
 - File "ogg_demuxer.ml", line 310, characters 18-31:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
