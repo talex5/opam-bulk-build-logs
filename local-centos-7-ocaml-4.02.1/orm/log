@@ -1,7 +1,7 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux centos
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=orm
+# Detecting depexts using flags: x86_64 linux centos
 # The following system packages are needed:
 #  - sqlite-devel
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=orm
@@ -11,7 +11,7 @@ Not running as root, the following command will be run through "sudo":
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
  * base: mirror.vorboss.net
- * extras: mirror.as29550.net
+ * extras: mirror.econdc.com
  * updates: centos.serverspace.co.uk
 No packages marked for update
 + sudo yum install -y sqlite-devel
@@ -24,7 +24,7 @@ Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
  * base: mirrors.melbourne.co.uk
  * extras: mirrors.melbourne.co.uk
- * updates: mirrors.melbourne.co.uk
+ * updates: centos.serverspace.co.uk
 Resolving Dependencies
 --> Running transaction check
 ---> Package sqlite-devel.x86_64 0:3.7.17-4.el7 will be installed
@@ -73,17 +73,17 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [orm: from default] Command started
 [orm: from default] Command started
+[dyntype: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/orm.0.7.0+opam.tar.gz downloaded
 [sqlite3: from default] Command started
-[sqlite3: from default] Command started
-[default] http://opam-archive:8080/archives/sqlite3.2.0.9+opam.tar.gz downloaded
-[type_conv: from default] Command started
-[type_conv: from default] Command started
-[default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
-[dyntype: from default] Command started
 [default] http://opam-archive:8080/archives/dyntype.0.9.0+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
+[type_conv: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[sqlite3: from default] Command started
+[type_conv: from default] Command started
+[default] http://opam-archive:8080/archives/sqlite3.2.0.9+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlp4: sh] Command started
@@ -175,7 +175,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -221,9 +220,18 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -238,14 +246,6 @@ The following actions will be performed:
 - cat topfind_rd1.p | \
 - 	../../tools/patch '@SITELIB@' '/home/opam/.opam/system/lib' \
 -     	    >topfind
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -c num_top_printers.mli
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
 - ocamlc -I +compiler-libs -c num_top.mli
@@ -284,6 +284,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -328,7 +329,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -685,6 +685,21 @@ The following actions will be performed:
 - ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm sql_backend.ml
 - ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm sql_init.ml
 - ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm sql_save.ml
+- File "weakid.ml", line 71, characters 11-23:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
+- File "weakid.ml", line 239, characters 16-22:
+- Warning 3: deprecated: create
+- Use Array.make instead.
+- File "sql_backend.ml", line 263, characters 66-86:
+- Warning 43: the label field is not optional.
+- File "sql_backend.ml", line 264, characters 78-97:
+- Warning 43: the label field is not optional.
+- File "sql_backend.ml", line 267, characters 73-93:
+- Warning 43: the label field is not optional.
+- File "sql_save.ml", line 138, characters 12-24:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
 - ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm sql_get.ml
 - ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm sql_delete.ml
 - ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm sql_cache.ml
@@ -697,21 +712,6 @@ The following actions will be performed:
 - make[3]: Entering directory `/home/opam/.opam/system/build/orm.0.7.0/lib'
 - make[3]: `liborm_stubs.a' is up to date.
 - ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm weakid.ml
-- File "weakid.ml", line 71, characters 11-23:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
-- File "weakid.ml", line 239, characters 16-22:
-- Warning 3: deprecated: create
-- Use Array.make instead.
-- File "sql_backend.ml", line 263, characters 66-86:
-- Warning 43: the label field is not optional.
-- File "sql_backend.ml", line 264, characters 78-97:
-- Warning 43: the label field is not optional.
-- File "sql_backend.ml", line 267, characters 73-93:
-- Warning 43: the label field is not optional.
-- File "sql_save.ml", line 138, characters 12-24:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
 - ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm sql_backend.ml
 - ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm sql_init.ml
 - ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm sql_save.ml
@@ -721,13 +721,6 @@ The following actions will be performed:
 - ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm db.ml
 - ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm sig.ml
 - ocamlfind ocamlc -pack -o orm.cmo -g  weakid.cmo sql_backend.cmo sql_init.cmo sql_save.cmo sql_get.cmo sql_delete.cmo sql_cache.cmo db.cmo sig.cmo
-- ocamlmklib         \
-- 			-o orm_stubs  custom_unix_stubs.o   \
-- 			
-- ocamlfind ocamlc -a -dllib dllorm_stubs.so -custom     -g         -cclib -lorm_stubs    -o orm.cma orm.cmo
-- make[3]: Leaving directory `/home/opam/.opam/system/build/orm.0.7.0/lib'
-- make[2]: Leaving directory `/home/opam/.opam/system/build/orm.0.7.0/lib'
-- make[1]: Leaving directory `/home/opam/.opam/system/build/orm.0.7.0/lib'
 - File "weakid.ml", line 71, characters 11-23:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
@@ -743,6 +736,13 @@ The following actions will be performed:
 - File "sql_save.ml", line 138, characters 12-24:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
+- ocamlmklib         \
+- 			-o orm_stubs  custom_unix_stubs.o   \
+- 			
+- ocamlfind ocamlc -a -dllib dllorm_stubs.so -custom     -g         -cclib -lorm_stubs    -o orm.cma orm.cmo
+- make[3]: Leaving directory `/home/opam/.opam/system/build/orm.0.7.0/lib'
+- make[2]: Leaving directory `/home/opam/.opam/system/build/orm.0.7.0/lib'
+- make[1]: Leaving directory `/home/opam/.opam/system/build/orm.0.7.0/lib'
 [orm: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/orm.0.7.0)
 - make -C lib/
