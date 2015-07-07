@@ -1,29 +1,29 @@
 + uname -m
 + uname -s
-# Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=sha
+# Detecting depexts using flags: x86_64 linux debian
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=sha
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=sha
-+ sudo apt-get update
 Not running as root, system installation will be done through "sudo"
++ sudo apt-get update
 Hit http://download.opensuse.org  Release.gpg
-Hit http://http.debian.net stable Release.gpg
+Hit http://security.debian.org stable/updates Release.gpg
 Hit http://download.opensuse.org  Release
+Hit http://security.debian.org stable/updates Release
+Hit http://download.opensuse.org  Packages
+Hit http://security.debian.org stable/updates/main amd64 Packages
+Hit http://http.debian.net stable Release.gpg
 Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
 Hit http://http.debian.net stable Release
 Get:2 http://http.debian.net stable-updates Release [124 kB]
-Hit http://download.opensuse.org  Packages
 Hit http://http.debian.net stable/main amd64 Packages
 Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
-Hit http://security.debian.org stable/updates Release.gpg
-Hit http://security.debian.org stable/updates Release
-Hit http://security.debian.org stable/updates/main amd64 Packages
-Fetched 129 kB in 1s (113 kB/s)
+Fetched 129 kB in 2s (62.5 kB/s)
 Reading package lists...
-+ sudo apt-get install -qq -yy m4
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
++ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind 1.5.5                                     [required by sha]
@@ -33,10 +33,10 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: from default] Command started
 [sha: from default] Command started
-[sha: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/sha.1.9+opam.tar.gz downloaded
+[sha: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/sha.1.9+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -232,7 +232,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -277,6 +276,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -372,6 +372,8 @@ The following actions will be performed:
 - ocamlmklib -o sha256 sha256.lib.o sha256_stubs.o sha256.cmo
 - ocamlopt  -c -o sha256.cmx sha256.ml
 - ocamlmklib -o sha256 sha256.lib.o sha256_stubs.o sha256.cmx
+- ocamlc -c -o sha512.cmi sha512.mli
+- ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha512.o sha512.c
 - sha256_stubs.c: In function 'stub_sha256_file':
 - sha256_stubs.c:116:2: warning: implicit declaration of function 'strcpy' [-Wimplicit-function-declaration]
 - sha256_stubs.c:116:19: warning: incompatible implicit declaration of built-in function 'strcpy' [enabled by default]
@@ -385,12 +387,13 @@ The following actions will be performed:
 - File "sha256.ml", line 62, characters 11-24:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -c -o sha512.cmi sha512.mli
-- ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha512.o sha512.c
 - mv sha512.o sha512.lib.o
 - ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha512_stubs.o sha512_stubs.c
 - ocamlc -c -o sha512.cmo sha512.ml
 - ocamlmklib -o sha512 sha512.lib.o sha512_stubs.o sha512.cmo
+- ocamlopt  -c -o sha512.cmx sha512.ml
+- ocamlmklib -o sha512 sha512.lib.o sha512_stubs.o sha512.cmx
+- ocamlmklib -o sha  sha1.lib.o sha1_stubs.o sha1.cmo  sha256.lib.o sha256_stubs.o sha256.cmo  sha512.lib.o sha512_stubs.o sha512.cmo
 - sha512_stubs.c: In function 'stub_sha512_file':
 - sha512_stubs.c:116:2: warning: implicit declaration of function 'strcpy' [-Wimplicit-function-declaration]
 - sha512_stubs.c:116:19: warning: incompatible implicit declaration of built-in function 'strcpy' [enabled by default]
@@ -401,14 +404,11 @@ The following actions will be performed:
 - File "sha512.ml", line 60, characters 11-24:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlopt  -c -o sha512.cmx sha512.ml
-- ocamlmklib -o sha512 sha512.lib.o sha512_stubs.o sha512.cmx
-- ocamlmklib -o sha  sha1.lib.o sha1_stubs.o sha1.cmo  sha256.lib.o sha256_stubs.o sha256.cmo  sha512.lib.o sha512_stubs.o sha512.cmo
-- ocamlmklib -o sha  sha1.lib.o sha1_stubs.o sha1.cmx  sha256.lib.o sha256_stubs.o sha256.cmx  sha512.lib.o sha512_stubs.o sha512.cmx
-- rm sha1.o sha256.o sha512.o
 - File "sha512.ml", line 60, characters 11-24:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- ocamlmklib -o sha  sha1.lib.o sha1_stubs.o sha1.cmx  sha256.lib.o sha256_stubs.o sha256.cmx  sha512.lib.o sha512_stubs.o sha512.cmx
+- rm sha1.o sha256.o sha512.o
 [sha: make install] Command started
 + make "install" (CWD=/home/opam/.opam/4.02.1/build/sha.1.9)
 - ocamlfind install sha META *.cmx sha1.cmi sha1.cma sha1.cmxa sha256.cmi sha256.cma sha256.cmxa sha512.cmi sha512.cma sha512.cmxa sha.cma sha.cmxa *.a *.so
