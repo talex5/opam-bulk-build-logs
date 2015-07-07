@@ -1,19 +1,19 @@
-# Detecting depexts using flags: x86_64 linux centos
 + uname -m
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=altgr-ergo
-+ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=altgr-ergo
+# Detecting depexts using flags: x86_64 linux centos
 # The following system packages are needed:
 #  - gmp
 #  - gmp-devel
-+ sudo yum -y update
++ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=altgr-ergo
 Not running as root, the following command will be run through "sudo":
     yum -y update
++ sudo yum -y update
 Loaded plugins: fastestmirror
 Repodata is over 2 weeks old. Install yum-cron? Or run: yum makecache fast
 Determining fastest mirrors
- * base: anorien.csc.warwick.ac.uk
- * extras: mirror.sov.uk.goscomb.net
+ * base: centos.serverspace.co.uk
+ * extras: mirror.econdc.com
  * updates: anorien.csc.warwick.ac.uk
 Resolving Dependencies
 --> Running transaction check
@@ -57,8 +57,8 @@ Not running as root, the following command will be run through "sudo":
     rpm -q gmp gmp-devel
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: anorien.csc.warwick.ac.uk
- * extras: mirror.sov.uk.goscomb.net
+ * base: centos.serverspace.co.uk
+ * extras: mirror.econdc.com
  * updates: anorien.csc.warwick.ac.uk
 Package 1:gmp-6.0.0-11.el7.x86_64 already installed and latest version
 Resolving Dependencies
@@ -86,17 +86,19 @@ Running transaction test
 Transaction test succeeded
 Running transaction
   Installing : 1:gmp-devel-6.0.0-11.el7.x86_64                              1/1 
-  Verifying  : 1:gmp-devel-6.0.0-11.el7.x86_64                              1/1+ sudo rpm -q gmp gmp-devel
- 
+  Verifying  : 1:gmp-devel-6.0.0-11.el7.x86_64                              1/1 
 
 Installed:
   gmp-devel.x86_64 1:6.0.0-11.el7                                               
 
 Complete!
++ sudo rpm -q gmp gmp-devel
 gmp-6.0.0-11.el7.x86_64
 gmp-devel-6.0.0-11.el7.x86_64
 # OS packages installation successful
 The following actions will be performed:
+[ERROR] The compilation of conf-gtksourceview failed at "pkg-config
+        gtksourceview-2.0".
   - install conf-gtksourceview 2                                [required by altgr-ergo]
   - install camlp4             4.02.1+system                    [required by lablgtk]
   - install conf-gmp           1                                [required by zarith]
@@ -113,18 +115,16 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [altgr-ergo: from default] Command started
 [ocamlfind: from default] Command started
-[lablgtk: from default] Command started
 [default] http://opam-archive:8080/archives/altgr-ergo.0.99.1+opam.tar.gz downloaded
 [ocamlgraph: from default] Command started
-[ERROR] The compilation of conf-gtksourceview failed at "pkg-config
-        gtksourceview-2.0".
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [zarith: from default] Command started
-[default] http://opam-archive:8080/archives/lablgtk.2.18.3+opam.tar.gz downloaded
 [ocamlgraph: from default] Command started
-[zarith: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlgraph.1.8.6+opam.tar.gz downloaded
+[zarith: from default] Command started
 [default] http://opam-archive:8080/archives/zarith.1.3+opam.tar.gz downloaded
+[lablgtk: from default] Command started
+[default] http://opam-archive:8080/archives/lablgtk.2.18.3+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlp4: sh] Command started
@@ -219,8 +219,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -266,18 +264,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
-- if [ "true" = "true" ]; then                 \
-- 	cp topfind.ml.in topfind.ml;                             \
-- else                                                             \
-- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 		> topfind.ml ;                                   \
-- fi
-- ocamlc -I +compiler-libs -c topfind.mli
-- ocamlc -I +compiler-libs -g -c topfind.ml
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -286,6 +278,14 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- if [ "true" = "true" ]; then                 \
+- 	cp topfind.ml.in topfind.ml;                             \
+- else                                                             \
+- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 		> topfind.ml ;                                   \
+- fi
+- ocamlc -I +compiler-libs -c topfind.mli
+- ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
 - export USE_CYGPATH; \
@@ -509,6 +509,18 @@ The following actions will be performed:
 - ocamlopt   -c z.ml
 - ocamlopt   -c q.ml
 - ocamlopt   -c big_int_Z.ml
+
+#=== ERROR while installing conf-gtksourceview.2 ==============================#
+# opam-version         1.2.2 (c30ed46b7e70bcf0f872e482cbcbf6a1fa0c60b3)
+# os                   linux
+# command              pkg-config gtksourceview-2.0
+# path                 /home/opam/.opam/system/build/conf-gtksourceview.2
+# compiler             system (4.02.1)
+# exit-code            1
+# env-file             /home/opam/.opam/system/build/conf-gtksourceview.2/conf-gtksourceview-1-0a5907.env
+# stdout-file          /home/opam/.opam/system/build/conf-gtksourceview.2/conf-gtksourceview-1-0a5907.out
+# stderr-file          /home/opam/.opam/system/build/conf-gtksourceview.2/conf-gtksourceview-1-0a5907.err
+
 - ocamlmklib -failsafe -o zarith z.cmx q.cmx big_int_Z.cmx -lgmp
 - ocamlopt -shared -o zarith.cmxs -I . zarith.cmxa
 [zarith: make install] Command started
@@ -532,18 +544,6 @@ The following actions will be performed:
 - ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/system/lib/stublibs is not mentioned in ld.conf
 -> installed zarith.1.3
 
-#=== ERROR while installing conf-gtksourceview.2 ==============================#
-# opam-version         1.2.2 (c30ed46b7e70bcf0f872e482cbcbf6a1fa0c60b3)
-# os                   linux
-# command              pkg-config gtksourceview-2.0
-# path                 /home/opam/.opam/system/build/conf-gtksourceview.2
-# compiler             system (4.02.1)
-# exit-code            1
-# env-file             /home/opam/.opam/system/build/conf-gtksourceview.2/conf-gtksourceview-1-0a5907.env
-# stdout-file          /home/opam/.opam/system/build/conf-gtksourceview.2/conf-gtksourceview-1-0a5907.out
-# stderr-file          /home/opam/.opam/system/build/conf-gtksourceview.2/conf-gtksourceview-1-0a5907.err
-
-
 
 =-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 The following actions were aborted
@@ -563,5 +563,5 @@ The following changes have been performed
    your system
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150511073158.export"
+    opam switch import "~/.opam/system/backup/state-20150511192746.export"
 'opam install altgr-ergo' failed.
