@@ -2,29 +2,29 @@
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=odoc-depgraph
 # Detecting depexts using flags: x86_64 linux debian
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=odoc-depgraph
 # The following system packages are needed:
 #  - libexpat1-dev
 #  - libgtk2.0-dev
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=odoc-depgraph
 Not running as root, system installation will be done through "sudo"
 + sudo apt-get update
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
+Hit http://download.opensuse.org  Packages
+Hit http://security.debian.org stable/updates Release.gpg
 Hit http://http.debian.net stable Release.gpg
 Hit http://http.debian.net stable-updates Release.gpg
+Hit http://security.debian.org stable/updates Release
 Hit http://http.debian.net stable Release
-Hit http://download.opensuse.org  Packages
+Hit http://security.debian.org stable/updates/main amd64 Packages
 Hit http://http.debian.net stable-updates Release
 Hit http://http.debian.net stable/main amd64 Packages
 Hit http://http.debian.net stable-updates/main amd64 Packages
-Hit http://security.debian.org stable/updates Release.gpg
-Hit http://security.debian.org stable/updates Release
-Hit http://security.debian.org stable/updates/main amd64 Packages
 Reading package lists...
-+ sudo apt-get install -qq -yy libexpat1-dev libgtk2.0-dev m4
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
++ sudo apt-get install -qq -yy libexpat1-dev libgtk2.0-dev m4
 debconf: delaying package configuration, since apt-utils is not installed
 Selecting previously unselected package libpipeline1:amd64.
 (Reading database ... 19958 files and directories currently installed.)
@@ -238,6 +238,8 @@ Setting up libthai-data (0.1.18-2) ...
 Setting up libthai0:amd64 (0.1.18-2) ...
 Setting up fontconfig (2.9.0-7.1) ...
 Regenerating fonts cache... done.
+debconf: unable to initialize frontend: Dialog
+debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 Setting up libpango1.0-0:amd64 (1.30.0-1) ...
 Setting up libxcursor1:amd64 (1:1.1.13-1+deb7u1) ...
 Setting up libgtk2.0-0:amd64 (2.24.10-2) ...
@@ -247,8 +249,6 @@ update-alternatives: using /usr/bin/bsd-write to provide /usr/bin/write (write) 
 update-alternatives: using /usr/bin/bsd-from to provide /usr/bin/from (from) in auto mode
 Setting up groff-base (1.21-9) ...
 Setting up man-db (2.6.2-1) ...
-debconf: unable to initialize frontend: Dialog
-debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
 debconf: unable to initialize frontend: Readline
 debconf: (This frontend requires a controlling tty.)
@@ -466,6 +466,12 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 		cp topfind.ml.in topfind.ml;                             \
+- 	else                                                             \
+- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 			> topfind.ml ;                                   \
+- 	fi
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -474,12 +480,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 		cp topfind.ml.in topfind.ml;                             \
-- 	else                                                             \
-- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 			> topfind.ml ;                                   \
-- 	fi
 - ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
@@ -526,7 +526,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -571,6 +570,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -1232,12 +1232,12 @@ The following actions will be performed:
 - checking whether the C compiler works... yes
 - checking for C compiler default output file name... a.out
 - checking for suffix of executables... 
+- 
 - checking whether we are cross compiling... no
 - checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
-- checking for gcc option to accept ISO C89... 
-- none needed
+- checking for gcc option to accept ISO C89... none needed
 - checking platform... Unix
 - checking native dynlink... checking for pkg-config... /usr/bin/pkg-config
 - checking for GTK+ - version >= 2.0.0... 
@@ -1318,21 +1318,21 @@ The following actions will be performed:
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gtkassistant.c'
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O' -verbose ml_gtkedit.c
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O' -verbose ml_gtkfile.c
-- ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O' -verbose ml_gtklist.c
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gtkedit.c'
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gtkfile.c'
-- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gtklist.c'
+- ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O' -verbose ml_gtklist.c
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O' -verbose ml_gtkmenu.c
-- ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O' -verbose ml_gtkmisc.c
+- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gtklist.c'
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gtkmenu.c'
-- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gtkmisc.c'
+- ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O' -verbose ml_gtkmisc.c
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O' -verbose ml_gtkpack.c
-- ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O' -verbose ml_gtkrange.c
+- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gtkmisc.c'
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gtkpack.c'
-- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gtkrange.c'
+- ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O' -verbose ml_gtkrange.c
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O' -verbose ml_gtkstock.c
-- ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O' -verbose ml_gtktext.c
+- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gtkrange.c'
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gtkstock.c'
+- ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O' -verbose ml_gtktext.c
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gtktext.c'
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O' -verbose ml_gtktree.c
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gtktree.c'
@@ -1352,6 +1352,11 @@ The following actions will be performed:
 - ocamlc.opt   -w s -c gdk.mli
 - ocamlc.opt   -w s -c  gdk.ml
 - ocamlc.opt   -w s -c  gdkEvent.ml
+- ocamlc.opt   -w s -c  gdkKeysyms.ml
+- ocamlc.opt   -w s -c gdkPixbuf.mli
+- ocamlc.opt   -w s -c  gdkPixbuf.ml
+- ocamlc.opt   -w s -c  gtk.ml
+- camlp4o pa_macro.cmo -D HAS_PRINTEXC_BACKTRACE -impl gtkSignal.ml4 -o gtkSignal.ml
 - File "gpointer.ml", line 144, characters 10-23:
 - Warning 3: deprecated: StdLabels.String.create
 - Use BytesLabels.create instead.
@@ -1370,11 +1375,6 @@ The following actions will be performed:
 - File "gutf8.ml", line 145, characters 11-23:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
-- ocamlc.opt   -w s -c  gdkKeysyms.ml
-- ocamlc.opt   -w s -c gdkPixbuf.mli
-- ocamlc.opt   -w s -c  gdkPixbuf.ml
-- ocamlc.opt   -w s -c  gtk.ml
-- camlp4o pa_macro.cmo -D HAS_PRINTEXC_BACKTRACE -impl gtkSignal.ml4 -o gtkSignal.ml
 - ocamlc.opt   -w s -c gtkSignal.mli
 - ocamlc.opt   -w s -c  gtkSignal.ml
 - ocamlc.opt   -w s -c  gtkStock.ml
@@ -1403,11 +1403,6 @@ The following actions will be performed:
 - ocamlc.opt   -w s -c  gtkTextProps.ml
 - ./propcc gtkTree.props
 - ocamlc.opt   -w s -c  gtkTreeProps.ml
-- Warning: no conversion for type PangoAttrList in class GtkLabel
-- Warning: no conversion for type GdkPixbufAnimation in class GtkImage
-- Warning: no conversion for type PangoTabArray in class GtkTextView
-- Warning: no conversion for type PangoTabArray in class GtkTextTag
-- Warning: no conversion for type PangoAttrList in class GtkCellRendererText
 - ./propcc gtkFile.props
 - ocamlc.opt   -w s -c  gtkFileProps.ml
 - ./propcc gtkAction.props
@@ -1420,6 +1415,11 @@ The following actions will be performed:
 - ocamlc.opt   -w s -c  gtkBase.ml
 - ocamlc.opt   -w s -c  gtkPack.ml
 - ocamlc.opt   -w s -c  gtkButton.ml
+- Warning: no conversion for type PangoAttrList in class GtkLabel
+- Warning: no conversion for type GdkPixbufAnimation in class GtkImage
+- Warning: no conversion for type PangoTabArray in class GtkTextView
+- Warning: no conversion for type PangoTabArray in class GtkTextTag
+- Warning: no conversion for type PangoAttrList in class GtkCellRendererText
 - ocamlc.opt   -w s -c  gtkAssistant.ml
 - ocamlc.opt   -w s -c  gtkMenu.ml
 - ocamlc.opt   -w s -c  gtkMisc.ml
@@ -1436,9 +1436,6 @@ The following actions will be performed:
 - ocamlc.opt   -w s -c  gPango.ml
 - ocamlc.opt   -w s -c gDraw.mli
 - ocamlc.opt   -w s -c  gDraw.ml
-- File "gtkList.ml", line 188, characters 14-26:
-- Warning 3: deprecated: StdLabels.Array.create
-- Use ArrayLabels.make instead.
 - ocamlc.opt   -w s -c gObj.mli
 - ocamlc.opt   -w s -c  gObj.ml
 - ocamlc.opt   -w s -c  ogtkBaseProps.ml
@@ -1447,6 +1444,9 @@ The following actions will be performed:
 - ocamlc.opt   -w s -c  ogtkBinProps.ml
 - ocamlc.opt   -w s -c  ogtkButtonProps.ml
 - ocamlc.opt   -w s -c  ogtkEditProps.ml
+- File "gtkList.ml", line 188, characters 14-26:
+- Warning 3: deprecated: StdLabels.Array.create
+- Use ArrayLabels.make instead.
 - ocamlc.opt   -w s -c  ogtkListProps.ml
 - ocamlc.opt   -w s -c  ogtkMenuProps.ml
 - ocamlc.opt   -w s -c  ogtkMiscProps.ml
@@ -1534,13 +1534,6 @@ The following actions will be performed:
 - ocamlopt.opt  -w s -c gaux.ml
 - ocamlopt.opt  -w s -c gpointer.ml
 - ocamlopt.opt  -w s -c gutf8.ml
-- ocamlopt.opt  -w s -c glib.ml
-- ocamlopt.opt  -w s -c gobject.ml
-- ocamlopt.opt  -w s -c gdkEnums.ml
-- ocamlopt.opt  -w s -c pangoEnums.ml
-- ocamlopt.opt  -w s -c gtkEnums.ml
-- ocamlopt.opt  -w s -c pango.ml
-- ocamlopt.opt  -w s -c gdk.ml
 - File "gpointer.ml", line 144, characters 10-23:
 - Warning 3: deprecated: StdLabels.String.create
 - Use BytesLabels.create instead.
@@ -1559,6 +1552,13 @@ The following actions will be performed:
 - File "gutf8.ml", line 145, characters 11-23:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
+- ocamlopt.opt  -w s -c glib.ml
+- ocamlopt.opt  -w s -c gobject.ml
+- ocamlopt.opt  -w s -c gdkEnums.ml
+- ocamlopt.opt  -w s -c pangoEnums.ml
+- ocamlopt.opt  -w s -c gtkEnums.ml
+- ocamlopt.opt  -w s -c pango.ml
+- ocamlopt.opt  -w s -c gdk.ml
 - ocamlopt.opt  -w s -c gdkEvent.ml
 - ocamlopt.opt  -w s -c gdkKeysyms.ml
 - ocamlopt.opt  -w s -c gdkPixbuf.ml
@@ -1598,11 +1598,11 @@ The following actions will be performed:
 - ocamlopt.opt  -w s -c gtkFile.ml
 - ocamlopt.opt  -w s -c gtkMain.ml
 - ocamlopt.opt  -w s -c gtkBroken.ml
+- ocamlopt.opt  -w s -c gPango.ml
+- ocamlopt.opt  -w s -c gDraw.ml
 - File "gtkList.ml", line 188, characters 14-26:
 - Warning 3: deprecated: StdLabels.Array.create
 - Use ArrayLabels.make instead.
-- ocamlopt.opt  -w s -c gPango.ml
-- ocamlopt.opt  -w s -c gDraw.ml
 - ocamlopt.opt  -w s -c gObj.ml
 - ocamlopt.opt  -w s -c ogtkBaseProps.ml
 - ocamlopt.opt  -w s -c gData.ml
@@ -1647,9 +1647,9 @@ The following actions will be performed:
 - ocamlopt.opt  -w s -c -thread gtkThread.ml
 - ocamlopt.opt -verbose -o lablgtk.cmxs -shared -linkall -I . \
 -         -ccopt '' lablgtk.cmxa
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/lablgtk.2.18.3/src'
-- + as -o 'lablgtk.cmxs.startup.o' '/tmp/camlstartup9be634.s'
+- + as -o 'lablgtk.cmxs.startup.o' '/tmp/camlstartup438718.s'
 - + gcc -shared -o 'lablgtk.cmxs'   '-L.' '-L/home/opam/.opam/4.02.1/lib/ocaml'  'lablgtk.cmxs.startup.o' 'lablgtk.a' '-llablgtk2' '-lgtk-x11-2.0' '-lgdk-x11-2.0' '-latk-1.0' '-lgio-2.0' '-lpangoft2-1.0' '-lpangocairo-1.0' '-lgdk_pixbuf-2.0' '-lcairo' '-lpango-1.0' '-lfreetype' '-lfontconfig' '-lgobject-2.0' '-lglib-2.0' 
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/lablgtk.2.18.3/src'
 [lablgtk: make install] Command started
 + make "install" (CWD=/home/opam/.opam/4.02.1/build/lablgtk.2.18.3)
 - make -C src install
@@ -2117,6 +2117,7 @@ The following actions will be performed:
 - configure: creating ./config.status
 - config.status: creating master.Makefile
 - config.status: creating odot_version.ml
+- config.status: creating META
 - File "checkocaml.ml", line 206, characters 14-27:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -2127,7 +2128,6 @@ The following actions will be performed:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
 - ocamlfind: Package `lablgtk2.gnomecanvas' not found
-- config.status: creating META
 [ocamldot: make all] Command started
 + make "all" (CWD=/home/opam/.opam/4.02.1/build/ocamldot.1.0)
 - /home/opam/.opam/4.02.1/bin/ocamlyacc -v odot_parser.mly
