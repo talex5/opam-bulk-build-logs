@@ -1,31 +1,30 @@
 + uname -m
-+ uname -s
 # Detecting depexts using flags: x86_64 linux debian
++ uname -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=opamfu
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=opamfu
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=opamfu
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
+Hit http://httpredir.debian.org stable Release.gpg
+Hit http://security.debian.org stable/updates Release.gpg
+Hit http://httpredir.debian.org stable-updates Release.gpg
 Hit http://download.opensuse.org  Release.gpg
-Hit http://download.opensuse.org  Release
-Get:1 http://httpredir.debian.org stable Release.gpg [1655 B]
-Get:2 http://httpredir.debian.org stable-updates Release.gpg [836 B]
 Hit http://httpredir.debian.org stable Release
-Hit http://download.opensuse.org  Packages
-Get:3 http://httpredir.debian.org stable-updates Release [124 kB]
+Hit http://security.debian.org stable/updates Release
+Hit http://download.opensuse.org  Release
+Hit http://httpredir.debian.org stable-updates Release
 Hit http://httpredir.debian.org stable/main amd64 Packages
-Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [4369 B]
-Get:5 http://security.debian.org stable/updates Release.gpg [836 B]
-Get:6 http://security.debian.org stable/updates Release [102 kB]
-Get:7 http://security.debian.org stable/updates/main amd64 Packages [382 kB]
-Fetched 616 kB in 2s (259 kB/s)
+Hit http://security.debian.org stable/updates/main amd64 Packages
+Hit http://download.opensuse.org  Packages
+Hit http://httpredir.debian.org stable-updates/main amd64 Packages
 Reading package lists...
-+ sudo apt-get install -qq -yy m4
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
++ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind     1.5.5                                 [required by opamfu]
@@ -51,19 +50,19 @@ The following actions will be performed:
 [camlp4: from default] Command started
 [cudf: from default] Command started
 [dose: from default] Command started
-[camlp4: from default] Command started
-[cudf: from default] Command started
 [dose: from default] Command started
-[default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
+[cudf: from default] Command started
+[camlp4: from default] Command started
+[default] http://opam-archive:8080/archives/dose.3.2.2+opam+opam.tar.gz downloaded
 [extlib-compat: from default] Command started
 [default] http://opam-archive:8080/archives/cudf.0.7+opam.tar.gz downloaded
 [jsonm: from default] Command started
-[default] http://opam-archive:8080/archives/dose.3.2.2+opam+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [extlib-compat: from default] Command started
-[jsonm: from default] Command started
 [default] http://opam-archive:8080/archives/extlib-compat.1.6.1+opam.tar.gz downloaded
 [ocamlgraph: from default] Command started
+[jsonm: from default] Command started
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/jsonm.0.9.1+opam.tar.gz downloaded
 [opam-lib: from default] Command started
@@ -76,9 +75,9 @@ The following actions will be performed:
 [opamfu: from default] Command started
 [default] http://opam-archive:8080/archives/opam-lib.1.2.0+opam.tar.gz downloaded
 [re: from default] Command started
-[ounit: from default] Command started
 [default] http://opam-archive:8080/archives/opamfu.0.1.2+opam.tar.gz downloaded
 [sexplib: from default] Command started
+[ounit: from default] Command started
 [default] http://opam-archive:8080/archives/ounit.2.0.0+opam.tar.gz downloaded
 [stringext: from default] Command started
 [re: from default] Command started
@@ -88,11 +87,11 @@ The following actions will be performed:
 [stringext: from default] Command started
 [default] http://opam-archive:8080/archives/sexplib.112.24.01+opam.tar.gz downloaded
 [uri: from default] Command started
+[type_conv: from default] Command started
 [default] http://opam-archive:8080/archives/stringext.1.3.1+opam.tar.gz downloaded
 [uutf: from default] Command started
-[type_conv: from default] Command started
-[uri: from default] Command started
 [default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
+[uri: from default] Command started
 [uutf: from default] Command started
 [default] http://opam-archive:8080/archives/uri.1.8.0+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/uutf.0.9.4+opam.tar.gz downloaded
@@ -179,6 +178,11 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -224,12 +228,9 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -238,8 +239,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -292,6 +291,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -336,7 +336,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -1756,7 +1755,6 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4/Printers -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Printers/DumpOCamlAst.cmo camlp4/Camlp4/Printers/DumpOCamlAst.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4/Printers -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Printers/Null.cmo camlp4/Camlp4/Printers/Null.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4/Printers -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Printers/OCaml.cmo camlp4/Camlp4/Printers/OCaml.ml
-- + echo camlp4/Camlp4.cmo camlp4/Camlp4Top.cmo camlp4/camlp4prof.byte camlp4/mkcamlp4.byte camlp4/camlp4.byte camlp4/camlp4fulllib.cma camlp4/camlp4boot.byte camlp4/camlp4boot.cma camlp4/camlp4r.byte camlp4/camlp4r.cma camlp4/camlp4rf.byte camlp4/camlp4rf.cma camlp4/camlp4o.byte camlp4/camlp4o.cma camlp4/camlp4of.byte camlp4/camlp4of.cma camlp4/camlp4oof.byte camlp4/camlp4oof.cma camlp4/camlp4orf.byte camlp4/camlp4orf.cma camlp4/Camlp4Parsers/Camlp4AstLoader.cmo camlp4/Camlp4Parsers/Camlp4DebugParser.cmo camlp4/Camlp4Parsers/Camlp4GrammarParser.cmo camlp4/Camlp4Parsers/Camlp4ListComprehension.cmo camlp4/Camlp4Parsers/Camlp4MacroParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4OCamlParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmo camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmo camlp4/Camlp4Printers/Camlp4AstDumper.cmo camlp4/Camlp4Printers/Camlp4AutoPrinter.cmo camlp4/Camlp4Printers/Camlp4NullDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlPrinter.cmo camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.cmo camlp4/Camlp4Filters/Camlp4AstLifter.cmo camlp4/Camlp4Filters/Camlp4ExceptionTracer.cmo camlp4/Camlp4Filters/Camlp4FoldGenerator.cmo camlp4/Camlp4Filters/Camlp4LocationStripper.cmo camlp4/Camlp4Filters/Camlp4MapGenerator.cmo camlp4/Camlp4Filters/Camlp4MetaGenerator.cmo camlp4/Camlp4Filters/Camlp4Profiler.cmo camlp4/Camlp4Filters/Camlp4TrashRemover.cmo
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4/Printers -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Printers/OCamlr.cmo camlp4/Camlp4/Printers/OCamlr.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -pack -g camlp4/Camlp4/Printers/DumpCamlp4Ast.cmo camlp4/Camlp4/Printers/DumpOCamlAst.cmo camlp4/Camlp4/Printers/Null.cmo camlp4/Camlp4/Printers/OCaml.cmo camlp4/Camlp4/Printers/OCamlr.cmo -o camlp4/Camlp4/Printers.cmo
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4/Register.mli > camlp4/Camlp4/Register.mli.depends
@@ -1816,6 +1814,7 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4Parsers/Camlp4QuotationExpander.ml > camlp4/Camlp4Parsers/Camlp4QuotationExpander.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4Printers/Camlp4AstDumper.ml > camlp4/Camlp4Printers/Camlp4AstDumper.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4Printers/Camlp4AutoPrinter.ml > camlp4/Camlp4Printers/Camlp4AutoPrinter.ml.depends
+- + echo camlp4/Camlp4.cmo camlp4/Camlp4Top.cmo camlp4/camlp4prof.byte camlp4/mkcamlp4.byte camlp4/camlp4.byte camlp4/camlp4fulllib.cma camlp4/camlp4boot.byte camlp4/camlp4boot.cma camlp4/camlp4r.byte camlp4/camlp4r.cma camlp4/camlp4rf.byte camlp4/camlp4rf.cma camlp4/camlp4o.byte camlp4/camlp4o.cma camlp4/camlp4of.byte camlp4/camlp4of.cma camlp4/camlp4oof.byte camlp4/camlp4oof.cma camlp4/camlp4orf.byte camlp4/camlp4orf.cma camlp4/Camlp4Parsers/Camlp4AstLoader.cmo camlp4/Camlp4Parsers/Camlp4DebugParser.cmo camlp4/Camlp4Parsers/Camlp4GrammarParser.cmo camlp4/Camlp4Parsers/Camlp4ListComprehension.cmo camlp4/Camlp4Parsers/Camlp4MacroParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4OCamlParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmo camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmo camlp4/Camlp4Printers/Camlp4AstDumper.cmo camlp4/Camlp4Printers/Camlp4AutoPrinter.cmo camlp4/Camlp4Printers/Camlp4NullDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlPrinter.cmo camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.cmo camlp4/Camlp4Filters/Camlp4AstLifter.cmo camlp4/Camlp4Filters/Camlp4ExceptionTracer.cmo camlp4/Camlp4Filters/Camlp4FoldGenerator.cmo camlp4/Camlp4Filters/Camlp4LocationStripper.cmo camlp4/Camlp4Filters/Camlp4MapGenerator.cmo camlp4/Camlp4Filters/Camlp4MetaGenerator.cmo camlp4/Camlp4Filters/Camlp4Profiler.cmo camlp4/Camlp4Filters/Camlp4TrashRemover.cmo
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4Printers/Camlp4NullDumper.ml > camlp4/Camlp4Printers/Camlp4NullDumper.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4Printers/Camlp4OCamlAstDumper.ml > camlp4/Camlp4Printers/Camlp4OCamlAstDumper.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4Printers/Camlp4OCamlPrinter.ml > camlp4/Camlp4Printers/Camlp4OCamlPrinter.ml.depends
@@ -1879,8 +1878,8 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.ml > camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4Parsers -I camlp4 -I camlp4/config -o camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.ml
 - ocamlbuild -classic-display -no-ocamlfind  `./build/camlp4-native-only.sh`
-- + echo camlp4/Camlp4.cmx camlp4/Camlp4Top.cmx camlp4/camlp4prof.native camlp4/mkcamlp4.native camlp4/camlp4.native camlp4/camlp4fulllib.cmxa camlp4/camlp4boot.native camlp4/camlp4r.native camlp4/camlp4rf.native camlp4/camlp4o.native camlp4/camlp4of.native camlp4/camlp4oof.native camlp4/camlp4orf.native camlp4/Camlp4Parsers/Camlp4AstLoader.cmx camlp4/Camlp4Parsers/Camlp4AstLoader.o camlp4/Camlp4Parsers/Camlp4DebugParser.cmx camlp4/Camlp4Parsers/Camlp4DebugParser.o camlp4/Camlp4Parsers/Camlp4GrammarParser.cmx camlp4/Camlp4Parsers/Camlp4GrammarParser.o camlp4/Camlp4Parsers/Camlp4ListComprehension.cmx camlp4/Camlp4Parsers/Camlp4ListComprehension.o camlp4/Camlp4Parsers/Camlp4MacroParser.cmx camlp4/Camlp4Parsers/Camlp4MacroParser.o camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmx camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.o camlp4/Camlp4Parsers/Camlp4OCamlParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlParser.o camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlParserParser.o camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.o camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.o camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.o camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmx camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.o camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmx camlp4/Camlp4Parsers/Camlp4QuotationCommon.o camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmx camlp4/Camlp4Parsers/Camlp4QuotationExpander.o camlp4/Camlp4Printers/Camlp4AstDumper.cmx camlp4/Camlp4Printers/Camlp4AstDumper.o camlp4/Camlp4Printers/Camlp4AutoPrinter.cmx camlp4/Camlp4Printers/Camlp4AutoPrinter.o camlp4/Camlp4Printers/Camlp4NullDumper.cmx camlp4/Camlp4Printers/Camlp4NullDumper.o camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmx camlp4/Camlp4Printers/Camlp4OCamlAstDumper.o camlp4/Camlp4Printers/Camlp4OCamlPrinter.cmx camlp4/Camlp4Printers/Camlp4OCamlPrinter.o camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.cmx camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.o camlp4/Camlp4Filters/Camlp4AstLifter.cmx camlp4/Camlp4Filters/Camlp4AstLifter.o camlp4/Camlp4Filters/Camlp4ExceptionTracer.cmx camlp4/Camlp4Filters/Camlp4ExceptionTracer.o camlp4/Camlp4Filters/Camlp4FoldGenerator.cmx camlp4/Camlp4Filters/Camlp4FoldGenerator.o camlp4/Camlp4Filters/Camlp4LocationStripper.cmx camlp4/Camlp4Filters/Camlp4LocationStripper.o camlp4/Camlp4Filters/Camlp4MapGenerator.cmx camlp4/Camlp4Filters/Camlp4MapGenerator.o camlp4/Camlp4Filters/Camlp4MetaGenerator.cmx camlp4/Camlp4Filters/Camlp4MetaGenerator.o camlp4/Camlp4Filters/Camlp4Profiler.cmx camlp4/Camlp4Filters/Camlp4Profiler.o camlp4/Camlp4Filters/Camlp4TrashRemover.cmx camlp4/Camlp4Filters/Camlp4TrashRemover.o
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -for-pack Camlp4 -g -w Z -I camlp4/import -warn-error A-3 -pp 'camlp4/boot/camlp4boot.native -D OPT' -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Sig.cmx camlp4/Camlp4/Sig.ml
+- + echo camlp4/Camlp4.cmx camlp4/Camlp4Top.cmx camlp4/camlp4prof.native camlp4/mkcamlp4.native camlp4/camlp4.native camlp4/camlp4fulllib.cmxa camlp4/camlp4boot.native camlp4/camlp4r.native camlp4/camlp4rf.native camlp4/camlp4o.native camlp4/camlp4of.native camlp4/camlp4oof.native camlp4/camlp4orf.native camlp4/Camlp4Parsers/Camlp4AstLoader.cmx camlp4/Camlp4Parsers/Camlp4AstLoader.o camlp4/Camlp4Parsers/Camlp4DebugParser.cmx camlp4/Camlp4Parsers/Camlp4DebugParser.o camlp4/Camlp4Parsers/Camlp4GrammarParser.cmx camlp4/Camlp4Parsers/Camlp4GrammarParser.o camlp4/Camlp4Parsers/Camlp4ListComprehension.cmx camlp4/Camlp4Parsers/Camlp4ListComprehension.o camlp4/Camlp4Parsers/Camlp4MacroParser.cmx camlp4/Camlp4Parsers/Camlp4MacroParser.o camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmx camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.o camlp4/Camlp4Parsers/Camlp4OCamlParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlParser.o camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlParserParser.o camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.o camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.o camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.o camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmx camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.o camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmx camlp4/Camlp4Parsers/Camlp4QuotationCommon.o camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmx camlp4/Camlp4Parsers/Camlp4QuotationExpander.o camlp4/Camlp4Printers/Camlp4AstDumper.cmx camlp4/Camlp4Printers/Camlp4AstDumper.o camlp4/Camlp4Printers/Camlp4AutoPrinter.cmx camlp4/Camlp4Printers/Camlp4AutoPrinter.o camlp4/Camlp4Printers/Camlp4NullDumper.cmx camlp4/Camlp4Printers/Camlp4NullDumper.o camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmx camlp4/Camlp4Printers/Camlp4OCamlAstDumper.o camlp4/Camlp4Printers/Camlp4OCamlPrinter.cmx camlp4/Camlp4Printers/Camlp4OCamlPrinter.o camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.cmx camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.o camlp4/Camlp4Filters/Camlp4AstLifter.cmx camlp4/Camlp4Filters/Camlp4AstLifter.o camlp4/Camlp4Filters/Camlp4ExceptionTracer.cmx camlp4/Camlp4Filters/Camlp4ExceptionTracer.o camlp4/Camlp4Filters/Camlp4FoldGenerator.cmx camlp4/Camlp4Filters/Camlp4FoldGenerator.o camlp4/Camlp4Filters/Camlp4LocationStripper.cmx camlp4/Camlp4Filters/Camlp4LocationStripper.o camlp4/Camlp4Filters/Camlp4MapGenerator.cmx camlp4/Camlp4Filters/Camlp4MapGenerator.o camlp4/Camlp4Filters/Camlp4MetaGenerator.cmx camlp4/Camlp4Filters/Camlp4MetaGenerator.o camlp4/Camlp4Filters/Camlp4Profiler.cmx camlp4/Camlp4Filters/Camlp4Profiler.o camlp4/Camlp4Filters/Camlp4TrashRemover.cmx camlp4/Camlp4Filters/Camlp4TrashRemover.o
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -for-pack Camlp4 -g -w Z -I camlp4/import -warn-error A-3 -pp 'camlp4/boot/camlp4boot.native -D OPT' -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Utils.cmx camlp4/Camlp4/Utils.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -for-pack Camlp4 -g -w Z -I camlp4/import -warn-error A-3 -pp 'camlp4/boot/camlp4boot.native -D OPT' -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/OCamlInitSyntax.cmx camlp4/Camlp4/OCamlInitSyntax.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -for-pack Camlp4 -g -w Z -I camlp4/import -warn-error A-3 -pp 'camlp4/boot/camlp4boot.native -D OPT' -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/ErrorHandler.cmx camlp4/Camlp4/ErrorHandler.ml
@@ -2264,6 +2263,71 @@ The following actions will be performed:
 - Installed /home/opam/.opam/4.02.1/lib/type_conv/META
 -> installed type_conv.112.01.01
 [sexplib: ./configure] Command started
++ ./configure "--enable-syntax" (CWD=/home/opam/.opam/4.02.1/build/sexplib.112.24.01)
+- 
+- Configuration: 
+- ocamlfind: ........................................... /home/opam/.opam/4.02.1/bin/ocamlfind
+- ocamlc: .............................................. /home/opam/.opam/4.02.1/bin/ocamlc.opt
+- ocamlopt: ............................................ /home/opam/.opam/4.02.1/bin/ocamlopt.opt
+- ocamlbuild: .......................................... /home/opam/.opam/4.02.1/bin/ocamlbuild
+- Package name: ........................................ sexplib
+- Package version: ..................................... 112.24.01
+- os_type: ............................................. Unix
+- system: .............................................. linux
+- architecture: ........................................ amd64
+- ccomp_type: .......................................... cc
+- ocaml_version: ....................................... 4.02.1
+- standard_library_default: ............................ /home/opam/.opam/4.02.1/lib/ocaml
+- standard_library: .................................... /home/opam/.opam/4.02.1/lib/ocaml
+- standard_runtime: .................................... /home/opam/.opam/4.02.1/bin/ocamlrun
+- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
+- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
+- model: ............................................... default
+- ext_obj: ............................................. .o
+- ext_asm: ............................................. .s
+- ext_lib: ............................................. .a
+- ext_dll: ............................................. .so
+- default_executable_name: ............................. a.out
+- systhread_supported: ................................. true
+- Install architecture-independent files dir: .......... /usr/local
+- Install architecture-dependent files in dir: ......... $prefix
+- User executables: .................................... $exec_prefix/bin
+- System admin executables: ............................ $exec_prefix/sbin
+- Program executables: ................................. $exec_prefix/libexec
+- Read-only single-machine data: ....................... $prefix/etc
+- Modifiable architecture-independent data: ............ $prefix/com
+- Modifiable single-machine data: ...................... $prefix/var
+- Object code libraries: ............................... $exec_prefix/lib
+- Read-only arch-independent data root: ................ $prefix/share
+- Read-only architecture-independent data: ............. $datarootdir
+- Info documentation: .................................. $datarootdir/info
+- Locale-dependent data: ............................... $datarootdir/locale
+- Man documentation: ................................... $datarootdir/man
+- Documentation root: .................................. $datarootdir/doc/$pkg_name
+- HTML documentation: .................................. $docdir
+- DVI documentation: ................................... $docdir
+- PDF documentation: ................................... $docdir
+- PS documentation: .................................... $docdir
+- findlib_version: ..................................... 1.5.5
+- is_native: ........................................... true
+- suffix_program: ...................................... 
+- Remove a file.: ...................................... rm -f
+- Remove a directory.: ................................. rm -rf
+- Turn ocaml debug flag on: ............................ true
+- Turn ocaml profile flag on: .......................... false
+- Compiler support generation of .cmxs.: ............... true
+- OCamlbuild additional flags: ......................... 
+- Build the syntax extension: .......................... true
+- Create documentations: ............................... true
+- Compile tests executable and library and run them: ... false
+- pkg_bigarray: ........................................ /home/opam/.opam/4.02.1/lib/ocaml
+- pkg_num: ............................................. /home/opam/.opam/4.02.1/lib/num
+- pkg_unix: ............................................ /home/opam/.opam/4.02.1/lib/ocaml
+- pkg_camlp4_quotations: ............................... /home/opam/.opam/4.02.1/lib/ocaml/camlp4
+- pkg_camlp4_extend: ................................... /home/opam/.opam/4.02.1/lib/ocaml/camlp4
+- pkg_type_conv: ....................................... /home/opam/.opam/4.02.1/lib/type_conv
+- 
+[sexplib: make] Command started
 + make "build" "install" (CWD=/home/opam/.opam/4.02.1/build/extlib-compat.1.6.1)
 - ocamlc -g -c enum.mli enum.ml
 - ocamlc -g -c bitSet.mli bitSet.ml
@@ -2542,71 +2606,226 @@ The following actions will be performed:
 - Installed /home/opam/.opam/4.02.1/lib/extlib/META
 -> installed extlib-compat.1.6.1
 [cudf: make all] Command started
-+ ./configure "--enable-syntax" (CWD=/home/opam/.opam/4.02.1/build/sexplib.112.24.01)
-- 
-- Configuration: 
-- ocamlfind: ........................................... /home/opam/.opam/4.02.1/bin/ocamlfind
-- ocamlc: .............................................. /home/opam/.opam/4.02.1/bin/ocamlc.opt
-- ocamlopt: ............................................ /home/opam/.opam/4.02.1/bin/ocamlopt.opt
-- ocamlbuild: .......................................... /home/opam/.opam/4.02.1/bin/ocamlbuild
-- Package name: ........................................ sexplib
-- Package version: ..................................... 112.24.01
-- os_type: ............................................. Unix
-- system: .............................................. linux
-- architecture: ........................................ amd64
-- ccomp_type: .......................................... cc
-- ocaml_version: ....................................... 4.02.1
-- standard_library_default: ............................ /home/opam/.opam/4.02.1/lib/ocaml
-- standard_library: .................................... /home/opam/.opam/4.02.1/lib/ocaml
-- standard_runtime: .................................... /home/opam/.opam/4.02.1/bin/ocamlrun
-- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
-- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
-- model: ............................................... default
-- ext_obj: ............................................. .o
-- ext_asm: ............................................. .s
-- ext_lib: ............................................. .a
-- ext_dll: ............................................. .so
-- default_executable_name: ............................. a.out
-- systhread_supported: ................................. true
-- Install architecture-independent files dir: .......... /usr/local
-- Install architecture-dependent files in dir: ......... $prefix
-- User executables: .................................... $exec_prefix/bin
-- System admin executables: ............................ $exec_prefix/sbin
-- Program executables: ................................. $exec_prefix/libexec
-- Read-only single-machine data: ....................... $prefix/etc
-- Modifiable architecture-independent data: ............ $prefix/com
-- Modifiable single-machine data: ...................... $prefix/var
-- Object code libraries: ............................... $exec_prefix/lib
-- Read-only arch-independent data root: ................ $prefix/share
-- Read-only architecture-independent data: ............. $datarootdir
-- Info documentation: .................................. $datarootdir/info
-- Locale-dependent data: ............................... $datarootdir/locale
-- Man documentation: ................................... $datarootdir/man
-- Documentation root: .................................. $datarootdir/doc/$pkg_name
-- HTML documentation: .................................. $docdir
-- DVI documentation: ................................... $docdir
-- PDF documentation: ................................... $docdir
-- PS documentation: .................................... $docdir
-- findlib_version: ..................................... 1.5.5
-- is_native: ........................................... true
-- suffix_program: ...................................... 
-- Remove a file.: ...................................... rm -f
-- Remove a directory.: ................................. rm -rf
-- Turn ocaml debug flag on: ............................ true
-- Turn ocaml profile flag on: .......................... false
-- Compiler support generation of .cmxs.: ............... true
-- OCamlbuild additional flags: ......................... 
-- Build the syntax extension: .......................... true
-- Create documentations: ............................... true
-- Compile tests executable and library and run them: ... false
-- pkg_bigarray: ........................................ /home/opam/.opam/4.02.1/lib/ocaml
-- pkg_num: ............................................. /home/opam/.opam/4.02.1/lib/num
-- pkg_unix: ............................................ /home/opam/.opam/4.02.1/lib/ocaml
-- pkg_camlp4_quotations: ............................... /home/opam/.opam/4.02.1/lib/ocaml/camlp4
-- pkg_camlp4_extend: ................................... /home/opam/.opam/4.02.1/lib/ocaml/camlp4
-- pkg_type_conv: ....................................... /home/opam/.opam/4.02.1/lib/type_conv
-- 
-[sexplib: make] Command started
++ make "all" "opt" (CWD=/home/opam/.opam/4.02.1/build/cudf.0.7)
+- make -C doc/
+- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/cudf.0.7/doc'
+- pod2man --release 0.7 cudf-check.pod > cudf-check.1
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/cudf.0.7/doc'
+- ocamlbuild  cudf.cma
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt unix.cmxa -I /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
+- File "examples/_tags", line 1, characters 25-33:
+- Warning: the tag "pkg_cudf" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
+- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_types.mli > cudf_types.mli.depends
+- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_types.cmi cudf_types.mli
+- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_types.ml > cudf_types.ml.depends
+- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_conf.mli > cudf_conf.mli.depends
+- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_conf.cmi cudf_conf.mli
+- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_conf.ml > cudf_conf.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlyacc cudf_822_parser.mly
+- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_822_parser.mli > cudf_822_parser.mli.depends
+- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_822_parser.cmi cudf_822_parser.mli
+- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_822_parser.ml > cudf_822_parser.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlyacc cudf_type_parser.mly
+- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_type_parser.mli > cudf_type_parser.mli.depends
+- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_type_parser.cmi cudf_type_parser.mli
+- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_type_parser.ml > cudf_type_parser.ml.depends
+- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_types_pp.mli > cudf_types_pp.mli.depends
+- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_types_pp.cmi cudf_types_pp.mli
+- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_types_pp.ml > cudf_types_pp.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamllex.opt -q cudf_type_lexer.mll
+- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_type_lexer.ml > cudf_type_lexer.ml.depends
+- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_type_lexer.cmo cudf_type_lexer.ml
+- /home/opam/.opam/4.02.1/bin/ocamllex.opt -q cudf_822_lexer.mll
+- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_822_lexer.ml > cudf_822_lexer.ml.depends
+- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf.mli > cudf.mli.depends
+- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf.cmi cudf.mli
+- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf.ml > cudf.ml.depends
+- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_parser.mli > cudf_parser.mli.depends
+- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_parser.cmi cudf_parser.mli
+- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_parser.ml > cudf_parser.ml.depends
+- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_822_lexer.cmo cudf_822_lexer.ml
+- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_checker.mli > cudf_checker.mli.depends
+- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_checker.cmi cudf_checker.mli
+- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_checker.ml > cudf_checker.ml.depends
+- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_printer.mli > cudf_printer.mli.depends
+- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_printer.cmi cudf_printer.mli
+- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_printer.ml > cudf_printer.ml.depends
+- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_types.cmo cudf_types.ml
+- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_conf.cmo cudf_conf.ml
+- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_822_parser.cmo cudf_822_parser.ml
+- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_type_parser.cmo cudf_type_parser.ml
+- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_types_pp.cmo cudf_types_pp.ml
+- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf.cmo cudf.ml
+- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_parser.cmo cudf_parser.ml
+- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_checker.cmo cudf_checker.ml
+- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_printer.cmo cudf_printer.ml
+- ocamlfind ocamlc -a -linkpkg cudf_types.cmo cudf_conf.cmo cudf_822_parser.cmo cudf_type_parser.cmo cudf_type_lexer.cmo cudf_types_pp.cmo cudf_822_lexer.cmo cudf.cmo cudf_parser.cmo cudf_checker.cmo cudf_printer.cmo -o cudf.cma
+- ocamlbuild  main_cudf_check.byte
+- File "examples/_tags", line 1, characters 25-33:
+- Warning: the tag "pkg_cudf" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
+- ocamlfind ocamldep -package extlib -pp camlp4o -modules main_cudf_check.ml > main_cudf_check.ml.depends
+- ocamlfind ocamlc -c -package extlib -pp camlp4o -o main_cudf_check.cmo main_cudf_check.ml
+- ocamlfind ocamlc -linkpkg -package extlib cudf_types.cmo cudf_conf.cmo cudf_type_parser.cmo cudf_type_lexer.cmo cudf_types_pp.cmo cudf.cmo cudf_checker.cmo cudf_822_parser.cmo cudf_822_lexer.cmo cudf_parser.cmo cudf_printer.cmo main_cudf_check.cmo -o main_cudf_check.byte
+- ocamlbuild  main_cudf_parse_822.byte
+- File "examples/_tags", line 1, characters 25-33:
+- Warning: the tag "pkg_cudf" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
+- ocamlfind ocamldep -package extlib -pp camlp4o -modules main_cudf_parse_822.ml > main_cudf_parse_822.ml.depends
+- ocamlfind ocamlc -c -package extlib -pp camlp4o -o main_cudf_parse_822.cmo main_cudf_parse_822.ml
+- ocamlfind ocamlc -linkpkg -package extlib cudf_types.cmo cudf_822_parser.cmo cudf_822_lexer.cmo main_cudf_parse_822.cmo -o main_cudf_parse_822.byte
+- ocamlbuild  cudf_c.cmo
+- File "examples/_tags", line 1, characters 25-33:
+- Warning: the tag "pkg_cudf" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
+- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_c.ml > cudf_c.ml.depends
+- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_c.cmo cudf_c.ml
+- ocamlbuild  cudf.cmxa
+- File "examples/_tags", line 1, characters 25-33:
+- Warning: the tag "pkg_cudf" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
+- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o cudf_types.cmx cudf_types.ml
+- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o cudf_type_parser.cmx cudf_type_parser.ml
+- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o cudf_type_lexer.cmx cudf_type_lexer.ml
+- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o cudf_822_parser.cmx cudf_822_parser.ml
+- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o cudf_conf.cmx cudf_conf.ml
+- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o cudf_types_pp.cmx cudf_types_pp.ml
+- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o cudf.cmx cudf.ml
+- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o cudf_822_lexer.cmx cudf_822_lexer.ml
+- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o cudf_parser.cmx cudf_parser.ml
+- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o cudf_checker.cmx cudf_checker.ml
+- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o cudf_printer.cmx cudf_printer.ml
+- ocamlfind ocamlopt -a -linkpkg cudf_types.cmx cudf_conf.cmx cudf_822_parser.cmx cudf_type_parser.cmx cudf_type_lexer.cmx cudf_types_pp.cmx cudf_822_lexer.cmx cudf.cmx cudf_parser.cmx cudf_checker.cmx cudf_printer.cmx -o cudf.cmxa
+- ocamlbuild  main_cudf_check.native
+- File "examples/_tags", line 1, characters 25-33:
+- Warning: the tag "pkg_cudf" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
+- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o main_cudf_check.cmx main_cudf_check.ml
+- ocamlfind ocamlopt -linkpkg -package extlib cudf_types.cmx cudf_conf.cmx cudf_type_parser.cmx cudf_type_lexer.cmx cudf_types_pp.cmx cudf.cmx cudf_822_parser.cmx cudf_822_lexer.cmx cudf_checker.cmx cudf_parser.cmx cudf_printer.cmx main_cudf_check.cmx -o main_cudf_check.native
+- ocamlbuild  main_cudf_parse_822.native
+- File "examples/_tags", line 1, characters 25-33:
+- Warning: the tag "pkg_cudf" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
+- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o main_cudf_parse_822.cmx main_cudf_parse_822.ml
+- ocamlfind ocamlopt -linkpkg -package extlib cudf_types.cmx cudf_822_parser.cmx cudf_822_lexer.cmx main_cudf_parse_822.cmx -o main_cudf_parse_822.native
+- ocamlbuild  cudf_c.cmx
+- File "examples/_tags", line 1, characters 25-33:
+- Warning: the tag "pkg_cudf" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
+- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o cudf_c.cmx cudf_c.ml
+[cudf: make install] Command started
++ make "install" "DESTDIR=/home/opam/.opam/4.02.1" "OCAMLLIBDIR=lib" "BINDIR=bin" "LIBDIR=lib" "INCDIR=include" (CWD=/home/opam/.opam/4.02.1/build/cudf.0.7)
+- test -d /home/opam/.opam/4.02.1/lib || mkdir -p /home/opam/.opam/4.02.1/lib
+- ocamlfind install -destdir /home/opam/.opam/4.02.1/lib -patch-version 0.7 cudf META _build/cudf.cma _build/cudf.cmxa _build/cudf.a _build/cudf_822_lexer.cmi _build/cudf_822_parser.cmi _build/cudf_c.cmi _build/cudf_checker.cmi _build/cudf_conf.cmi _build/cudf_parser.cmi _build/cudf_printer.cmi _build/cudf_type_lexer.cmi _build/cudf_type_parser.cmi _build/cudf_types.cmi _build/cudf_types_pp.cmi _build/cudf.mli _build/cudf_822_parser.mli _build/cudf_checker.mli _build/cudf_conf.mli _build/cudf_parser.mli _build/cudf_printer.mli _build/cudf_type_parser.mli _build/cudf_types.mli _build/cudf_types_pp.mli _build/cudf_822_lexer.cmx _build/cudf_822_parser.cmx _build/cudf_c.cmx _build/cudf_checker.cmx _build/cudf_conf.cmx _build/cudf_parser.cmx _build/cudf_printer.cmx _build/cudf_type_lexer.cmx _build/cudf_type_parser.cmx _build/cudf_types.cmx _build/cudf_types_pp.cmx _build/cudf_822_lexer.o _build/cudf_822_parser.o _build/cudf_c.o _build/cudf_checker.o _build/cudf_conf.o _build/cudf_parser.o _build/cudf_printer.o _build/cudf_type_lexer.o _build/cudf_type_parser.o _build/cudf_types.o _build/cudf_types_pp.o _build/cudf.o _build/cudf.cmx _build/cudf.cmi
+- test -d /home/opam/.opam/4.02.1/bin || mkdir -p /home/opam/.opam/4.02.1/bin
+- for p in main_cudf_check main_cudf_parse_822 ; do \
+- 		tgt=`echo $p | sed -e 's/^main.//' -e 's/_/-/g'` ; \
+- 		if [ -f _build/$p.native ] ; then \
+- 			cp _build/$p.native /home/opam/.opam/4.02.1/bin/$tgt ; \
+- 		else \
+- 			cp _build/$p.byte /home/opam/.opam/4.02.1/bin/$tgt ; \
+- 		fi ; \
+- 		echo "Installed /home/opam/.opam/4.02.1/bin/$tgt" ; \
+- 	done
+- Installed /home/opam/.opam/4.02.1/bin/cudf-check
+- Installed /home/opam/.opam/4.02.1/bin/cudf-parse-822
+- if [ -f c-lib/cudf.o ] ; then \
+- 		make -C c-lib/ -e install ; \
+- 	fi
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf.cmi
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf.cmx
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf.o
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_types_pp.o
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_types.o
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_type_parser.o
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_type_lexer.o
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_printer.o
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_parser.o
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_conf.o
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_checker.o
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_c.o
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_822_parser.o
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_822_lexer.o
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_types_pp.cmx
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_types.cmx
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_type_parser.cmx
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_type_lexer.cmx
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_printer.cmx
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_parser.cmx
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_conf.cmx
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_checker.cmx
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_c.cmx
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_822_parser.cmx
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_822_lexer.cmx
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_types_pp.mli
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_types.mli
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_type_parser.mli
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_printer.mli
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_parser.mli
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_conf.mli
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_checker.mli
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_822_parser.mli
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf.mli
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_types_pp.cmi
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_types.cmi
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_type_parser.cmi
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_type_lexer.cmi
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_printer.cmi
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_parser.cmi
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_conf.cmi
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_checker.cmi
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_c.cmi
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_822_parser.cmi
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_822_lexer.cmi
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf.a
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf.cmxa
+- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf.cma
+- Installed /home/opam/.opam/4.02.1/lib/cudf/META
+-> installed cudf.0.7
+[dose: ./configure] Command started
++ ./configure "--with-ocamlgraph" "--bindir=/home/opam/.opam/4.02.1/bin" (CWD=/home/opam/.opam/4.02.1/build/dose.3.2.2+opam)
+- checking for ocamlc... ocamlc
+- OCaml version is 4.02.1
+- OCaml library path is /home/opam/.opam/4.02.1/lib/ocaml
+- checking for ocamlopt... ocamlopt
+- checking for ocamlc.opt... ocamlc.opt
+- checking for ocamlopt.opt... ocamlopt.opt
+- checking for dynlink.cmxa... yes
+- checking for ocaml... ocaml
+- checking for ocamldep... ocamldep
+- checking for ocamlmktop... ocamlmktop
+- checking for ocamlmklib... ocamlmklib
+- checking for ocamldoc... ocamldoc
+- checking for ocamlbuild... ocamlbuild
+- checking for camlp4... camlp4
+- checking for camlp4boot... camlp4boot
+- checking for camlp4o... camlp4o
+- checking for camlp4o.opt... camlp4o.opt
+- checking for camlp4of... camlp4of
+- checking for camlp4oof... camlp4oof
+- checking for camlp4orf... camlp4orf
+- checking for camlp4prof... camlp4prof
+- checking for camlp4r... camlp4r
+- checking for camlp4rf... camlp4rf
+- checking for ocamlfind... ocamlfind
+- checking for OCaml findlib package cudf... found
+- checking for OCaml findlib package extlib... found
+- checking for OCaml findlib package re.pcre... found
+- checking for OCaml findlib package ocamlgraph... found
+- checking for gcc... gcc
+- checking whether the C compiler works... yes
+- checking for C compiler default output file name... a.out
+- checking for suffix of executables... 
+- checking whether we are cross compiling... no
+- checking for suffix of object files... o
+- checking whether we are using the GNU C compiler... yes
+- checking whether gcc accepts -g... yes
+- checking for gcc option to accept ISO C89... none needed
+- checking how to run the C preprocessor... gcc -E
+- checking for grep that handles long lines and -e... /bin/grep
+- checking for egrep... /bin/grep -E
+- checking for ANSI C header files... yes
+- configure: creating ./config.status
+- config.status: creating Makefile.config
+- config.status: creating _tags
+- config.status: creating META
+- config.status: creating dose3.odocl
+- config.status: creating algo/algo.mlpack
+- config.status: creating common/versionInfo.ml
+[dose: make] Command started
 + make  (CWD=/home/opam/.opam/4.02.1/build/sexplib.112.24.01)
 - ocamlopt.opt -o setup.exe setup.ml || ocamlopt -o setup.exe setup.ml || ocamlc -o setup.exe setup.ml
 - rm -f setup.cmx setup.cmi setup.o setup.obj setup.cmo
@@ -3032,176 +3251,6 @@ The following actions will be performed:
 - Installed /home/opam/.opam/4.02.1/lib/sexplib/META
 -> installed sexplib.112.24.01
 [uri: ocaml setup.ml] Command started
-+ make "all" "opt" (CWD=/home/opam/.opam/4.02.1/build/cudf.0.7)
-- make -C doc/
-- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/cudf.0.7/doc'
-- pod2man --release 0.7 cudf-check.pod > cudf-check.1
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/cudf.0.7/doc'
-- ocamlbuild  cudf.cma
-- /home/opam/.opam/4.02.1/bin/ocamlopt.opt unix.cmxa -I /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
-- File "examples/_tags", line 1, characters 25-33:
-- Warning: the tag "pkg_cudf" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
-- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_types.mli > cudf_types.mli.depends
-- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_types.cmi cudf_types.mli
-- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_types.ml > cudf_types.ml.depends
-- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_conf.mli > cudf_conf.mli.depends
-- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_conf.cmi cudf_conf.mli
-- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_conf.ml > cudf_conf.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlyacc cudf_822_parser.mly
-- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_822_parser.mli > cudf_822_parser.mli.depends
-- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_822_parser.cmi cudf_822_parser.mli
-- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_822_parser.ml > cudf_822_parser.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlyacc cudf_type_parser.mly
-- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_type_parser.mli > cudf_type_parser.mli.depends
-- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_type_parser.cmi cudf_type_parser.mli
-- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_type_parser.ml > cudf_type_parser.ml.depends
-- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_types_pp.mli > cudf_types_pp.mli.depends
-- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_types_pp.cmi cudf_types_pp.mli
-- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_types_pp.ml > cudf_types_pp.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamllex.opt -q cudf_type_lexer.mll
-- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_type_lexer.ml > cudf_type_lexer.ml.depends
-- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_type_lexer.cmo cudf_type_lexer.ml
-- /home/opam/.opam/4.02.1/bin/ocamllex.opt -q cudf_822_lexer.mll
-- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_822_lexer.ml > cudf_822_lexer.ml.depends
-- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf.mli > cudf.mli.depends
-- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf.cmi cudf.mli
-- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf.ml > cudf.ml.depends
-- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_parser.mli > cudf_parser.mli.depends
-- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_parser.cmi cudf_parser.mli
-- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_parser.ml > cudf_parser.ml.depends
-- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_822_lexer.cmo cudf_822_lexer.ml
-- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_checker.mli > cudf_checker.mli.depends
-- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_checker.cmi cudf_checker.mli
-- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_checker.ml > cudf_checker.ml.depends
-- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_printer.mli > cudf_printer.mli.depends
-- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_printer.cmi cudf_printer.mli
-- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_printer.ml > cudf_printer.ml.depends
-- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_types.cmo cudf_types.ml
-- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_conf.cmo cudf_conf.ml
-- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_822_parser.cmo cudf_822_parser.ml
-- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_type_parser.cmo cudf_type_parser.ml
-- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_types_pp.cmo cudf_types_pp.ml
-- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf.cmo cudf.ml
-- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_parser.cmo cudf_parser.ml
-- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_checker.cmo cudf_checker.ml
-- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_printer.cmo cudf_printer.ml
-- ocamlfind ocamlc -a -linkpkg cudf_types.cmo cudf_conf.cmo cudf_822_parser.cmo cudf_type_parser.cmo cudf_type_lexer.cmo cudf_types_pp.cmo cudf_822_lexer.cmo cudf.cmo cudf_parser.cmo cudf_checker.cmo cudf_printer.cmo -o cudf.cma
-- ocamlbuild  main_cudf_check.byte
-- File "examples/_tags", line 1, characters 25-33:
-- Warning: the tag "pkg_cudf" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
-- ocamlfind ocamldep -package extlib -pp camlp4o -modules main_cudf_check.ml > main_cudf_check.ml.depends
-- ocamlfind ocamlc -c -package extlib -pp camlp4o -o main_cudf_check.cmo main_cudf_check.ml
-- ocamlfind ocamlc -linkpkg -package extlib cudf_types.cmo cudf_conf.cmo cudf_type_parser.cmo cudf_type_lexer.cmo cudf_types_pp.cmo cudf.cmo cudf_checker.cmo cudf_822_parser.cmo cudf_822_lexer.cmo cudf_parser.cmo cudf_printer.cmo main_cudf_check.cmo -o main_cudf_check.byte
-- ocamlbuild  main_cudf_parse_822.byte
-- File "examples/_tags", line 1, characters 25-33:
-- Warning: the tag "pkg_cudf" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
-- ocamlfind ocamldep -package extlib -pp camlp4o -modules main_cudf_parse_822.ml > main_cudf_parse_822.ml.depends
-- ocamlfind ocamlc -c -package extlib -pp camlp4o -o main_cudf_parse_822.cmo main_cudf_parse_822.ml
-- ocamlfind ocamlc -linkpkg -package extlib cudf_types.cmo cudf_822_parser.cmo cudf_822_lexer.cmo main_cudf_parse_822.cmo -o main_cudf_parse_822.byte
-- ocamlbuild  cudf_c.cmo
-- File "examples/_tags", line 1, characters 25-33:
-- Warning: the tag "pkg_cudf" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
-- ocamlfind ocamldep -package extlib -pp camlp4o -modules cudf_c.ml > cudf_c.ml.depends
-- ocamlfind ocamlc -c -package extlib -pp camlp4o -o cudf_c.cmo cudf_c.ml
-- ocamlbuild  cudf.cmxa
-- File "examples/_tags", line 1, characters 25-33:
-- Warning: the tag "pkg_cudf" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
-- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o cudf_types.cmx cudf_types.ml
-- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o cudf_type_parser.cmx cudf_type_parser.ml
-- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o cudf_type_lexer.cmx cudf_type_lexer.ml
-- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o cudf_822_parser.cmx cudf_822_parser.ml
-- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o cudf_conf.cmx cudf_conf.ml
-- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o cudf_types_pp.cmx cudf_types_pp.ml
-- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o cudf.cmx cudf.ml
-- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o cudf_822_lexer.cmx cudf_822_lexer.ml
-- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o cudf_parser.cmx cudf_parser.ml
-- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o cudf_checker.cmx cudf_checker.ml
-- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o cudf_printer.cmx cudf_printer.ml
-- ocamlfind ocamlopt -a -linkpkg cudf_types.cmx cudf_conf.cmx cudf_822_parser.cmx cudf_type_parser.cmx cudf_type_lexer.cmx cudf_types_pp.cmx cudf_822_lexer.cmx cudf.cmx cudf_parser.cmx cudf_checker.cmx cudf_printer.cmx -o cudf.cmxa
-- ocamlbuild  main_cudf_check.native
-- File "examples/_tags", line 1, characters 25-33:
-- Warning: the tag "pkg_cudf" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
-- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o main_cudf_check.cmx main_cudf_check.ml
-- ocamlfind ocamlopt -linkpkg -package extlib cudf_types.cmx cudf_conf.cmx cudf_type_parser.cmx cudf_type_lexer.cmx cudf_types_pp.cmx cudf.cmx cudf_822_parser.cmx cudf_822_lexer.cmx cudf_checker.cmx cudf_parser.cmx cudf_printer.cmx main_cudf_check.cmx -o main_cudf_check.native
-- ocamlbuild  main_cudf_parse_822.native
-- File "examples/_tags", line 1, characters 25-33:
-- Warning: the tag "pkg_cudf" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
-- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o main_cudf_parse_822.cmx main_cudf_parse_822.ml
-- ocamlfind ocamlopt -linkpkg -package extlib cudf_types.cmx cudf_822_parser.cmx cudf_822_lexer.cmx main_cudf_parse_822.cmx -o main_cudf_parse_822.native
-- ocamlbuild  cudf_c.cmx
-- File "examples/_tags", line 1, characters 25-33:
-- Warning: the tag "pkg_cudf" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
-- ocamlfind ocamlopt -c -package extlib -pp camlp4o -o cudf_c.cmx cudf_c.ml
-[cudf: make install] Command started
-+ make "install" "DESTDIR=/home/opam/.opam/4.02.1" "OCAMLLIBDIR=lib" "BINDIR=bin" "LIBDIR=lib" "INCDIR=include" (CWD=/home/opam/.opam/4.02.1/build/cudf.0.7)
-- test -d /home/opam/.opam/4.02.1/lib || mkdir -p /home/opam/.opam/4.02.1/lib
-- ocamlfind install -destdir /home/opam/.opam/4.02.1/lib -patch-version 0.7 cudf META _build/cudf.cma _build/cudf.cmxa _build/cudf.a _build/cudf_822_lexer.cmi _build/cudf_822_parser.cmi _build/cudf_c.cmi _build/cudf_checker.cmi _build/cudf_conf.cmi _build/cudf_parser.cmi _build/cudf_printer.cmi _build/cudf_type_lexer.cmi _build/cudf_type_parser.cmi _build/cudf_types.cmi _build/cudf_types_pp.cmi _build/cudf.mli _build/cudf_822_parser.mli _build/cudf_checker.mli _build/cudf_conf.mli _build/cudf_parser.mli _build/cudf_printer.mli _build/cudf_type_parser.mli _build/cudf_types.mli _build/cudf_types_pp.mli _build/cudf_822_lexer.cmx _build/cudf_822_parser.cmx _build/cudf_c.cmx _build/cudf_checker.cmx _build/cudf_conf.cmx _build/cudf_parser.cmx _build/cudf_printer.cmx _build/cudf_type_lexer.cmx _build/cudf_type_parser.cmx _build/cudf_types.cmx _build/cudf_types_pp.cmx _build/cudf_822_lexer.o _build/cudf_822_parser.o _build/cudf_c.o _build/cudf_checker.o _build/cudf_conf.o _build/cudf_parser.o _build/cudf_printer.o _build/cudf_type_lexer.o _build/cudf_type_parser.o _build/cudf_types.o _build/cudf_types_pp.o _build/cudf.o _build/cudf.cmx _build/cudf.cmi
-- test -d /home/opam/.opam/4.02.1/bin || mkdir -p /home/opam/.opam/4.02.1/bin
-- for p in main_cudf_check main_cudf_parse_822 ; do \
-- 		tgt=`echo $p | sed -e 's/^main.//' -e 's/_/-/g'` ; \
-- 		if [ -f _build/$p.native ] ; then \
-- 			cp _build/$p.native /home/opam/.opam/4.02.1/bin/$tgt ; \
-- 		else \
-- 			cp _build/$p.byte /home/opam/.opam/4.02.1/bin/$tgt ; \
-- 		fi ; \
-- 		echo "Installed /home/opam/.opam/4.02.1/bin/$tgt" ; \
-- 	done
-- Installed /home/opam/.opam/4.02.1/bin/cudf-check
-- Installed /home/opam/.opam/4.02.1/bin/cudf-parse-822
-- if [ -f c-lib/cudf.o ] ; then \
-- 		make -C c-lib/ -e install ; \
-- 	fi
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf.cmi
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf.cmx
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf.o
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_types_pp.o
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_types.o
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_type_parser.o
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_type_lexer.o
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_printer.o
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_parser.o
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_conf.o
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_checker.o
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_c.o
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_822_parser.o
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_822_lexer.o
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_types_pp.cmx
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_types.cmx
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_type_parser.cmx
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_type_lexer.cmx
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_printer.cmx
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_parser.cmx
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_conf.cmx
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_checker.cmx
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_c.cmx
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_822_parser.cmx
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_822_lexer.cmx
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_types_pp.mli
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_types.mli
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_type_parser.mli
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_printer.mli
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_parser.mli
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_conf.mli
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_checker.mli
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_822_parser.mli
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf.mli
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_types_pp.cmi
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_types.cmi
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_type_parser.cmi
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_type_lexer.cmi
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_printer.cmi
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_parser.cmi
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_conf.cmi
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_checker.cmi
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_c.cmi
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_822_parser.cmi
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf_822_lexer.cmi
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf.a
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf.cmxa
-- Installed /home/opam/.opam/4.02.1/lib/cudf/cudf.cma
-- Installed /home/opam/.opam/4.02.1/lib/cudf/META
--> installed cudf.0.7
-[dose: ./configure] Command started
 + ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/4.02.1" (CWD=/home/opam/.opam/4.02.1/build/uri.1.8.0)
 - 
 - Configuration: 
@@ -3267,56 +3316,6 @@ The following actions will be performed:
 - ocamldoc: ............................................ /home/opam/.opam/4.02.1/bin/ocamldoc
 - 
 [uri: ocaml setup.ml] Command started
-+ ./configure "--with-ocamlgraph" "--bindir=/home/opam/.opam/4.02.1/bin" (CWD=/home/opam/.opam/4.02.1/build/dose.3.2.2+opam)
-- checking for ocamlc... ocamlc
-- OCaml version is 4.02.1
-- OCaml library path is /home/opam/.opam/4.02.1/lib/ocaml
-- checking for ocamlopt... ocamlopt
-- checking for ocamlc.opt... ocamlc.opt
-- checking for ocamlopt.opt... ocamlopt.opt
-- checking for dynlink.cmxa... yes
-- checking for ocaml... ocaml
-- checking for ocamldep... ocamldep
-- checking for ocamlmktop... ocamlmktop
-- checking for ocamlmklib... ocamlmklib
-- checking for ocamldoc... ocamldoc
-- checking for ocamlbuild... ocamlbuild
-- checking for camlp4... camlp4
-- checking for camlp4boot... camlp4boot
-- checking for camlp4o... camlp4o
-- checking for camlp4o.opt... camlp4o.opt
-- checking for camlp4of... camlp4of
-- checking for camlp4oof... camlp4oof
-- checking for camlp4orf... camlp4orf
-- checking for camlp4prof... camlp4prof
-- checking for camlp4r... camlp4r
-- checking for camlp4rf... camlp4rf
-- checking for ocamlfind... ocamlfind
-- checking for OCaml findlib package cudf... found
-- checking for OCaml findlib package extlib... found
-- checking for OCaml findlib package re.pcre... found
-- checking for OCaml findlib package ocamlgraph... found
-- checking for gcc... gcc
-- checking whether the C compiler works... yes
-- checking for C compiler default output file name... a.out
-- checking for suffix of executables... 
-- checking whether we are cross compiling... no
-- checking for suffix of object files... o
-- checking whether we are using the GNU C compiler... yes
-- checking whether gcc accepts -g... yes
-- checking for gcc option to accept ISO C89... none needed
-- checking how to run the C preprocessor... gcc -E
-- checking for grep that handles long lines and -e... /bin/grep
-- checking for egrep... /bin/grep -E
-- checking for ANSI C header files... yes
-- configure: creating ./config.status
-- config.status: creating Makefile.config
-- config.status: creating _tags
-- config.status: creating META
-- config.status: creating dose3.odocl
-- config.status: creating algo/algo.mlpack
-- config.status: creating common/versionInfo.ml
-[dose: make] Command started
 + ocaml "setup.ml" "-build" (CWD=/home/opam/.opam/4.02.1/build/uri.1.8.0)
 - ocamlfind ocamlopt unix.cmxa -I /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa -linkpkg myocamlbuild.ml /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package stringext -package sexplib.syntax -package sexplib -package re.posix -modules lib/uri.mli > lib/uri.mli.depends
@@ -3998,9 +3997,9 @@ The following actions will be performed:
 - ocamlfind ocamlopt -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package cudf -for-pack Common -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs    -DHASOCAMLGRAPH' -I common -I doselibs -o common/versionInfo.cmx common/versionInfo.ml
 - + ocamlfind ocamlopt -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package cudf -for-pack Common -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs    -DHASOCAMLGRAPH' -I common -I doselibs -o common/versionInfo.cmx common/versionInfo.ml
 - findlib: [WARNING] Interface common.cmi occurs in several directories: doselibs, common
-- + ocamlfind ocamlopt -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package cudf -for-pack Common -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs    -DHASOCAMLGRAPH' -I common -I doselibs -o common/cudfDiff.cmx common/cudfDiff.ml
-- findlib: [WARNING] Interface common.cmi occurs in several directories: doselibs, common
 - + ocamlfind ocamlopt -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package cudf -for-pack Common -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs    -DHASOCAMLGRAPH' -I common -I doselibs -o common/input.cmx common/input.ml
+- findlib: [WARNING] Interface common.cmi occurs in several directories: doselibs, common
+- + ocamlfind ocamlopt -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package cudf -for-pack Common -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs    -DHASOCAMLGRAPH' -I common -I doselibs -o common/cudfDiff.cmx common/cudfDiff.ml
 - findlib: [WARNING] Interface common.cmi occurs in several directories: doselibs, common
 - + ocamlfind ocamlopt -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package cudf -for-pack Common -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs    -DHASOCAMLGRAPH' -I common -I doselibs -o common/cudfSolver.cmx common/cudfSolver.ml
 - findlib: [WARNING] Interface common.cmi occurs in several directories: doselibs, common
@@ -4098,9 +4097,9 @@ The following actions will be performed:
 - ocamlfind ocamlopt -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package cudf -for-pack Debian -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -I deb -I doselibs -o deb/printer.cmx deb/printer.ml
 - + ocamlfind ocamlopt -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package cudf -for-pack Debian -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -I deb -I doselibs -o deb/release.cmx deb/release.ml
 - findlib: [WARNING] Interface debian.cmi occurs in several directories: doselibs, deb
-- + ocamlfind ocamlopt -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package cudf -for-pack Debian -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -I deb -I doselibs -o deb/evolution.cmx deb/evolution.ml
-- findlib: [WARNING] Interface debian.cmi occurs in several directories: doselibs, deb
 - + ocamlfind ocamlopt -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package cudf -for-pack Debian -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -I deb -I doselibs -o deb/printer.cmx deb/printer.ml
+- findlib: [WARNING] Interface debian.cmi occurs in several directories: doselibs, deb
+- + ocamlfind ocamlopt -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package cudf -for-pack Debian -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -I deb -I doselibs -o deb/evolution.cmx deb/evolution.ml
 - findlib: [WARNING] Interface debian.cmi occurs in several directories: doselibs, deb
 - + ocamlfind ocamlopt -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package cudf -for-pack Debian -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -I deb -I doselibs -o deb/edsp.cmx deb/edsp.ml
 - findlib: [WARNING] Interface debian.cmi occurs in several directories: doselibs, deb
@@ -4364,13 +4363,13 @@ The following actions will be performed:
 - ocamlfind ocamlopt -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package cudf -package ocamlgraph -for-pack Algo -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs    -DHASOCAMLGRAPH' -I algo -I doselibs -o algo/flatten.cmx algo/flatten.ml
 - + ocamlfind ocamlopt -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package cudf -package ocamlgraph -for-pack Algo -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs    -DHASOCAMLGRAPH' -I algo -I doselibs -o algo/strongdeps.cmx algo/strongdeps.ml
 - findlib: [WARNING] Interface algo.cmi occurs in several directories: doselibs, algo
+- + ocamlfind ocamlopt -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package cudf -package ocamlgraph -for-pack Algo -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs    -DHASOCAMLGRAPH' -I algo -I doselibs -o algo/strongconflicts.cmx algo/strongconflicts.ml
+- findlib: [WARNING] Interface algo.cmi occurs in several directories: doselibs, algo
 - + ocamlfind ocamlopt -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package cudf -package ocamlgraph -for-pack Algo -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs    -DHASOCAMLGRAPH' -I algo -I doselibs -o algo/dominators.cmx algo/dominators.ml
 - findlib: [WARNING] Interface algo.cmi occurs in several directories: doselibs, algo
 - + ocamlfind ocamlopt -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package cudf -package ocamlgraph -for-pack Algo -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs    -DHASOCAMLGRAPH' -I algo -I doselibs -o algo/flatten.cmx algo/flatten.ml
 - findlib: [WARNING] Interface algo.cmi occurs in several directories: doselibs, algo
 - + ocamlfind ocamlopt -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package cudf -package ocamlgraph -for-pack Algo -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs    -DHASOCAMLGRAPH' -I algo -I doselibs -o algo/statistics.cmx algo/statistics.ml
-- findlib: [WARNING] Interface algo.cmi occurs in several directories: doselibs, algo
-- + ocamlfind ocamlopt -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package cudf -package ocamlgraph -for-pack Algo -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs    -DHASOCAMLGRAPH' -I algo -I doselibs -o algo/strongconflicts.cmx algo/strongconflicts.ml
 - findlib: [WARNING] Interface algo.cmi occurs in several directories: doselibs, algo
 - touch algo/algo.mli  ; if  ocamlfind ocamlopt -pack -I algo algo/defaultgraphs.cmx algo/statistics.cmx algo/dominators.cmx algo/diagnostic_int.cmx algo/depsolver_int.cmx algo/strongdeps_int.cmx algo/strongdeps.cmx algo/diagnostic.cmx algo/depsolver.cmx algo/strongconflicts_int.cmx algo/strongconflicts.cmx algo/flatten.cmx -o algo/algo.cmx  ; then  rm -f algo/algo.mli  ; else  rm -f algo/algo.mli  ; exit 1; fi
 - ocamlfind ocamlopt -a algo/algo.cmx -o algo/algo.cmxa
@@ -5598,7 +5597,6 @@ The following actions will be performed:
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamVersion.ml
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamGlobals.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamGlobals.ml
-- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamProcess.mli
 - File "core/opamMisc.ml", line 74, characters 11-24:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -5611,6 +5609,7 @@ The following actions will be performed:
 - File "core/opamGlobals.ml", line 176, characters 18-40:
 - Warning 3: deprecated: Filename.temp_dir_name
 - Use Filename.get_temp_dir_name instead
+- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamProcess.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamProcess.ml
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamRepositoryName.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamRepositoryName.ml
@@ -5630,16 +5629,16 @@ The following actions will be performed:
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamFormula.ml
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamCompiler.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamCompiler.ml
-- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamTypes.mli
-- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamTypesBase.mli
-- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamTypesBase.ml
-- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamPath.mli
 - File "core/opamSystem.ml", line 53, characters 10-32:
 - Warning 3: deprecated: Filename.temp_dir_name
 - Use Filename.get_temp_dir_name instead
 - File "core/opamSystem.ml", line 118, characters 10-23:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamTypes.mli
+- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamTypesBase.mli
+- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamTypesBase.ml
+- ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamPath.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamPath.ml
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamParser.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamParser.ml
@@ -5649,6 +5648,12 @@ The following actions will be performed:
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamFormat.ml
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamFile.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamFile.ml
+- File "core/opamFile.ml", line 49, characters 18-31:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "core/opamFile.ml", line 53, characters 12-32:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamActionGraph.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamActionGraph.ml
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamFilter.mli
@@ -5661,12 +5666,6 @@ The following actions will be performed:
 - make[3]: Leaving directory `/home/opam/.opam/4.02.1/build/opam-lib.1.2.0/src'
 - make -f ../OCamlMakefile subprojs SUBPROJS=solver SUBTARGET=byte-code-library
 - make[3]: Entering directory `/home/opam/.opam/4.02.1/build/opam-lib.1.2.0/src'
-- File "core/opamFile.ml", line 49, characters 18-31:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "core/opamFile.ml", line 53, characters 12-32:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 - make[4]: Entering directory `/home/opam/.opam/4.02.1/build/opam-lib.1.2.0/src'
 - make[5]: Entering directory `/home/opam/.opam/4.02.1/build/opam-lib.1.2.0/src'
 - ocamlfind ocamldep -I core -I solver -I repositories -I client -I solver/ solver/opamSolver.mli > ._bcdi/solver/opamSolver.di
@@ -5713,6 +5712,8 @@ The following actions will be performed:
 - make[5]: Entering directory `/home/opam/.opam/4.02.1/build/opam-lib.1.2.0/src'
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I repositories/ repositories/opamHTTP.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I repositories/ repositories/opamHTTP.ml
+- File "repositories/opamHTTP.ml", line 230, characters 55-75:
+- Warning 48: implicit elimination of optional argument ?last
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I repositories/ repositories/opamLocal.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I repositories/ repositories/opamLocal.ml
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I repositories/ repositories/opamVCS.mli
@@ -5751,14 +5752,6 @@ The following actions will be performed:
 - make[5]: Entering directory `/home/opam/.opam/4.02.1/build/opam-lib.1.2.0/src'
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamState.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamState.ml
-- File "repositories/opamHTTP.ml", line 230, characters 55-75:
-- Warning 48: implicit elimination of optional argument ?last
-- File "client/opamState.ml", line 1232, characters 14-27:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "client/opamState.ml", line 1240, characters 15-28:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamAction.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamAction.ml
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamSolution.mli
@@ -5768,27 +5761,21 @@ The following actions will be performed:
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamConfigCommand.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamConfigCommand.ml
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamRepositoryCommand.mli
+- File "client/opamState.ml", line 1232, characters 14-27:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "client/opamState.ml", line 1240, characters 15-28:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "client/opamAction.ml", line 415, characters 15-38:
+- Warning 48: implicit elimination of optional argument ?num
+- File "client/opamSwitchCommand.ml", line 486, characters 30-47:
+- Warning 48: implicit elimination of optional argument ?confirm
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamRepositoryCommand.ml
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamPinCommand.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamPinCommand.ml
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamClient.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamClient.ml
-- File "client/opamAction.ml", line 415, characters 15-38:
-- Warning 48: implicit elimination of optional argument ?num
-- File "client/opamSwitchCommand.ml", line 486, characters 30-47:
-- Warning 48: implicit elimination of optional argument ?confirm
-- File "client/opamRepositoryCommand.ml", line 432, characters 13-33:
-- Warning 48: implicit elimination of optional argument ?last
-- File "client/opamClient.ml", line 325, characters 10-21:
-- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
-- File "client/opamClient.ml", line 328, characters 19-30:
-- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
-- File "client/opamClient.ml", line 363, characters 11-31:
-- Warning 48: implicit elimination of optional argument ?last
-- File "client/opamClient.ml", line 534, characters 41-52:
-- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
-- File "client/opamClient.ml", line 535, characters 41-52:
-- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
 - ocamlfind ocamlc -a     -I core -I solver -I repositories -I client -I client/  -g -w +a-4-9-32-41-44-45 -bin-annot   -ccopt -Lclient/     -o opam-client.cma client/opamState.cmo client/opamAction.cmo client/opamSolution.cmo client/opamSwitchCommand.cmo client/opamConfigCommand.cmo client/opamRepositoryCommand.cmo client/opamPinCommand.cmo client/opamClient.cmo
 - make[5]: Leaving directory `/home/opam/.opam/4.02.1/build/opam-lib.1.2.0/src'
 - make[4]: Leaving directory `/home/opam/.opam/4.02.1/build/opam-lib.1.2.0/src'
@@ -5814,6 +5801,18 @@ The following actions will be performed:
 - ocamlfind ocamldep -native -I core -I solver -I repositories -I client -I core/ core/opamFormula.mli > ._ncdi/core/opamFormula.di
 - ocamlfind ocamldep -native -I core -I solver -I repositories -I client -I core/ core/opamVariable.mli > ._ncdi/core/opamVariable.di
 - ocamlfind ocamldep -native -I core -I solver -I repositories -I client -I core/ core/opamPackage.mli > ._ncdi/core/opamPackage.di
+- File "client/opamRepositoryCommand.ml", line 432, characters 13-33:
+- Warning 48: implicit elimination of optional argument ?last
+- File "client/opamClient.ml", line 325, characters 10-21:
+- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
+- File "client/opamClient.ml", line 328, characters 19-30:
+- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
+- File "client/opamClient.ml", line 363, characters 11-31:
+- Warning 48: implicit elimination of optional argument ?last
+- File "client/opamClient.ml", line 534, characters 41-52:
+- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
+- File "client/opamClient.ml", line 535, characters 41-52:
+- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
 - ocamlfind ocamldep -native -I core -I solver -I repositories -I client -I core/ core/opamFilename.mli > ._ncdi/core/opamFilename.di
 - ocamlfind ocamldep -native -I core -I solver -I repositories -I client -I core/ core/opamParallel.mli > ._ncdi/core/opamParallel.di
 - ocamlfind ocamldep -native -I core -I solver -I repositories -I client -I core/ core/opamSystem.mli > ._ncdi/core/opamSystem.di
@@ -5833,13 +5832,6 @@ The following actions will be performed:
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamLineLexer.ml
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamMisc.ml
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamScript.ml
-- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamGitVersion.ml
-- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamVersion.ml
-- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamGlobals.ml
-- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamProcess.ml
-- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamRepositoryName.ml
-- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamSwitch.ml
-- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamSystem.ml
 - File "core/opamMisc.ml", line 74, characters 11-24:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -5849,6 +5841,16 @@ The following actions will be performed:
 - File "core/opamMisc.ml", line 492, characters 10-28:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
+- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamGitVersion.ml
+- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamVersion.ml
+- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamGlobals.ml
+- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamProcess.ml
+- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamRepositoryName.ml
+- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamSwitch.ml
+- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamSystem.ml
+- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamParallel.ml
+- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamFilename.ml
+- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamPackage.ml
 - File "core/opamGlobals.ml", line 176, characters 18-40:
 - Warning 3: deprecated: Filename.temp_dir_name
 - Use Filename.get_temp_dir_name instead
@@ -5858,9 +5860,6 @@ The following actions will be performed:
 - File "core/opamSystem.ml", line 118, characters 10-23:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamParallel.ml
-- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamFilename.ml
-- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamPackage.ml
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamVariable.ml
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamFormula.ml
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I core/ core/opamCompiler.ml
@@ -5895,12 +5894,6 @@ The following actions will be performed:
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I solver/ solver/opamCudf.ml
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I solver/ solver/opamHeuristic.ml
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I solver/ solver/opamSolver.ml
-- File "solver/opamHeuristic.ml", line 171, characters 13-33:
-- Warning 48: implicit elimination of optional argument ?last
-- File "solver/opamHeuristic.ml", line 423, characters 10-30:
-- Warning 48: implicit elimination of optional argument ?last
-- File "solver/opamHeuristic.ml", line 494, characters 11-31:
-- Warning 48: implicit elimination of optional argument ?last
 - ocamlfind ocamlopt -a      -I core -I solver -I repositories -I client -I solver/  -g -w +a-4-9-32-41-44-45 -bin-annot   -ccopt -Lsolver/    -o opam-solver.cmxa solver/opamCudf.cmx solver/opamHeuristic.cmx solver/opamSolver.cmx
 - make[5]: Leaving directory `/home/opam/.opam/4.02.1/build/opam-lib.1.2.0/src'
 - make[4]: Leaving directory `/home/opam/.opam/4.02.1/build/opam-lib.1.2.0/src'
@@ -5915,6 +5908,12 @@ The following actions will be performed:
 - ocamlfind ocamldep -native -I core -I solver -I repositories -I client -I repositories/ repositories/opamVCS.mli > ._ncdi/repositories/opamVCS.di
 - ocamlfind ocamldep -native -I core -I solver -I repositories -I client -I repositories/ repositories/opamLocal.mli > ._ncdi/repositories/opamLocal.di
 - ocamlfind ocamldep -native -I core -I solver -I repositories -I client -I repositories/ repositories/opamHTTP.mli > ._ncdi/repositories/opamHTTP.di
+- File "solver/opamHeuristic.ml", line 171, characters 13-33:
+- Warning 48: implicit elimination of optional argument ?last
+- File "solver/opamHeuristic.ml", line 423, characters 10-30:
+- Warning 48: implicit elimination of optional argument ?last
+- File "solver/opamHeuristic.ml", line 494, characters 11-31:
+- Warning 48: implicit elimination of optional argument ?last
 - make[5]: Leaving directory `/home/opam/.opam/4.02.1/build/opam-lib.1.2.0/src'
 - make[5]: Entering directory `/home/opam/.opam/4.02.1/build/opam-lib.1.2.0/src'
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I repositories/ repositories/opamHTTP.ml
@@ -5951,18 +5950,28 @@ The following actions will be performed:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamAction.ml
+- File "client/opamAction.ml", line 415, characters 15-38:
+- Warning 48: implicit elimination of optional argument ?num
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamSolution.ml
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamSwitchCommand.ml
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamConfigCommand.ml
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamRepositoryCommand.ml
-- File "client/opamAction.ml", line 415, characters 15-38:
-- Warning 48: implicit elimination of optional argument ?num
+- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamPinCommand.ml
+- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamClient.ml
 - File "client/opamSwitchCommand.ml", line 486, characters 30-47:
 - Warning 48: implicit elimination of optional argument ?confirm
 - File "client/opamRepositoryCommand.ml", line 432, characters 13-33:
 - Warning 48: implicit elimination of optional argument ?last
-- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamPinCommand.ml
-- ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamClient.ml
+- File "client/opamClient.ml", line 325, characters 10-21:
+- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
+- File "client/opamClient.ml", line 328, characters 19-30:
+- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
+- File "client/opamClient.ml", line 363, characters 11-31:
+- Warning 48: implicit elimination of optional argument ?last
+- File "client/opamClient.ml", line 534, characters 41-52:
+- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
+- File "client/opamClient.ml", line 535, characters 41-52:
+- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
 - ocamlfind ocamlopt -a      -I core -I solver -I repositories -I client -I client/  -g -w +a-4-9-32-41-44-45 -bin-annot   -ccopt -Lclient/    -o opam-client.cmxa client/opamState.cmx client/opamAction.cmx client/opamSolution.cmx client/opamSwitchCommand.cmx client/opamConfigCommand.cmx client/opamRepositoryCommand.cmx client/opamPinCommand.cmx client/opamClient.cmx
 - make[5]: Leaving directory `/home/opam/.opam/4.02.1/build/opam-lib.1.2.0/src'
 - make[4]: Leaving directory `/home/opam/.opam/4.02.1/build/opam-lib.1.2.0/src'
@@ -5977,16 +5986,6 @@ The following actions will be performed:
 - make[4]: Entering directory `/home/opam/.opam/4.02.1/build/opam-lib.1.2.0/src'
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I tools/ tools/opam_admin_top.mli
 - ocamlfind ocamlc -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I tools/ tools/opam_admin_top.ml
-- File "client/opamClient.ml", line 325, characters 10-21:
-- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
-- File "client/opamClient.ml", line 328, characters 19-30:
-- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
-- File "client/opamClient.ml", line 363, characters 11-31:
-- Warning 48: implicit elimination of optional argument ?last
-- File "client/opamClient.ml", line 534, characters 41-52:
-- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
-- File "client/opamClient.ml", line 535, characters 41-52:
-- Warning 48: implicit elimination of optional arguments ?build, ?test, ?doc
 - ocamlfind ocamlmktop \
 - 				-package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -linkpkg \
 - 				    -I core -I solver -I repositories -I client -I tools/  -g -w +a-4-9-32-41-44-45 -bin-annot   -ccopt -Ltools/    ./opam-core.cma ./opam-solver.cma ./opam-repositories.cma ./opam-client.cma -o opam-admin.top \
@@ -6036,13 +6035,13 @@ The following actions will be performed:
 - Warning 48: implicit elimination of optional argument ?none
 - File "client/opamArg.ml", line 783, characters 11-15:
 - Warning 48: implicit elimination of optional argument ?none
+- File "client/opamArg.ml", line 1547, characters 22-26:
+- Warning 48: implicit elimination of optional argument ?none
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I client/ client/opamMain.ml
 - ocamlfind ocamlopt \
 - 				-package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -linkpkg \
 - 				     -I core -I solver -I repositories -I client -I client/  -g -w +a-4-9-32-41-44-45 -bin-annot   -ccopt -Lclient/    ./opam-core.cmxa ./opam-solver.cmxa ./opam-repositories.cmxa ./opam-client.cmxa -o opam \
 - 				client/opamArg.cmx client/opamMain.cmx
-- File "client/opamArg.ml", line 1547, characters 22-26:
-- Warning 48: implicit elimination of optional argument ?none
 - make[4]: Leaving directory `/home/opam/.opam/4.02.1/build/opam-lib.1.2.0/src'
 - make[3]: Leaving directory `/home/opam/.opam/4.02.1/build/opam-lib.1.2.0/src'
 - make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/opam-lib.1.2.0/src'
@@ -6157,6 +6156,8 @@ The following actions will be performed:
 - make[4]: Leaving directory `/home/opam/.opam/4.02.1/build/opam-lib.1.2.0/src'
 - make[4]: Entering directory `/home/opam/.opam/4.02.1/build/opam-lib.1.2.0/src'
 - ocamlfind ocamlopt -package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -c -g -w +a-4-9-32-41-44-45 -bin-annot -short-paths -I core -I solver -I repositories -I client -I tools/ tools/opam_installer.ml
+- File "tools/opam_installer.ml", line 154, characters 34-43:
+- Warning 48: implicit elimination of optional argument ?num
 - ocamlfind ocamlopt \
 - 				-package unix,extlib,re,re.emacs,re.str,re.perl,re.pcre,re.glob,cmdliner,ocamlgraph,cudf,dose3,jsonm -linkpkg \
 - 				     -I core -I solver -I repositories -I client -I tools/  -g -w +a-4-9-32-41-44-45 -bin-annot   -ccopt -Ltools/    ./opam-core.cmxa ./opam-solver.cmxa ./opam-repositories.cmxa ./opam-client.cmxa -o opam-installer \
@@ -6165,8 +6166,6 @@ The following actions will be performed:
 - make[3]: Leaving directory `/home/opam/.opam/4.02.1/build/opam-lib.1.2.0/src'
 - make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/opam-lib.1.2.0/src'
 - make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/opam-lib.1.2.0/src'
-- File "tools/opam_installer.ml", line 154, characters 34-43:
-- Warning 48: implicit elimination of optional argument ?num
 -> installed opam-lib.1.2.0
 [opamfu: make build] Command started
 + make "build" (CWD=/home/opam/.opam/4.02.1/build/opamfu.0.1.2)
