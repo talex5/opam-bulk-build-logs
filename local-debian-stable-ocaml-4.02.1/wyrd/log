@@ -1,25 +1,25 @@
 + uname -m
 + uname -s
-+ opam list --safe --recursive --external=x86_64,linux,debian --required-by=wyrd
 # Detecting depexts using flags: x86_64 linux debian
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=wyrd
++ opam list --safe --recursive --external=x86_64,linux,debian --required-by=wyrd
 # The following system packages are needed:
 #  - m4
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=wyrd
 Not running as root, system installation will be done through "sudo"
 + sudo apt-get update
-Hit http://download.opensuse.org  Release.gpg
 Hit http://security.debian.org stable/updates Release.gpg
+Hit http://download.opensuse.org  Release.gpg
 Hit http://http.debian.net stable Release.gpg
-Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
-Hit http://http.debian.net stable Release
 Hit http://security.debian.org stable/updates Release
 Hit http://download.opensuse.org  Release
-Get:2 http://http.debian.net stable-updates Release [124 kB]
-Hit http://http.debian.net stable/main amd64 Packages
+Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
+Hit http://http.debian.net stable Release
 Hit http://security.debian.org stable/updates/main amd64 Packages
 Hit http://download.opensuse.org  Packages
+Get:2 http://http.debian.net stable-updates Release [124 kB]
+Hit http://http.debian.net stable/main amd64 Packages
 Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
-Fetched 129 kB in 1s (116 kB/s)
+Fetched 129 kB in 1s (113 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
@@ -35,12 +35,12 @@ The following actions will be performed:
 [camlp4: from default] Command started
 [ocamlfind: from default] Command started
 [wyrd: from default] Command started
-[ocamlfind: from default] Command started
-[wyrd: from default] Command started
 [camlp4: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/wyrd.1.4.6+opam.tar.gz downloaded
+[wyrd: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/wyrd.1.4.6+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -124,6 +124,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -169,12 +171,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -183,8 +185,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -237,7 +237,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -282,6 +281,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -623,8 +623,8 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.ml > camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4Parsers -I camlp4 -I camlp4/config -o camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.ml
 - ocamlbuild -classic-display -no-ocamlfind  `./build/camlp4-native-only.sh`
-- + echo camlp4/Camlp4.cmx camlp4/Camlp4Top.cmx camlp4/camlp4prof.native camlp4/mkcamlp4.native camlp4/camlp4.native camlp4/camlp4fulllib.cmxa camlp4/camlp4boot.native camlp4/camlp4r.native camlp4/camlp4rf.native camlp4/camlp4o.native camlp4/camlp4of.native camlp4/camlp4oof.native camlp4/camlp4orf.native camlp4/Camlp4Parsers/Camlp4AstLoader.cmx camlp4/Camlp4Parsers/Camlp4AstLoader.o camlp4/Camlp4Parsers/Camlp4DebugParser.cmx camlp4/Camlp4Parsers/Camlp4DebugParser.o camlp4/Camlp4Parsers/Camlp4GrammarParser.cmx camlp4/Camlp4Parsers/Camlp4GrammarParser.o camlp4/Camlp4Parsers/Camlp4ListComprehension.cmx camlp4/Camlp4Parsers/Camlp4ListComprehension.o camlp4/Camlp4Parsers/Camlp4MacroParser.cmx camlp4/Camlp4Parsers/Camlp4MacroParser.o camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmx camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.o camlp4/Camlp4Parsers/Camlp4OCamlParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlParser.o camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlParserParser.o camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.o camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.o camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.o camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmx camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.o camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmx camlp4/Camlp4Parsers/Camlp4QuotationCommon.o camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmx camlp4/Camlp4Parsers/Camlp4QuotationExpander.o camlp4/Camlp4Printers/Camlp4AstDumper.cmx camlp4/Camlp4Printers/Camlp4AstDumper.o camlp4/Camlp4Printers/Camlp4AutoPrinter.cmx camlp4/Camlp4Printers/Camlp4AutoPrinter.o camlp4/Camlp4Printers/Camlp4NullDumper.cmx camlp4/Camlp4Printers/Camlp4NullDumper.o camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmx camlp4/Camlp4Printers/Camlp4OCamlAstDumper.o camlp4/Camlp4Printers/Camlp4OCamlPrinter.cmx camlp4/Camlp4Printers/Camlp4OCamlPrinter.o camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.cmx camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.o camlp4/Camlp4Filters/Camlp4AstLifter.cmx camlp4/Camlp4Filters/Camlp4AstLifter.o camlp4/Camlp4Filters/Camlp4ExceptionTracer.cmx camlp4/Camlp4Filters/Camlp4ExceptionTracer.o camlp4/Camlp4Filters/Camlp4FoldGenerator.cmx camlp4/Camlp4Filters/Camlp4FoldGenerator.o camlp4/Camlp4Filters/Camlp4LocationStripper.cmx camlp4/Camlp4Filters/Camlp4LocationStripper.o camlp4/Camlp4Filters/Camlp4MapGenerator.cmx camlp4/Camlp4Filters/Camlp4MapGenerator.o camlp4/Camlp4Filters/Camlp4MetaGenerator.cmx camlp4/Camlp4Filters/Camlp4MetaGenerator.o camlp4/Camlp4Filters/Camlp4Profiler.cmx camlp4/Camlp4Filters/Camlp4Profiler.o camlp4/Camlp4Filters/Camlp4TrashRemover.cmx camlp4/Camlp4Filters/Camlp4TrashRemover.o
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -for-pack Camlp4 -g -w Z -I camlp4/import -warn-error A-3 -pp 'camlp4/boot/camlp4boot.native -D OPT' -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Sig.cmx camlp4/Camlp4/Sig.ml
+- + echo camlp4/Camlp4.cmx camlp4/Camlp4Top.cmx camlp4/camlp4prof.native camlp4/mkcamlp4.native camlp4/camlp4.native camlp4/camlp4fulllib.cmxa camlp4/camlp4boot.native camlp4/camlp4r.native camlp4/camlp4rf.native camlp4/camlp4o.native camlp4/camlp4of.native camlp4/camlp4oof.native camlp4/camlp4orf.native camlp4/Camlp4Parsers/Camlp4AstLoader.cmx camlp4/Camlp4Parsers/Camlp4AstLoader.o camlp4/Camlp4Parsers/Camlp4DebugParser.cmx camlp4/Camlp4Parsers/Camlp4DebugParser.o camlp4/Camlp4Parsers/Camlp4GrammarParser.cmx camlp4/Camlp4Parsers/Camlp4GrammarParser.o camlp4/Camlp4Parsers/Camlp4ListComprehension.cmx camlp4/Camlp4Parsers/Camlp4ListComprehension.o camlp4/Camlp4Parsers/Camlp4MacroParser.cmx camlp4/Camlp4Parsers/Camlp4MacroParser.o camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmx camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.o camlp4/Camlp4Parsers/Camlp4OCamlParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlParser.o camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlParserParser.o camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.o camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.o camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.o camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmx camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.o camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmx camlp4/Camlp4Parsers/Camlp4QuotationCommon.o camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmx camlp4/Camlp4Parsers/Camlp4QuotationExpander.o camlp4/Camlp4Printers/Camlp4AstDumper.cmx camlp4/Camlp4Printers/Camlp4AstDumper.o camlp4/Camlp4Printers/Camlp4AutoPrinter.cmx camlp4/Camlp4Printers/Camlp4AutoPrinter.o camlp4/Camlp4Printers/Camlp4NullDumper.cmx camlp4/Camlp4Printers/Camlp4NullDumper.o camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmx camlp4/Camlp4Printers/Camlp4OCamlAstDumper.o camlp4/Camlp4Printers/Camlp4OCamlPrinter.cmx camlp4/Camlp4Printers/Camlp4OCamlPrinter.o camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.cmx camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.o camlp4/Camlp4Filters/Camlp4AstLifter.cmx camlp4/Camlp4Filters/Camlp4AstLifter.o camlp4/Camlp4Filters/Camlp4ExceptionTracer.cmx camlp4/Camlp4Filters/Camlp4ExceptionTracer.o camlp4/Camlp4Filters/Camlp4FoldGenerator.cmx camlp4/Camlp4Filters/Camlp4FoldGenerator.o camlp4/Camlp4Filters/Camlp4LocationStripper.cmx camlp4/Camlp4Filters/Camlp4LocationStripper.o camlp4/Camlp4Filters/Camlp4MapGenerator.cmx camlp4/Camlp4Filters/Camlp4MapGenerator.o camlp4/Camlp4Filters/Camlp4MetaGenerator.cmx camlp4/Camlp4Filters/Camlp4MetaGenerator.o camlp4/Camlp4Filters/Camlp4Profiler.cmx camlp4/Camlp4Filters/Camlp4Profiler.o camlp4/Camlp4Filters/Camlp4TrashRemover.cmx camlp4/Camlp4Filters/Camlp4TrashRemover.o
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -for-pack Camlp4 -g -w Z -I camlp4/import -warn-error A-3 -pp 'camlp4/boot/camlp4boot.native -D OPT' -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Utils.cmx camlp4/Camlp4/Utils.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -for-pack Camlp4 -g -w Z -I camlp4/import -warn-error A-3 -pp 'camlp4/boot/camlp4boot.native -D OPT' -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/OCamlInitSyntax.cmx camlp4/Camlp4/OCamlInitSyntax.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -for-pack Camlp4 -g -w Z -I camlp4/import -warn-error A-3 -pp 'camlp4/boot/camlp4boot.native -D OPT' -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/ErrorHandler.cmx camlp4/Camlp4/ErrorHandler.ml
@@ -932,11 +932,11 @@ The following actions will be performed:
 - checking for C compiler default output file name... a.out
 - checking for suffix of executables... 
 - checking whether we are cross compiling... no
-- checking for suffix of object files... o
+- checking for suffix of object files... 
+- o
 - checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
-- checking for gcc option to accept ISO C89... 
-- none needed
+- checking for gcc option to accept ISO C89... none needed
 - checking for remind... not found
 - checking for a BSD-compatible install... /usr/bin/install -c
 - configure: creating ./config.status
@@ -945,43 +945,44 @@ The following actions will be performed:
 - === configuring in curses (/home/opam/.opam/4.02.1/build/wyrd.1.4.6/curses)
 - configure: running /bin/bash ./configure --disable-option-checking '--prefix=/home/opam/.opam/4.02.1'  '--sbindir=/home/opam/.opam/4.02.1/lib/wyrd/sbin' '--libexecdir=/home/opam/.opam/4.02.1/lib/wyrd/libexec' '--sysconfdir=/home/opam/.opam/4.02.1/lib/wyrd/etc' '--sharedstatedir=/home/opam/.opam/4.02.1/lib/wyrd/com' '--localstatedir=/home/opam/.opam/4.02.1/lib/wyrd/var' '--libdir=/home/opam/.opam/4.02.1/lib/wyrd/lib' '--includedir=/home/opam/.opam/4.02.1/lib/wyrd/include' '--datarootdir=/home/opam/.opam/4.02.1/lib/wyrd/share' '--enable-utf8' '--enable-widec' --cache-file=/dev/null --srcdir=.
 - checking for gcc... gcc
-- configure: WARNING: Wyrd requires Remind version 03.00.24 or greater.
 - checking whether the C compiler works... yes
 - checking for C compiler default output file name... a.out
 - checking for suffix of executables... 
-- checking whether we are cross compiling... 
-- no
+- configure: WARNING: Wyrd requires Remind version 03.00.24 or greater.
+- 
+- checking whether we are cross compiling... no
 - checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
 - checking for gcc option to accept ISO C89... none needed
 - checking whether gcc and cc understand -c and -o together... yes
 - checking for ranlib... ranlib
-- checking how to run the C preprocessor... gcc -E
+- checking how to run the C preprocessor... 
+- gcc -E
 - checking for grep that handles long lines and -e... /bin/grep
 - checking for egrep... /bin/grep -E
-- checking for ANSI C header files... 
-- yes
+- checking for ANSI C header files... yes
 - checking for sys/types.h... yes
 - checking for sys/stat.h... yes
 - checking for stdlib.h... yes
 - checking for string.h... yes
 - checking for memory.h... yes
 - checking for strings.h... yes
-- checking for inttypes.h... yes
+- checking for inttypes.h... 
+- yes
 - checking for stdint.h... yes
 - checking for unistd.h... yes
 - checking termios.h usability... yes
 - checking termios.h presence... yes
 - checking for termios.h... yes
-- checking sys/ioctl.h usability... 
-- yes
+- checking sys/ioctl.h usability... yes
 - checking sys/ioctl.h presence... yes
 - checking for sys/ioctl.h... yes
 - checking windows.h usability... no
 - checking windows.h presence... no
 - checking for windows.h... no
-- checking for working ncurses library... found in -lncurses
+- checking for working ncurses library... 
+- found in -lncurses
 - checking for term.h... found in <term.h>
 - checking for wide character support in ncurses library... no
 - checking for resizeterm... yes
@@ -1004,13 +1005,13 @@ The following actions will be performed:
 - ocamlc -c -cc "gcc" -ccopt "-fPIC -g -Wall -DHAVE_CONFIG_H \
 - 				-DPIC   \
 - 				    -o ml_curses.o " ml_curses.c
-- ar rcs libcurses_stubs.a  ml_curses.o
-- ocamlc -c keys.ml
 - In file included from ml_curses.c:216:0:
 - functions.c: In function 'mlcurses_unctrl':
 - functions.c:596:1: warning: initialization discards 'const' qualifier from pointer target type [enabled by default]
 - functions.c: In function 'mlcurses_keyname':
 - functions.c:597:1: warning: initialization discards 'const' qualifier from pointer target type [enabled by default]
+- ar rcs libcurses_stubs.a  ml_curses.o
+- ocamlc -c keys.ml
 - ocamlc -c curses.mli
 - ocamlc -c -pp "gcc -x c -E " curses.ml
 - ocamlmklib         \
@@ -1041,10 +1042,10 @@ The following actions will be performed:
 - ocamlopt.opt -c -pp camlp4o -g -I ./curses version.ml
 - ocamlopt.opt -c -pp camlp4o -g -I ./curses utility.ml
 - ocamlopt.opt -c -pp camlp4o -g -I ./curses rcfile.ml
-- ocamlopt.opt -c -pp camlp4o -g -I ./curses time_lang.ml
 - File "utility.ml", line 359, characters 12-25:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlopt.opt -c -pp camlp4o -g -I ./curses time_lang.ml
 - ocamlopt.opt -c -pp camlp4o -g -I ./curses interface.ml
 - ocamlopt.opt -c -pp camlp4o -g -I ./curses cal.ml
 - ocamlopt.opt -c -pp camlp4o -g -I ./curses remind.ml
