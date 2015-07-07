@@ -1,13 +1,13 @@
 + uname -m
 + uname -s
-/usr/bin/lsb_release
 + lsb_release -i -s
 # Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=cil
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=cil
 # The following system packages are needed:
 #  - m4
-Not running as root, system installation will be done through "sudo"
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=cil
+Not running as root, the following command will be run through "sudo":
+    apt-get update
 + sudo apt-get update
 Ign http://download.opensuse.org  InRelease
 Hit http://download.opensuse.org  Release.gpg
@@ -40,11 +40,12 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [22.5 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [329 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [123 kB]
-Fetched 2109 kB in 5s (361 kB/s)
+Fetched 2109 kB in 5s (383 kB/s)
 Reading package lists...
-+ sudo apt-get install -qq -yy m4
 # OS package update successful
-Not running as root, system installation will be done through "sudo"
+Not running as root, the following command will be run through "sudo":
+    apt-get install -qq -yy m4
++ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind 1.5.5                                     [required by cil]
@@ -55,8 +56,8 @@ The following actions will be performed:
 [cil: from default] Command started
 [ocamlfind: from default] Command started
 [ocamlfind: from default] Command started
-[cil: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[cil: from default] Command started
 [default] http://opam-archive:8080/archives/cil.1.7.3+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -144,8 +145,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -191,9 +190,18 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 		cp topfind.ml.in topfind.ml;                             \
+- 	else                                                             \
+- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 			> topfind.ml ;                                   \
+- 	fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -202,13 +210,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 		cp topfind.ml.in topfind.ml;                             \
-- 	else                                                             \
-- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 			> topfind.ml ;                                   \
-- 	fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -254,6 +255,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -298,7 +300,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -411,12 +412,14 @@ The following actions will be performed:
 - checking for unistd.h... 
 - yes
 - checking for __builtin_va_list... yes
-- checking if __thread is a keyword... true
+- checking if __thread is a keyword... 
+- true
 - checking if gcc adds underscores to assembly labels.... false
 - checking for ANSI C header files... (cached) yes
 - checking for stdlib.h... (cached) yes
 - checking for strings.h... (cached) yes
-- checking sys/time.h usability... yes
+- checking sys/time.h usability... 
+- yes
 - checking sys/time.h presence... yes
 - checking for sys/time.h... yes
 - checking for unistd.h... (cached) yes
@@ -1087,17 +1090,31 @@ The following actions will be performed:
 - 	  sed -e "s|nogcc32model|` _build/machdep-ml32.exe --env`|" lib/App/Cilly.pm > lib/App/Cilly.pm.tmp; \
 - 	  mv lib/App/Cilly.pm.tmp lib/App/Cilly.pm; \
 - 	fi
-- if gcc -D_GNUCC -m64 src/machdep-ml.c -o _build/machdep-ml64.exe ;then \
-- 	  sed -e "s|nogcc64model|` _build/machdep-ml64.exe --env`|" lib/App/Cilly.pm > lib/App/Cilly.pm.tmp; \
-- 	  mv lib/App/Cilly.pm.tmp lib/App/Cilly.pm; \
-- 	fi
-- cd lib; perl Makefile.PL
 - In file included from /usr/include/stdio.h:27:0,
 -                  from src/machdep-ml.c:40:
 - /usr/include/features.h:374:25: fatal error: sys/cdefs.h: No such file or directory
 -  #  include <sys/cdefs.h>
 -                          ^
 - compilation terminated.
+- if gcc -D_GNUCC -m64 src/machdep-ml.c -o _build/machdep-ml64.exe ;then \
+- 	  sed -e "s|nogcc64model|` _build/machdep-ml64.exe --env`|" lib/App/Cilly.pm > lib/App/Cilly.pm.tmp; \
+- 	  mv lib/App/Cilly.pm.tmp lib/App/Cilly.pm; \
+- 	fi
+- cd lib; perl Makefile.PL
+- Checking if your kit is complete...
+- Looks good
+- Writing Makefile for cilly
+- Writing MYMETA.yml and MYMETA.json
+- make -C lib
+- make[1]: Entering directory `/home/opam/.opam/system/build/cil.1.7.3/lib'
+- cp App/Cilly/TempFile.pm blib/lib/App/Cilly/TempFile.pm
+- cp App/Cilly/KeptFile.pm blib/lib/App/Cilly/KeptFile.pm
+- cp App/Cilly/OutputFile.pm blib/lib/App/Cilly/OutputFile.pm
+- cp App/Cilly.pm blib/lib/App/Cilly.pm
+- cp App/Cilly/CilConfig.pm blib/lib/App/Cilly/CilConfig.pm
+- cp ../bin/cilly blib/script/cilly
+- /usr/bin/perl -MExtUtils::MY -e 'MY->fixin(shift)' -- blib/script/cilly
+- make[1]: Leaving directory `/home/opam/.opam/system/build/cil.1.7.3/lib'
 - src/machdep-ml.c: In function 'main':
 - src/machdep-ml.c:106:21: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
 -      alignof_short = (int)(&((struct shortstruct*)0)->s);
@@ -1130,20 +1147,6 @@ The following actions will be performed:
 -      alignof_longdouble = (int)(&((struct s1*)0)->ld);
 -                           ^
 - Generating CIL_MACHINE machine dependency information string (for CIL)
-- Checking if your kit is complete...
-- Looks good
-- Writing Makefile for cilly
-- Writing MYMETA.yml and MYMETA.json
-- make -C lib
-- make[1]: Entering directory `/home/opam/.opam/system/build/cil.1.7.3/lib'
-- cp App/Cilly/TempFile.pm blib/lib/App/Cilly/TempFile.pm
-- cp App/Cilly/OutputFile.pm blib/lib/App/Cilly/OutputFile.pm
-- cp App/Cilly.pm blib/lib/App/Cilly.pm
-- cp App/Cilly/CilConfig.pm blib/lib/App/Cilly/CilConfig.pm
-- cp App/Cilly/KeptFile.pm blib/lib/App/Cilly/KeptFile.pm
-- cp ../bin/cilly blib/script/cilly
-- /usr/bin/perl -MExtUtils::MY -e 'MY->fixin(shift)' -- blib/script/cilly
-- make[1]: Leaving directory `/home/opam/.opam/system/build/cil.1.7.3/lib'
 [cil: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/cil.1.7.3)
 - ocamlbuild -build-dir _build -no-links -classic-display src/main.native
@@ -1160,9 +1163,9 @@ The following actions will be performed:
 - make[1]: Entering directory `/home/opam/.opam/system/build/cil.1.7.3/lib'
 - Installing /home/opam/.opam/system/lib/perl5/App/Cilly.pm
 - Installing /home/opam/.opam/system/lib/perl5/App/Cilly/TempFile.pm
+- Installing /home/opam/.opam/system/lib/perl5/App/Cilly/KeptFile.pm
 - Installing /home/opam/.opam/system/lib/perl5/App/Cilly/OutputFile.pm
 - Installing /home/opam/.opam/system/lib/perl5/App/Cilly/CilConfig.pm
-- Installing /home/opam/.opam/system/lib/perl5/App/Cilly/KeptFile.pm
 - Installing /home/opam/.opam/system/bin/cilly
 - make[1]: Leaving directory `/home/opam/.opam/system/build/cil.1.7.3/lib'
 - /usr/bin/install -c -m 0755 bin/cilly.* /home/opam/.opam/system/bin
