@@ -1,13 +1,13 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-# Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=gdal
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=gdal
+# Detecting depexts using flags: x86_64 linux debian
 # The following system packages are needed:
 #  - libffi-dev
 #  - libgdal-dev
 #  - m4
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=gdal
 Not running as root, the following command will be run through "sudo":
     apt-get update
 + sudo apt-get update
@@ -17,24 +17,25 @@ Hit http://httpredir.debian.org stable InRelease
 Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Get:2 http://security.debian.org stable/updates/main amd64 Packages [54.6 kB]
+Get:2 http://security.debian.org stable/updates/main amd64 Packages [55.3 kB]
 Get:3 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
 Get:4 http://download.opensuse.org  Packages [5783 B]
-Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3618 B]
-Fetched 9209 kB in 9s (958 kB/s)
+Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
+Fetched 9210 kB in 10s (913 kB/s)
 Reading package lists...
-+ sudo apt-get install -qq -yy libffi-dev libgdal-dev m4
+W: Size of file /var/lib/apt/lists/httpredir.debian.org_debian_dists_stable-updates_main_binary-amd64_Packages.gz is not what the server reported 3612 3618
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libffi-dev libgdal-dev m4
++ sudo apt-get install -qq -yy libffi-dev libgdal-dev m4
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
-debconf: unable to initialize frontend: Readline
+Selecting previously unselected package libgssrpc4:amd64.debconf: unable to initialize frontend: Readline
 debconf: (This frontend requires a controlling tty.)
 debconf: falling back to frontend: Teletype
 dpkg-preconfigure: unable to re-open stdin: 
-Selecting previously unselected package libgssrpc4:amd64.
+
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 22907 files and directories currently installed.)
 Preparing to unpack .../libgssrpc4_1.12.1+dfsg-19_amd64.deb ...
 Unpacking libgssrpc4:amd64 (1.12.1+dfsg-19) ...
@@ -400,12 +401,12 @@ The following actions will be performed:
 [ctypes: from default] Command started
 [gdal: from default] Command started
 [ocamlfind: from default] Command started
-[ocamlfind: from default] Command started
 [gdal: from default] Command started
 [ctypes: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/gdal.0.6.1+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ctypes.0.4.1+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/gdal.0.6.1+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 -> installed ctypes-foreign.0.4.0
@@ -488,6 +489,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -533,12 +536,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -547,8 +550,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -599,7 +600,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -644,6 +644,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -737,6 +738,8 @@ The following actions will be performed:
 - ocamlfind ocamlc -package str -package bigarray -package bytes     -c -o _build/src/ctypes/ctypes_ptr.cmo -I _build/src/ctypes  src/ctypes/ctypes_ptr.ml
 - ocamlfind ocamlc -c -o _build/src/ctypes/ctypes_primitive_types.cmi -package str -package bigarray -package bytes   -I _build/src/ctypes  src/ctypes/ctypes_primitive_types.mli
 - ocamlfind ocamlc -package str -package bigarray -package bytes     -c -o _build/src/ctypes/ctypes_primitive_types.cmo -I _build/src/ctypes  src/ctypes/ctypes_primitive_types.ml
+- make: Circular _build/src/ctypes/ctypes_primitive_types.cmx <- _build/src/ctypes/ctypes_primitive_types.cmx dependency dropped.
+- make: Circular _build/src/ctypes/ctypes_memory_stubs.cmx <- _build/src/ctypes/ctypes_memory_stubs.cmx dependency dropped.
 - ocamlfind ocamlc -package str -package bigarray -package bytes     -c -o _build/src/ctypes/ctypes_memory_stubs.cmo -I _build/src/ctypes  src/ctypes/ctypes_memory_stubs.ml
 - ocamlfind ocamlc -package str -package bigarray -package bytes     -c -o _build/src/ctypes/ctypes_bigarray_stubs.cmo -I _build/src/ctypes  src/ctypes/ctypes_bigarray_stubs.ml
 - ocamlfind ocamlc -package str -package bigarray -package bytes     -c -o _build/src/ctypes/ctypes_primitives.cmo -I _build/src/ctypes  src/ctypes/ctypes_primitives.ml
@@ -757,8 +760,6 @@ The following actions will be performed:
 - ocamlfind ocamlc -package str -package bigarray -package bytes     -c -o _build/src/ctypes/ctypes_std_views.cmo -I _build/src/ctypes  src/ctypes/ctypes_std_views.ml
 - ocamlfind ocamlc -package str -package bigarray -package bytes     -c -o _build/src/ctypes/ctypes_value_printing.cmo -I _build/src/ctypes  src/ctypes/ctypes_value_printing.ml
 - ocamlfind ocamlc -c -o _build/src/ctypes/ctypes_types.cmi -package str -package bigarray -package bytes   -I _build/src/ctypes  src/ctypes/ctypes_types.mli
-- make: Circular _build/src/ctypes/ctypes_primitive_types.cmx <- _build/src/ctypes/ctypes_primitive_types.cmx dependency dropped.
-- make: Circular _build/src/ctypes/ctypes_memory_stubs.cmx <- _build/src/ctypes/ctypes_memory_stubs.cmx dependency dropped.
 - ocamlfind ocamlc -c -o _build/src/ctypes/ctypes.cmi -package str -package bigarray -package bytes   -I _build/src/ctypes  src/ctypes/ctypes.mli
 - ocamlfind ocamlc -package str -package bigarray -package bytes     -c -o _build/src/ctypes/ctypes.cmo -I _build/src/ctypes  src/ctypes/ctypes.ml
 - ocamlfind ocamlc -c -o _build/src/ctypes/posixTypes.cmi -package str -package bigarray -package bytes   -I _build/src/ctypes  src/ctypes/posixTypes.mli
@@ -803,13 +804,6 @@ The following actions will be performed:
 - ocamlfind opt -c -o _build/src/ctypes-top/ctypes_printers.cmx -package compiler-libs    -package compiler-libs   -I _build/src/ctypes-top  -I _build/src/ctypes src/ctypes-top/ctypes_printers.ml
 - ocamlfind opt -c -o _build/src/ctypes-top/install_ctypes_printers.cmx -package compiler-libs    -package compiler-libs   -I _build/src/ctypes-top  -I _build/src/ctypes src/ctypes-top/install_ctypes_printers.ml
 - ocamlfind opt -a -linkall   -package compiler-libs   -o _build/ctypes-top.cmxa _build/src/ctypes-top/ctypes_printers.cmx _build/src/ctypes-top/install_ctypes_printers.cmx -cclib -Wl,--no-as-needed
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - ocamlfind opt -shared -linkall   -package compiler-libs  -o _build/ctypes-top.cmxs _build/src/ctypes-top/ctypes_printers.cmx _build/src/ctypes-top/install_ctypes_printers.cmx  -cclib -Wl,--no-as-needed
 - ocamlfind ocamlc -c -o _build/src/cstubs/cstubs_analysis.cmi -package str -package bytes   -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_analysis.mli
 - ocamlfind ocamlc -package str -package bytes     -c -o _build/src/cstubs/cstubs_analysis.cmo -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_analysis.ml
@@ -822,6 +816,14 @@ The following actions will be performed:
 - ocamlfind ocamlc -c -o _build/src/cstubs/cstubs_generate_ml.cmi -package str -package bytes   -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_generate_ml.mli
 - ocamlfind ocamlc -package str -package bytes     -c -o _build/src/cstubs/cstubs_generate_ml.cmo -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_generate_ml.ml
 - ocamlfind ocamlc -package str -package bytes     -c -o _build/src/cstubs/cstubs_c_language.cmo -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_c_language.ml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - ocamlfind ocamlc -package str -package bytes     -c -o _build/src/cstubs/cstubs_emit_c.cmo -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_emit_c.ml
 - ocamlfind ocamlc -c -o _build/src/cstubs/cstubs_generate_c.cmi -package str -package bytes   -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_generate_c.mli
 - ocamlfind ocamlc -package str -package bytes     -c -o _build/src/cstubs/cstubs_generate_c.cmo -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_generate_c.ml
@@ -835,7 +837,6 @@ The following actions will be performed:
 - ocamlfind opt -c -o _build/src/cstubs/cstubs_analysis.cmx -package str -package bytes    -package str -package bytes   -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_analysis.ml
 - ocamlfind opt -c -o _build/src/cstubs/cstubs_errors.cmx -package str -package bytes    -package str -package bytes   -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_errors.ml
 - ocamlfind opt -c -o _build/src/cstubs/cstubs_internals.cmx -package str -package bytes    -package str -package bytes   -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_internals.ml
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - ocamlfind opt -c -o _build/src/cstubs/cstubs_public_name.cmx -package str -package bytes    -package str -package bytes   -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_public_name.ml
 - ocamlfind opt -c -o _build/src/cstubs/cstubs_generate_ml.cmx -package str -package bytes    -package str -package bytes   -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_generate_ml.ml
 - ocamlfind opt -c -o _build/src/cstubs/cstubs_c_language.cmx -package str -package bytes    -package str -package bytes   -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_c_language.ml
@@ -1097,14 +1098,14 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -package ctypes.foreign -I src/ogr -o src/ogr/field.cmi src/ogr/field.mli
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -package ctypes.foreign -I src/ogr -o src/ogr/geometry.cmi src/ogr/geometry.mli
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package ctypes.foreign -modules src/ogr/spatial_reference.mli > src/ogr/spatial_reference.mli.depends
-- W: Cannot find source file matching module 'gdal' in library gdal
-- W: Cannot find source file matching module 'ogr' in library ogr
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -package ctypes.foreign -I src/ogr -o src/ogr/feature.cmi src/ogr/feature.mli
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -package ctypes.foreign -I src/ogr -o src/ogr/spatial_reference.cmi src/ogr/spatial_reference.mli
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -package ctypes.foreign -I src/ogr -o src/ogr/layer.cmi src/ogr/layer.mli
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -package ctypes.foreign -I src/ogr -o src/ogr/data_source.cmi src/ogr/data_source.mli
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package ctypes.foreign -modules src/ogr/data_source.ml > src/ogr/data_source.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package ctypes.foreign -modules src/ogr/driver.mli > src/ogr/driver.mli.depends
+- W: Cannot find source file matching module 'gdal' in library gdal
+- W: Cannot find source file matching module 'ogr' in library ogr
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package ctypes.foreign -modules src/ogr/lib.mli > src/ogr/lib.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package ctypes.foreign -modules src/ogr/t.ml > src/ogr/t.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -package ctypes.foreign -I src/ogr -o src/ogr/driver.cmi src/ogr/driver.mli
