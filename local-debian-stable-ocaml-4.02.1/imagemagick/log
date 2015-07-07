@@ -13,15 +13,15 @@ Not running as root, the following command will be run through "sudo":
 + sudo apt-get update
 Hit http://security.debian.org stable/updates InRelease
 Ign http://download.opensuse.org  InRelease
-Get:1 http://httpredir.debian.org stable InRelease [128 kB]
-Get:2 http://security.debian.org stable/updates/main amd64 Packages [55.3 kB]
+Hit http://httpredir.debian.org stable InRelease
+Hit http://httpredir.debian.org stable-updates InRelease
 Hit http://download.opensuse.org  Release.gpg
-Get:3 http://httpredir.debian.org stable-updates InRelease [126 kB]
 Hit http://download.opensuse.org  Release
-Get:4 http://download.opensuse.org  Packages [5783 B]
-Get:5 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
-Get:6 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9338 kB in 5s (1683 kB/s)
+Get:1 http://security.debian.org stable/updates/main amd64 Packages [55.3 kB]
+Get:2 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
+Get:3 http://download.opensuse.org  Packages [5783 B]
+Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
+Fetched 9084 kB in 4s (2228 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
@@ -737,6 +737,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -781,7 +782,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -848,7 +848,37 @@ The following actions will be performed:
 -> installed ocamlfind.1.5.5
 [imagemagick: make] Command started
 + make  (CWD=/home/opam/.opam/4.02.1/build/imagemagick.0.34)
+- ocamlc -c magick.mli
+- ocamlc -c magick.ml
+- gcc -fPIC -c -I"/home/opam/.opam/4.02.1/lib/ocaml"  imagemagick_wrap.c
+- Makefile:45: recipe for target 'imagemagick_wrap.o' failed
+- make: --prefix: Command not found
+- make: --libs: Command not found
+- make: --cflags: Command not found
+- File "magick.ml", line 953, characters 4-22:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- imagemagick_wrap.c:60:32: fatal error: magick/ImageMagick.h: No such file or directory
+-  #include <magick/ImageMagick.h>
+-                                 ^
+- compilation terminated.
+- make: *** [imagemagick_wrap.o] Error 1
 [ERROR] The compilation of imagemagick failed at "make".
+[imagemagick: ocamlfind remove] Command started
++ ocamlfind "remove" "magick" (CWD=/home/opam/.opam/4.02.1/build/imagemagick.0.34)
+- ocamlfind: [WARNING] No such directory: /home/opam/.opam/4.02.1/lib/magick
+
+
+=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+The following actions failed
+  - install imagemagick 0.34
+The following changes have been performed
+  - install ocamlfind 1.5.5
+
+=-=- imagemagick.0.34 troobleshooting -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+=> This package relies on external (system) dependencies that may be missing.
+   `opam depext imagemagick.0.34' may help you find the correct installation
+   for your system.
 
 #=== ERROR while installing imagemagick.0.34 ==================================#
 # opam-version         1.2.2 (391297300524717e1475deaea37bca287c7f5e36)
@@ -857,9 +887,9 @@ The following actions will be performed:
 # path                 /home/opam/.opam/4.02.1/build/imagemagick.0.34
 # compiler             4.02.1
 # exit-code            2
-# env-file             /home/opam/.opam/4.02.1/build/imagemagick.0.34/imagemagick-5-b76d46.env
-# stdout-file          /home/opam/.opam/4.02.1/build/imagemagick.0.34/imagemagick-5-b76d46.out
-# stderr-file          /home/opam/.opam/4.02.1/build/imagemagick.0.34/imagemagick-5-b76d46.err
+# env-file             /home/opam/.opam/4.02.1/build/imagemagick.0.34/imagemagick-6-b76d46.env
+# stdout-file          /home/opam/.opam/4.02.1/build/imagemagick.0.34/imagemagick-6-b76d46.out
+# stderr-file          /home/opam/.opam/4.02.1/build/imagemagick.0.34/imagemagick-6-b76d46.err
 ### stdout ###
 # ocamlc -c magick.mli
 # ocamlc -c magick.ml
@@ -878,37 +908,7 @@ The following actions will be performed:
 # compilation terminated.
 # make: *** [imagemagick_wrap.o] Error 1
 
-- ocamlc -c magick.mli
-- ocamlc -c magick.ml
-- gcc -fPIC -c -I"/home/opam/.opam/4.02.1/lib/ocaml"  imagemagick_wrap.c
-- Makefile:45: recipe for target 'imagemagick_wrap.o' failed
-- make: --prefix: Command not found
-- make: --libs: Command not found
-- make: --cflags: Command not found
-- File "magick.ml", line 953, characters 4-22:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- imagemagick_wrap.c:60:32: fatal error: magick/ImageMagick.h: No such file or directory
--  #include <magick/ImageMagick.h>
--                                 ^
-- compilation terminated.
-- make: *** [imagemagick_wrap.o] Error 1
-[imagemagick: ocamlfind remove] Command started
-+ ocamlfind "remove" "magick" (CWD=/home/opam/.opam/4.02.1/build/imagemagick.0.34)
-- ocamlfind: [WARNING] No such directory: /home/opam/.opam/4.02.1/lib/magick
-
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions failed
-  - install imagemagick 0.34
-The following changes have been performed
-  - install ocamlfind 1.5.5
-
-=-=- imagemagick.0.34 troobleshooting -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-=> This package relies on external (system) dependencies that may be missing.
-   `opam depext imagemagick.0.34' may help you find the correct installation
-   for your system.
 
 The former state can be restored with:
-    opam switch import "~/.opam/4.02.1/backup/state-20150406051123.export"
+    opam switch import "~/.opam/4.02.1/backup/state-20150406150912.export"
 'opam install imagemagick' failed.
