@@ -6,18 +6,18 @@
 # The following system packages are needed:
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=ollvm
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
-Ign http://archive.ubuntu.com trusty InRelease
 Ign http://download.opensuse.org  InRelease
-Ign http://archive.ubuntu.com trusty-updates InRelease
 Hit http://download.opensuse.org  Release.gpg
-Ign http://archive.ubuntu.com trusty-security InRelease
 Hit http://download.opensuse.org  Release
+Ign http://archive.ubuntu.com trusty InRelease
+Ign http://archive.ubuntu.com trusty-updates InRelease
+Ign http://archive.ubuntu.com trusty-security InRelease
+Hit http://download.opensuse.org  Packages
 Hit http://archive.ubuntu.com trusty Release.gpg
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
-Hit http://download.opensuse.org  Packages
 Hit http://archive.ubuntu.com trusty-security Release.gpg
 Hit http://archive.ubuntu.com trusty Release
 Get:2 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
@@ -40,8 +40,9 @@ Hit http://archive.ubuntu.com trusty-security/universe Sources
 Hit http://archive.ubuntu.com trusty-security/main amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/universe amd64 Packages
-Fetched 1540 kB in 5s (297 kB/s)
+Fetched 1540 kB in 5s (286 kB/s)
 Reading package lists...
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 673407 673409
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
@@ -57,11 +58,11 @@ The following actions will be performed:
 [menhir: from default] Command started
 [ocamlfind: from default] Command started
 [ollvm: from default] Command started
-[ollvm: from default] Command started
 [ocamlfind: from default] Command started
+[ollvm: from default] Command started
 [menhir: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ollvm.0.99+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/menhir.20141215+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -258,6 +259,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -302,7 +304,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -1179,8 +1180,7 @@ The following actions will be performed:
 - checking for C compiler default output file name... a.out
 - checking for suffix of executables... 
 - checking whether we are cross compiling... no
-- checking for suffix of object files... 
-- o
+- checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
 - checking for gcc option to accept ISO C89... none needed
@@ -1256,6 +1256,9 @@ The following actions will be performed:
 - ocamlfind ocamlc  -c ollvm_printer.ml
 - ocamlfind ocamlc  -c ollvm_ez.ml
 - ocamlfind ocamlc  -c ollvm.ml
+- ocamlfind ocamlc  -a -o ollvm.cma ollvm_ast.cmo ollvm_parser.cmo ollvm_lexer.cmo ollvm_printer.cmo ollvm_ez.cmo ollvm.cmo
+- ocamlfind ocamlopt  -c ollvm_ast.ml
+- ocamlfind ocamlopt  -c ollvm_parser.ml
 - File "ollvm_printer.ml", line 485, characters 2-676:
 - Warning 8: this pattern-matching is not exhaustive.
 - Here is an example of a value that is not matched:
@@ -1365,9 +1368,6 @@ The following actions will be performed:
 - Warning 40: m_definitions was selected from type Ollvm_ast.modul.
 - It is not visible in the current scope, and will not 
 - be selected if the type becomes unknown.
-- ocamlfind ocamlc  -a -o ollvm.cma ollvm_ast.cmo ollvm_parser.cmo ollvm_lexer.cmo ollvm_printer.cmo ollvm_ez.cmo ollvm.cmo
-- ocamlfind ocamlopt  -c ollvm_ast.ml
-- ocamlfind ocamlopt  -c ollvm_parser.ml
 - File "ollvm_ast.ml", line 132, characters 53-56:
 - Warning 30: the constructor Ugt is defined in both types icmp and fcmp.
 - File "ollvm_ast.ml", line 132, characters 57-60:
@@ -1378,10 +1378,6 @@ The following actions will be performed:
 - Warning 30: the constructor Ule is defined in both types icmp and fcmp.
 - ocamlfind ocamlopt  -c ollvm_lexer.ml
 - ocamlfind ocamlopt  -c ollvm_printer.ml
-- ocamlfind ocamlopt  -c ollvm_ez.ml
-- ocamlfind ocamlopt  -c ollvm.ml
-- ocamlfind ocamlopt  -a -o ollvm.cmxa ollvm_ast.cmx ollvm_parser.cmx ollvm_lexer.cmx ollvm_printer.cmx ollvm_ez.cmx ollvm.cmx
-- make[1]: Leaving directory `/home/opam/.opam/system/build/ollvm.0.99/src/ollvm'
 - File "ollvm_printer.ml", line 485, characters 2-676:
 - Warning 8: this pattern-matching is not exhaustive.
 - Here is an example of a value that is not matched:
@@ -1397,6 +1393,10 @@ The following actions will be performed:
 -                        TYPE_Ppc_fp128|TYPE_Label|TYPE_Metadata|TYPE_X86_mmx|
 -                        TYPE_Array _|TYPE_Struct _|TYPE_Packed_struct _|
 -                        TYPE_Opaque|TYPE_Vector _)}}
+- ocamlfind ocamlopt  -c ollvm_ez.ml
+- ocamlfind ocamlopt  -c ollvm.ml
+- ocamlfind ocamlopt  -a -o ollvm.cmxa ollvm_ast.cmx ollvm_parser.cmx ollvm_lexer.cmx ollvm_printer.cmx ollvm_ez.cmx ollvm.cmx
+- make[1]: Leaving directory `/home/opam/.opam/system/build/ollvm.0.99/src/ollvm'
 - File "ollvm_ez.ml", line 45, characters 12-51:
 - Warning 8: this pattern-matching is not exhaustive.
 - Here is an example of a value that is not matched:
