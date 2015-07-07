@@ -1,31 +1,31 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-+ opam list --safe --recursive --external=x86_64,linux,debian --required-by=flac
 # Detecting depexts using flags: x86_64 linux debian
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=flac
++ opam list --safe --recursive --external=x86_64,linux,debian --required-by=flac
 # The following system packages are needed:
 #  - libogg-dev
 #  - m4
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=flac
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
 Hit http://security.debian.org stable/updates InRelease
 Ign http://download.opensuse.org  InRelease
 Hit http://httpredir.debian.org stable InRelease
-Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
+Hit http://httpredir.debian.org stable-updates InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Get:2 http://security.debian.org stable/updates/main amd64 Packages [117 kB]
-Get:3 http://httpredir.debian.org stable/main amd64 Packages [9038 kB]
-Get:4 http://download.opensuse.org  Packages [5783 B]
-Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9290 kB in 4s (2313 kB/s)
+Get:1 http://security.debian.org stable/updates/main amd64 Packages [121 kB]
+Get:2 http://httpredir.debian.org stable/main amd64 Packages [9038 kB]
+Get:3 http://download.opensuse.org  Packages [5783 B]
+Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
+Fetched 9168 kB in 3s (2335 kB/s)
 Reading package lists...
-+ sudo apt-get install -qq -yy libogg-dev m4
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libogg-dev m4
++ sudo apt-get install -qq -yy libogg-dev m4
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
@@ -56,10 +56,10 @@ The following actions will be performed:
 [ogg: from default] Command started
 [flac: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [ogg: from default] Command started
-[default] http://opam-archive:8080/archives/flac.0.1.1+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ogg.0.4.3+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/flac.0.1.1+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -142,6 +142,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -187,11 +188,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -200,8 +202,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -371,8 +371,7 @@ The following actions will be performed:
 - checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
-- checking for gcc option to accept ISO C89... 
-- none needed
+- checking for gcc option to accept ISO C89... none needed
 - checking build system type... x86_64-unknown-linux-gnu
 - checking host system type... x86_64-unknown-linux-gnu
 - checking for a BSD-compatible install... /usr/bin/install -c
@@ -447,20 +446,20 @@ The following actions will be performed:
 - ocamlopt.opt -c ogg.ml
 - ocamlopt.opt -c ogg_demuxer.ml
 - ocamlopt.opt -a        -ccopt -L/home/opam/.opam/4.02.1/lib/lib  -ccopt -L/home/opam/.opam/4.02.1/lib/lib   -cclib -logg_stubs -cclib -logg   -o ogg.cmxa ogg.cmx ogg_demuxer.cmx
-- File "ogg.ml", line 164, characters 24-37:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "ogg_demuxer.ml", line 310, characters 18-31:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "ogg.ml", line 164, characters 24-37:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "ogg_demuxer.ml", line 310, characters 18-31:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - make[2]: Leaving directory '/home/opam/.opam/4.02.1/build/ogg.0.4.3/src'
 - make[1]: Leaving directory '/home/opam/.opam/4.02.1/build/ogg.0.4.3/src'
+- File "ogg.ml", line 164, characters 24-37:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "ogg_demuxer.ml", line 310, characters 18-31:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "ogg.ml", line 164, characters 24-37:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "ogg_demuxer.ml", line 310, characters 18-31:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 [ogg: make install] Command started
 + make "install" (CWD=/home/opam/.opam/4.02.1/build/ogg.0.4.3)
 - make -C src install
@@ -536,17 +535,7 @@ The following actions will be performed:
 - checking for camlp4o... camlp4o
 - checking for camlp4of... camlp4of
 - checking for camlp4oof... camlp4oof
-- checking for camlp4orf... camlp4orf
-- checking for camlp4prof... camlp4prof
-- checking for camlp4r... camlp4r
-- checking for camlp4rf... camlp4rf
-- checking for ocamlfind... ocamlfind
-- checking for caml/threads.h... yes
-- checking for gcc option to produce PIC... -fPIC
-- checking for pkg-config... /usr/bin/pkg-config
-- checking pkg-config is at least version 0.9.0... yes
-- checking whether pkg-config knows about flac... 
-- configure: error: flac.pc not found.. Do you need to set PKG_CONFIG_PATH?
+- checking for camlp4orf... 
 [ERROR] The compilation of flac failed at "./configure --prefix
         /home/opam/.opam/4.02.1/lib --mandir /home/opam/.opam/4.02.1/man".
 
@@ -576,6 +565,21 @@ The following actions will be performed:
 # configure: error: flac.pc not found.. Do you need to set PKG_CONFIG_PATH?
 
 
+The former state can be restored with:
+    opam switch import "~/.opam/4.02.1/backup/state-20150510033415.export"
+'opam install flac' failed.
+- camlp4orf
+- checking for camlp4prof... camlp4prof
+- checking for camlp4r... camlp4r
+- checking for camlp4rf... camlp4rf
+- checking for ocamlfind... ocamlfind
+- checking for caml/threads.h... yes
+- checking for gcc option to produce PIC... -fPIC
+- checking for pkg-config... /usr/bin/pkg-config
+- checking pkg-config is at least version 0.9.0... yes
+- checking whether pkg-config knows about flac... 
+- configure: error: flac.pc not found.. Do you need to set PKG_CONFIG_PATH?
+
 
 =-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 The following actions failed
@@ -583,7 +587,3 @@ The following actions failed
 The following changes have been performed
   - install ocamlfind 1.5.5
   - install ogg       0.4.3
-
-The former state can be restored with:
-    opam switch import "~/.opam/4.02.1/backup/state-20150509170447.export"
-'opam install flac' failed.
