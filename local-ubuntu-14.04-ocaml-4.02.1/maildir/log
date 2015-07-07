@@ -3,25 +3,26 @@
 + uname -s
 + lsb_release -i -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=maildir
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=maildir
-+ sudo apt-get update
 # The following system packages are needed:
 #  - libpcre3-dev
 #  - m4
 #  - pkg-config
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=maildir
 Not running as root, the following command will be run through "sudo":
     apt-get update
++ sudo apt-get update
+Ign http://download.opensuse.org  InRelease
+Hit http://download.opensuse.org  Release.gpg
+Hit http://download.opensuse.org  Release
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
 Hit http://archive.ubuntu.com trusty Release.gpg
-Ign http://download.opensuse.org  InRelease
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
+Hit http://download.opensuse.org  Packages
 Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
-Hit http://download.opensuse.org  Release.gpg
 Hit http://archive.ubuntu.com trusty Release
 Get:3 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
-Hit http://download.opensuse.org  Release
 Get:4 http://archive.ubuntu.com trusty-security Release [63.5 kB]
 Hit http://archive.ubuntu.com trusty/main Sources
 Hit http://archive.ubuntu.com trusty/restricted Sources
@@ -33,7 +34,6 @@ Get:5 http://archive.ubuntu.com trusty-updates/main Sources [260 kB]
 Get:6 http://archive.ubuntu.com trusty-updates/restricted Sources [3158 B]
 Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [147 kB]
 Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [665 kB]
-Hit http://download.opensuse.org  Packages
 Get:9 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [18.1 kB]
 Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [366 kB]
 Get:11 http://archive.ubuntu.com trusty-security/main Sources [101 kB]
@@ -42,12 +42,14 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [28.4 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [346 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [134 kB]
-Fetched 2214 kB in 4s (551 kB/s)
+Fetched 2214 kB in 12s (177 kB/s)
 Reading package lists...
-+ sudo apt-get install -qq -yy libpcre3-dev m4 pkg-config
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 664676 664679
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages.gz is not what the server reported 365944 365952
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libpcre3-dev m4 pkg-config
++ sudo apt-get install -qq -yy libpcre3-dev m4 pkg-config
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
@@ -91,13 +93,13 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocaml-data-notation.0.0.11+opam.tar.gz downloaded
 [ocamlmod: from default] Command started
+[ocamlify: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [type_conv: from default] Command started
-[ocamlify: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlify.0.0.1+opam.tar.gz downloaded
 [ocamlmod: from default] Command started
-[type_conv: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlify.0.0.1+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlmod.0.0.7+opam.tar.gz downloaded
+[type_conv: from default] Command started
 [default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -189,6 +191,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -234,18 +237,10 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
-- if [ "true" = "true" ]; then                 \
-- 		cp topfind.ml.in topfind.ml;                             \
-- 	else                                                             \
-- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 			> topfind.ml ;                                   \
-- 	fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -254,6 +249,13 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- if [ "true" = "true" ]; then                 \
+- 		cp topfind.ml.in topfind.ml;                             \
+- 	else                                                             \
+- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 			> topfind.ml ;                                   \
+- 	fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -409,6 +411,64 @@ The following actions will be performed:
 -> installed ocamlfind.1.5.5
 [ocamlify: ocaml setup.ml] Command started
 [ocamlmod: ocaml setup.ml] Command started
++ ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/ocamlify.0.0.1)
+- 
+- Configuration: 
+- 
+- OCamlbuild additional flags: ................... 
+- Compile with ocaml profile flag on.: ........... false
+- Compile with ocaml debug flag on.: ............. true
+- Remove a directory.: ........................... rm -rf
+- Remove a file.: ................................ rm -f
+- suffix_program: ................................ 
+- is_native: ..................................... true
+- findlib_version: ............................... 1.5.5
+- PS documentation: .............................. $docdir
+- PDF documentation: ............................. $docdir
+- DVI documentation: ............................. $docdir
+- HTML documentation: ............................ $docdir
+- Documentation root: ............................ $datarootdir/doc/$pkg_name
+- Man documentation: ............................. $datarootdir/man
+- Locale-dependent data: ......................... $datarootdir/locale
+- Info documentation: ............................ $datarootdir/info
+- Read-only architecture-independent data: ....... $datarootdir
+- Read-only arch-independent data root: .......... $prefix/share
+- Object code libraries: ......................... $exec_prefix/lib
+- Modifiable single-machine data: ................ $prefix/var
+- Modifiable architecture-independent data: ...... $prefix/com
+- Read-only single-machine data: ................. $prefix/etc
+- Program executables: ........................... $exec_prefix/libexec
+- System admin executables: ...................... $exec_prefix/sbin
+- User executables: .............................. $exec_prefix/bin
+- Install architecture-dependent files in dir: ... $prefix
+- Install architecture-independent files dir: .... /home/opam/.opam/system
+- systhread_supported: ........................... true
+- default_executable_name: ....................... a.out
+- ext_dll: ....................................... .so
+- ext_lib: ....................................... .a
+- ext_asm: ....................................... .s
+- ext_obj: ....................................... .o
+- model: ......................................... default
+- native_c_compiler: ............................. gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
+- bytecomp_c_compiler: ........................... gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
+- standard_runtime: .............................. /usr/bin/ocamlrun
+- standard_library: .............................. /usr/lib/ocaml
+- standard_library_default: ...................... /usr/lib/ocaml
+- ocaml_version: ................................. 4.02.1
+- ccomp_type: .................................... cc
+- architecture: .................................. amd64
+- system: ........................................ linux
+- os_type: ....................................... Unix
+- Package version: ............................... 0.0.1
+- Package name: .................................. ocamlify
+- ocamlbuild: .................................... /usr/bin/ocamlbuild
+- ocamlopt: ...................................... /usr/bin/ocamlopt.opt
+- ocamlc: ........................................ /usr/bin/ocamlc.opt
+- ocamlfind: ..................................... /home/opam/.opam/system/bin/ocamlfind
+- 
+- I: Running command '/usr/bin/ocamlc.opt -config > /tmp/oasis-d5c4c0.txt'
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %v findlib > /tmp/oasis-45cb31.txt'
+[ocamlify: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/ocamlmod.0.0.7)
 - 
 - Configuration: 
@@ -474,63 +534,15 @@ The following actions will be performed:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
 [ocamlmod: ocaml setup.ml] Command started
-+ ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/ocamlify.0.0.1)
-- 
-- Configuration: 
-- 
-- OCamlbuild additional flags: ................... 
-- Compile with ocaml profile flag on.: ........... false
-- Compile with ocaml debug flag on.: ............. true
-- Remove a directory.: ........................... rm -rf
-- Remove a file.: ................................ rm -f
-- suffix_program: ................................ 
-- is_native: ..................................... true
-- findlib_version: ............................... 1.5.5
-- PS documentation: .............................. $docdir
-- PDF documentation: ............................. $docdir
-- DVI documentation: ............................. $docdir
-- HTML documentation: ............................ $docdir
-- Documentation root: ............................ $datarootdir/doc/$pkg_name
-- Man documentation: ............................. $datarootdir/man
-- Locale-dependent data: ......................... $datarootdir/locale
-- Info documentation: ............................ $datarootdir/info
-- Read-only architecture-independent data: ....... $datarootdir
-- Read-only arch-independent data root: .......... $prefix/share
-- Object code libraries: ......................... $exec_prefix/lib
-- Modifiable single-machine data: ................ $prefix/var
-- Modifiable architecture-independent data: ...... $prefix/com
-- Read-only single-machine data: ................. $prefix/etc
-- Program executables: ........................... $exec_prefix/libexec
-- System admin executables: ...................... $exec_prefix/sbin
-- User executables: .............................. $exec_prefix/bin
-- Install architecture-dependent files in dir: ... $prefix
-- Install architecture-independent files dir: .... /home/opam/.opam/system
-- systhread_supported: ........................... true
-- default_executable_name: ....................... a.out
-- ext_dll: ....................................... .so
-- ext_lib: ....................................... .a
-- ext_asm: ....................................... .s
-- ext_obj: ....................................... .o
-- model: ......................................... default
-- native_c_compiler: ............................. gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
-- bytecomp_c_compiler: ........................... gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
-- standard_runtime: .............................. /usr/bin/ocamlrun
-- standard_library: .............................. /usr/lib/ocaml
-- standard_library_default: ...................... /usr/lib/ocaml
-- ocaml_version: ................................. 4.02.1
-- ccomp_type: .................................... cc
-- architecture: .................................. amd64
-- system: ........................................ linux
-- os_type: ....................................... Unix
-- Package version: ............................... 0.0.1
-- Package name: .................................. ocamlify
-- ocamlbuild: .................................... /usr/bin/ocamlbuild
-- ocamlopt: ...................................... /usr/bin/ocamlopt.opt
-- ocamlc: ........................................ /usr/bin/ocamlc.opt
-- ocamlfind: ..................................... /home/opam/.opam/system/bin/ocamlfind
-- 
-- I: Running command '/usr/bin/ocamlc.opt -config > /tmp/oasis-afa57b.txt'
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %v findlib > /tmp/oasis-4bf185.txt'
++ ocaml "setup.ml" "-build" (CWD=/home/opam/.opam/system/build/ocamlify.0.0.1)
+- /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
+- ocamlfind ocamldep -modules src/ocamlify.ml > src/ocamlify.ml.depends
+- ocamlfind ocamldep -modules src/OCamlifyConfig.ml > src/OCamlifyConfig.ml.depends
+- ocamlfind ocamlc -c -g -I src -o src/OCamlifyConfig.cmo src/OCamlifyConfig.ml
+- ocamlfind ocamlc -c -g -I src -o src/ocamlify.cmo src/ocamlify.ml
+- ocamlfind ocamlc -g -linkpkg src/OCamlifyConfig.cmo src/ocamlify.cmo -o src/ocamlify.byte
+- I: Running command '/usr/bin/ocamlbuild src/ocamlify.byte -tag debug'
+- I: Running command 'cp '_build/src/ocamlify.byte' '_build/src/ocamlify''
 [ocamlify: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-build" (CWD=/home/opam/.opam/system/build/ocamlmod.0.0.7)
 - /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
@@ -553,21 +565,6 @@ The following actions will be performed:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
 [ocamlmod: ocaml setup.ml] Command started
-+ ocaml "setup.ml" "-build" (CWD=/home/opam/.opam/system/build/ocamlify.0.0.1)
-- /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
-- ocamlfind ocamldep -modules src/ocamlify.ml > src/ocamlify.ml.depends
-- ocamlfind ocamldep -modules src/OCamlifyConfig.ml > src/OCamlifyConfig.ml.depends
-- ocamlfind ocamlc -c -g -I src -o src/OCamlifyConfig.cmo src/OCamlifyConfig.ml
-- ocamlfind ocamlc -c -g -I src -o src/ocamlify.cmo src/ocamlify.ml
-- ocamlfind ocamlc -g -linkpkg src/OCamlifyConfig.cmo src/ocamlify.cmo -o src/ocamlify.byte
-- I: Running command '/usr/bin/ocamlbuild src/ocamlify.byte -tag debug'
-- I: Running command 'cp '_build/src/ocamlify.byte' '_build/src/ocamlify''
-[ocamlify: ocaml setup.ml] Command started
-+ ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/system/build/ocamlify.0.0.1)
-- I: Copying file '/home/opam/.opam/system/build/ocamlify.0.0.1/_build/src/ocamlify' to '/home/opam/.opam/system/bin/ocamlify'
-- I: Running command 'cp '/home/opam/.opam/system/build/ocamlify.0.0.1/_build/src/ocamlify' '/home/opam/.opam/system/bin/ocamlify''
--> installed ocamlify.0.0.1
-[type_conv: make] Command started
 + ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/system/build/ocamlmod.0.0.7)
 - File "setup.ml", line 255, characters 8-26:
 - Warning 3: deprecated: String.set
@@ -576,6 +573,11 @@ The following actions will be performed:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
 -> installed ocamlmod.0.0.7
+[type_conv: make] Command started
++ ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/system/build/ocamlify.0.0.1)
+- I: Copying file '/home/opam/.opam/system/build/ocamlify.0.0.1/_build/src/ocamlify' to '/home/opam/.opam/system/bin/ocamlify'
+- I: Running command 'cp '/home/opam/.opam/system/build/ocamlify.0.0.1/_build/src/ocamlify' '/home/opam/.opam/system/bin/ocamlify''
+-> installed ocamlify.0.0.1
 + make  (CWD=/home/opam/.opam/system/build/type_conv.112.01.01)
 - ocamlopt.opt -o setup.exe setup.ml || ocamlopt -o setup.exe setup.ml || ocamlc -o setup.exe setup.ml
 - rm -f setup.cmx setup.cmi setup.o setup.obj setup.cmo
