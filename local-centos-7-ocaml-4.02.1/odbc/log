@@ -12,10 +12,10 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: from default] Command started
 [odbc: from default] Command started
-[ocamlfind: from default] Command started
 [odbc: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/odbc.3.0+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -97,6 +97,13 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_metascanner.ml
 - ocamlc -I +compiler-libs -c fl_topo.mli
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
+- ocamlc -I +compiler-libs -c fl_package_base.mli
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -142,14 +149,9 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -158,8 +160,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -358,9 +358,9 @@ The following actions will be performed:
 - checking for strings.h... yes
 - checking for inttypes.h... yes
 - checking for stdint.h... yes
-- checking for unistd.h... yes
-- checking iodbc.h usability... 
-- no
+- checking for unistd.h... 
+- yes
+- checking iodbc.h usability... no
 - checking iodbc.h presence... no
 - checking for iodbc.h... no
 - checking isql.h usability... no
@@ -382,10 +382,10 @@ The following actions will be performed:
 - checking odbcinst.h presence... no
 - checking for odbcinst.h... no
 - checking sql.h usability... no
-- checking sql.h presence... no
-- checking for sql.h... no
-- checking sqlext.h usability... 
+- checking sql.h presence... 
 - no
+- checking for sql.h... no
+- checking sqlext.h usability... no
 - checking sqlext.h presence... no
 - checking for sqlext.h... no
 - unixODBC headers not found
@@ -409,10 +409,10 @@ The following actions will be performed:
 - checking for ocamlfind... ocamlfind
 - checking for OCaml findlib package lablgtk2... not found
 - configure: creating ./config.status
-- configure: WARNING: Biniki will not be compiled.
 - config.status: creating META
 - config.status: creating Makefile.master
 - config.status: creating opam/opam
+- configure: WARNING: Biniki will not be compiled.
 [odbc: make] Command started
 + make  (CWD=/home/opam/.opam/system/build/odbc.3.0)
 - rm -f .depend
@@ -423,7 +423,6 @@ The following actions will be performed:
 - Makefile:144: .depend: No such file or directory
 [odbc: make findlib_install] Command started
 + make "findlib_install" (CWD=/home/opam/.opam/system/build/odbc.3.0)
-[ERROR] The compilation of odbc failed at "make findlib_install".
 - for d in ; do \
 -   make BASE=$d library; \
 - done
@@ -433,6 +432,20 @@ The following actions will be performed:
 - make: *** [findlib_install] Error 2
 [odbc: ocamlfind remove] Command started
 + ocamlfind "remove" "odbc" (CWD=/home/opam/.opam/system/build/odbc.3.0)
+- Removed /home/opam/.opam/system/lib/odbc
+
+
+=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+The following actions failed
+  - install odbc 3.0
+The following changes have been performed
+  - install ocamlfind 1.5.5
+
+=-=- odbc.3.0 troobleshooting -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+=> This package relies on external (system) dependencies that may be missing.
+   `opam depext odbc.3.0' may help you find the correct installation for your
+   system.
+[ERROR] The compilation of odbc failed at "make findlib_install".
 
 #=== ERROR while installing odbc.3.0 ==========================================#
 # opam-version         1.2.2 (391297300524717e1475deaea37bca287c7f5e36)
@@ -454,20 +467,7 @@ The following actions will be performed:
 # ocamlfind: odbc.cmxa: No such file or directory
 # make: *** [findlib_install] Error 2
 
-- Removed /home/opam/.opam/system/lib/odbc
-
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions failed
-  - install odbc 3.0
-The following changes have been performed
-  - install ocamlfind 1.5.5
-
-=-=- odbc.3.0 troobleshooting -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-=> This package relies on external (system) dependencies that may be missing.
-   `opam depext odbc.3.0' may help you find the correct installation for your
-   system.
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150411101525.export"
+    opam switch import "~/.opam/system/backup/state-20150411201610.export"
 'opam install odbc' failed.
