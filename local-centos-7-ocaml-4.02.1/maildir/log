@@ -1,16 +1,16 @@
 + uname -m
 + uname -s
-+ opam list --safe --recursive --external=x86_64,linux,centos --required-by=maildir
 # Detecting depexts using flags: x86_64 linux centos
-+ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=maildir
++ opam list --safe --recursive --external=x86_64,linux,centos --required-by=maildir
 # The following system packages are needed:
 #  - pcre-devel
++ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=maildir
 + sudo yum -y update
 Not running as root, the following command will be run through "sudo":
     yum -y update
 Loaded plugins: fastestmirror
 Determining fastest mirrors
- * base: mirror.sov.uk.goscomb.net
+ * base: mirror.vorboss.net
  * extras: mirrors.melbourne.co.uk
  * updates: centos.serverspace.co.uk
 Resolving Dependencies
@@ -152,7 +152,8 @@ Running transaction
   Verifying  : nss-sysinit-3.18.0-2.2.el7_1.x86_64                        13/39 
   Verifying  : libuuid-2.23.2-22.el7_1.x86_64                             14/39 
   Verifying  : binutils-2.23.52.0.1-30.el7_1.2.x86_64                     15/39 
-  Verifying  : openssh-6.6.1p1-12.el7_1.x86_64                            16/39 
+  Verifying  : openssh-6.6.1p1-12.el7_1.x86_64                            16/39+ sudo yum install -y pcre-devel
+ 
   Verifying  : openssh-clients-6.6.1p1-12.el7_1.x86_64                    17/39 
   Verifying  : nss-tools-3.18.0-2.2.el7_1.x86_64                          18/39 
   Verifying  : kernel-headers-3.10.0-229.4.2.el7.x86_64                   19/39 
@@ -201,7 +202,6 @@ Updated:
   systemtap-runtime.x86_64 0:2.6-10.el7_1                                       
   util-linux.x86_64 0:2.23.2-22.el7_1                                           
 
-+ sudo yum install -y pcre-devel
 Complete!
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
@@ -210,7 +210,7 @@ Not running as root, the following command will be run through "sudo":
     rpm -q pcre-devel
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: mirror.sov.uk.goscomb.net
+ * base: mirror.vorboss.net
  * extras: mirrors.melbourne.co.uk
  * updates: centos.serverspace.co.uk
 Resolving Dependencies
@@ -238,12 +238,12 @@ Running transaction test
 Transaction test succeeded
 Running transaction
   Installing : pcre-devel-8.32-14.el7.x86_64                                1/1 
-  Verifying  : pcre-devel-8.32-14.el7.x86_64                                1/1+ sudo rpm -q pcre-devel
- 
+  Verifying  : pcre-devel-8.32-14.el7.x86_64                                1/1 
 
 Installed:
   pcre-devel.x86_64 0:8.32-14.el7                                               
 
++ sudo rpm -q pcre-devel
 Complete!
 pcre-devel-8.32-14.el7.x86_64
 # OS packages installation successful
@@ -262,11 +262,11 @@ The following actions will be performed:
 [maildir: from default] Command started
 [oasis: from default] Command started
 [ocaml-data-notation: from default] Command started
-[maildir: from default] Command started
-[default] http://opam-archive:8080/archives/maildir.0.9.0+opam.tar.gz downloaded
+[ocaml-data-notation: from default] Command started
+[oasis: from default] Command started
+[default] http://opam-archive:8080/archives/ocaml-data-notation.0.0.11+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
-[ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/oasis.0.4.5+opam.tar.gz downloaded
 [ocamlify: from default] Command started
 [ocamlify: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlify.0.0.1+opam.tar.gz downloaded
@@ -274,11 +274,11 @@ The following actions will be performed:
 [ocamlmod: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlmod.0.0.7+opam.tar.gz downloaded
 [type_conv: from default] Command started
-[ocaml-data-notation: from default] Command started
-[oasis: from default] Command started
-[default] http://opam-archive:8080/archives/ocaml-data-notation.0.0.11+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[maildir: from default] Command started
 [type_conv: from default] Command started
-[default] http://opam-archive:8080/archives/oasis.0.4.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/maildir.0.9.0+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -427,6 +427,14 @@ The following actions will be performed:
 - 		> topfind.ml ;                                   \
 - fi
 - ocamlc -I +compiler-libs -c topfind.mli
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -436,14 +444,6 @@ The following actions will be performed:
 -     	    >topfind
 - ocamlc -I +compiler-libs -c num_top_printers.mli
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -c num_top.mli
 - ocamlc -I +compiler-libs -g -c num_top.ml
 - ocamlc -I +compiler-libs -a -o num_top.cma num_top_printers.cmo num_top.cmo
@@ -645,8 +645,8 @@ The following actions will be performed:
 - ocamlc: ........................................ /usr/bin/ocamlc.opt
 - ocamlfind: ..................................... /home/opam/.opam/system/bin/ocamlfind
 - 
-- I: Running command '/usr/bin/ocamlc.opt -config > /tmp/oasis-a360ff.txt'
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %v findlib > /tmp/oasis-18a5cf.txt'
+- I: Running command '/usr/bin/ocamlc.opt -config > /tmp/oasis-3c71de.txt'
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %v findlib > /tmp/oasis-88b3fc.txt'
 [ocamlify: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/ocamlmod.0.0.7)
 - 
