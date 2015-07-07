@@ -1,7 +1,7 @@
 + uname -m
 + uname -s
-+ opam list --safe --recursive --external=x86_64,linux,centos --required-by=bin_prot
 # Detecting depexts using flags: x86_64 linux centos
++ opam list --safe --recursive --external=x86_64,linux,centos --required-by=bin_prot
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=bin_prot
 # No extra OS packages requirements found.
 The following actions will be performed:
@@ -110,6 +110,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -155,12 +156,18 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 	cp topfind.ml.in topfind.ml;                             \
+- else                                                             \
+- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 		> topfind.ml ;                                   \
+- fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -169,13 +176,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 	cp topfind.ml.in topfind.ml;                             \
-- else                                                             \
-- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 		> topfind.ml ;                                   \
-- fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -221,7 +221,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -266,6 +265,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -498,7 +498,6 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c lib/blit_stubs.c
 - mv blit_stubs.o lib/blit_stubs.o
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c lib/float_stubs.c
-- W: Cannot find source file matching module 'bin_prot' in library bin_prot
 - mv float_stubs.o lib/float_stubs.o
 - /home/opam/.opam/system/bin/ocamlfind ocamlmklib -o lib/bin_prot_stubs lib/blit_stubs.o lib/float_stubs.o
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package unix -package bigarray -modules lib/binable.ml > lib/binable.ml.depends
@@ -508,6 +507,7 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package unix -package bigarray -I lib -o lib/common.cmi lib/common.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package unix -package bigarray -I lib -o lib/nat0.cmi lib/nat0.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -pp 'gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches   -m64 -mtune=generic -fPIC -E -xc -undef -w -DARCH_SIXTYFOUR' -package unix -package bigarray -modules lib/size.mli > lib/size.mli.depends
+- W: Cannot find source file matching module 'bin_prot' in library bin_prot
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -pp 'gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches   -m64 -mtune=generic -fPIC -E -xc -undef -w -DARCH_SIXTYFOUR' -package unix -package bigarray -modules lib/type_class.mli > lib/type_class.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -pp 'gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches   -m64 -mtune=generic -fPIC -E -xc -undef -w -DARCH_SIXTYFOUR' -package unix -package bigarray -I lib -o lib/read.cmi lib/read.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -pp 'gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches   -m64 -mtune=generic -fPIC -E -xc -undef -w -DARCH_SIXTYFOUR' -package unix -package bigarray -I lib -o lib/size.cmi lib/size.mli
