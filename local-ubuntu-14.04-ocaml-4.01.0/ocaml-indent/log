@@ -1,14 +1,14 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux ubuntu
 + uname -s
 + lsb_release -i -s
+# Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=ocaml-indent
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=ocaml-indent
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=ocaml-indent
-+ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
++ sudo apt-get update
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
@@ -36,13 +36,15 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [24.5 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [341 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [130 kB]
-Fetched 2158 kB in 3s (554 kB/s)
+Fetched 2158 kB in 4s (434 kB/s)
 Reading package lists...
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 647951 648025
-# OS package update successful
+W# OS package update successful
+: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_source_Sources.gz is not what the server reported 250796 250800
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_main_source_Sources.gz is not what the server reported 99937 99938
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_main_binary-amd64_Packages.gz is not what the server reported 340536 340605
++ sudo apt-get install -qq -yy m4
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
-+ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind    1.5.5                                  [required by ocaml-indent]
@@ -57,17 +59,17 @@ The following actions will be performed:
 [ocaml-indent: from default] Command started
 [ocamlfind: from default] Command started
 [omake: from default] Command started
-[ocamlfind: from default] Command started
 [ocaml-indent: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/ocaml-indent.1.2.1+opam.tar.gz downloaded
 [sexplib: from default] Command started
 [omake: from default] Command started
-[default] http://opam-archive:8080/archives/ocaml-indent.1.2.1+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [type_conv: from default] Command started
 [sexplib: from default] Command started
 [default] http://opam-archive:8080/archives/omake.0.9.8.6-0.rc1+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/sexplib.111.25.00+opam.tar.gz downloaded
 [type_conv: from default] Command started
+[default] http://opam-archive:8080/archives/sexplib.111.25.00+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/type_conv.111.13.00+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -102,7 +104,10 @@ The following actions will be performed:
 - Configuration for camlp4 written to site-lib-src/camlp4/META
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
-- Detecting compiler arguments: (extractor built) ok
+- Detecting compiler arguments: (extractor built) 
+- File "itest-aux/ppx.ml", line 1, characters 0-25:
+- Error: Unbound value Toploop.preprocess_phrase
+- ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib/ocaml
@@ -126,8 +131,6 @@ The following actions will be performed:
 - Configuration has been written to Makefile.config
 - 
 - You can now do 'make all', and optionally 'make opt', to build ocamlfind.
-- File "itest-aux/ppx.ml", line 1, characters 0-25:
-- Error: Unbound value Toploop.preprocess_phrase
 [ocamlfind: make all] Command started
 + make "all" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
 - for p in findlib bytes; do ( cd src/$p; make all ) || exit; done
@@ -159,8 +162,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- Makefile:160: depend: No such file or directory
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
+- Makefile:160: depend: No such file or directory
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
@@ -1112,6 +1115,8 @@ The following actions will be performed:
 - ocamlc -g -c omake_ast_lex.ml
 - ocamlc -g -c omake_exp_parse.mli
 - ocamlc -g -c omake_exp_parse.ml
+- ocamlc -g -c omake_exp_lex.mli
+- ocamlc -g -c omake_exp_lex.ml
 - File "lm_list_util.ml", line 825, characters 14-16:
 - Warning 3: deprecated feature: operator (or); you should use (||) instead
 - File "lm_list_util.ml", line 816, characters 32-33:
@@ -1152,8 +1157,6 @@ The following actions will be performed:
 - Warning 3: deprecated feature: operator (or); you should use (||) instead
 - File "lm_filename_util.ml", line 415, characters 21-23:
 - Warning 3: deprecated feature: operator (or); you should use (||) instead
-- ocamlc -g -c omake_exp_lex.mli
-- ocamlc -g -c omake_exp_lex.ml
 - ocamlc -g -c omake_ir_ast.ml
 - ocamlc -g -c omake_ir_semant.mli
 - ocamlc -g -c omake_ir_semant.ml
@@ -1276,18 +1279,18 @@ The following actions will be performed:
 - --- Checking for hevea... (FAILED - no hevea found)
 - --- Checking for date... (found /bin/date)
 - --- Checking for date... (found /bin/date)
-- *** omake: finished reading OMakefiles (2.90 sec)
+- *** omake: finished reading OMakefiles (2.70 sec)
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
 - *** omake: saved .omakedb
 - *** omake: saved .omakedb
-- *** omake: done (36.84 sec, 234/234 scans, 343/505 rules, 788/2313 digests)
+- *** omake: done (38.62 sec, 234/234 scans, 343/505 rules, 788/2315 digests)
 - OMAKEFLAGS= OMAKEPATH=lib src/main/omake --dotomake .omake --force-dotomake -j2 all
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.07 sec)
+- *** omake: finished reading OMakefiles (0.06 sec)
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
-- *** omake: done (7.03 sec, 219/235 scans, 27/534 rules, 39/1842 digests)
+- *** omake: done (7.53 sec, 219/235 scans, 27/534 rules, 39/1842 digests)
 [omake: make install] Command started
 + make "install" "PREFIX=/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/omake.0.9.8.6-0.rc1)
 - make[1]: Entering directory `/home/opam/.opam/system/build/omake.0.9.8.6-0.rc1/boot'
@@ -1299,18 +1302,20 @@ The following actions will be performed:
 - touch .config
 - OMAKEFLAGS= OMAKEPATH=lib ./omake-boot --dotomake .omake --force-dotomake -j2 main
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.41 sec)
+- *** omake: finished reading OMakefiles (0.42 sec)
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
-- *** omake: done (4.92 sec, 0/234 scans, 0/505 rules, 1/1762 digests)
+- *** omake: done (4.85 sec, 0/234 scans, 0/505 rules, 1/1762 digests)
 - OMAKEFLAGS= OMAKEPATH=lib src/main/omake --dotomake .omake --force-dotomake -j2 all
 - *** omake: reading OMakefiles
 - *** omake: finished reading OMakefiles (0.06 sec)
 - *** omake: done (0.53 sec, 0/235 scans, 0/534 rules, 0/1821 digests)
 - OMAKEFLAGS= OMAKEPATH=lib src/main/omake --dotomake .omake --force-dotomake -j2 install
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.07 sec)
-- *** omake: done (0.58 sec, 0/235 scans, 2/536 rules, 0/1821 digests)
+- *** omake: finished reading OMakefiles (0.06 sec)
+- *** omake: done (0.60 sec, 0/235 scans, 2/536 rules, 0/1821 digests)
+- *** omake: warning: stdout is not a tty, disabling the progress bar
+-    (use --progress to override).
 -> installed omake.0.9.8.6-0.rc1
 [ocaml-indent: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/ocaml-indent.1.2.1)
@@ -1374,7 +1379,7 @@ The following actions will be performed:
 - --- Checking for ocamlc.opt... (found /usr/bin/ocamlc.opt)
 - --- Checking for ocamlopt.opt... (found /usr/bin/ocamlopt.opt)
 - --- Checking whether ocamlc understands the "z" warnings... (yes)
-- *** omake: finished reading OMakefiles (0.24 sec)
+- *** omake: finished reading OMakefiles (0.12 sec)
 - --- Checking if ocamldep understands -modules... (yes)
 - - build . lazyList.cmi
 - + ocamlfind ocamlc -annot -bin-annot -package sexplib,compiler-libs.common -g -w A-4-9 -warn-error a -g -syntax camlp4o -package sexplib.syntax -I . -c lazyList.mli
@@ -1410,19 +1415,16 @@ The following actions will be performed:
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
 - - build . args.cmi
 - + ocamlfind ocamlc -annot -bin-annot -package sexplib,compiler-libs.common -g -w A-4-9 -warn-error a -g -syntax camlp4o -package sexplib.syntax -I . -c args.mli
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
 - - build . args.o
 - + ocamlfind ocamlopt -annot -bin-annot -package sexplib,compiler-libs.common -g -w A-4-9 -warn-error a -syntax camlp4o -package sexplib.syntax -I . -c args.ml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
 - - build . args.cmo
 - + ocamlfind ocamlc -annot -bin-annot -package sexplib,compiler-libs.common -g -w A-4-9 -warn-error a -g -syntax camlp4o -package sexplib.syntax -I . -c args.ml
 - - build . pos.cmi
 - + ocamlfind ocamlc -annot -bin-annot -package sexplib,compiler-libs.common -g -w A-4-9 -warn-error a -g -syntax camlp4o -package sexplib.syntax -I . -c pos.mli
 - - build . tokenstr.cmi
 - + ocamlfind ocamlc -annot -bin-annot -package sexplib,compiler-libs.common -g -w A-4-9 -warn-error a -g -syntax camlp4o -package sexplib.syntax -I . -c tokenstr.mli
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
 - - build . reader.cmi
 - + ocamlfind ocamlc -annot -bin-annot -package sexplib,compiler-libs.common -g -w A-4-9 -warn-error a -g -syntax camlp4o -package sexplib.syntax -I . -c reader.mli
 - - build . tokenstr.cmo
@@ -1431,20 +1433,23 @@ The following actions will be performed:
 - + ocamlfind ocamlc -annot -bin-annot -package sexplib,compiler-libs.common -g -w A-4-9 -warn-error a -g -syntax camlp4o -package sexplib.syntax -I . -c reader.ml
 - - build . pos.o
 - + ocamlfind ocamlopt -annot -bin-annot -package sexplib,compiler-libs.common -g -w A-4-9 -warn-error a -syntax camlp4o -package sexplib.syntax -I . -c pos.ml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
 - - build . reader.cmx
 - + ocamlfind ocamlopt -annot -bin-annot -package sexplib,compiler-libs.common -g -w A-4-9 -warn-error a -syntax camlp4o -package sexplib.syntax -I . -c reader.ml
 - - build . tokenstr.cmx
 - + ocamlfind ocamlopt -annot -bin-annot -package sexplib,compiler-libs.common -g -w A-4-9 -warn-error a -syntax camlp4o -package sexplib.syntax -I . -c tokenstr.ml
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
 - - build . machine.cmo
 - + ocamlfind ocamlc -annot -bin-annot -package sexplib,compiler-libs.common -g -w A-4-9 -warn-error a -g -syntax camlp4o -package sexplib.syntax -I . -c machine.ml
 - - build . machine.cmo
 - + ocamlfind ocamlopt -annot -bin-annot -package sexplib,compiler-libs.common -g -w A-4-9 -warn-error a -syntax camlp4o -package sexplib.syntax -I . -c machine.ml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
 - - build . main.cmi
@@ -1457,7 +1462,6 @@ The following actions will be performed:
 - + ocamlfind ocamlc -annot -bin-annot -package sexplib,compiler-libs.common -g -w A-4-9 -warn-error a -g -syntax camlp4o -package sexplib.syntax -I . -c pos.ml
 - - build . ocaml-indent.run
 - + ocamlfind ocamlc -package sexplib,compiler-libs.common -g -g -I . -o ocaml-indent.run pos.cmo reader.cmo lazyList.cmo xparser.cmo xlexer.cmo tokenstr.cmo machine.cmo args.cmo main.cmo -linkpkg
-- *** omake: done (8.75 sec, 14/14 scans, 23/40 rules, 63/185 digests)
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
 - findlib: [WARNING] Interface main.cmi occurs in several directories: ., /usr/lib/ocaml/compiler-libs
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
@@ -1467,10 +1471,11 @@ The following actions will be performed:
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
 - findlib: [WARNING] Interface main.cmi occurs in several directories: ., /usr/lib/ocaml/compiler-libs
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
+- *** omake: done (7.99 sec, 14/14 scans, 23/40 rules, 63/185 digests)
 [ocaml-indent: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/system/build/ocaml-indent.1.2.1)
 - *** omake: reading OMakefiles
 - *** omake: finished reading OMakefiles (0.06 sec)
-- *** omake: done (0.10 sec, 0/14 scans, 1/41 rules, 1/137 digests)
+- *** omake: done (0.09 sec, 0/14 scans, 1/41 rules, 1/137 digests)
 -> installed ocaml-indent.1.2.1
 Done.
