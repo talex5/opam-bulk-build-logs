@@ -7,20 +7,20 @@
 #  - libfaad-dev
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=faad
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
 Hit http://security.debian.org stable/updates InRelease
 Ign http://download.opensuse.org  InRelease
 Hit http://httpredir.debian.org stable InRelease
-Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
-Get:2 http://security.debian.org stable/updates/main amd64 Packages [83.8 kB]
+Hit http://httpredir.debian.org stable-updates InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Get:3 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
-Get:4 http://download.opensuse.org  Packages [5783 B]
-Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9238 kB in 5s (1744 kB/s)
+Get:1 http://security.debian.org stable/updates/main amd64 Packages [84.4 kB]
+Get:2 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
+Get:3 http://download.opensuse.org  Packages [5783 B]
+Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
+Fetched 9113 kB in 5s (1807 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
@@ -136,8 +136,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_metascanner.ml
 - ocamlc -I +compiler-libs -c fl_topo.mli
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
-- ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -183,6 +181,8 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -c fl_package_base.mli
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
@@ -194,11 +194,11 @@ The following actions will be performed:
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -246,6 +246,8 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c findlib_config.ml
 - ocamlopt -I +compiler-libs -c fl_split.ml
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
+- ocamlopt -I +compiler-libs -c fl_meta.ml
+- ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -275,10 +277,6 @@ The following actions will be performed:
 - File "fl_split.ml", line 140, characters 1-19:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlopt -I +compiler-libs -c fl_meta.ml
-- ocamlopt -I +compiler-libs -c fl_metascanner.ml
-- ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_meta.mll", line 57, characters 13-26:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -288,6 +286,8 @@ The following actions will be performed:
 - File "fl_meta.mll", line 62, characters 11-22:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_metascanner.ml", line 111, characters 23-32:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
@@ -415,15 +415,15 @@ The following actions will be performed:
 - yes
 - checking for sys/types.h... yes
 - checking for sys/stat.h... yes
-- checking for stdlib.h... yes
+- checking for stdlib.h... 
+- yes
 - checking for string.h... yes
 - checking for memory.h... yes
 - checking for strings.h... yes
 - checking for inttypes.h... yes
 - checking for stdint.h... yes
 - checking for unistd.h... yes
-- checking errno.h usability... 
-- yes
+- checking errno.h usability... yes
 - checking errno.h presence... yes
 - checking for errno.h... yes
 - checking neaacdec.h usability... yes
@@ -457,13 +457,13 @@ The following actions will be performed:
 - ocamlc.opt -c -cc "gcc" -ccopt "-fPIC -g -O2 -I/home/opam/.opam/4.02.1/include -I.. -DHAVE_CONFIG_H  -Wall -DCAML_NAME_SPACE -DUSE_TAGGING -DITUNES_DRM \
 - 			-DPIC -fPIC -I/home/opam/.opam/4.02.1/include   \
 - 			    -o mp4meta.o " mp4meta.c
+- ocamlc.opt -c -cc "gcc" -ccopt "-fPIC -g -O2 -I/home/opam/.opam/4.02.1/include -I.. -DHAVE_CONFIG_H  -Wall -DCAML_NAME_SPACE -DUSE_TAGGING -DITUNES_DRM \
+- 			-DPIC -fPIC -I/home/opam/.opam/4.02.1/include   \
+- 			    -o mp4sample.o " mp4sample.c
 - mp4atom.c: In function 'mp4ff_read_mp4a':
 - mp4atom.c:317:14: warning: variable 'size' set but not used [-Wunused-but-set-variable]
 -      uint64_t size;
 -               ^
-- ocamlc.opt -c -cc "gcc" -ccopt "-fPIC -g -O2 -I/home/opam/.opam/4.02.1/include -I.. -DHAVE_CONFIG_H  -Wall -DCAML_NAME_SPACE -DUSE_TAGGING -DITUNES_DRM \
-- 			-DPIC -fPIC -I/home/opam/.opam/4.02.1/include   \
-- 			    -o mp4sample.o " mp4sample.c
 - ocamlc.opt -c -cc "gcc" -ccopt "-fPIC -g -O2 -I/home/opam/.opam/4.02.1/include -I.. -DHAVE_CONFIG_H  -Wall -DCAML_NAME_SPACE -DUSE_TAGGING -DITUNES_DRM \
 - 			-DPIC -fPIC -I/home/opam/.opam/4.02.1/include   \
 - 			    -o mp4tagupdate.o " mp4tagupdate.c
