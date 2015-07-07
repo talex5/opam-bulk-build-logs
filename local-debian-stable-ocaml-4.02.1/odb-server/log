@@ -1,30 +1,31 @@
 + uname -m
-+ uname -s
 # Detecting depexts using flags: x86_64 linux debian
++ uname -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=odb-server
 # The following system packages are needed:
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=odb-server
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
-Hit http://http.debian.net stable Release.gpg
+Get:1 http://security.debian.org stable/updates Release.gpg [836 B]
 Hit http://download.opensuse.org  Release.gpg
-Hit http://security.debian.org stable/updates Release.gpg
-Hit http://http.debian.net stable-updates Release.gpg
-Hit http://http.debian.net stable Release
-Hit http://security.debian.org stable/updates Release
+Get:2 http://security.debian.org stable/updates Release [102 kB]
 Hit http://download.opensuse.org  Release
-Hit http://http.debian.net stable-updates Release
-Hit http://http.debian.net stable/main amd64 Packages
-Hit http://security.debian.org stable/updates/main amd64 Packages
 Hit http://download.opensuse.org  Packages
-Hit http://http.debian.net stable-updates/main amd64 Packages
+Get:3 http://security.debian.org stable/updates/main amd64 Packages [382 kB]
+Hit http://http.debian.net stable Release.gpg
+Get:4 http://http.debian.net stable-updates Release.gpg [836 B]
+Hit http://http.debian.net stable Release
+Get:5 http://http.debian.net stable-updates Release [124 kB]
+Hit http://http.debian.net stable/main amd64 Packages
+Get:6 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
+Fetched 614 kB in 2s (298 kB/s)
 Reading package lists...
++ sudo apt-get install -qq -yy m4
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
-+ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind  1.5.5                                    [required by camlp4]
@@ -125,9 +126,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -173,16 +171,19 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -238,7 +239,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -283,6 +283,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -942,20 +943,20 @@ The following actions will be performed:
 - ocamlopt -g  -I +threads -annot -thread -c odb_config.ml
 - ocamlopt -g  -I +threads -annot -thread -c odb_misc.ml
 - ocamlopt -g  -I +threads -annot -thread -c odb_file.ml
+- ocamlopt -g -I +threads -annot -thread -c -pp "camlp4o" odb_commands.ml
+- ocamlopt -g  -I +threads -annot -thread -c odb_comm.ml
 - File "odb_misc.ml", line 97, characters 10-23:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlopt -g -I +threads -annot -thread -c -pp "camlp4o" odb_commands.ml
-- ocamlopt -g  -I +threads -annot -thread -c odb_comm.ml
+- File "odb_comm.ml", line 101, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlopt -g  -I +threads -annot -thread -c odb_project_types.ml
 - ocamlopt -g  -I +threads -annot -thread -c odb_project_parser.ml
 - ocamlopt -g  -I +threads -annot -thread -c odb_project_lexer.ml
 - ocamlopt -g  -I +threads -annot -thread -c odb_project.ml
 - ocamlopt -g  -I +threads -annot -thread -c odb_client.ml
 - ocamlopt -g  -I +threads -annot -thread -c odb_doc.ml
-- File "odb_comm.ml", line 101, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlopt -g  -I +threads -annot -thread -c odb_tools.ml
 - ocamlopt -g  -I +threads -annot -thread -c odb_project_tool.ml
 - ocamlopt -g  -I +threads -annot -thread -c odb_server.ml
@@ -966,11 +967,11 @@ The following actions will be performed:
 - ocamlopt -g  -I +threads -annot -thread -c server.ml
 - ocamlopt -g -verbose -linkall -o odb-server -I +threads -annot -thread unix.cmxa threads.cmxa dynlink.cmxa str.cmxa \
 - 	 odb.cmxa server.cmx
-- + as -o '/tmp/camlstartupad2082.o' '/tmp/camlstartup394f82.s'
-- + gcc -o 'odb-server'   '-L/home/opam/.opam/4.02.1/lib/ocaml/threads' '-L/home/opam/.opam/4.02.1/lib/ocaml/threads' '-L/home/opam/.opam/4.02.1/lib/ocaml' -Wl,-E '/tmp/camlstartupad2082.o' '/home/opam/.opam/4.02.1/lib/ocaml/std_exit.o' 'server.o' 'odb.a' '/home/opam/.opam/4.02.1/lib/ocaml/str.a' '/home/opam/.opam/4.02.1/lib/ocaml/dynlink.a' '/home/opam/.opam/4.02.1/lib/ocaml/threads/threads.a' '/home/opam/.opam/4.02.1/lib/ocaml/unix.a' '/home/opam/.opam/4.02.1/lib/ocaml/stdlib.a' '-lcamlstr' '-lthreadsnat' '-lpthread' '-lunix' '/home/opam/.opam/4.02.1/lib/ocaml/libasmrun.a' -lm  -ldl
 - if test -f `dirname client.ml`/`basename client.ml .ml`.mli && test ! -f `dirname client.ml`/`basename client.ml .ml`.cmi ; then \
 - 	ocamlc -g  -I +threads -annot -thread -c `dirname client.ml`/`basename client.ml .ml`.mli; fi
 - ocamlc -g  -I +threads -annot -thread -c client.ml
+- + as -o '/tmp/camlstartup436b05.o' '/tmp/camlstartupc64eed.s'
+- + gcc -o 'odb-server'   '-L/home/opam/.opam/4.02.1/lib/ocaml/threads' '-L/home/opam/.opam/4.02.1/lib/ocaml/threads' '-L/home/opam/.opam/4.02.1/lib/ocaml' -Wl,-E '/tmp/camlstartup436b05.o' '/home/opam/.opam/4.02.1/lib/ocaml/std_exit.o' 'server.o' 'odb.a' '/home/opam/.opam/4.02.1/lib/ocaml/str.a' '/home/opam/.opam/4.02.1/lib/ocaml/dynlink.a' '/home/opam/.opam/4.02.1/lib/ocaml/threads/threads.a' '/home/opam/.opam/4.02.1/lib/ocaml/unix.a' '/home/opam/.opam/4.02.1/lib/ocaml/stdlib.a' '-lcamlstr' '-lthreadsnat' '-lpthread' '-lunix' '/home/opam/.opam/4.02.1/lib/ocaml/libasmrun.a' -lm  -ldl
 - ocamlopt -g  -I +threads -annot -thread -c client.ml
 - ocamlopt -g -o odb-client -I +threads -annot -thread unix.cmxa threads.cmxa dynlink.cmxa str.cmxa odb.cmxa client.cmx
 - if test -f `dirname odb_config.ml`/`basename odb_config.ml .ml`.mli && test ! -f `dirname odb_config.ml`/`basename odb_config.ml .ml`.cmi ; then \
@@ -988,16 +989,16 @@ The following actions will be performed:
 - ocamlc -g  -I +threads -annot -thread -c odb_comm.ml
 - if test -f `dirname odb_project_parser.ml`/`basename odb_project_parser.ml .ml`.mli && test ! -f `dirname odb_project_parser.ml`/`basename odb_project_parser.ml .ml`.cmi ; then \
 - 	ocamlc -g  -I +threads -annot -thread -c `dirname odb_project_parser.ml`/`basename odb_project_parser.ml .ml`.mli; fi
+- ocamlc -g  -I +threads -annot -thread -c odb_project_parser.ml
+- if test -f `dirname odb_client.ml`/`basename odb_client.ml .ml`.mli && test ! -f `dirname odb_client.ml`/`basename odb_client.ml .ml`.cmi ; then \
+- 	ocamlc -g  -I +threads -annot -thread -c `dirname odb_client.ml`/`basename odb_client.ml .ml`.mli; fi
+- ocamlc -g  -I +threads -annot -thread -c odb_client.ml
 - File "odb_misc.ml", line 97, characters 10-23:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
 - File "odb_comm.ml", line 101, characters 12-25:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -g  -I +threads -annot -thread -c odb_project_parser.ml
-- if test -f `dirname odb_client.ml`/`basename odb_client.ml .ml`.mli && test ! -f `dirname odb_client.ml`/`basename odb_client.ml .ml`.cmi ; then \
-- 	ocamlc -g  -I +threads -annot -thread -c `dirname odb_client.ml`/`basename odb_client.ml .ml`.mli; fi
-- ocamlc -g  -I +threads -annot -thread -c odb_client.ml
 - if test -f `dirname odb_doc.ml`/`basename odb_doc.ml .ml`.mli && test ! -f `dirname odb_doc.ml`/`basename odb_doc.ml .ml`.cmi ; then \
 - 	ocamlc -g  -I +threads -annot -thread -c `dirname odb_doc.ml`/`basename odb_doc.ml .ml`.mli; fi
 - ocamlc -g  -I +threads -annot -thread -c odb_doc.ml
