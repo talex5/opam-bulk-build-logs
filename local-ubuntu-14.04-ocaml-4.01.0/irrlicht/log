@@ -1,15 +1,15 @@
 + uname -m
 + uname -s
-/usr/bin/lsb_release
 + lsb_release -i -s
-# Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=irrlicht
+# Detecting depexts using flags: x86_64 linux ubuntu
 # The following system packages are needed:
 #  - g++
 #  - libirrlicht-dev
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=irrlicht
-Not running as root, system installation will be done through "sudo"
+Not running as root, the following command will be run through "sudo":
+    apt-get update
 + sudo apt-get update
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
@@ -38,11 +38,12 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [22.5 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [329 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [123 kB]
-Fetched 2109 kB in 6s (302 kB/s)
+Fetched 2109 kB in 8s (248 kB/s)
 Reading package lists...
 + sudo apt-get install -qq -yy g++ libirrlicht-dev m4
 # OS package update successful
-Not running as root, system installation will be done through "sudo"
+Not running as root, the following command will be run through "sudo":
+    apt-get install -qq -yy g++ libirrlicht-dev m4
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
@@ -51,7 +52,7 @@ debconf: (This frontend requires a controlling tty.)
 debconf: falling back to frontend: Teletype
 dpkg-preconfigure: unable to re-open stdin: 
 Selecting previously unselected package libelf1:amd64.
-(Reading database ... 22245 files and directories currently installed.)
+(Reading database ... 22255 files and directories currently installed.)
 Preparing to unpack .../libelf1_0.158-0ubuntu5.2_amd64.deb ...
 Unpacking libelf1:amd64 (0.158-0ubuntu5.2) ...
 Selecting previously unselected package libpciaccess0:amd64.
@@ -149,7 +150,7 @@ Setting up libirrlicht1.8:amd64 (1.8.1+dfsg1-1) ...
 Setting up libtxc-dxtn-s2tc0:amd64 (0~git20131104-1.1) ...
 update-alternatives: using /usr/lib/x86_64-linux-gnu/libtxc_dxtn_s2tc.so.0 to provide /usr/lib/x86_64-linux-gnu/libtxc_dxtn.so (libtxc-dxtn-x86_64-linux-gnu) in auto mode
 Setting up libirrlicht-dev:amd64 (1.8.1+dfsg1-1) ...
-Processing triggers for libc-bin (2.19-0ubuntu6.4) ...
+Processing triggers for libc-bin (2.19-0ubuntu6.6) ...
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind 1.5.5                                     [required by irrlicht]
@@ -159,8 +160,8 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [irrlicht: from default] Command started
 [ocamlfind: from default] Command started
-[irrlicht: from default] Command started
 [ocamlfind: from default] Command started
+[irrlicht: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/irrlicht.0.0.3+opam.tar.gz downloaded
 
@@ -251,10 +252,10 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
+- Makefile:160: depend: No such file or directory
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
-- Makefile:160: depend: No such file or directory
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
 - if [ "false" = "true" ]; then                 \
@@ -485,7 +486,6 @@ The following actions will be performed:
 - hash_values/main.byte methods_hash_values.txt > methods_hash_values.h
 - g++ -fPIC -I `ocamlc -where` -I /usr/include/irrlicht -c irr_enums_wrap.cpp
 - g++ -fPIC -I `ocamlc -where` -I /usr/include/irrlicht -c irr_core_wrap.cpp
-[ERROR] The compilation of irrlicht failed at "ocaml setup.ml -build".
 - g++ -fPIC -I `ocamlc -where` -I /usr/include/irrlicht -c irr_video_wrap.cpp
 - g++ -fPIC -I `ocamlc -where` -I /usr/include/irrlicht -c irr_scene_wrap.cpp
 - + g++ -fPIC -I `ocamlc -where` -I /usr/include/irrlicht -c irr_scene_wrap.cpp
@@ -501,27 +501,21 @@ The following actions will be performed:
 -        ^
 - Command exited with code 1.
 - E: Failure("Command ''/usr/bin/ocamlbuild' hash_values/main.byte enums/main.byte libirrlicht_stubs.a dllirrlicht_stubs.so irrlicht.cma irrlicht.cmxa irrlicht.a irrlicht.cmxs -tag debug' terminated with error code 10")
+[ERROR] The compilation of irrlicht failed at "ocaml setup.ml -build".
 [irrlicht: ocamlfind remove] Command started
 + ocamlfind "remove" "irrlicht" (CWD=/home/opam/.opam/system/build/irrlicht.0.0.3)
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/irrlicht
 
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions failed
-  - install irrlicht 0.0.3
-The following changes have been performed
-  - install ocamlfind 1.5.5
-
 #=== ERROR while installing irrlicht.0.0.3 ====================================#
-# opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
+# opam-version         1.2.2 (05903f71901dcc18c5f54e74ba07da71d67a9b2a)
 # os                   linux
 # command              ocaml setup.ml -build
 # path                 /home/opam/.opam/system/build/irrlicht.0.0.3
 # compiler             system (4.01.0)
 # exit-code            1
-# env-file             /home/opam/.opam/system/build/irrlicht.0.0.3/irrlicht-5-60459a.env
-# stdout-file          /home/opam/.opam/system/build/irrlicht.0.0.3/irrlicht-5-60459a.out
-# stderr-file          /home/opam/.opam/system/build/irrlicht.0.0.3/irrlicht-5-60459a.err
+# env-file             /home/opam/.opam/system/build/irrlicht.0.0.3/irrlicht-9-60459a.env
+# stdout-file          /home/opam/.opam/system/build/irrlicht.0.0.3/irrlicht-9-60459a.out
+# stderr-file          /home/opam/.opam/system/build/irrlicht.0.0.3/irrlicht-9-60459a.err
 ### stdout ###
 # [...]
 # irr_scene_wrap.cpp:98:70: error: invalid conversion from 'irr::u32 {aka unsigned int}' to 'irr::scene::E_CULLING_TYPE' [-fpermissive]
@@ -540,6 +534,13 @@ The following changes have been performed
 # E: Failure("Command ''/usr/bin/ocamlbuild' hash_values/main.byte enums/main.byte libirrlicht_stubs.a dllirrlicht_stubs.so irrlicht.cma irrlicht.cmxa irrlicht.a irrlicht.cmxs -tag debug' terminated with error code 10")
 
 
+
+=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+The following actions failed
+  - install irrlicht 0.0.3
+The following changes have been performed
+  - install ocamlfind 1.5.5
+
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150319020424.export"
+    opam switch import "~/.opam/system/backup/state-20150319175923.export"
 'opam install irrlicht' failed.
