@@ -1,29 +1,29 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux debian
 + uname -s
+# Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=pa_comprehension
 # The following system packages are needed:
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=pa_comprehension
-+ sudo apt-get update
 Not running as root, system installation will be done through "sudo"
++ sudo apt-get update
 Hit http://download.opensuse.org  Release.gpg
-Hit http://security.debian.org stable/updates Release.gpg
-Hit http://download.opensuse.org  Release
 Hit http://http.debian.net stable Release.gpg
-Hit http://security.debian.org stable/updates Release
 Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
+Hit http://download.opensuse.org  Release
 Hit http://http.debian.net stable Release
 Get:2 http://http.debian.net stable-updates Release [124 kB]
 Hit http://download.opensuse.org  Packages
-Hit http://security.debian.org stable/updates/main amd64 Packages
 Hit http://http.debian.net stable/main amd64 Packages
 Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
-Fetched 129 kB in 1s (108 kB/s)
-Reading package lists...+ sudo apt-get install -qq -yy m4
-
+Get:4 http://security.debian.org stable/updates Release.gpg [836 B]
+Get:5 http://security.debian.org stable/updates Release [102 kB]
+Get:6 http://security.debian.org stable/updates/main amd64 Packages [378 kB]
+Fetched 610 kB in 2s (288 kB/s)
+Reading package lists...
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
++ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind        1.5.5                              [required by pa_comprehension]
@@ -35,11 +35,11 @@ The following actions will be performed:
 [batteries: from default] Command started
 [ocamlfind: from default] Command started
 [pa_comprehension: from default] Command started
-[pa_comprehension: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/pa_comprehension.0.4+opam.tar.gz downloaded
-[batteries: from default] Command started
+[pa_comprehension: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[batteries: from default] Command started
+[default] http://opam-archive:8080/archives/pa_comprehension.0.4+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/batteries.2.3.1+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -117,6 +117,13 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c findlib_config.ml
 - ocamlc -I +compiler-libs -g -c fl_split.ml
 - ocamlc -I +compiler-libs -g -c fl_metatoken.ml
+- ocamlc -I +compiler-libs -g -c fl_meta.ml
+- ocamlc -I +compiler-libs -c fl_metascanner.mli
+- ocamlc -I +compiler-libs -g -c fl_metascanner.ml
+- ocamlc -I +compiler-libs -c fl_topo.mli
+- ocamlc -I +compiler-libs -g -c fl_topo.ml
+- ocamlc -I +compiler-libs -c fl_package_base.mli
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -147,9 +154,6 @@ The following actions will be performed:
 - File "fl_split.ml", line 140, characters 1-19:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc -I +compiler-libs -g -c fl_meta.ml
-- ocamlc -I +compiler-libs -c fl_metascanner.mli
-- ocamlc -I +compiler-libs -g -c fl_metascanner.ml
 - File "fl_meta.mll", line 57, characters 13-26:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -165,18 +169,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c fl_topo.mli
-- ocamlc -I +compiler-libs -g -c fl_topo.ml
-- ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -185,6 +183,8 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -433,6 +433,7 @@ The following actions will be performed:
 - Build mode: shared
 - ocamlbuild -no-links -use-ocamlfind src/batteries.cma src/batteriesHelp.cmo src/batteriesThread.cma META src/batteries.cmxs src/batteriesThread.cmxs
 - ocamlfind ocamlopt unix.cmxa -I /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa -linkpkg myocamlbuild.ml /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
+- ocamlfind: Package `bisect' not found
 - File "_tags", line 2, characters 32-42:
 - Warning: the tag "warn_Ae-29" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batInnerPervasives.ml > src/batInnerPervasives.ml.depends
@@ -447,7 +448,6 @@ The following actions will be performed:
 - ocamlfind ocamlc -c -g -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batInterfaces.cmi src/batInterfaces.mli
 - ocamlfind ocamlc -c -g -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batOrd.cmi src/batOrd.mli
 - ocamlfind ocamlc -c -g -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batEnum.cmi src/batEnum.mli
-- ocamlfind: Package `bisect' not found
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batRef.mli > src/batRef.mli.depends
 - ocamlfind ocamlc -c -g -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batOption.cmi src/batOption.mli
 - ocamlfind ocamlc -c -g -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batRef.cmi src/batRef.mli
@@ -1427,10 +1427,11 @@ The following actions will be performed:
 - ocamlbuild -no-links -use-ocamlfind src/batteries.cma src/batteriesHelp.cmo src/batteriesThread.cma META src/batteries.cmxs src/batteriesThread.cmxs
 - File "_tags", line 2, characters 32-42:
 - Warning: the tag "warn_Ae-29" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
-- ocamlfind: Package `bisect' not found
 - ocamlfind remove batteries
 - ocamlfind install batteries _build/META _build/src/*.cma battop.ml _build/src/*.cmi _build/src/*.mli _build/src/batteriesHelp.cmo _build/src/batteriesConfig.cmo _build/src/batteriesPrint.cmo ocamlinit build/ocaml \
 - 		-optional _build/src/*.cmx _build/src/*.a _build/src/*.cmxa _build/src/*.cmxs _build/src/*.lib
+[ERROR] The compilation of pa_comprehension failed at "make build".
+- ocamlfind: Package `bisect' not found
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/4.02.1/lib/batteries
 - Installed /home/opam/.opam/4.02.1/lib/batteries/batteriesThread.cmxs
 - Installed /home/opam/.opam/4.02.1/lib/batteries/batteries.cmxs
@@ -1736,10 +1737,17 @@ The following actions will be performed:
 - E: Cannot find findlib package camlp4.quotations
 - E: Failure("3 configuration errors")
 - make: *** [setup.data] Error 1
-[ERROR] The compilation of pa_comprehension failed at "make build".
 [pa_comprehension: ocamlfind remove] Command started
 + ocamlfind "remove" "pa_comprehension" (CWD=/home/opam/.opam/4.02.1/build/pa_comprehension.0.4)
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/4.02.1/lib/pa_comprehension
+
+
+=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+The following actions failed
+  - install pa_comprehension 0.4
+The following changes have been performed
+  - install batteries 2.3.1
+  - install ocamlfind 1.5.5
 
 #=== ERROR while installing pa_comprehension.0.4 ==============================#
 # opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
@@ -1748,9 +1756,9 @@ The following actions will be performed:
 # path                 /home/opam/.opam/4.02.1/build/pa_comprehension.0.4
 # compiler             4.02.1
 # exit-code            2
-# env-file             /home/opam/.opam/4.02.1/build/pa_comprehension.0.4/pa_comprehension-6-d474c2.env
-# stdout-file          /home/opam/.opam/4.02.1/build/pa_comprehension.0.4/pa_comprehension-6-d474c2.out
-# stderr-file          /home/opam/.opam/4.02.1/build/pa_comprehension.0.4/pa_comprehension-6-d474c2.err
+# env-file             /home/opam/.opam/4.02.1/build/pa_comprehension.0.4/pa_comprehension-5-d474c2.env
+# stdout-file          /home/opam/.opam/4.02.1/build/pa_comprehension.0.4/pa_comprehension-5-d474c2.out
+# stderr-file          /home/opam/.opam/4.02.1/build/pa_comprehension.0.4/pa_comprehension-5-d474c2.err
 ### stdout ###
 # ocaml setup.ml -configure 
 ### stderr ###
@@ -1767,14 +1775,6 @@ The following actions will be performed:
 # make: *** [setup.data] Error 1
 
 
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions failed
-  - install pa_comprehension 0.4
-The following changes have been performed
-  - install batteries 2.3.1
-  - install ocamlfind 1.5.5
-
 The former state can be restored with:
-    opam switch import "~/.opam/4.02.1/backup/state-20150310165922.export"
+    opam switch import "~/.opam/4.02.1/backup/state-20150311135136.export"
 'opam install pa_comprehension' failed.
