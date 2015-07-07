@@ -1,7 +1,7 @@
 + uname -m
+# Detecting depexts using flags: x86_64 linux centos
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=liquidsoap
-# Detecting depexts using flags: x86_64 linux centos
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=liquidsoap
 # The following system packages are needed:
 #  - pcre-devel
@@ -11,9 +11,9 @@ Not running as root, the following command will be run through "sudo":
 Loaded plugins: fastestmirror
 Repodata is over 2 weeks old. Install yum-cron? Or run: yum makecache fast
 Determining fastest mirrors
- * base: mirror.vorboss.net
- * extras: mirrors.melbourne.co.uk
- * updates: mirror.vorboss.net
+ * base: anorien.csc.warwick.ac.uk
+ * extras: anorien.csc.warwick.ac.uk
+ * updates: mirrors.coreix.net
 Resolving Dependencies
 --> Running transaction check
 ---> Package binutils.x86_64 0:2.23.52.0.1-30.el7_1.1 will be updated
@@ -94,7 +94,7 @@ Total download size: 28 M
 Downloading packages:
 Delta RPMs disabled because /usr/bin/applydeltarpm not installed.
 --------------------------------------------------------------------------------
-Total                                              9.0 MB/s |  28 MB  00:03     
+Total                                              7.0 MB/s |  28 MB  00:04     
 Running transaction check
 Running transaction test
 Transaction test succeeded
@@ -131,7 +131,8 @@ Running transaction
   Cleanup    : nss-util-3.16.2.3-2.el7.x86_64                             30/39 
   Cleanup    : openssh-clients-6.6.1p1-11.el7.x86_64                      31/39 
   Cleanup    : openssh-6.6.1p1-11.el7.x86_64                              32/39 
-  Cleanup    : util-linux-2.23.2-21.el7.x86_64                            33/39 
+  Cleanup    : util-linux-2.23.2-21.el7.x86_64                            33/39+ sudo yum install -y pcre-devel
+ 
   Cleanup    : libmount-2.23.2-21.el7.x86_64                              34/39 
   Cleanup    : libblkid-2.23.2-21.el7.x86_64                              35/39 
   Cleanup    : libuuid-2.23.2-21.el7.x86_64                               36/39 
@@ -158,8 +159,7 @@ Running transaction
   Verifying  : nss-tools-3.18.0-2.2.el7_1.x86_64                          18/39 
   Verifying  : kernel-headers-3.10.0-229.4.2.el7.x86_64                   19/39 
   Verifying  : nss-util-3.18.0-1.el7_1.x86_64                             20/39 
-  Verifying  : kernel-headers-3.10.0-229.1.2.el7.x86_64                   21/39+ sudo yum install -y pcre-devel
- 
+  Verifying  : kernel-headers-3.10.0-229.1.2.el7.x86_64                   21/39 
   Verifying  : nss-tools-3.16.2.3-5.el7.x86_64                            22/39 
   Verifying  : binutils-2.23.52.0.1-30.el7_1.1.x86_64                     23/39 
   Verifying  : nspr-4.10.6-3.el7.x86_64                                   24/39 
@@ -211,9 +211,9 @@ Not running as root, the following command will be run through "sudo":
     rpm -q pcre-devel
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: mirror.vorboss.net
- * extras: mirrors.melbourne.co.uk
- * updates: mirror.vorboss.net
+ * base: anorien.csc.warwick.ac.uk
+ * extras: anorien.csc.warwick.ac.uk
+ * updates: mirrors.coreix.net
 Resolving Dependencies
 --> Running transaction check
 ---> Package pcre-devel.x86_64 0:8.32-14.el7 will be installed
@@ -273,13 +273,11 @@ The following actions will be performed:
 [mad: from default] Command started
 [camomile: from default] Command started
 [liquidsoap: from default] Command started
-[default] http://opam-archive:8080/archives/liquidsoap.1.1.0+opam.tar.gz downloaded
-[mm: from default] Command started
 [mad: from default] Command started
 [default] http://opam-archive:8080/archives/camomile.0.8.5+opam.tar.gz downloaded
+[mm: from default] Command started
+[default] http://opam-archive:8080/archives/liquidsoap.1.1.0+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
-[ERROR] The compilation of mad failed at "./configure --prefix
-        /home/opam/.opam/system".
 [default] http://opam-archive:8080/archives/mad.0.4.4+opam.tar.gz downloaded
 [pcre: from default] Command started
 [mm: from default] Command started
@@ -416,6 +414,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -461,19 +461,9 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -491,6 +481,14 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c num_top_printers.mli
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
 - ocamlc -I +compiler-libs -c num_top.mli
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -g -c num_top.ml
 - ocamlc -I +compiler-libs -a -o num_top.cma num_top_printers.cmo num_top.cmo
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
@@ -525,6 +523,8 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -569,8 +569,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -832,6 +830,8 @@ The following actions will be performed:
 - checking mad.h presence... no
 - checking for mad.h... no
 - configure: error: libmad not found
+[ERROR] The compilation of mad failed at "./configure --prefix
+        /home/opam/.opam/system".
 [mad: ocamlfind remove] Command started
 + ocamlfind "remove" "mad" (CWD=/home/opam/.opam/system/build/mad.0.4.4)
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/mad
@@ -1408,6 +1408,82 @@ The following actions will be performed:
 - tools/camomilecharmap.opt -d charmaps charmaps/EUC-JISX0213 || true
 - tools/camomilecharmap.opt -d charmaps charmaps/IBM273 || true
 - tools/camomilecharmap.opt -d charmaps charmaps/MSZ_7795.3 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/ECMA-CYRILLIC || true
+- tools/camomilecharmap.opt -d charmaps charmaps/IBM871 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/CP1253 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/IBM290 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/IBM280 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/IBM851 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/ISO-8859-6 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/CP1255 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/EBCDIC-DK-NO || true
+- tools/camomilecharmap.opt -d charmaps charmaps/CP1256 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/TIS-620 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/IBM864 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/EBCDIC-ES || true
+- tools/camomilecharmap.opt -d charmaps charmaps/T.61-8BIT || true
+- tools/camomilecharmap.opt -d charmaps charmaps/T.101-G2 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/IBM869 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/GREEK7 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/CP737 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/ISIRI-3342 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/KOI8-T || true
+- tools/camomilecharmap.opt -d charmaps charmaps/GEORGIAN-PS || true
+- tools/camomilecharmap.opt -d charmaps charmaps/ISO-8859-9E || true
+- tools/camomilecharmap.opt -d charmaps charmaps/NATS-DANO || true
+- tools/camomilecharmap.opt -d charmaps charmaps/CSA_Z243.4-1985-1 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/LATIN-GREEK || true
+- tools/camomilecharmap.opt -d charmaps charmaps/IBM037 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/IBM918 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/ES2 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/NATS-DANO-ADD || true
+- tools/camomilecharmap.opt -d charmaps charmaps/JIS_C6220-1969-RO || true
+- tools/camomilecharmap.opt -d charmaps charmaps/WINDOWS-31J || true
+- tools/camomilecharmap.opt -d charmaps charmaps/GREEK-CCITT || true
+- tools/camomilecharmap.opt -d charmaps charmaps/INIS-CYRILLIC || true
+- tools/camomilecharmap.opt -d charmaps charmaps/CP1257 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/BRF || true
+- tools/camomilecharmap.opt -d charmaps charmaps/IBM863 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/EBCDIC-AT-DE || true
+- tools/camomilecharmap.opt -d charmaps charmaps/IBM856 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/HP-TURKISH8 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/SEN_850200_B || true
+- tools/camomilecharmap.opt -d charmaps charmaps/EBCDIC-DK-NO-A || true
+- tools/camomilecharmap.opt -d charmaps charmaps/BIG5 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/ISO_646.BASIC || true
+- tools/camomilecharmap.opt -d charmaps charmaps/JIS_C6229-1984-B || true
+- tools/camomilecharmap.opt -d charmaps charmaps/IBM905 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/IBM904 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/IBM278 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/VIDEOTEX-SUPPL || true
+- tools/camomilecharmap.opt -d charmaps charmaps/LATIN-GREEK-1 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/IBM285 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/IBM870 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/IBM860 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/IBM850 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/PT2 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/EBCDIC-UK || true
+- tools/camomilecharmap.opt -d charmaps charmaps/EBCDIC-ES-S || true
+- tools/camomilecharmap.opt -d charmaps charmaps/ISO-8859-15 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/SHIFT_JISX0213 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/ISO_10367-BOX || true
+- tools/camomilecharmap.opt -d charmaps charmaps/CP1251 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/ISO-8859-9 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/EBCDIC-IT || true
+- tools/camomilecharmap.opt -d charmaps charmaps/GEORGIAN-ACADEMY || true
+- tools/camomilecharmap.opt -d charmaps charmaps/CP1125 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/ISO-8859-8 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/ES || true
+- tools/camomilecharmap.opt -d charmaps charmaps/DIN_66003 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/GREEK7-OLD || true
+- tools/camomilecharmap.opt -d charmaps charmaps/MIK || true
+- tools/camomilecharmap.opt -d charmaps charmaps/IBM297 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/IBM1132 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/IBM1133 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/IEC_P27-1 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/ASMO_449 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/ISO-IR-209 || true
+- tools/camomilecharmap.opt -d charmaps charmaps/GB18030 || true
 - File "internal/bitsvect.ml", line 74, characters 2-24:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
@@ -1627,83 +1703,7 @@ The following actions will be performed:
 - Fatal error: exception Failure("Broken entry: <NU>                   /x00   <U0000> NULL (NUL)")
 - Fatal error: exception Failure("Broken entry: <NUL>	/x00/x00	NULL (NUL)")
 - Fatal error: exception Failure("Broken entry: <NU>                   /x00   <U0000> NULL (NUL)")
-- tools/camomilecharmap.opt -d charmaps charmaps/ECMA-CYRILLIC || true
-- tools/camomilecharmap.opt -d charmaps charmaps/IBM871 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/CP1253 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/IBM290 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/IBM280 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/IBM851 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/ISO-8859-6 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/CP1255 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/EBCDIC-DK-NO || true
-- tools/camomilecharmap.opt -d charmaps charmaps/CP1256 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/TIS-620 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/IBM864 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/EBCDIC-ES || true
-- tools/camomilecharmap.opt -d charmaps charmaps/T.61-8BIT || true
-- tools/camomilecharmap.opt -d charmaps charmaps/T.101-G2 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/IBM869 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/GREEK7 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/CP737 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/ISIRI-3342 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/KOI8-T || true
-- tools/camomilecharmap.opt -d charmaps charmaps/GEORGIAN-PS || true
-- tools/camomilecharmap.opt -d charmaps charmaps/ISO-8859-9E || true
-- tools/camomilecharmap.opt -d charmaps charmaps/NATS-DANO || true
-- tools/camomilecharmap.opt -d charmaps charmaps/CSA_Z243.4-1985-1 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/LATIN-GREEK || true
-- tools/camomilecharmap.opt -d charmaps charmaps/IBM037 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/IBM918 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/ES2 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/NATS-DANO-ADD || true
-- tools/camomilecharmap.opt -d charmaps charmaps/JIS_C6220-1969-RO || true
-- tools/camomilecharmap.opt -d charmaps charmaps/WINDOWS-31J || true
-- tools/camomilecharmap.opt -d charmaps charmaps/GREEK-CCITT || true
-- tools/camomilecharmap.opt -d charmaps charmaps/INIS-CYRILLIC || true
-- tools/camomilecharmap.opt -d charmaps charmaps/CP1257 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/BRF || true
-- tools/camomilecharmap.opt -d charmaps charmaps/IBM863 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/EBCDIC-AT-DE || true
-- tools/camomilecharmap.opt -d charmaps charmaps/IBM856 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/HP-TURKISH8 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/SEN_850200_B || true
-- tools/camomilecharmap.opt -d charmaps charmaps/EBCDIC-DK-NO-A || true
-- tools/camomilecharmap.opt -d charmaps charmaps/BIG5 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/ISO_646.BASIC || true
-- tools/camomilecharmap.opt -d charmaps charmaps/JIS_C6229-1984-B || true
-- tools/camomilecharmap.opt -d charmaps charmaps/IBM905 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/IBM904 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/IBM278 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/VIDEOTEX-SUPPL || true
-- tools/camomilecharmap.opt -d charmaps charmaps/LATIN-GREEK-1 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/IBM285 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/IBM870 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/IBM860 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/IBM850 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/PT2 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/EBCDIC-UK || true
-- tools/camomilecharmap.opt -d charmaps charmaps/EBCDIC-ES-S || true
-- tools/camomilecharmap.opt -d charmaps charmaps/ISO-8859-15 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/SHIFT_JISX0213 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/ISO_10367-BOX || true
-- tools/camomilecharmap.opt -d charmaps charmaps/CP1251 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/ISO-8859-9 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/EBCDIC-IT || true
-- tools/camomilecharmap.opt -d charmaps charmaps/GEORGIAN-ACADEMY || true
 - Fatal error: exception Failure("Broken entry: <A!>                   /x41   <U00C0> LATIN CAPITAL LETTER A WITH GRAVE")
-- tools/camomilecharmap.opt -d charmaps charmaps/CP1125 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/ISO-8859-8 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/ES || true
-- tools/camomilecharmap.opt -d charmaps charmaps/DIN_66003 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/GREEK7-OLD || true
-- tools/camomilecharmap.opt -d charmaps charmaps/MIK || true
-- tools/camomilecharmap.opt -d charmaps charmaps/IBM297 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/IBM1132 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/IBM1133 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/IEC_P27-1 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/ASMO_449 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/ISO-IR-209 || true
-- tools/camomilecharmap.opt -d charmaps charmaps/GB18030 || true
 - tools/camomilecharmap.opt -d charmaps charmaps/KOI8-R || true
 - tools/camomilecharmap.opt -d charmaps charmaps/IBM275 || true
 - tools/camomilecharmap.opt -d charmaps charmaps/ANSI_X3.110-1983 || true
@@ -1760,11 +1760,11 @@ The following actions will be performed:
 - tools/camomilecharmap.opt -d charmaps charmaps/ISO_8859-1,GL || true
 - tools/camomilecharmap.opt -d charmaps charmaps/CP1252 || true
 - tools/camomilecharmap.opt -d charmaps charmaps/ISO-8859-7 || true
+- Fatal error: exception Failure("Broken entry: <A!>                   /x41   <U00C0> LATIN CAPITAL LETTER A WITH GRAVE")
+- Fatal error: exception Failure("Broken entry: <NUL>                   \d000   NULL")
 - tools/camomilecharmap.opt -d charmaps charmaps/EBCDIC-FI-SE || true
 - tools/camomilecharmap.opt -d charmaps charmaps/NC_NC00-10 || true
 - tools/camomilecharmap.opt -d charmaps charmaps/ISO-8859-4 || true
-- Fatal error: exception Failure("Broken entry: <A!>                   /x41   <U00C0> LATIN CAPITAL LETTER A WITH GRAVE")
-- Fatal error: exception Failure("Broken entry: <NUL>                   \d000   NULL")
 - tools/camomilecharmap.opt -d charmaps charmaps/ISO-8859-14 || true
 - tools/camomilecharmap.opt -d charmaps charmaps/TSCII || true
 - tools/camomilecharmap.opt -d charmaps charmaps/IT || true
@@ -1829,10 +1829,6 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/kk.txt locales 
 - tools/camomilelocaledef.opt --file locales/om_KE.txt locales 
 - tools/camomilelocaledef.opt --file locales/sv.txt locales 
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/sq.txt locales 
 - tools/camomilelocaledef.opt --file locales/fr_BE.txt locales 
 - tools/camomilelocaledef.opt --file locales/uz_UZ.txt locales 
@@ -1843,6 +1839,8 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/bn.txt locales 
 - tools/camomilelocaledef.opt --file locales/is.txt locales 
 - tools/camomilelocaledef.opt --file locales/bn_IN.txt locales 
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/ta_IN.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar_LY.txt locales 
 - tools/camomilelocaledef.opt --file locales/zh_HK.txt locales 
@@ -1855,6 +1853,8 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/es_SV.txt locales 
 - tools/camomilelocaledef.opt --file locales/mr.txt locales 
 - tools/camomilelocaledef.opt --file locales/es_ES.txt locales 
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/zh_TW.txt locales 
 - tools/camomilelocaledef.opt --file locales/he_IL.txt locales 
 - tools/camomilelocaledef.opt --file locales/bg.txt locales 
@@ -1863,10 +1863,10 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/el.txt locales 
 - tools/camomilelocaledef.opt --file locales/en_PH.txt locales 
 - tools/camomilelocaledef.opt --file locales/pl.txt locales 
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/ms_BN.txt locales 
 - tools/camomilelocaledef.opt --file locales/id.txt locales 
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/ar_BH.txt locales 
 - tools/camomilelocaledef.opt --file locales/en_ZW.txt locales 
 - tools/camomilelocaledef.opt --file locales/so.txt locales 
@@ -1881,8 +1881,6 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/nl_NL_PREEURO.txt locales 
 - tools/camomilelocaledef.opt --file locales/hr.txt locales 
 - tools/camomilelocaledef.opt --file locales/ti.txt locales 
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/en_GB_EURO.txt locales 
 - tools/camomilelocaledef.opt --file locales/en_IE.txt locales 
 - tools/camomilelocaledef.opt --file locales/es_CL.txt locales 
@@ -1891,6 +1889,8 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/ar_AE.txt locales 
 - tools/camomilelocaledef.opt --file locales/ga_IE_PREEURO.txt locales 
 - tools/camomilelocaledef.opt --file locales/en_GU.txt locales 
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/en_US_POSIX.txt locales 
 - tools/camomilelocaledef.opt --file locales/gv_GB.txt locales 
 - tools/camomilelocaledef.opt --file locales/sk_SK.txt locales 
@@ -1929,7 +1929,6 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/iw_IL.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar_IQ.txt locales 
 - tools/camomilelocaledef.opt --file locales/sv_FI.txt locales 
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/sa_IN.txt locales 
 - tools/camomilelocaledef.opt --file locales/he.txt locales 
 - tools/camomilelocaledef.opt --file locales/div.txt locales 
@@ -1941,14 +1940,15 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/nl_BE.txt locales 
 - tools/camomilelocaledef.opt --file locales/be_BY.txt locales 
 - tools/camomilelocaledef.opt --file locales/kok.txt locales 
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/kok_IN.txt locales 
 - tools/camomilelocaledef.opt --file locales/ru_RU.txt locales 
 - tools/camomilelocaledef.opt --file locales/de_CH.txt locales 
 - tools/camomilelocaledef.opt --file locales/es_GT.txt locales 
 - tools/camomilelocaledef.opt --file locales/es_HN.txt locales 
 - tools/camomilelocaledef.opt --file locales/en_VI.txt locales 
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/th_TH.txt locales 
 - tools/camomilelocaledef.opt --file locales/kl.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar_OM.txt locales 
@@ -1961,10 +1961,10 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/ur.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar_EG.txt locales 
 - tools/camomilelocaledef.opt --file locales/zh_MO.txt locales 
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/om_ET.txt locales 
 - tools/camomilelocaledef.opt --file locales/en_UM.txt locales 
 - tools/camomilelocaledef.opt --file locales/de_LU_PREEURO.txt locales 
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/en_AS.txt locales 
 - tools/camomilelocaledef.opt --file locales/root.txt locales 
 - tools/camomilelocaledef.opt --file locales/ti_ET.txt locales 
@@ -1987,11 +1987,10 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/mr_IN.txt locales 
 - tools/camomilelocaledef.opt --file locales/de__PHONEBOOK.txt locales 
 - tools/camomilelocaledef.opt --file locales/pa.txt locales 
-- tools/camomilelocaledef.opt --file locales/uk.txt locales 
 - Warning : normalization option is not supported
 - Warning : file loading is not supported.
 - Warning : normalization option is not supported
-- Warning : normalization option is not supported
+- tools/camomilelocaledef.opt --file locales/uk.txt locales 
 - tools/camomilelocaledef.opt --file locales/es_US.txt locales 
 - tools/camomilelocaledef.opt --file locales/pt_PT_PREEURO.txt locales 
 - tools/camomilelocaledef.opt --file locales/hi__DIRECT.txt locales 
@@ -2006,6 +2005,9 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/en_BZ.txt locales 
 - tools/camomilelocaledef.opt --file locales/so_ET.txt locales 
 - tools/camomilelocaledef.opt --file locales/fa.txt locales 
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/it_IT.txt locales 
 - tools/camomilelocaledef.opt --file locales/ur_PK.txt locales 
 - tools/camomilelocaledef.opt --file locales/ja_JP.txt locales 
@@ -2016,8 +2018,6 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/hi_IN.txt locales 
 - tools/camomilelocaledef.opt --file locales/fr_CA.txt locales 
 - tools/camomilelocaledef.opt --file locales/ko.txt locales 
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
 - Warning : normalization option is not supported
 - Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/tr_TR.txt locales 
@@ -2039,13 +2039,12 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/lt_LT.txt locales 
 - tools/camomilelocaledef.opt --file locales/de_DE.txt locales 
 - tools/camomilelocaledef.opt --file locales/zh_CN.txt locales 
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/sr_YU.txt locales 
 - tools/camomilelocaledef.opt --file locales/de_LU.txt locales 
 - tools/camomilelocaledef.opt --file locales/es_AR.txt locales 
 - tools/camomilelocaledef.opt --file locales/en_TT.txt locales 
 - tools/camomilelocaledef.opt --file locales/ta.txt locales 
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/sa.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar_QA.txt locales 
 - tools/camomilelocaledef.opt --file locales/fr_FR_PREEURO.txt locales 
@@ -2061,6 +2060,7 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/ja.txt locales 
 - Warning : normalization option is not supported
 - Warning : normalization option is not supported
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/gv.txt locales 
 - tools/camomilelocaledef.opt --file locales/es_BO.txt locales 
 - tools/camomilelocaledef.opt --file locales/en_MT.txt locales 
@@ -2074,8 +2074,8 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/ca.txt locales 
 - tools/camomilelocaledef.opt --file locales/kk_KZ.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar_DZ.txt locales 
-- tools/camomilelocaledef.opt --file locales/lt.txt locales 
 - Warning : strength option is not supported
+- tools/camomilelocaledef.opt --file locales/lt.txt locales 
 - tools/camomilelocaledef.opt --file locales/hy_AM.txt locales 
 - tools/camomilelocaledef.opt --file locales/sh.txt locales 
 - tools/camomilelocaledef.opt --file locales/es_DO.txt locales 
@@ -2096,8 +2096,8 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/eu.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar.txt locales 
 - tools/camomilelocaledef.opt --file locales/el_GR.txt locales 
-- Warning : normalization option is not supported
 - rm toolslib/colLexer.ml internal/uReStrLexer.ml toolslib/colParser.mli toolslib/colParser.ml
+- Warning : normalization option is not supported
 [camomile: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/camomile.0.8.5)
 - files= &&\
@@ -2139,27 +2139,6 @@ The following actions will be performed:
 - Installed /home/opam/.opam/system/lib/camomile/META
 -> installed camomile.0.8.5
 
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions were aborted
-  - install liquidsoap 1.1.0
-  - install mm         0.2.1
-The following actions failed
-  - install mad 0.4.4
-The following changes have been performed
-  - install camomile        0.8.5
-  - install conf-libpcre    1    
-  - install conf-pkg-config 1.0  
-  - install dtools          0.3.0
-  - install duppy           0.5.0
-  - install ocamlfind       1.5.5
-  - install pcre            7.1.3
-
-=-=- mad.0.4.4 troobleshooting =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-=> This package relies on external (system) dependencies that may be missing.
-   `opam depext mad.0.4.4' may help you find the correct installation for your
-   system.
-
 #=== ERROR while installing mad.0.4.4 =========================================#
 # opam-version         1.2.2 (391297300524717e1475deaea37bca287c7f5e36)
 # os                   linux
@@ -2186,6 +2165,27 @@ The following changes have been performed
 # configure: error: libmad not found
 
 
+
+=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+The following actions were aborted
+  - install liquidsoap 1.1.0
+  - install mm         0.2.1
+The following actions failed
+  - install mad 0.4.4
+The following changes have been performed
+  - install camomile        0.8.5
+  - install conf-libpcre    1    
+  - install conf-pkg-config 1.0  
+  - install dtools          0.3.0
+  - install duppy           0.5.0
+  - install ocamlfind       1.5.5
+  - install pcre            7.1.3
+
+=-=- mad.0.4.4 troobleshooting =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+=> This package relies on external (system) dependencies that may be missing.
+   `opam depext mad.0.4.4' may help you find the correct installation for your
+   system.
+
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150422222833.export"
+    opam switch import "~/.opam/system/backup/state-20150423133149.export"
 'opam install liquidsoap' failed.
