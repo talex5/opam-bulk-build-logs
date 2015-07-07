@@ -1,31 +1,30 @@
 + uname -m
 + uname -s
-+ opam list --safe --recursive --external=x86_64,linux,debian --required-by=ocaml-top
 # Detecting depexts using flags: x86_64 linux debian
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=ocaml-top
++ opam list --safe --recursive --external=x86_64,linux,debian --required-by=ocaml-top
 # The following system packages are needed:
 #  - libexpat1-dev
 #  - libgtk2.0-dev
 #  - libgtksourceview2.0-dev
 #  - m4
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=ocaml-top
 Not running as root, system installation will be done through "sudo"
 + sudo apt-get update
 Hit http://download.opensuse.org  Release.gpg
 Hit http://http.debian.net stable Release.gpg
-Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
-Hit http://http.debian.net stable Release
 Hit http://download.opensuse.org  Release
-Get:2 http://http.debian.net stable-updates Release [124 kB]
-Hit http://http.debian.net stable/main amd64 Packages
+Hit http://http.debian.net stable-updates Release.gpg
+Hit http://http.debian.net stable Release
+Hit http://http.debian.net stable-updates Release
 Hit http://download.opensuse.org  Packages
-Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
+Hit http://http.debian.net stable/main amd64 Packages
+Hit http://http.debian.net stable-updates/main amd64 Packages
 Hit http://security.debian.org stable/updates Release.gpg
 Hit http://security.debian.org stable/updates Release
 Hit http://security.debian.org stable/updates/main amd64 Packages
-Fetched 129 kB in 1s (116 kB/s)
 Reading package lists...
-+ sudo apt-get install -qq -yy libexpat1-dev libgtk2.0-dev libgtksourceview2.0-dev m4
 # OS package update successful
++ sudo apt-get install -qq -yy libexpat1-dev libgtk2.0-dev libgtksourceview2.0-dev m4
 Not running as root, system installation will be done through "sudo"
 debconf: delaying package configuration, since apt-utils is not installed
 Selecting previously unselected package libpipeline1:amd64.
@@ -338,18 +337,18 @@ The following actions will be performed:
 [ocaml-top: from default] Command started
 [ocaml-top: from default] Command started
 [camlp4: from default] Command started
-[lablgtk: from default] Command started
 [default] http://opam-archive:8080/archives/ocaml-top.1.1.2+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
+[lablgtk: from default] Command started
 [default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
 [ocp-build: from default] Command started
 [default] http://opam-archive:8080/archives/lablgtk.2.18.3+opam.tar.gz downloaded
 [ocp-indent: from default] Command started
 [ocp-indent: from default] Command started
-[ocamlfind: from default] Command started
-[ocp-build: from default] Command started
 [default] http://opam-archive:8080/archives/ocp-indent.1.5+opam.tar.gz downloaded
 [ocp-index: from default] Command started
+[ocamlfind: from default] Command started
+[ocp-build: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [re: from default] Command started
 [default] http://opam-archive:8080/archives/ocp-build.1.99.9-beta+opam.tar.gz downloaded
@@ -496,6 +495,13 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 		cp topfind.ml.in topfind.ml;                             \
+- 	else                                                             \
+- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 			> topfind.ml ;                                   \
+- 	fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -504,13 +510,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 		cp topfind.ml.in topfind.ml;                             \
-- 	else                                                             \
-- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 			> topfind.ml ;                                   \
-- 	fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -2070,7 +2069,7 @@ The following actions will be performed:
 - Warning: Could not find OCaml ocamldoc tool.
 - Updating ocp-build.root
 - Warning: 4 package conflicts solved (use -print-conflicts)
-- 0.05s ocp-indent.lexer/indentExtend.mlimods                            [ done ]
+- 0.06s ocp-indent.lexer/indentExtend.mlimods                            [ done ]
 - 0.05s ocp-indent.lexer/indentExtend.mlmods                             [ done ]
 - 0.05s ocp-indent.lexer/approx_tokens.mlmods                            [ done ]
 - 0.05s ocp-indent.lexer/temp/approx_lexer.ml                            [ done ]
@@ -2083,46 +2082,45 @@ The following actions will be performed:
 - 0.05s ocp-indent.utils/nstream.mlimods                                 [ done ]
 - 0.05s ocp-indent.utils/nstream.mlmods                                  [ done ]
 - 0.05s ocp-indent.utils/compat.mlmods                                   [ done ]
-- 0.04s ocp-indent.lib/indentConfig.mlimods                              [ done ]
-- 0.04s ocp-indent.lib/indentConfig.mlmods                               [ done ]
-- 0.04s ocp-indent.lib/indentBlock.mlimods                               [ done ]
-- 0.04s ocp-indent.lib/indentBlock.mlmods                                [ done ]
-- 0.04s ocp-indent.lib/indentPrinter.mlimods                             [ done ]
-- 0.04s ocp-indent.lib/indentPrinter.mlmods                              [ done ]
-- 0.04s ocp-indent.dynlink/indentLoader.mlimods                          [ done ]
-- 0.04s ocp-indent.dynlink/indentLoader.mlmods                           [ done ]
-- 0.03s ocp-indent/indentVersion.mlmods                                  [ done ]
-- 0.03s ocp-indent/indentArgs.mlimods                                    [ done ]
-- 0.03s ocp-indent/indentArgs.mlmods                                     [ done ]
-- 0.03s ocp-indent/indentMain.mlmods                                     [ done ]
-- 0.02s ocp-indent.lexer/approx_tokens.cmo                               [ done ]
-- 0.03s ocp-indent.lexer/approx_lexer.mlmods                             [ done ]
-- 0.02s ocp-indent.utils/pos.cmi                                         [ done ]
-- 0.02s ocp-indent.utils/util.cmo                                        [ done ]
-- 0.02s ocp-indent.utils/compat.cmo                                      [ done ]
-- 0.03s ocp-indent.lib/indentConfig.cmi                                  [ done ]
+- 0.05s ocp-indent.lib/indentConfig.mlimods                              [ done ]
+- 0.05s ocp-indent.lib/indentConfig.mlmods                               [ done ]
+- 0.10s ocp-indent.lib/indentBlock.mlimods                               [ done ]
+- 0.09s ocp-indent.lib/indentBlock.mlmods                                [ done ]
+- 0.09s ocp-indent.lib/indentPrinter.mlimods                             [ done ]
+- 0.09s ocp-indent.lib/indentPrinter.mlmods                              [ done ]
+- 0.09s ocp-indent.dynlink/indentLoader.mlimods                          [ done ]
+- 0.09s ocp-indent.dynlink/indentLoader.mlmods                           [ done ]
+- 0.08s ocp-indent/indentVersion.mlmods                                  [ done ]
+- 0.08s ocp-indent/indentArgs.mlimods                                    [ done ]
+- 0.08s ocp-indent/indentArgs.mlmods                                     [ done ]
+- 0.08s ocp-indent/indentMain.mlmods                                     [ done ]
+- 0.08s ocp-indent.lexer/approx_tokens.cmo                               [ done ]
+- 0.08s ocp-indent.lexer/approx_lexer.mlmods                             [ done ]
+- 0.08s ocp-indent.utils/pos.cmi                                         [ done ]
+- 0.08s ocp-indent.utils/util.cmo                                        [ done ]
+- 0.08s ocp-indent.utils/compat.cmo                                      [ done ]
+- 0.08s ocp-indent.lib/indentConfig.cmi                                  [ done ]
 - 0.03s ocp-indent.dynlink/indentLoader.cmi                              [ done ]
 - 0.03s ocp-indent/indentVersion.cmo                                     [ done ]
 - 0.03s ocp-indent.lexer/indentExtend.cmi                                [ done ]
-- 0.04s ocp-indent.lexer/approx_tokens.cmx                               [ done ]
+- 0.03s ocp-indent.lexer/approx_tokens.cmx                               [ done ]
 - 0.04s ocp-indent.utils/pos.cmo                                         [ done ]
-- 0.04s ocp-indent.utils/pos.cmx                                         [ done ]
 - 0.01s ocp-indent.lexer/indentExtend.cmo                                [ done ]
-- 0.03s ocp-indent.dynlink/indentLoader.cmo                              [ done ]
-- 0.05s ocp-indent.utils/util.cmx                                        [ done ]
-- 0.01s ocp-indent.dynlink/ocp-indent.dynlink.cma                        [ done ]
-- 0.04s ocp-indent.lib/indentConfig.cmo                                  [ done ]
+- 0.04s ocp-indent.utils/pos.cmx                                         [ done ]
+- 0.03s ocp-indent/indentVersion.cmx                                     [ done ]
+- 0.04s ocp-indent.dynlink/indentLoader.cmo                              [ done ]
+- 0.05s ocp-indent.utils/compat.cmx                                      [ done ]
+- 0.06s ocp-indent.utils/util.cmx                                        [ done ]
+- 0.06s ocp-indent.lib/indentConfig.cmo                                  [ done ]
 - -- stderr of ocamlc.opt --
 - File "src/indentConfig.ml", line 189, characters 34-45:
 - Warning 3: deprecated: Compat.String.copy
 - File "src/indentConfig.ml", line 191, characters 11-30:
 - Warning 3: deprecated: Compat.String.set
 - Use Bytes.set instead.
-- 0.05s ocp-indent.utils/compat.cmx                                      [ done ]
-- 0.04s ocp-indent/indentVersion.cmx                                     [ done ]
 - 0.04s ocp-indent.lexer/indentExtend.cmx                                [ done ]
-- 0.05s ocp-indent.dynlink/indentLoader.cmx                              [ done ]
-- 0.09s ocp-indent.lexer/approx_lexer.cmo                                [ done ]
+- 0.02s ocp-indent.dynlink/ocp-indent.dynlink.cma                        [ done ]
+- 0.08s ocp-indent.lexer/approx_lexer.cmo                                [ done ]
 - -- stderr of ocamlc.opt --
 - File "src/approx_lexer.mll", line 110, characters 28-41:
 - Warning 3: deprecated: String.create
@@ -2135,19 +2133,12 @@ The following actions will be performed:
 - File "src/approx_lexer.mll", line 228, characters 15-27:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- 0.07s ocp-indent.lib/indentConfig.cmx                                  [ done ]
-- -- stderr of ocamlopt.opt --
-- File "src/indentConfig.ml", line 189, characters 34-45:
-- Warning 3: deprecated: Compat.String.copy
-- File "src/indentConfig.ml", line 191, characters 11-30:
-- Warning 3: deprecated: Compat.String.set
-- Use Bytes.set instead.
-- 0.02s ocp-indent.dynlink/ocp-indent.dynlink.cmxa                       [ done ]
 - 0.01s ocp-indent.lexer/ocp-indent.lexer.cma                            [ done ]
 - 0.01s ocp-indent.utils/nstream.cmi                                     [ done ]
+- 0.06s ocp-indent.dynlink/indentLoader.cmx                              [ done ]
 - 0.01s ocp-indent.lib/indentBlock.cmi                                   [ done ]
-- 0.01s ocp-indent.lib/indentPrinter.cmi                                 [ done ]
-- 0.03s ocp-indent.utils/nstream.cmo                                     [ done ]
+- 0.03s ocp-indent.dynlink/ocp-indent.dynlink.cmxa                       [ done ]
+- 0.04s ocp-indent.utils/nstream.cmo                                     [ done ]
 - -- stderr of ocamlc.opt --
 - File "src/nstream.ml", line 112, characters 18-36:
 - Warning 3: deprecated: Lazy.lazy_from_val
@@ -2155,18 +2146,26 @@ The following actions will be performed:
 - File "src/nstream.ml", line 113, characters 17-35:
 - Warning 3: deprecated: Lazy.lazy_from_val
 - Use Lazy.from_val instead.
+- 0.10s ocp-indent.lib/indentConfig.cmx                                  [ done ]
+- -- stderr of ocamlopt.opt --
+- File "src/indentConfig.ml", line 189, characters 34-45:
+- Warning 3: deprecated: Compat.String.copy
+- File "src/indentConfig.ml", line 191, characters 11-30:
+- Warning 3: deprecated: Compat.String.set
+- Use Bytes.set instead.
+- 0.02s ocp-indent.lib/indentPrinter.cmi                                 [ done ]
 - 0.01s ocp-indent.utils/ocp-indent.utils.cma                            [ done ]
-- 0.01s ocp-indent/indentArgs.cmi                                        [ done ]
-- 0.06s ocp-indent.dynlink/ocp-indent.dynlink.cmxa                       [ done ]
-- 0.03s ocp-indent.lib/indentPrinter.cmo                                 [ done ]
+- 0.02s ocp-indent/indentArgs.cmi                                        [ done ]
 - 0.02s ocp-indent/indentMain.cmo                                        [ done ]
 - -- stderr of ocamlc.opt --
 - File "src/indentMain.ml", line 55, characters 10-41:
 - Warning 48: implicit elimination of optional argument ?extra
 - File "src/indentMain.ml", line 68, characters 10-41:
 - Warning 48: implicit elimination of optional argument ?extra
-- 0.03s ocp-indent/indentArgs.cmo                                        [ done ]
-- 0.12s ocp-indent.lexer/approx_lexer.cmx                                [ done ]
+- 0.06s ocp-indent.dynlink/ocp-indent.dynlink.cmxa                       [ done ]
+- 0.06s ocp-indent.lib/indentPrinter.cmo                                 [ done ]
+- 0.04s ocp-indent/indentArgs.cmo                                        [ done ]
+- 0.15s ocp-indent.lexer/approx_lexer.cmx                                [ done ]
 - -- stderr of ocamlopt.opt --
 - File "src/approx_lexer.mll", line 110, characters 28-41:
 - Warning 3: deprecated: String.create
@@ -2180,7 +2179,7 @@ The following actions will be performed:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
 - 0.03s ocp-indent.lexer/ocp-indent.lexer.cmxa                           [ done ]
-- 0.05s ocp-indent.utils/nstream.cmx                                     [ done ]
+- 0.06s ocp-indent.utils/nstream.cmx                                     [ done ]
 - -- stderr of ocamlopt.opt --
 - File "src/nstream.ml", line 112, characters 18-36:
 - Warning 3: deprecated: Lazy.lazy_from_val
@@ -2189,24 +2188,24 @@ The following actions will be performed:
 - Warning 3: deprecated: Lazy.lazy_from_val
 - Use Lazy.from_val instead.
 - 0.02s ocp-indent.utils/ocp-indent.utils.cmxa                           [ done ]
-- 0.18s ocp-indent.lib/indentBlock.cmo                                   [ done ]
-- 0.07s ocp-indent.lexer/ocp-indent.lexer.cmxa                           [ done ]
+- 0.23s ocp-indent.lib/indentBlock.cmo                                   [ done ]
 - 0.01s ocp-indent.lib/ocp-indent.lib.cma                                [ done ]
+- 0.09s ocp-indent.lexer/ocp-indent.lexer.cmxa                           [ done ]
+- 0.02s ocp-indent/ocp-indent.byte                                       [ done ]
 - 0.06s ocp-indent.utils/ocp-indent.utils.cmxa                           [ done ]
-- 0.03s ocp-indent/ocp-indent.byte                                       [ done ]
 - 0.35s ocp-indent.lib/indentBlock.cmx                                   [ done ]
-- 0.06s ocp-indent.lib/indentPrinter.cmx                                 [ done ]
+- 0.07s ocp-indent.lib/indentPrinter.cmx                                 [ done ]
 - 0.02s ocp-indent.lib/ocp-indent.lib.cmxa                               [ done ]
-- 0.07s ocp-indent/indentArgs.cmx                                        [ done ]
-- 0.08s ocp-indent.lib/ocp-indent.lib.cmxa                               [ done ]
+- 0.08s ocp-indent/indentArgs.cmx                                        [ done ]
+- 0.07s ocp-indent.lib/ocp-indent.lib.cmxa                               [ done ]
 - 0.04s ocp-indent/indentMain.cmx                                        [ done ]
 - -- stderr of ocamlopt.opt --
 - File "src/indentMain.ml", line 55, characters 10-41:
 - Warning 48: implicit elimination of optional argument ?extra
 - File "src/indentMain.ml", line 68, characters 10-41:
 - Warning 48: implicit elimination of optional argument ?extra
-- 0.58s ocp-indent/ocp-indent.asm                                        [ done ]
-- Build Successful in 1.62s. 73 jobs (parallelism 2.3x), 115 files generated.
+- 0.22s ocp-indent/ocp-indent.asm                                        [ done ]
+- Build Successful in 1.35s. 73 jobs (parallelism 3.4x), 115 files generated.
 -> installed ocp-indent.1.5
 [ocp-index: ./configure] Command started
 + ./configure "--prefix" "/home/opam/.opam/4.02.1" (CWD=/home/opam/.opam/4.02.1/build/ocp-index.1.1.1)
@@ -2272,48 +2271,48 @@ The following actions will be performed:
 -    ocp-browser (program,ocp)
 -      in /home/opam/.opam/4.02.1/build/ocp-index.1.1.1/src
 - 	deps: ocp-index-lib unix cmdliner lambda-term
-- 0.04s ocp-index-lib/trie.mlimods                                       [ done ]
-- 0.05s ocp-index-lib/trie.mlmods                                        [ done ]
-- 0.05s ocp-index-lib/indexTypes.mlmods                                  [ done ]
-- 0.04s ocp-index-lib/indexMisc.mlimods                                  [ done ]
-- 0.04s ocp-index-lib/indexMisc.mlmods                                   [ done ]
-- 0.04s ocp-index-lib/indexOut.mlimods                                   [ done ]
-- 0.04s ocp-index-lib/indexOut.mlmods                                    [ done ]
-- 0.03s ocp-index-lib/indexPredefined.mlimods                            [ done ]
-- 0.03s ocp-index-lib/indexPredefined.mlmods                             [ done ]
-- 0.03s ocp-index-lib/indexBuild.mlimods                                 [ done ]
-- 0.03s ocp-index-lib/indexBuild.mlmods                                  [ done ]
+- 0.02s ocp-index-lib/trie.mlimods                                       [ done ]
+- 0.02s ocp-index-lib/trie.mlmods                                        [ done ]
+- 0.02s ocp-index-lib/indexTypes.mlmods                                  [ done ]
+- 0.02s ocp-index-lib/indexMisc.mlimods                                  [ done ]
+- 0.02s ocp-index-lib/indexMisc.mlmods                                   [ done ]
+- 0.02s ocp-index-lib/indexOut.mlimods                                   [ done ]
+- 0.02s ocp-index-lib/indexOut.mlmods                                    [ done ]
+- 0.02s ocp-index-lib/indexPredefined.mlimods                            [ done ]
+- 0.02s ocp-index-lib/indexPredefined.mlmods                             [ done ]
+- 0.02s ocp-index-lib/indexBuild.mlimods                                 [ done ]
 - 0.02s ocp-index-lib/libIndex.mlimods                                   [ done ]
 - 0.02s ocp-index-lib/libIndex.mlmods                                    [ done ]
-- 0.02s ocp-index-lib/indexScope.mlimods                                 [ done ]
+- 0.01s ocp-index-lib/indexScope.mlimods                                 [ done ]
 - 0.02s ocp-index-lib/indexScope.mlmods                                  [ done ]
-- 0.01s ocp-index-lib/trie.cmi                                           [ done ]
-- 0.02s ocp-index-lib/indexMisc.cmi                                      [ done ]
-- 0.03s ocp-index-lib/indexScope.cmi                                     [ done ]
+- 0.02s ocp-index-lib/indexBuild.mlmods                                  [ done ]
+- 0.02s ocp-index-lib/trie.cmi                                           [ done ]
+- 0.03s ocp-index-lib/indexMisc.cmi                                      [ done ]
+- 0.02s ocp-index-lib/indexScope.cmi                                     [ done ]
+- 0.02s ocp-index-lib/indexTypes.cmo                                     [ done ]
 - 0.03s ocp-index-lib/trie.cmo                                           [ done ]
-- 0.03s ocp-index-lib/indexTypes.cmo                                     [ done ]
-- 0.03s ocp-index-lib/indexMisc.cmo                                      [ done ]
 - 0.01s ocp-index-lib/indexPredefined.cmi                                [ done ]
+- 0.03s ocp-index-lib/indexMisc.cmo                                      [ done ]
 - 0.01s ocp-index-lib/indexBuild.cmi                                     [ done ]
 - 0.02s ocp-index-lib/indexOut.cmi                                       [ done ]
-- 0.06s ocp-index-lib/indexScope.cmo                                     [ done ]
+- 0.04s ocp-index-lib/indexScope.cmo                                     [ done ]
+- 0.06s ocp-index-lib/trie.cmx                                           [ done ]
+- 0.05s ocp-index-lib/indexMisc.cmx                                      [ done ]
 - 0.03s ocp-index-lib/indexPredefined.cmo                                [ done ]
-- 0.08s ocp-index-lib/trie.cmx                                           [ done ]
 - 0.02s ocp-index-lib/libIndex.cmi                                       [ done ]
-- 0.08s ocp-index-lib/indexMisc.cmx                                      [ done ]
-- 0.03s ocp-index-lib/indexTypes.cmx                                     [ done ]
-- 0.03s ocp-index-lib/libIndex.cmo                                       [ done ]
+- 0.02s ocp-index-lib/indexTypes.cmx                                     [ done ]
+- 0.02s ocp-index-lib/libIndex.cmo                                       [ done ]
 - 0.06s ocp-index-lib/indexOut.cmo                                       [ done ]
-- 0.11s ocp-index-lib/indexScope.cmx                                     [ done ]
-- 0.12s ocp-index-lib/indexBuild.cmo                                     [ done ]
-- 0.06s ocp-index-lib/indexPredefined.cmx                                [ done ]
+- 0.09s ocp-index-lib/indexScope.cmx                                     [ done ]
+- 0.08s ocp-index-lib/indexBuild.cmo                                     [ done ]
 - 0.01s ocp-index-lib/ocp-index-lib.cma                                  [ done ]
-- 0.10s ocp-index-lib/indexOut.cmx                                       [ done ]
-- 0.14s ocp-index-lib/indexBuild.cmx                                     [ done ]
+- 0.06s ocp-index-lib/indexPredefined.cmx                                [ done ]
+- 0.09s ocp-index-lib/indexOut.cmx                                       [ done ]
+- 0.15s ocp-index-lib/indexBuild.cmx                                     [ done ]
 - 0.03s ocp-index-lib/libIndex.cmx                                       [ done ]
 - 0.03s ocp-index-lib/ocp-index-lib.cmxa                                 [ done ]
 - 0.08s ocp-index-lib/ocp-index-lib.cmxa                                 [ done ]
-- Build Successful in 0.63s. 41 jobs (parallelism 2.8x), 55 files generated.
+- Build Successful in 0.62s. 41 jobs (parallelism 2.3x), 55 files generated.
 - tput: unknown terminal "none"
 - tput: No value for $TERM and no -T specified
 - stty: standard input: Inappropriate ioctl for device
@@ -2337,15 +2336,15 @@ The following actions will be performed:
 - 	deps: ocp-index-lib unix cmdliner lambda-term
 - 0.01s ocp-index/indexOptions.mlimods                                   [ done ]
 - 0.01s ocp-index/indexOptions.mlmods                                    [ done ]
-- 0.01s ocp-index/indexMain.mlmods                                       [ done ]
 - 0.01s ocp-index/indexOptions.cmi                                       [ done ]
-- 0.05s ocp-index/indexOptions.cmo                                       [ done ]
-- 0.04s ocp-index/indexMain.cmo                                          [ done ]
-- 0.09s ocp-index/indexOptions.cmx                                       [ done ]
+- 0.02s ocp-index/indexMain.mlmods                                       [ done ]
+- 0.03s ocp-index/indexMain.cmo                                          [ done ]
+- 0.04s ocp-index/indexOptions.cmo                                       [ done ]
 - 0.05s ocp-index/ocp-index.byte                                         [ done ]
+- 0.09s ocp-index/indexOptions.cmx                                       [ done ]
 - 0.06s ocp-index/indexMain.cmx                                          [ done ]
-- 0.32s ocp-index/ocp-index.asm                                          [ done ]
-- Build Successful in 0.62s. 10 jobs (parallelism 1.0x), 14 files generated.
+- 0.30s ocp-index/ocp-index.asm                                          [ done ]
+- Build Successful in 0.59s. 10 jobs (parallelism 1.1x), 14 files generated.
 - tput: unknown terminal "none"
 - tput: No value for $TERM and no -T specified
 - stty: standard input: Inappropriate ioctl for device
@@ -2370,9 +2369,9 @@ The following actions will be performed:
 - 0.01s ocp-grep/grepMain.mlmods                                         [ done ]
 - 0.05s ocp-grep/grepMain.cmo                                            [ done ]
 - 0.06s ocp-grep/ocp-grep.byte                                           [ done ]
-- 0.11s ocp-grep/grepMain.cmx                                            [ done ]
-- 0.31s ocp-grep/ocp-grep.asm                                            [ done ]
-- Build Successful in 0.60s. 5 jobs (parallelism 0.9x), 8 files generated.
+- 0.09s ocp-grep/grepMain.cmx                                            [ done ]
+- 0.29s ocp-grep/ocp-grep.asm                                            [ done ]
+- Build Successful in 0.55s. 5 jobs (parallelism 0.9x), 8 files generated.
 -> installed ocp-index.1.1.1
 + make "world" (CWD=/home/opam/.opam/4.02.1/build/lablgtk.2.18.3)
 - make -C src world
@@ -2455,36 +2454,6 @@ The following actions will be performed:
 - ocamlc.opt   -w s -c  gtkPackProps.ml
 - ./propcc gtkRange.props
 - ocamlc.opt   -w s -c  gtkRangeProps.ml
-- ./propcc gtkText.props
-- ocamlc.opt   -w s -c  gtkTextProps.ml
-- ./propcc gtkTree.props
-- ocamlc.opt   -w s -c  gtkTreeProps.ml
-- ./propcc gtkFile.props
-- ocamlc.opt   -w s -c  gtkFileProps.ml
-- ./propcc gtkAction.props
-- ocamlc.opt   -w s -c  gtkActionProps.ml
-- ./propcc gtkBroken.props
-- ocamlc.opt   -w s -c  gtkBrokenProps.ml
-- ./propcc gtkAssistant.props
-- ocamlc.opt   -w s -c  gtkAssistantProps.ml
-- ocamlc.opt   -w s -c  gtkData.ml
-- ocamlc.opt   -w s -c  gtkBase.ml
-- ocamlc.opt   -w s -c  gtkPack.ml
-- ocamlc.opt   -w s -c  gtkButton.ml
-- ocamlc.opt   -w s -c  gtkAssistant.ml
-- ocamlc.opt   -w s -c  gtkMenu.ml
-- ocamlc.opt   -w s -c  gtkMisc.ml
-- ocamlc.opt   -w s -c  gtkWindow.ml
-- ocamlc.opt   -w s -c  gtkList.ml
-- ocamlc.opt   -w s -c  gtkBin.ml
-- ocamlc.opt   -w s -c  gtkEdit.ml
-- ocamlc.opt   -w s -c  gtkRange.ml
-- ocamlc.opt   -w s -c  gtkText.ml
-- ocamlc.opt   -w s -c  gtkTree.ml
-- ocamlc.opt   -w s -c  gtkFile.ml
-- ocamlc.opt   -w s -c  gtkMain.ml
-- ocamlc.opt   -w s -c  gtkBroken.ml
-- ocamlc.opt   -w s -c  gPango.ml
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gdkpixbuf.c'
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gdk.c'
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libxml2 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_glib.c'
@@ -2531,16 +2500,46 @@ The following actions will be performed:
 - Use Array.make instead.
 - Warning: no conversion for type PangoAttrList in class GtkLabel
 - Warning: no conversion for type GdkPixbufAnimation in class GtkImage
+- ./propcc gtkText.props
+- ocamlc.opt   -w s -c  gtkTextProps.ml
+- ./propcc gtkTree.props
+- ocamlc.opt   -w s -c  gtkTreeProps.ml
+- ./propcc gtkFile.props
+- ocamlc.opt   -w s -c  gtkFileProps.ml
+- ./propcc gtkAction.props
+- ocamlc.opt   -w s -c  gtkActionProps.ml
+- ./propcc gtkBroken.props
+- ocamlc.opt   -w s -c  gtkBrokenProps.ml
+- ./propcc gtkAssistant.props
+- ocamlc.opt   -w s -c  gtkAssistantProps.ml
+- ocamlc.opt   -w s -c  gtkData.ml
+- ocamlc.opt   -w s -c  gtkBase.ml
+- ocamlc.opt   -w s -c  gtkPack.ml
+- ocamlc.opt   -w s -c  gtkButton.ml
+- ocamlc.opt   -w s -c  gtkAssistant.ml
+- ocamlc.opt   -w s -c  gtkMenu.ml
+- ocamlc.opt   -w s -c  gtkMisc.ml
+- ocamlc.opt   -w s -c  gtkWindow.ml
+- ocamlc.opt   -w s -c  gtkList.ml
+- ocamlc.opt   -w s -c  gtkBin.ml
+- ocamlc.opt   -w s -c  gtkEdit.ml
+- ocamlc.opt   -w s -c  gtkRange.ml
+- ocamlc.opt   -w s -c  gtkText.ml
+- ocamlc.opt   -w s -c  gtkTree.ml
+- ocamlc.opt   -w s -c  gtkFile.ml
+- ocamlc.opt   -w s -c  gtkMain.ml
+- ocamlc.opt   -w s -c  gtkBroken.ml
+- ocamlc.opt   -w s -c  gPango.ml
+- ocamlc.opt   -w s -c gDraw.mli
+- ocamlc.opt   -w s -c  gDraw.ml
+- ocamlc.opt   -w s -c gObj.mli
+- ocamlc.opt   -w s -c  gObj.ml
 - Warning: no conversion for type PangoTabArray in class GtkTextView
 - Warning: no conversion for type PangoTabArray in class GtkTextTag
 - Warning: no conversion for type PangoAttrList in class GtkCellRendererText
 - File "gtkList.ml", line 188, characters 14-26:
 - Warning 3: deprecated: StdLabels.Array.create
 - Use ArrayLabels.make instead.
-- ocamlc.opt   -w s -c gDraw.mli
-- ocamlc.opt   -w s -c  gDraw.ml
-- ocamlc.opt   -w s -c gObj.mli
-- ocamlc.opt   -w s -c  gObj.ml
 - ocamlc.opt   -w s -c  ogtkBaseProps.ml
 - ocamlc.opt   -w s -c gData.mli
 - ocamlc.opt   -w s -c  gData.ml
@@ -2655,6 +2654,11 @@ The following actions will be performed:
 - ocamlopt.opt  -w s -c gutf8.ml
 - ocamlopt.opt  -w s -c glib.ml
 - ocamlopt.opt  -w s -c gobject.ml
+- ocamlopt.opt  -w s -c gdkEnums.ml
+- ocamlopt.opt  -w s -c pangoEnums.ml
+- ocamlopt.opt  -w s -c gtkEnums.ml
+- ocamlopt.opt  -w s -c pango.ml
+- ocamlopt.opt  -w s -c gdk.ml
 - File "gpointer.ml", line 144, characters 10-23:
 - Warning 3: deprecated: StdLabels.String.create
 - Use BytesLabels.create instead.
@@ -2673,11 +2677,6 @@ The following actions will be performed:
 - File "gutf8.ml", line 145, characters 11-23:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
-- ocamlopt.opt  -w s -c gdkEnums.ml
-- ocamlopt.opt  -w s -c pangoEnums.ml
-- ocamlopt.opt  -w s -c gtkEnums.ml
-- ocamlopt.opt  -w s -c pango.ml
-- ocamlopt.opt  -w s -c gdk.ml
 - ocamlopt.opt  -w s -c gdkEvent.ml
 - ocamlopt.opt  -w s -c gdkKeysyms.ml
 - ocamlopt.opt  -w s -c gdkPixbuf.ml
@@ -2711,6 +2710,9 @@ The following actions will be performed:
 - ocamlopt.opt  -w s -c gtkList.ml
 - ocamlopt.opt  -w s -c gtkBin.ml
 - ocamlopt.opt  -w s -c gtkEdit.ml
+- File "gtkList.ml", line 188, characters 14-26:
+- Warning 3: deprecated: StdLabels.Array.create
+- Use ArrayLabels.make instead.
 - ocamlopt.opt  -w s -c gtkRange.ml
 - ocamlopt.opt  -w s -c gtkText.ml
 - ocamlopt.opt  -w s -c gtkTree.ml
@@ -2720,9 +2722,6 @@ The following actions will be performed:
 - ocamlopt.opt  -w s -c gPango.ml
 - ocamlopt.opt  -w s -c gDraw.ml
 - ocamlopt.opt  -w s -c gObj.ml
-- File "gtkList.ml", line 188, characters 14-26:
-- Warning 3: deprecated: StdLabels.Array.create
-- Use ArrayLabels.make instead.
 - ocamlopt.opt  -w s -c ogtkBaseProps.ml
 - ocamlopt.opt  -w s -c gData.ml
 - ocamlopt.opt  -w s -c ogtkBinProps.ml
@@ -2775,12 +2774,12 @@ The following actions will be performed:
 - ocamlopt.opt  -w s -c -thread gtkThread.ml
 - ocamlopt.opt -verbose -o lablgtk.cmxs -shared -linkall -I . \
 -         -ccopt '' lablgtk.cmxa
-- + as -o 'lablgtk.cmxs.startup.o' '/tmp/camlstartup1af1b3.s'
-- + gcc -shared -o 'lablgtk.cmxs'   '-L.' '-L/home/opam/.opam/4.02.1/lib/ocaml'  'lablgtk.cmxs.startup.o' 'lablgtk.a' '-llablgtk2' '-lgtk-x11-2.0' '-lgdk-x11-2.0' '-latk-1.0' '-lgio-2.0' '-lpangoft2-1.0' '-lpangocairo-1.0' '-lgdk_pixbuf-2.0' '-lcairo' '-lpango-1.0' '-lfreetype' '-lfontconfig' '-lgobject-2.0' '-lglib-2.0' 
 - ocamlopt.opt -verbose -o lablgtksourceview2.cmxs -shared -linkall -I . \
 -         -ccopt '' lablgtksourceview2.cmxa
 - make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/lablgtk.2.18.3/src'
-- + as -o 'lablgtksourceview2.cmxs.startup.o' '/tmp/camlstartup77a6f9.s'
+- + as -o 'lablgtk.cmxs.startup.o' '/tmp/camlstartup2a11a5.s'
+- + gcc -shared -o 'lablgtk.cmxs'   '-L.' '-L/home/opam/.opam/4.02.1/lib/ocaml'  'lablgtk.cmxs.startup.o' 'lablgtk.a' '-llablgtk2' '-lgtk-x11-2.0' '-lgdk-x11-2.0' '-latk-1.0' '-lgio-2.0' '-lpangoft2-1.0' '-lpangocairo-1.0' '-lgdk_pixbuf-2.0' '-lcairo' '-lpango-1.0' '-lfreetype' '-lfontconfig' '-lgobject-2.0' '-lglib-2.0' 
+- + as -o 'lablgtksourceview2.cmxs.startup.o' '/tmp/camlstartup4a5990.s'
 - + gcc -shared -o 'lablgtksourceview2.cmxs'   '-L.' '-L/home/opam/.opam/4.02.1/lib/ocaml'  'lablgtksourceview2.cmxs.startup.o' 'lablgtksourceview2.a' '-llablgtksourceview2' '-lgtksourceview-2.0' '-lgtk-x11-2.0' '-lgdk-x11-2.0' '-latk-1.0' '-lgio-2.0' '-lpangoft2-1.0' '-lpangocairo-1.0' '-lgdk_pixbuf-2.0' '-lcairo' '-lpango-1.0' '-lfreetype' '-lfontconfig' '-lgobject-2.0' '-lglib-2.0' 
 [lablgtk: make install] Command started
 + make "install" (CWD=/home/opam/.opam/4.02.1/build/lablgtk.2.18.3)
@@ -3235,50 +3234,50 @@ The following actions will be performed:
 - Updating ocp-build.root
 - Warning: "ocaml-top" depends on "threads", that only exists in native code
 - Warning: 4 package conflicts solved (use -print-conflicts)
-- 0.01s ocaml-top/tools.mlimods                                          [ done ]
-- 0.02s ocaml-top/cfg.mlmods                                             [ done ]
-- 0.02s ocaml-top/tools.mlmods                                           [ done ]
-- 0.02s ocaml-top/ocamlBuffer.mlimods                                    [ done ]
-- 0.02s ocaml-top/ocamlBuffer.mlmods                                     [ done ]
-- 0.02s ocaml-top/completion.mlimods                                     [ done ]
-- 0.02s ocaml-top/completion.mlmods                                      [ done ]
-- 0.02s ocaml-top/top.mlimods                                            [ done ]
-- 0.02s ocaml-top/top.mlmods                                             [ done ]
+- 0.03s ocaml-top/tools.mlimods                                          [ done ]
+- 0.03s ocaml-top/tools.mlmods                                           [ done ]
+- 0.03s ocaml-top/cfg.mlmods                                             [ done ]
+- 0.03s ocaml-top/ocamlBuffer.mlimods                                    [ done ]
+- 0.03s ocaml-top/ocamlBuffer.mlmods                                     [ done ]
+- 0.03s ocaml-top/completion.mlimods                                     [ done ]
+- 0.03s ocaml-top/completion.mlmods                                      [ done ]
+- 0.03s ocaml-top/top.mlimods                                            [ done ]
+- 0.03s ocaml-top/top.mlmods                                             [ done ]
 - 0.02s ocaml-top/topUi.mlimods                                          [ done ]
-- 0.02s ocaml-top/gui.mlimods                                            [ done ]
-- 0.02s ocaml-top/main.mlmods                                            [ done ]
-- 0.02s ocaml-top/gui.mlmods                                             [ done ]
 - 0.02s ocaml-top/topUi.mlmods                                           [ done ]
-- 0.01s ocaml-top/tools.cmi                                              [ done ]
-- 0.01s ocaml-top/top.cmi                                                [ done ]
+- 0.02s ocaml-top/gui.mlimods                                            [ done ]
+- 0.02s ocaml-top/gui.mlmods                                             [ done ]
+- 0.02s ocaml-top/main.mlmods                                            [ done ]
+- 0.02s ocaml-top/tools.cmi                                              [ done ]
+- 0.02s ocaml-top/top.cmi                                                [ done ]
 - 0.03s ocaml-top/ocamlBuffer.cmi                                        [ done ]
-- 0.04s ocaml-top/cfg.cmx                                                [ done ]
+- 0.03s ocaml-top/cfg.cmx                                                [ done ]
 - 0.02s ocaml-top/completion.cmi                                         [ done ]
-- 0.02s ocaml-top/topUi.cmi                                              [ done ]
 - 0.07s ocaml-top/sigint_unix.o                                          [ done ]
 - 0.05s ocaml-top/tools.cmx                                              [ done ]
 - -- stderr of ocamlopt.opt --
 - File "src/tools.ml", line 95, characters 18-31:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- 0.04s ocaml-top/topUi.cmi                                              [ done ]
 - 0.06s ocaml-top/gui.cmi                                                [ done ]
-- 0.07s ocaml-top/top.cmx                                                [ done ]
+- 0.08s ocaml-top/top.cmx                                                [ done ]
 - -- stderr of ocamlopt.opt --
 - File "src/top.ml", line 85, characters 12-25:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- 0.22s ocaml-top/ocamlBuffer.cmx                                        [ done ]
-- 0.34s ocaml-top/gui.cmx                                                [ done ]
-- 0.21s ocaml-top/completion.cmx                                         [ done ]
+- 0.17s ocaml-top/ocamlBuffer.cmx                                        [ done ]
+- 0.11s ocaml-top/completion.cmx                                         [ done ]
 - -- stderr of ocamlopt.opt --
 - File "src/completion.ml", line 104, characters 24-307:
 - Warning 8: this pattern-matching is not exhaustive.
 - Here is an example of a value that is not matched:
 - OpenType
-- 0.33s ocaml-top/topUi.cmx                                              [ done ]
-- 0.29s ocaml-top/main.cmx                                               [ done ]
-- 0.73s ocaml-top/ocaml-top.asm                                          [ done ]
-- Build Successful in 1.76s. 30 jobs (parallelism 1.6x), 40 files generated.
+- 0.14s ocaml-top/topUi.cmx                                              [ done ]
+- 0.33s ocaml-top/gui.cmx                                                [ done ]
+- 0.14s ocaml-top/main.cmx                                               [ done ]
+- 0.63s ocaml-top/ocaml-top.asm                                          [ done ]
+- Build Successful in 1.32s. 30 jobs (parallelism 1.7x), 40 files generated.
 -> installed ocaml-top.1.1.2
 Done.
 
