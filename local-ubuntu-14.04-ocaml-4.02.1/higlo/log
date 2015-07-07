@@ -1,14 +1,14 @@
 + uname -m
 /usr/bin/lsb_release
+# Detecting depexts using flags: x86_64 linux ubuntu
 + uname -s
 + lsb_release -i -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=higlo
-# Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=higlo
 # The following system packages are needed:
 #  - m4
-+ sudo apt-get update
 Not running as root, system installation will be done through "sudo"
++ sudo apt-get update
 Ign http://download.opensuse.org  InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
@@ -40,9 +40,10 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [21.5 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [324 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [119 kB]
-Fetched 2072 kB in 5s (396 kB/s)
+Fetched 2072 kB in 5s (363 kB/s)
 Reading package lists...
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_source_Sources.gz is not what the server reported 243092 243099
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 627682 627847
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages.gz is not what the server reported 343475 343487
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
 + sudo apt-get install -qq -yy m4
@@ -60,17 +61,17 @@ The following actions will be performed:
 [higlo: from default] Command started
 [ocamlfind: from default] Command started
 [ulex: from default] Command started
-[ulex: from default] Command started
 [higlo: from default] Command started
+[ulex: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/ulex.1.1+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [xmlm: from default] Command started
 [default] http://opam-archive:8080/archives/higlo.0.4+opam.tar.gz downloaded
 [xtmpl: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ulex.1.1+opam.tar.gz downloaded
 [xmlm: from default] Command started
-[xtmpl: from default] Command started
 [default] http://opam-archive:8080/archives/xmlm.1.2.0+opam.tar.gz downloaded
+[xtmpl: from default] Command started
 [default] http://opam-archive:8080/archives/xtmpl.0.10+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -161,7 +162,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -207,6 +207,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
@@ -384,6 +385,24 @@ The following actions will be performed:
 [xmlm: ./pkg/pkg-git] Command started
 + ./pkg/pkg-git  (CWD=/home/opam/.opam/system/build/xmlm.1.2.0)
 [xmlm: ./pkg/build true] Command started
++ ./pkg/build "true" (CWD=/home/opam/.opam/system/build/xmlm.1.2.0)
+- ocamlfind ocamldep -modules src/xmlm.mli > src/xmlm.mli.depends
+- ocamlfind ocamlc -c -I src -I test -o src/xmlm.cmi src/xmlm.mli
+- ocamlfind ocamldep -modules src/xmlm.ml > src/xmlm.ml.depends
+- ocamlfind ocamlopt -c -annot -bin-annot -I src -I test -o src/xmlm.cmx src/xmlm.ml
+- ocamlfind ocamlc -c -annot -bin-annot -I src -I test -o src/xmlm.cmo src/xmlm.ml
+- ocamlfind ocamlc -a src/xmlm.cmo -o src/xmlm.cma
+- ocamlfind ocamlopt -a src/xmlm.cmx -o src/xmlm.cmxa
+- ocamlfind ocamlopt -shared src/xmlm.cmx -o src/xmlm.cmxs
+- ocamlfind ocamldep -modules test/xmltrip.ml > test/xmltrip.ml.depends
+- ocamlfind ocamldep -modules test/xhtml.ml > test/xhtml.ml.depends
+- ocamlfind ocamlc -c -annot -bin-annot -I test -I src -o test/xhtml.cmo test/xhtml.ml
+- ocamlfind ocamlc -c -annot -bin-annot -I test -I src -o test/xmltrip.cmo test/xmltrip.ml
+- ocamlfind ocamlopt -c -annot -bin-annot -I test -I src -o test/xhtml.cmx test/xhtml.ml
+- ocamlfind ocamlopt -c -annot -bin-annot -I test -I src -o test/xmltrip.cmx test/xmltrip.ml
+- ocamlfind ocamlopt -linkpkg src/xmlm.cmx test/xhtml.cmx test/xmltrip.cmx -o test/xmltrip.native
+-> installed xmlm.1.2.0
+[xtmpl: make all] Command started
 + make  (CWD=/home/opam/.opam/system/build/ulex.1.1)
 - ocamlbuild -byte-plugin pa_ulex.cma ulexing.cma
 - /usr/bin/ocamlc.opt unix.cma -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cma myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmo -o myocamlbuild
@@ -430,24 +449,6 @@ The following actions will be performed:
 - Use (&&) instead.
 - /usr/bin/ocamlc.opt -a utf8.cmo ulexing.cmo -o ulexing.cma
 [ulex: make all.opt] Command started
-+ ./pkg/build "true" (CWD=/home/opam/.opam/system/build/xmlm.1.2.0)
-- ocamlfind ocamldep -modules src/xmlm.mli > src/xmlm.mli.depends
-- ocamlfind ocamlc -c -I src -I test -o src/xmlm.cmi src/xmlm.mli
-- ocamlfind ocamldep -modules src/xmlm.ml > src/xmlm.ml.depends
-- ocamlfind ocamlopt -c -annot -bin-annot -I src -I test -o src/xmlm.cmx src/xmlm.ml
-- ocamlfind ocamlc -c -annot -bin-annot -I src -I test -o src/xmlm.cmo src/xmlm.ml
-- ocamlfind ocamlc -a src/xmlm.cmo -o src/xmlm.cma
-- ocamlfind ocamlopt -a src/xmlm.cmx -o src/xmlm.cmxa
-- ocamlfind ocamlopt -shared src/xmlm.cmx -o src/xmlm.cmxs
-- ocamlfind ocamldep -modules test/xmltrip.ml > test/xmltrip.ml.depends
-- ocamlfind ocamldep -modules test/xhtml.ml > test/xhtml.ml.depends
-- ocamlfind ocamlc -c -annot -bin-annot -I test -I src -o test/xhtml.cmo test/xhtml.ml
-- ocamlfind ocamlc -c -annot -bin-annot -I test -I src -o test/xmltrip.cmo test/xmltrip.ml
-- ocamlfind ocamlopt -c -annot -bin-annot -I test -I src -o test/xhtml.cmx test/xhtml.ml
-- ocamlfind ocamlopt -c -annot -bin-annot -I test -I src -o test/xmltrip.cmx test/xmltrip.ml
-- ocamlfind ocamlopt -linkpkg src/xmlm.cmx test/xhtml.cmx test/xmltrip.cmx -o test/xmltrip.native
--> installed xmlm.1.2.0
-[xtmpl: make all] Command started
 + make "all" (CWD=/home/opam/.opam/system/build/xtmpl.0.10)
 - ocamlc.opt -g  -c `ocamlfind query -i-format xmlm` -annot -rectypes -safe-string xtmpl.mli
 - ocamlc.opt -g  -c `ocamlfind query -i-format xmlm` -annot -rectypes -safe-string xtmpl.ml
