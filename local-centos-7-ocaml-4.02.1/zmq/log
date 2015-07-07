@@ -1,30 +1,30 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux centos
 + uname -s
+# Detecting depexts using flags: x86_64 linux centos
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=zmq
-+ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=zmq
 # The following system packages are needed:
 #  - pcre-devel
-+ sudo yum -y update
++ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=zmq
 Not running as root, the following command will be run through "sudo":
     yum -y update
++ sudo yum -y update
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: centos.serverspace.co.uk
- * extras: mirror.vorboss.net
++ sudo yum install -y pcre-devel
+ * base: mirrors.coreix.net
+ * extras: anorien.csc.warwick.ac.uk
  * updates: mirror.sov.uk.goscomb.net
 No packages marked for update
 # OS package update successful
-+ sudo yum install -y pcre-devel
 Not running as root, the following command will be run through "sudo":
     yum install -y pcre-devel
 Not running as root, the following command will be run through "sudo":
     rpm -q pcre-devel
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: centos.serverspace.co.uk
- * extras: mirror.vorboss.net
- * updates: mirrors.coreix.net
+ * base: mirrors.coreix.net
+ * extras: anorien.csc.warwick.ac.uk
+ * updates: mirror.sov.uk.goscomb.net
 Resolving Dependencies
 --> Running transaction check
 ---> Package pcre-devel.x86_64 0:8.32-14.el7 will be installed
@@ -78,15 +78,15 @@ The following actions will be performed:
 [ocaml-data-notation: from default] Command started
 [ocamlfind: from default] Command started
 [ocaml-data-notation: from default] Command started
-[ocamlfind: from default] Command started
 [oasis: from default] Command started
 [default] http://opam-archive:8080/archives/ocaml-data-notation.0.0.11+opam.tar.gz downloaded
 [ocamlify: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[ocamlmod: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/oasis.0.4.5+opam.tar.gz downloaded
-[ounit: from default] Command started
+[ocamlmod: from default] Command started
 [ocamlify: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[ounit: from default] Command started
 [ocamlmod: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlify.0.0.1+opam.tar.gz downloaded
 [type_conv: from default] Command started
@@ -98,8 +98,8 @@ The following actions will be performed:
 [zmq: from default] Command started
 [uint: from default] Command started
 [default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
-[zmq: from default] Command started
 [default] http://opam-archive:8080/archives/uint.1.1.5+opam.tar.gz downloaded
+[zmq: from default] Command started
 [default] http://opam-archive:8080/archives/zmq.4.0-3+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -200,6 +200,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
+- ocamlc -I +compiler-libs -g -c frontend.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -245,9 +246,16 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -266,14 +274,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
 - ocamlc -I +compiler-libs -c num_top.mli
 - ocamlc -I +compiler-libs -g -c num_top.ml
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -a -o num_top.cma num_top_printers.cmo num_top.cmo
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
 - make all-config
@@ -473,8 +473,8 @@ The following actions will be performed:
 - ocamlc: ........................................ /usr/bin/ocamlc.opt
 - ocamlfind: ..................................... /home/opam/.opam/system/bin/ocamlfind
 - 
-- I: Running command '/usr/bin/ocamlc.opt -config > /tmp/oasis-2310f5.txt'
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %v findlib > /tmp/oasis-b5c398.txt'
+- I: Running command '/usr/bin/ocamlc.opt -config > /tmp/oasis-3dcf4e.txt'
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %v findlib > /tmp/oasis-d86f9b.txt'
 [ocamlify: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/ocamlmod.0.0.7)
 - 
@@ -551,11 +551,6 @@ The following actions will be performed:
 - I: Running command '/usr/bin/ocamlbuild src/ocamlify.byte -tag debug'
 - I: Running command 'cp '_build/src/ocamlify.byte' '_build/src/ocamlify''
 [ocamlify: ocaml setup.ml] Command started
-+ ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/system/build/ocamlify.0.0.1)
-- I: Copying file '/home/opam/.opam/system/build/ocamlify.0.0.1/_build/src/ocamlify' to '/home/opam/.opam/system/bin/ocamlify'
-- I: Running command 'cp '/home/opam/.opam/system/build/ocamlify.0.0.1/_build/src/ocamlify' '/home/opam/.opam/system/bin/ocamlify''
--> installed ocamlify.0.0.1
-[ounit: make build] Command started
 + ocaml "setup.ml" "-build" (CWD=/home/opam/.opam/system/build/ocamlmod.0.0.7)
 - /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib64/ocaml/ocamlbuild /usr/lib64/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib64/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
 - File "_tags", line 20, characters 18-27:
@@ -577,6 +572,11 @@ The following actions will be performed:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
 [ocamlmod: ocaml setup.ml] Command started
++ ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/system/build/ocamlify.0.0.1)
+- I: Copying file '/home/opam/.opam/system/build/ocamlify.0.0.1/_build/src/ocamlify' to '/home/opam/.opam/system/bin/ocamlify'
+- I: Running command 'cp '/home/opam/.opam/system/build/ocamlify.0.0.1/_build/src/ocamlify' '/home/opam/.opam/system/bin/ocamlify''
+-> installed ocamlify.0.0.1
+[ounit: make build] Command started
 + ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/system/build/ocamlmod.0.0.7)
 - File "setup.ml", line 255, characters 8-26:
 - Warning 3: deprecated: String.set
@@ -2260,5 +2260,5 @@ The following changes have been performed
    your system.
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150324134956.export"
+    opam switch import "~/.opam/system/backup/state-20150325115825.export"
 'opam install zmq' failed.
