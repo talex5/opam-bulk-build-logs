@@ -2,18 +2,17 @@
 + uname -s
 /usr/bin/lsb_release
 + lsb_release -i -s
-# Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=spotify-cli
+# Detecting depexts using flags: x86_64 linux ubuntu
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=spotify-cli
 # The following system packages are needed:
 #  - libssl-dev
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=spotify-cli
 Not running as root, system installation will be done through "sudo"
 + sudo apt-get update
 Ign http://download.opensuse.org  InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-+ sudo apt-get install -qq -yy libssl-dev m4
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
@@ -30,19 +29,20 @@ Hit http://archive.ubuntu.com trusty/universe Sources
 Hit http://archive.ubuntu.com trusty/main amd64 Packages
 Hit http://archive.ubuntu.com trusty/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty/universe amd64 Packages
-Get:5 http://archive.ubuntu.com trusty-updates/main Sources [247 kB]
+Get:5 http://archive.ubuntu.com trusty-updates/main Sources [248 kB]
 Get:6 http://archive.ubuntu.com trusty-updates/restricted Sources [2310 B]
-Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [137 kB]
-Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [634 kB]
+Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [138 kB]
+Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [636 kB]
 Get:9 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [15.1 kB]
-Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [346 kB]
++ sudo apt-get install -qq -yy libssl-dev m4
+Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [349 kB]
 Get:11 http://archive.ubuntu.com trusty-security/main Sources [97.2 kB]
 Get:12 http://archive.ubuntu.com trusty-security/restricted Sources [1874 B]
-Get:13 http://archive.ubuntu.com trusty-security/universe Sources [21.5 kB]
+Get:13 http://archive.ubuntu.com trusty-security/universe Sources [22.5 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [329 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
-Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [120 kB]
-Fetched 2094 kB in 6s (348 kB/s)
+Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [123 kB]
+Fetched 2105 kB in 5s (385 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
@@ -118,26 +118,26 @@ The following actions will be performed:
 [menhir: from default] Command started
 [fieldslib: from default] Command started
 [lwt: from default] Command started
+[menhir: from default] Command started
 [default] http://opam-archive:8080/archives/fieldslib.109.20.03+opam.tar.gz downloaded
 [mpris: from default] Command started
-[menhir: from default] Command started
 [default] http://opam-archive:8080/archives/lwt.2.4.5+opam.tar.gz downloaded
 [obus: from default] Command started
-[mpris: from default] Command started
 [default] http://opam-archive:8080/archives/menhir.20141215+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
+[mpris: from default] Command started
 [default] http://opam-archive:8080/archives/mpris.0.1.0+opam.tar.gz downloaded
 [ounit: from default] Command started
 [obus: from default] Command started
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/obus.1.1.6+opam.tar.gz downloaded
 [re: from default] Command started
-[ounit: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [react: from default] Command started
-[re: from default] Command started
+[ounit: from default] Command started
 [default] http://opam-archive:8080/archives/ounit.2.0.0+opam.tar.gz downloaded
 [sexplib: from default] Command started
+[re: from default] Command started
 [react: from default] Command started
 [default] http://opam-archive:8080/archives/re.1.2.2+opam.tar.gz downloaded
 [spotify-cli: from default] Command started
@@ -147,9 +147,9 @@ The following actions will be performed:
 [default] http://opam-archive:8080/archives/sexplib.112.24.01+opam.tar.gz downloaded
 [ssl: from default] Command started
 [spotify-cli: from default] Command started
-[spotify-web-api: from default] Command started
 [default] http://opam-archive:8080/archives/spotify-cli.0.2.0+opam.tar.gz downloaded
 [type_conv: from default] Command started
+[spotify-web-api: from default] Command started
 [ssl: from default] Command started
 [default] http://opam-archive:8080/archives/spotify-web-api.0.2.0+opam.tar.gz downloaded
 [uri: from default] Command started
@@ -302,6 +302,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -310,8 +312,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -1486,157 +1486,6 @@ The following actions will be performed:
 - config.status: creating src/Makefile
 - config.status: creating src/META
 [ssl: make] Command started
-+ make  (CWD=/home/opam/.opam/system/build/ssl.0.4.7)
-- make -C src all
-- make[1]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- make[2]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- make[3]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- make[4]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- making ._bcdi/ssl.di from ssl.mli
-- making ._d/ssl.d from ssl.ml
-- make[4]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- make[4]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- ocamlc -c -cc "gcc" -ccopt "-fPIC -g -O2 -DHAVE_TLS11 -DHAVE_TLS12 -ansi -DCAML_NAME_SPACE -Wall \
-- 				-DPIC   \
-- 				    -o ssl_stubs.o " ssl_stubs.c 
-- ar rcs libssl_stubs.a  ssl_stubs.o
-- ocamlc -c -thread ssl.mli
-- ocamlc -c -thread ssl.ml
-- ocamlmklib                     \
-- 				-o ssl_stubs  ssl_stubs.o -lcrypto -lssl \
-- 				
-- ocamlc -a -thread -dllib dllssl_stubs.so              \
-- 				-cclib -lssl_stubs -cclib -lcrypto -cclib -lssl  -o ssl.cma  ssl.cmo
-- make[4]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- make[3]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- make[3]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- make[4]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- making ._d/ssl_threads.d from ssl_threads.ml
-- make[4]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- make[4]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- ar rcs libssl_threads_stubs.a  ssl_stubs.o
-- ocamlc -c -thread ssl_threads.mli
-- ocamlc -c -thread ssl_threads.ml
-- ocamlmklib                     \
-- 				-o ssl_threads_stubs  ssl_stubs.o -lcrypto -lssl \
-- 				
-- ocamlc -a -thread -dllib dllssl_threads_stubs.so              \
-- 				-cclib -lssl_threads_stubs -cclib -lcrypto -cclib -lssl  -o ssl_threads.cma  ssl.cmo ssl_threads.cmo
-- make[4]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- make[3]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- make[2]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- make[2]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- make[3]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- make[4]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- making ._ncdi/ssl.di from ssl.mli
-- make[4]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- make[4]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- make[4]: `libssl_stubs.a' is up to date.
-- ocamlopt -c -thread ssl.ml
-- ocamlopt -a -thread              -cclib -lssl_stubs -cclib -lcrypto -cclib -lssl  \
-- 				 -o ssl.cmxa ssl.cmx
-- make[4]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- make[3]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- make[3]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- make[4]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- make[4]: `libssl_threads_stubs.a' is up to date.
-- ocamlopt -c -thread ssl_threads.ml
-- ocamlopt -a -thread              -cclib -lssl_threads_stubs -cclib -lcrypto -cclib -lssl  \
-- 				 -o ssl_threads.cmxa ssl.cmx ssl_threads.cmx
-- make[4]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- make[3]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- make[2]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- make[2]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- make[2]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- make[1]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- File "ssl.ml", line 233, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "ssl.ml", line 234, characters 4-16:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "ssl.ml", line 238, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "ssl.ml", line 239, characters 4-37:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "ssl.ml", line 240, characters 4-49:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "ssl.ml", line 241, characters 4-48:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "ssl.ml", line 242, characters 4-40:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "ssl.ml", line 247, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "ssl.ml", line 258, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "ssl.ml", line 266, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "ssl.ml", line 233, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "ssl.ml", line 234, characters 4-16:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "ssl.ml", line 238, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "ssl.ml", line 239, characters 4-37:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "ssl.ml", line 240, characters 4-49:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "ssl.ml", line 241, characters 4-48:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "ssl.ml", line 242, characters 4-40:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "ssl.ml", line 247, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "ssl.ml", line 258, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "ssl.ml", line 266, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-[ssl: make install] Command started
-+ make "install" (CWD=/home/opam/.opam/system/build/ssl.0.4.7)
-- make -C src install
-- make[1]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- /home/opam/.opam/system/bin/ocamlfind install  ssl META ssl.mli ssl_threads.mli ssl.cmi ssl_threads.cmi ssl.cma ssl_threads.cma ssl.cmxa ssl_threads.cmxa ssl.cmx ssl_threads.cmx libssl_stubs.a libssl_threads_stubs.a ssl.a ssl_threads.a dllssl_stubs.so dllssl_threads_stubs.so
-- make[1]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
-- Installed /home/opam/.opam/system/lib/ssl/ssl_threads.a
-- Installed /home/opam/.opam/system/lib/ssl/ssl.a
-- Installed /home/opam/.opam/system/lib/ssl/libssl_threads_stubs.a
-- Installed /home/opam/.opam/system/lib/ssl/libssl_stubs.a
-- Installed /home/opam/.opam/system/lib/ssl/ssl_threads.cmx
-- Installed /home/opam/.opam/system/lib/ssl/ssl.cmx
-- Installed /home/opam/.opam/system/lib/ssl/ssl_threads.cmxa
-- Installed /home/opam/.opam/system/lib/ssl/ssl.cmxa
-- Installed /home/opam/.opam/system/lib/ssl/ssl_threads.cma
-- Installed /home/opam/.opam/system/lib/ssl/ssl.cma
-- Installed /home/opam/.opam/system/lib/ssl/ssl_threads.cmi
-- Installed /home/opam/.opam/system/lib/ssl/ssl.cmi
-- Installed /home/opam/.opam/system/lib/ssl/ssl_threads.mli
-- Installed /home/opam/.opam/system/lib/ssl/ssl.mli
-- Installed /home/opam/.opam/system/lib/ssl/META
-- Installed /home/opam/.opam/system/lib/stublibs/dllssl_threads_stubs.so
-- Installed /home/opam/.opam/system/lib/stublibs/dllssl_threads_stubs.so.owner
-- Installed /home/opam/.opam/system/lib/stublibs/dllssl_stubs.so
-- Installed /home/opam/.opam/system/lib/stublibs/dllssl_stubs.so.owner
-- ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/system/lib/stublibs is not mentioned in ld.conf
--> installed ssl.0.4.7
-[lwt: ./configure] Command started
 + make "PREFIX=/home/opam/.opam/system" "docdir=/home/opam/.opam/system/doc/menhir" "libdir=/home/opam/.opam/system/lib/menhir" "mandir=/home/opam/.opam/system/man/man1" (CWD=/home/opam/.opam/system/build/menhir.20141215)
 - rm -f src/installation.ml
 - echo "let libdir = \"/home/opam/.opam/system/lib/menhir\"" > src/installation.ml
@@ -2434,6 +2283,157 @@ The following actions will be performed:
 - Installed /home/opam/.opam/system/lib/menhirLib/META
 -> installed menhir.20141215
 [atd: make] Command started
++ make  (CWD=/home/opam/.opam/system/build/ssl.0.4.7)
+- make -C src all
+- make[1]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- make[2]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- make[3]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- make[4]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- making ._bcdi/ssl.di from ssl.mli
+- making ._d/ssl.d from ssl.ml
+- make[4]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- make[4]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- ocamlc -c -cc "gcc" -ccopt "-fPIC -g -O2 -DHAVE_TLS11 -DHAVE_TLS12 -ansi -DCAML_NAME_SPACE -Wall \
+- 				-DPIC   \
+- 				    -o ssl_stubs.o " ssl_stubs.c 
+- ar rcs libssl_stubs.a  ssl_stubs.o
+- ocamlc -c -thread ssl.mli
+- ocamlc -c -thread ssl.ml
+- ocamlmklib                     \
+- 				-o ssl_stubs  ssl_stubs.o -lcrypto -lssl \
+- 				
+- ocamlc -a -thread -dllib dllssl_stubs.so              \
+- 				-cclib -lssl_stubs -cclib -lcrypto -cclib -lssl  -o ssl.cma  ssl.cmo
+- make[4]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- make[3]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- make[3]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- make[4]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- making ._d/ssl_threads.d from ssl_threads.ml
+- make[4]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- make[4]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- ar rcs libssl_threads_stubs.a  ssl_stubs.o
+- ocamlc -c -thread ssl_threads.mli
+- ocamlc -c -thread ssl_threads.ml
+- ocamlmklib                     \
+- 				-o ssl_threads_stubs  ssl_stubs.o -lcrypto -lssl \
+- 				
+- ocamlc -a -thread -dllib dllssl_threads_stubs.so              \
+- 				-cclib -lssl_threads_stubs -cclib -lcrypto -cclib -lssl  -o ssl_threads.cma  ssl.cmo ssl_threads.cmo
+- make[4]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- make[3]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- make[2]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- make[2]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- make[3]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- make[4]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- making ._ncdi/ssl.di from ssl.mli
+- make[4]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- make[4]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- make[4]: `libssl_stubs.a' is up to date.
+- ocamlopt -c -thread ssl.ml
+- ocamlopt -a -thread              -cclib -lssl_stubs -cclib -lcrypto -cclib -lssl  \
+- 				 -o ssl.cmxa ssl.cmx
+- make[4]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- make[3]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- make[3]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- make[4]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- make[4]: `libssl_threads_stubs.a' is up to date.
+- ocamlopt -c -thread ssl_threads.ml
+- ocamlopt -a -thread              -cclib -lssl_threads_stubs -cclib -lcrypto -cclib -lssl  \
+- 				 -o ssl_threads.cmxa ssl.cmx ssl_threads.cmx
+- make[4]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- make[3]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- make[2]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- make[2]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- make[2]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- make[1]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- File "ssl.ml", line 233, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "ssl.ml", line 234, characters 4-16:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "ssl.ml", line 238, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "ssl.ml", line 239, characters 4-37:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "ssl.ml", line 240, characters 4-49:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "ssl.ml", line 241, characters 4-48:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "ssl.ml", line 242, characters 4-40:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "ssl.ml", line 247, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "ssl.ml", line 258, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "ssl.ml", line 266, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "ssl.ml", line 233, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "ssl.ml", line 234, characters 4-16:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "ssl.ml", line 238, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "ssl.ml", line 239, characters 4-37:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "ssl.ml", line 240, characters 4-49:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "ssl.ml", line 241, characters 4-48:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "ssl.ml", line 242, characters 4-40:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "ssl.ml", line 247, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "ssl.ml", line 258, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "ssl.ml", line 266, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+[ssl: make install] Command started
++ make "install" (CWD=/home/opam/.opam/system/build/ssl.0.4.7)
+- make -C src install
+- make[1]: Entering directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- /home/opam/.opam/system/bin/ocamlfind install  ssl META ssl.mli ssl_threads.mli ssl.cmi ssl_threads.cmi ssl.cma ssl_threads.cma ssl.cmxa ssl_threads.cmxa ssl.cmx ssl_threads.cmx libssl_stubs.a libssl_threads_stubs.a ssl.a ssl_threads.a dllssl_stubs.so dllssl_threads_stubs.so
+- make[1]: Leaving directory `/home/opam/.opam/system/build/ssl.0.4.7/src'
+- Installed /home/opam/.opam/system/lib/ssl/ssl_threads.a
+- Installed /home/opam/.opam/system/lib/ssl/ssl.a
+- Installed /home/opam/.opam/system/lib/ssl/libssl_threads_stubs.a
+- Installed /home/opam/.opam/system/lib/ssl/libssl_stubs.a
+- Installed /home/opam/.opam/system/lib/ssl/ssl_threads.cmx
+- Installed /home/opam/.opam/system/lib/ssl/ssl.cmx
+- Installed /home/opam/.opam/system/lib/ssl/ssl_threads.cmxa
+- Installed /home/opam/.opam/system/lib/ssl/ssl.cmxa
+- Installed /home/opam/.opam/system/lib/ssl/ssl_threads.cma
+- Installed /home/opam/.opam/system/lib/ssl/ssl.cma
+- Installed /home/opam/.opam/system/lib/ssl/ssl_threads.cmi
+- Installed /home/opam/.opam/system/lib/ssl/ssl.cmi
+- Installed /home/opam/.opam/system/lib/ssl/ssl_threads.mli
+- Installed /home/opam/.opam/system/lib/ssl/ssl.mli
+- Installed /home/opam/.opam/system/lib/ssl/META
+- Installed /home/opam/.opam/system/lib/stublibs/dllssl_threads_stubs.so
+- Installed /home/opam/.opam/system/lib/stublibs/dllssl_threads_stubs.so.owner
+- Installed /home/opam/.opam/system/lib/stublibs/dllssl_stubs.so
+- Installed /home/opam/.opam/system/lib/stublibs/dllssl_stubs.so.owner
+- ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/system/lib/stublibs is not mentioned in ld.conf
+-> installed ssl.0.4.7
+[lwt: ./configure] Command started
 + ./configure "--disable-libev" "--enable-react" "--enable-ssl" "--enable-unix" "--enable-extra" "--enable-preemptive" "--disable-glib" "--disable-text" (CWD=/home/opam/.opam/system/build/lwt.2.4.5)
 - not checking for pkg-config
 - not checking for libev
@@ -6632,10 +6632,10 @@ The following actions will be performed:
 - File "setup.ml", line 213, characters 8-26:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
 - File "setup.ml", line 1793, characters 6-24:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
-- /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
 - ocamlfind ocamldep -package obus -package lwt.syntax -package lwt -syntax camlp4o -modules lib/mpris_client_generic.mli > lib/mpris_client_generic.mli.depends
 - ocamlfind ocamlc -c -g -bin-annot -package obus -package lwt.syntax -package lwt -syntax camlp4o -I lib -o lib/mpris_client_generic.cmi lib/mpris_client_generic.mli
 - ocamlfind ocamldep -package obus -package lwt.syntax -package lwt -syntax camlp4o -modules lib/mpris_client_generic.ml > lib/mpris_client_generic.ml.depends
