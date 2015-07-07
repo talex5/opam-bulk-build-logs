@@ -15,12 +15,12 @@ The following actions will be performed:
 [gsl: from default] Command started
 [ocamlfind: from default] Command started
 [pareto: from default] Command started
-[ocamlfind: from default] Command started
 [pareto: from default] Command started
 [gsl: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/pareto.0.2+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/gsl.1.15.2+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlp4: sh] Command started
@@ -111,6 +111,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -156,11 +157,16 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 	cp topfind.ml.in topfind.ml;                             \
+- else                                                             \
+- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 		> topfind.ml ;                                   \
+- fi
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -169,12 +175,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 	cp topfind.ml.in topfind.ml;                             \
-- else                                                             \
-- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 		> topfind.ml ;                                   \
-- fi
 - ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
@@ -338,16 +338,8 @@ The following actions will be performed:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
 - ocaml do_const.ml --mli > lib/const.mli
-- make: gsl-config: Command not found
-- /bin/sh: gsl-config: command not found
-- Exception: End_of_file.
-- make: *** [post-conf] Error 2
-- E: Failure("Command 'make post-conf' terminated with error code 2")
 [ERROR] The compilation of gsl failed at "ocaml setup.ml -configure --prefix
         /home/opam/.opam/system".
-[gsl: ocamlfind remove] Command started
-+ ocamlfind "remove" "gsl" (CWD=/home/opam/.opam/system/build/gsl.1.15.2)
-- ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/gsl
 
 #=== ERROR while installing gsl.1.15.2 ========================================#
 # opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
@@ -375,6 +367,18 @@ The following actions will be performed:
 # E: Failure("Command 'make post-conf' terminated with error code 2")
 
 
+The former state can be restored with:
+    opam switch import "~/.opam/system/backup/state-20150304213709.export"
+'opam install pareto' failed.
+- make: gsl-config: Command not found
+- /bin/sh: gsl-config: command not found
+- Exception: End_of_file.
+- make: *** [post-conf] Error 2
+- E: Failure("Command 'make post-conf' terminated with error code 2")
+[gsl: ocamlfind remove] Command started
++ ocamlfind "remove" "gsl" (CWD=/home/opam/.opam/system/build/gsl.1.15.2)
+- ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/gsl
+
 
 =-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 The following actions were aborted
@@ -384,7 +388,3 @@ The following actions failed
 The following changes have been performed
   - install camlp4    4.02.1+system
   - install ocamlfind 1.5.5        
-
-The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150304102823.export"
-'opam install pareto' failed.
