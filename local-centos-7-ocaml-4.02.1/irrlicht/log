@@ -12,10 +12,10 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [irrlicht: from default] Command started
 [ocamlfind: from default] Command started
-[irrlicht: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[irrlicht: from default] Command started
 [default] http://opam-archive:8080/archives/irrlicht.0.0.3+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -48,8 +48,7 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) 
-- ok
+- Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib64/ocaml
@@ -213,7 +212,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -258,6 +256,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -414,7 +413,47 @@ The following actions will be performed:
 - ocamlfind ocamlc -g -custom -dllib dllmake_hash_values_stubs -linkpkg hash_values/parser.cmo hash_values/lexer.cmo hash_values/main.cmo hash_values/libmake_hash_values_stubs.a -o hash_values/main.byte
 - W: Cannot find source file matching module 'Irr_enums' in library irrlicht
 - W: Cannot find source file matching module 'Irr_enums' in library irrlicht
+- ocamlfind ocamldep -modules enums/main.ml > enums/main.ml.depends
+- ocamlfind ocamldep -modules enums/expr.mli > enums/expr.mli.depends
+- /usr/bin/ocamllex.opt -q enums/lexer.mll
+- ocamlfind ocamldep -modules enums/lexer.ml > enums/lexer.ml.depends
+- /usr/bin/ocamlyacc enums/parser.mly
+- ocamlfind ocamldep -modules enums/parser.mli > enums/parser.mli.depends
+- ocamlfind ocamlc -c -g -I enums -o enums/expr.cmi enums/expr.mli
+- ocamlfind ocamlc -c -g -I enums -o enums/parser.cmi enums/parser.mli
+- ocamlfind ocamlc -c -g -I enums -o enums/lexer.cmo enums/lexer.ml
+- ocamlfind ocamlc -c -g -I enums -o enums/main.cmo enums/main.ml
+- + ocamlfind ocamlc -c -g -I enums -o enums/main.cmo enums/main.ml
+- File "enums/main.ml", line 12, characters 21-52:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- ocamlfind ocamldep -modules enums/parser.ml > enums/parser.ml.depends
+- ocamlfind ocamlc -c -g -I enums -o enums/parser.cmo enums/parser.ml
+- ocamlfind ocamlc -g -linkpkg enums/parser.cmo enums/lexer.cmo enums/main.cmo -o enums/main.byte
+- enums/main.byte irr_enums.txt
+- hash_values/main.byte irr_enums_poly_values.txt > irr_enums_wrap_poly_values.h
+- cp irr_enums.mli irr_enums.ml
+- hash_values/main.byte methods_hash_values.txt > methods_hash_values.h
+- g++ -fPIC -I `ocamlc -where` -I /usr/include/irrlicht -c irr_enums_wrap.cpp
+- + g++ -fPIC -I `ocamlc -where` -I /usr/include/irrlicht -c irr_enums_wrap.cpp
+- In file included from irr_enums_wrap.cpp:1:0:
+- global.h:8:22: fatal error: irrlicht.h: No such file or directory
+-  #include <irrlicht.h>
+-                       ^
+- compilation terminated.
+- Command exited with code 1.
 [ERROR] The compilation of irrlicht failed at "ocaml setup.ml -build".
+- E: Failure("Command ''/usr/bin/ocamlbuild' hash_values/main.byte enums/main.byte libirrlicht_stubs.a dllirrlicht_stubs.so irrlicht.cma irrlicht.cmxa irrlicht.a irrlicht.cmxs -tag debug' terminated with error code 10")
+[irrlicht: ocamlfind remove] Command started
++ ocamlfind "remove" "irrlicht" (CWD=/home/opam/.opam/system/build/irrlicht.0.0.3)
+- ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/irrlicht
+
+
+=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+The following actions failed
+  - install irrlicht 0.0.3
+The following changes have been performed
+  - install ocamlfind 1.5.5
 
 #=== ERROR while installing irrlicht.0.0.3 ====================================#
 # opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
@@ -449,47 +488,7 @@ The following actions will be performed:
 # W: Cannot find source file matching module 'Irr_enums' in library irrlicht
 # E: Failure("Command ''/usr/bin/ocamlbuild' hash_values/main.byte enums/main.byte libirrlicht_stubs.a dllirrlicht_stubs.so irrlicht.cma irrlicht.cmxa irrlicht.a irrlicht.cmxs -tag debug' terminated with error code 10")
 
-- ocamlfind ocamldep -modules enums/main.ml > enums/main.ml.depends
-- ocamlfind ocamldep -modules enums/expr.mli > enums/expr.mli.depends
-- /usr/bin/ocamllex.opt -q enums/lexer.mll
-- ocamlfind ocamldep -modules enums/lexer.ml > enums/lexer.ml.depends
-- /usr/bin/ocamlyacc enums/parser.mly
-- ocamlfind ocamldep -modules enums/parser.mli > enums/parser.mli.depends
-- ocamlfind ocamlc -c -g -I enums -o enums/expr.cmi enums/expr.mli
-- ocamlfind ocamlc -c -g -I enums -o enums/parser.cmi enums/parser.mli
-- ocamlfind ocamlc -c -g -I enums -o enums/lexer.cmo enums/lexer.ml
-- ocamlfind ocamlc -c -g -I enums -o enums/main.cmo enums/main.ml
-- + ocamlfind ocamlc -c -g -I enums -o enums/main.cmo enums/main.ml
-- File "enums/main.ml", line 12, characters 21-52:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- ocamlfind ocamldep -modules enums/parser.ml > enums/parser.ml.depends
-- ocamlfind ocamlc -c -g -I enums -o enums/parser.cmo enums/parser.ml
-- ocamlfind ocamlc -g -linkpkg enums/parser.cmo enums/lexer.cmo enums/main.cmo -o enums/main.byte
-- enums/main.byte irr_enums.txt
-- hash_values/main.byte irr_enums_poly_values.txt > irr_enums_wrap_poly_values.h
-- cp irr_enums.mli irr_enums.ml
-- hash_values/main.byte methods_hash_values.txt > methods_hash_values.h
-- g++ -fPIC -I `ocamlc -where` -I /usr/include/irrlicht -c irr_enums_wrap.cpp
-- + g++ -fPIC -I `ocamlc -where` -I /usr/include/irrlicht -c irr_enums_wrap.cpp
-- In file included from irr_enums_wrap.cpp:1:0:
-- global.h:8:22: fatal error: irrlicht.h: No such file or directory
--  #include <irrlicht.h>
--                       ^
-- compilation terminated.
-- Command exited with code 1.
-- E: Failure("Command ''/usr/bin/ocamlbuild' hash_values/main.byte enums/main.byte libirrlicht_stubs.a dllirrlicht_stubs.so irrlicht.cma irrlicht.cmxa irrlicht.a irrlicht.cmxs -tag debug' terminated with error code 10")
-[irrlicht: ocamlfind remove] Command started
-+ ocamlfind "remove" "irrlicht" (CWD=/home/opam/.opam/system/build/irrlicht.0.0.3)
-- ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/irrlicht
-
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions failed
-  - install irrlicht 0.0.3
-The following changes have been performed
-  - install ocamlfind 1.5.5
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150304211120.export"
+    opam switch import "~/.opam/system/backup/state-20150305041416.export"
 'opam install irrlicht' failed.
