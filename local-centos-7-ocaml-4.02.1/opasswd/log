@@ -9,18 +9,18 @@
 Not running as root, system installation will be done through "sudo"
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: reflector.westga.edu
- * extras: mirrors.maine.edu
- * updates: mirror.atlanticmetro.net
+ * base: mirrors.coreix.net
+ * extras: mirror.sov.uk.goscomb.net
+ * updates: mirrors.coreix.net
 No packages marked for update
 + sudo yum install -y libffi-devel
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: reflector.westga.edu
- * extras: mirrors.maine.edu
- * updates: mirror.atlanticmetro.net
+ * base: anorien.csc.warwick.ac.uk
+ * extras: anorien.csc.warwick.ac.uk
+ * updates: mirrors.coreix.net
 Resolving Dependencies
 --> Running transaction check
 ---> Package libffi-devel.x86_64 0:3.0.13-11.el7 will be installed
@@ -48,8 +48,8 @@ Running transaction
   Installing : libffi-devel-3.0.13-11.el7.x86_64                            1/1 
 install-info: No such file or directory for /usr/share/info/libffi.info.gz
 warning: %post(libffi-devel-3.0.13-11.el7.x86_64) scriptlet failed, exit status 1
-  Verifying  : libffi-devel-3.0.13-11.el7.x86_64                            1/1Non-fatal POSTIN scriptlet failure in rpm package libffi-devel-3.0.13-11.el7.x86_64
- 
+Non-fatal POSTIN scriptlet failure in rpm package libffi-devel-3.0.13-11.el7.x86_64
+  Verifying  : libffi-devel-3.0.13-11.el7.x86_64                            1/1 
 
 Installed:
   libffi-devel.x86_64 0:3.0.13-11.el7                                           
@@ -67,8 +67,8 @@ The following actions will be performed:
 [ctypes: from default] Command started
 [ocamlfind: from default] Command started
 [opasswd: from default] Command started
-[ctypes: from default] Command started
 [ocamlfind: from default] Command started
+[ctypes: from default] Command started
 [opasswd: from default] Command started
 [default] http://opam-archive:8080/archives/ctypes.0.2.3+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
@@ -210,6 +210,13 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 	cp topfind.ml.in topfind.ml;                             \
+- else                                                             \
+- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 		> topfind.ml ;                                   \
+- fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -218,13 +225,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 	cp topfind.ml.in topfind.ml;                             \
-- else                                                             \
-- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 		> topfind.ml ;                                   \
-- fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -420,6 +420,7 @@ The following actions will be performed:
 - ocamlfind ocamlc -a  -cclib -lctypes_stubs -dllib -lctypes_stubs -package bigarray   -o _build/ctypes.cma _build/src/ctypes/common.cmo _build/src/ctypes/unsigned.cmo _build/src/ctypes/signed.cmo _build/src/ctypes/primitives.cmo _build/src/ctypes/ctypes_primitives.cmo _build/src/ctypes/ctypes_raw.cmo _build/src/ctypes/memory_stubs.cmo _build/src/ctypes/std_view_stubs.cmo _build/src/ctypes/value_printing_stubs.cmo _build/src/ctypes/bigarray_stubs.cmo _build/src/ctypes/ctypes_bigarray.cmo _build/src/ctypes/static.cmo _build/src/ctypes/structs.cmo _build/src/ctypes/structs_computed.cmo _build/src/ctypes/type_printing.cmo _build/src/ctypes/memory.cmo _build/src/ctypes/coerce.cmo _build/src/ctypes/std_views.cmo _build/src/ctypes/value_printing.cmo _build/src/ctypes/ctypes.cmo _build/src/ctypes/posixTypes.cmo
 - cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -o managed_buffer_stubs.o ../../../src/ctypes/managed_buffer_stubs.c
 - cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -o ctypes_bigarray_stubs.o ../../../src/ctypes/ctypes_bigarray_stubs.c
+- cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -o type_info_stubs.o ../../../src/ctypes/type_info_stubs.c
 - File "src/ctypes/structs_computed.ml", line 28, characters 2-591:
 - Warning 8: this pattern-matching is not exhaustive.
 - Here is an example of a value that is not matched:
@@ -444,7 +445,6 @@ The following actions will be performed:
 - Warning 8: this pattern-matching is not exhaustive.
 - Here is an example of a value that is not matched:
 - {structured={reftype=Primitive _}}
-- cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -o type_info_stubs.o ../../../src/ctypes/type_info_stubs.c
 - cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -o raw_pointer_stubs.o ../../../src/ctypes/raw_pointer_stubs.c
 - cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -o posix_types_stubs.o ../../../src/ctypes/posix_types_stubs.c
 - cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -o unsigned_stubs.o ../../../src/ctypes/unsigned_stubs.c
@@ -452,13 +452,13 @@ The following actions will be performed:
 - ocamlfind opt -c -o _build/src/ctypes/common.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/common.ml
 - ocamlfind opt -c -o _build/src/ctypes/unsigned.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/unsigned.ml
 - ocamlfind opt -c -o _build/src/ctypes/signed.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/signed.ml
+- ocamlfind opt -c -o _build/src/ctypes/primitives.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/primitives.ml
+- ocamlfind opt -c -o _build/src/ctypes/ctypes_primitives.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/ctypes_primitives.ml
 - ../../../src/ctypes/type_info_stubs.c: In function 'ctypes_string_of_prim':
 - ../../../src/ctypes/type_info_stubs.c:146:3: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'int64' [-Wformat=]
 -    case Int64_t: snprintf(buf, sizeof buf, "%" PRId64, Int64_val(v)); break;
 -    ^
 - ../../../src/ctypes/type_info_stubs.c:146:3: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'int64' [-Wformat=]
-- ocamlfind opt -c -o _build/src/ctypes/primitives.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/primitives.ml
-- ocamlfind opt -c -o _build/src/ctypes/ctypes_primitives.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/ctypes_primitives.ml
 - ocamlfind opt -c -o _build/src/ctypes/ctypes_raw.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/ctypes_raw.ml
 - ocamlfind opt -c -o _build/src/ctypes/memory_stubs.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/memory_stubs.ml
 - ocamlfind opt -c -o _build/src/ctypes/std_view_stubs.cmx  -package bigarray   -I _build/src/ctypes  src/ctypes/std_view_stubs.ml
@@ -517,10 +517,10 @@ The following actions will be performed:
 - cd _build/src/ctypes-foreign-base && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -o ffi_type_stubs.o ../../../src/ctypes-foreign-base/ffi_type_stubs.c
 - ocamlmklib -o _build/ctypes-foreign-base_stubs _build/src/ctypes-foreign-base/ffi_call_stubs.o _build/src/ctypes-foreign-base/dl_stubs.o _build/src/ctypes-foreign-base/ffi_type_stubs.o -lffi
 - ocamlfind opt -c -o _build/src/ctypes-foreign-base/closure_properties.cmx     -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/closure_properties.ml
-- File "src/ctypes-foreign-base/ffi.ml", line 135, characters 41-43:
-- Warning 10: this expression should have type unit.
 - ocamlfind opt -c -o _build/src/ctypes-foreign-base/dl.cmx     -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/dl.ml
 - ocamlfind opt -c -o _build/src/ctypes-foreign-base/ffi_stubs.cmx     -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/ffi_stubs.ml
+- File "src/ctypes-foreign-base/ffi.ml", line 135, characters 41-43:
+- Warning 10: this expression should have type unit.
 - ocamlfind opt -c -o _build/src/ctypes-foreign-base/weakRef.cmx     -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/weakRef.ml
 - ocamlfind opt -c -o _build/src/ctypes-foreign-base/ffi.cmx     -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/ffi.ml
 - ocamlfind opt -c -o _build/src/ctypes-foreign-base/foreign_basis.cmx     -I _build/src/ctypes-foreign-base -I _build/src/ctypes src/ctypes-foreign-base/foreign_basis.ml
@@ -540,18 +540,18 @@ The following actions will be performed:
 - ocamlfind opt -c -o _build/src/ctypes-foreign-unthreaded/foreign.cmx     -I _build/src/ctypes-foreign-unthreaded -I _build/src/ctypes -I _build/src/ctypes-foreign-base src/ctypes-foreign-unthreaded/foreign.ml
 - ocamlfind opt -a -linkall     -cclib -lffi -o _build/ctypes-foreign-unthreaded.cmxa _build/src/ctypes-foreign-unthreaded/gc_mutex.cmx _build/src/ctypes-foreign-unthreaded/foreign.cmx
 - ocamlfind opt -shared -linkall    -cclib -lffi -o _build/ctypes-foreign-unthreaded.cmxs _build/src/ctypes-foreign-unthreaded/gc_mutex.cmx _build/src/ctypes-foreign-unthreaded/foreign.cmx
-- File "src/ctypes-foreign-base/ffi.ml", line 135, characters 41-43:
-- Warning 10: this expression should have type unit.
 - ocamlfind ocamlc -c -o _build/src/ctypes-top/ctypes_printers.cmi -I _build/src/ctypes-top -I _build/src/ctypes src/ctypes-top/ctypes_printers.mli
 - ocamlfind ocamlc -package compiler-libs    -c -o _build/src/ctypes-top/ctypes_printers.cmo -I _build/src/ctypes-top -I _build/src/ctypes src/ctypes-top/ctypes_printers.ml
 - ocamlfind ocamlc -package compiler-libs    -c -o _build/src/ctypes-top/install_printers.cmo -I _build/src/ctypes-top -I _build/src/ctypes src/ctypes-top/install_printers.ml
+- File "src/ctypes-foreign-base/ffi.ml", line 135, characters 41-43:
+- Warning 10: this expression should have type unit.
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
 - ocamlfind ocamlc -a   -package compiler-libs   -o _build/ctypes-top.cma _build/src/ctypes-top/ctypes_printers.cmo _build/src/ctypes-top/install_printers.cmo
 - ocamlfind opt -c -o _build/src/ctypes-top/ctypes_printers.cmx  -package compiler-libs   -I _build/src/ctypes-top -I _build/src/ctypes src/ctypes-top/ctypes_printers.ml
 - ocamlfind opt -c -o _build/src/ctypes-top/install_printers.cmx  -package compiler-libs   -I _build/src/ctypes-top -I _build/src/ctypes src/ctypes-top/install_printers.ml
 - ocamlfind opt -a -linkall  -package compiler-libs    -o _build/ctypes-top.cmxa _build/src/ctypes-top/ctypes_printers.cmx _build/src/ctypes-top/install_printers.cmx
 - ocamlfind opt -shared -linkall  -package compiler-libs   -o _build/ctypes-top.cmxs _build/src/ctypes-top/ctypes_printers.cmx _build/src/ctypes-top/install_printers.cmx
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib64/ocaml, /usr/lib64/ocaml/compiler-libs
