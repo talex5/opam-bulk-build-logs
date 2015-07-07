@@ -1,25 +1,25 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-+ opam list --safe --recursive --external=x86_64,linux,debian --required-by=bisect_ppx
 # Detecting depexts using flags: x86_64 linux debian
++ opam list --safe --recursive --external=x86_64,linux,debian --required-by=bisect_ppx
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=bisect_ppx
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=bisect_ppx
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
 Hit http://security.debian.org stable/updates InRelease
 Ign http://download.opensuse.org  InRelease
 Hit http://httpredir.debian.org stable InRelease
-Hit http://httpredir.debian.org stable-updates InRelease
+Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Get:1 http://security.debian.org stable/updates/main amd64 Packages [108 kB]
-Get:2 http://httpredir.debian.org stable/main amd64 Packages [9038 kB]
-Get:3 http://download.opensuse.org  Packages [5783 B]
+Get:2 http://security.debian.org stable/updates/main amd64 Packages [115 kB]
+Get:3 http://httpredir.debian.org stable/main amd64 Packages [9038 kB]
 Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9155 kB in 4s (2202 kB/s)
+Get:5 http://download.opensuse.org  Packages [5783 B]
+Fetched 9287 kB in 3s (2559 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
@@ -36,12 +36,12 @@ The following actions will be performed:
 [bisect_ppx: from default] Command started
 [ocamlfind: from default] Command started
 [ppx_tools: from default] Command started
-[ppx_tools: from default] Command started
-[ocamlfind: from default] Command started
 [bisect_ppx: from default] Command started
-[default] http://opam-archive:8080/archives/ppx_tools.0.99.2+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
+[ppx_tools: from default] Command started
 [default] http://opam-archive:8080/archives/bisect_ppx.0.2+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ppx_tools.0.99.2+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -74,8 +74,7 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) 
-- ok
+- Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /home/opam/.opam/4.02.1/lib/ocaml
@@ -122,6 +121,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_metascanner.ml
 - ocamlc -I +compiler-libs -c fl_topo.mli
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
+- ocamlc -I +compiler-libs -c fl_package_base.mli
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -167,8 +168,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
@@ -180,6 +179,9 @@ The following actions will be performed:
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
@@ -197,9 +199,6 @@ The following actions will be performed:
 - 	../../tools/patch '@SITELIB@' '/home/opam/.opam/4.02.1/lib' \
 -     	    >topfind
 - ocamlc -I +compiler-libs -c num_top_printers.mli
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
 - ocamlc -I +compiler-libs -c num_top.mli
 - ocamlc -I +compiler-libs -g -c num_top.ml
@@ -486,7 +485,7 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -annot -I src/report -I src -I src/threads -I src/syntax -I src/library -I src/demo -I src/demo/img -o src/report/combineParser.cmi src/report/combineParser.mli
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -annot -I src/report -I src -I src/threads -I src/syntax -I src/library -I src/demo -I src/demo/img -o src/report/combineLexer.cmo src/report/combineLexer.ml
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules src/report/reportArgs.ml > src/report/reportArgs.ml.depends
-- cp /tmp/version1d8597.ml src/library/version.ml
+- cp /tmp/version6663a1.ml src/library/version.ml
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules src/library/version.mli > src/library/version.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -annot -I src/library -I src -I src/threads -I src/syntax -I src/report -I src/demo -I src/demo/img -o src/library/version.cmi src/library/version.mli
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules src/report/reportCSV.ml > src/report/reportCSV.ml.depends
@@ -521,7 +520,7 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -annot -for-pack Bisect -I src/report -I src -I src/threads -I src/syntax -I src/library -I src/demo -I src/demo/img -o src/report/combineParser.cmx src/report/combineParser.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -annot -for-pack Bisect -I src/report -I src -I src/threads -I src/syntax -I src/library -I src/demo -I src/demo/img -o src/report/combineLexer.cmx src/report/combineLexer.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -annot -for-pack Bisect -I src/report -I src -I src/threads -I src/syntax -I src/library -I src/demo -I src/demo/img -o src/report/reportUtils.cmx src/report/reportUtils.ml
-- cp /tmp/versiond0d89e.ml src/library/version.ml
+- cp /tmp/version0e230c.ml src/library/version.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -annot -for-pack Bisect -I src/report -I src -I src/threads -I src/syntax -I src/library -I src/demo -I src/demo/img -o src/report/reportStat.cmx src/report/reportStat.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -annot -for-pack Bisect -I src/library -I src -I src/threads -I src/syntax -I src/report -I src/demo -I src/demo/img -o src/library/version.cmx src/library/version.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -annot -for-pack Bisect -I src/report -I src -I src/threads -I src/syntax -I src/library -I src/demo -I src/demo/img -o src/report/reportGeneric.cmx src/report/reportGeneric.ml
