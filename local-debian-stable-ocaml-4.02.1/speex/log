@@ -1,33 +1,33 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux debian
 + uname -s
+# Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=speex
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=speex
 # The following system packages are needed:
 #  - libogg-dev
 #  - libspeex-dev
 #  - m4
-+ sudo apt-get update
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=speex
 Not running as root, system installation will be done through "sudo"
++ sudo apt-get update
 Hit http://download.opensuse.org  Release.gpg
 Hit http://http.debian.net stable Release.gpg
 Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
 Hit http://http.debian.net stable Release
 Hit http://download.opensuse.org  Release
 Get:2 http://http.debian.net stable-updates Release [124 kB]
-Hit http://http.debian.net stable/main amd64 Packages
 Hit http://download.opensuse.org  Packages
-Hit http://security.debian.org stable/updates Release.gpg
-Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
-Hit http://security.debian.org stable/updates Release
-Hit http://security.debian.org stable/updates/main amd64 Packages
-Fetched 129 kB in 1s (100 kB/s)
+Get:3 http://security.debian.org stable/updates Release.gpg [836 B]
+Hit http://http.debian.net stable/main amd64 Packages
+Get:4 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
+Get:5 http://security.debian.org stable/updates Release [102 kB]
+Get:6 http://security.debian.org stable/updates/main amd64 Packages [382 kB]
+Fetched 614 kB in 2s (303 kB/s)
 Reading package lists...
 + sudo apt-get install -qq -yy libogg-dev libspeex-dev m4
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
-debconf: delaying package configuration, since apt-utils is not installed
 Selecting previously unselected package libogg0:amd64.
+debconf: delaying package configuration, since apt-utils is not installed
 (Reading database ... 19958 files and directories currently installed.)
 Unpacking libogg0:amd64 (from .../libogg0_1.3.0-4_amd64.deb) ...
 Selecting previously unselected package libspeex1:amd64.
@@ -54,8 +54,8 @@ The following actions will be performed:
 [ogg: from default] Command started
 [ocamlfind: from default] Command started
 [speex: from default] Command started
-[default] http://opam-archive:8080/archives/ogg.0.4.3+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ogg.0.4.3+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/speex.0.2.0+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -139,7 +139,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_topo.mli
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -185,6 +184,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
@@ -196,9 +196,6 @@ The following actions will be performed:
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
@@ -233,6 +230,9 @@ The following actions will be performed:
 - if ocamlopt.opt >/dev/null 2>&1; then \
 - 		echo 'ocamlopt="ocamlopt.opt"' >>findlib.conf; \
 - 	fi
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - if ocamldep.opt >/dev/null 2>&1; then \
 - 		echo 'ocamldep="ocamldep.opt"' >>findlib.conf; \
 - 	fi
@@ -372,15 +372,15 @@ The following actions will be performed:
 - checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
-- checking for gcc option to accept ISO C89... none needed
+- checking for gcc option to accept ISO C89... 
+- none needed
 - checking build system type... x86_64-unknown-linux-gnu
 - checking host system type... x86_64-unknown-linux-gnu
 - checking for a BSD-compatible install... /usr/bin/install -c
 - checking that calling user is not root... ok
 - checking for gcc... (cached) gcc
 - checking whether we are using the GNU C compiler... (cached) yes
-- checking whether gcc accepts -g... (cached) 
-- yes
+- checking whether gcc accepts -g... (cached) yes
 - checking for gcc option to accept ISO C89... (cached) none needed
 - checking for ar... ar
 - checking for ocamlc... ocamlc
@@ -450,10 +450,6 @@ The following actions will be performed:
 - make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ogg.0.4.3/src'
 - make[2]: `libogg_stubs.a' is up to date.
 - ocamlopt.opt -c ogg.ml
-- ocamlopt.opt -c ogg_demuxer.ml
-- ocamlopt.opt -a        -ccopt -L/home/opam/.opam/4.02.1/lib/lib  -ccopt -L/home/opam/.opam/4.02.1/lib/lib   -cclib -logg_stubs -cclib -logg   -o ogg.cmxa ogg.cmx ogg_demuxer.cmx
-- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ogg.0.4.3/src'
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ogg.0.4.3/src'
 - File "ogg.ml", line 164, characters 24-37:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -463,6 +459,10 @@ The following actions will be performed:
 - File "ogg.ml", line 164, characters 24-37:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- ocamlopt.opt -c ogg_demuxer.ml
+- ocamlopt.opt -a        -ccopt -L/home/opam/.opam/4.02.1/lib/lib  -ccopt -L/home/opam/.opam/4.02.1/lib/lib   -cclib -logg_stubs -cclib -logg   -o ogg.cmxa ogg.cmx ogg_demuxer.cmx
+- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ogg.0.4.3/src'
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ogg.0.4.3/src'
 - File "ogg_demuxer.ml", line 310, characters 18-31:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
