@@ -9,21 +9,20 @@
 + sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-Get:1 http://security.debian.org stable/updates Release.gpg [836 B]
-Hit http://download.opensuse.org  Release.gpg
-Get:2 http://security.debian.org stable/updates Release [102 kB]
-Hit http://download.opensuse.org  Release
-Hit http://download.opensuse.org  Packages
-Get:3 http://security.debian.org stable/updates/main amd64 Packages [382 kB]
 Hit http://httpredir.debian.org stable Release.gpg
-Get:4 http://httpredir.debian.org stable-updates Release.gpg [836 B]
+Hit http://download.opensuse.org  Release.gpg
+Hit http://httpredir.debian.org stable-updates Release.gpg
 Hit http://httpredir.debian.org stable Release
-Get:5 http://httpredir.debian.org stable-updates Release [124 kB]
+Hit http://security.debian.org stable/updates Release.gpg
+Hit http://download.opensuse.org  Release
+Hit http://httpredir.debian.org stable-updates Release
+Hit http://security.debian.org stable/updates Release
 Hit http://httpredir.debian.org stable/main amd64 Packages
-Get:6 http://httpredir.debian.org stable-updates/main amd64 Packages [4369 B]
-Fetched 614 kB in 4s (128 kB/s)
-Reading package lists...+ sudo apt-get install -qq -yy libogg-dev m4
-
+Hit http://download.opensuse.org  Packages
+Hit http://httpredir.debian.org stable-updates/main amd64 Packages
+Hit http://security.debian.org stable/updates/main amd64 Packages
+Reading package lists...
++ sudo apt-get install -qq -yy libogg-dev m4
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libogg-dev m4
@@ -49,9 +48,9 @@ The following actions will be performed:
 [ogg: from default] Command started
 [flac: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/ogg.0.4.3+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/flac.0.1.1+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ogg.0.4.3+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -84,7 +83,8 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) 
+- Detecting compiler arguments: 
+- (extractor built) 
 - ok
 - 
 - About the OCAML core installation:
@@ -136,7 +136,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
-- ocamlc -I +compiler-libs -c findlib.mli
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -182,6 +181,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
@@ -246,6 +246,9 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c findlib_config.ml
 - ocamlopt -I +compiler-libs -c fl_split.ml
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
+- ocamlopt -I +compiler-libs -c fl_meta.ml
+- ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -275,11 +278,6 @@ The following actions will be performed:
 - File "fl_split.ml", line 140, characters 1-19:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlopt -I +compiler-libs -c fl_meta.ml
-- ocamlopt -I +compiler-libs -c fl_metascanner.ml
-- ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
-- ocamlopt -I +compiler-libs -c findlib.ml
 - File "fl_meta.mll", line 57, characters 13-26:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -295,6 +293,8 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
+- ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
 - if [ 1 -gt 0 ]; then \
@@ -364,7 +364,8 @@ The following actions will be performed:
 - checking whether the C compiler works... yes
 - checking for C compiler default output file name... a.out
 - checking for suffix of executables... 
-- checking whether we are cross compiling... no
+- checking whether we are cross compiling... 
+- no
 - checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
@@ -380,8 +381,7 @@ The following actions will be performed:
 - checking for ar... ar
 - checking for ocamlc... ocamlc
 - OCaml version is 4.02.1
-- checking if ocaml compiler supports first-class modules... 
-- yes
+- checking if ocaml compiler supports first-class modules... yes
 - OCaml library path is /home/opam/.opam/4.02.1/lib/ocaml
 - checking for ocamlopt... ocamlopt
 - checking for ocamlc.opt... ocamlc.opt
@@ -409,8 +409,7 @@ The following actions will be performed:
 - checking for caml/threads.h... yes
 - checking for gcc option to produce PIC... -fPIC
 - checking for pkg-config... /usr/bin/pkg-config
-- checking pkg-config is at least version 0.9.0... 
-- yes
+- checking pkg-config is at least version 0.9.0... yes
 - checking whether pkg-config knows about ogg... ok
 - configure: creating ./config.status
 - config.status: creating Makefile
@@ -448,21 +447,21 @@ The following actions will be performed:
 - make[2]: `libogg_stubs.a' is up to date.
 - ocamlopt.opt -c ogg.ml
 - ocamlopt.opt -c ogg_demuxer.ml
-- File "ogg.ml", line 164, characters 24-37:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "ogg_demuxer.ml", line 310, characters 18-31:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "ogg.ml", line 164, characters 24-37:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "ogg_demuxer.ml", line 310, characters 18-31:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlopt.opt -a        -ccopt -L/home/opam/.opam/4.02.1/lib/lib  -ccopt -L/home/opam/.opam/4.02.1/lib/lib   -cclib -logg_stubs -cclib -logg   -o ogg.cmxa ogg.cmx ogg_demuxer.cmx
 - make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ogg.0.4.3/src'
 - make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ogg.0.4.3/src'
+- File "ogg.ml", line 164, characters 24-37:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "ogg_demuxer.ml", line 310, characters 18-31:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "ogg.ml", line 164, characters 24-37:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "ogg_demuxer.ml", line 310, characters 18-31:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 [ogg: make install] Command started
 + make "install" (CWD=/home/opam/.opam/4.02.1/build/ogg.0.4.3)
 - make -C src install
@@ -567,9 +566,9 @@ The following changes have been performed
 # path                 /home/opam/.opam/4.02.1/build/flac.0.1.1
 # compiler             4.02.1
 # exit-code            1
-# env-file             /home/opam/.opam/4.02.1/build/flac.0.1.1/flac-7-48c407.env
-# stdout-file          /home/opam/.opam/4.02.1/build/flac.0.1.1/flac-7-48c407.out
-# stderr-file          /home/opam/.opam/4.02.1/build/flac.0.1.1/flac-7-48c407.err
+# env-file             /home/opam/.opam/4.02.1/build/flac.0.1.1/flac-5-48c407.env
+# stdout-file          /home/opam/.opam/4.02.1/build/flac.0.1.1/flac-5-48c407.out
+# stderr-file          /home/opam/.opam/4.02.1/build/flac.0.1.1/flac-5-48c407.err
 ### stdout ###
 # [...]
 # checking for camlp4orf... camlp4orf
@@ -587,5 +586,5 @@ The following changes have been performed
 
 
 The former state can be restored with:
-    opam switch import "~/.opam/4.02.1/backup/state-20150324211628.export"
+    opam switch import "~/.opam/4.02.1/backup/state-20150325195211.export"
 'opam install flac' failed.
