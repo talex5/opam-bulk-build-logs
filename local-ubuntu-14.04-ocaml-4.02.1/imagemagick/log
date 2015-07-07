@@ -3,25 +3,25 @@
 + lsb_release -i -s
 # Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=imagemagick
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=imagemagick
 # The following system packages are needed:
 #  - libmagickcore-dev
 #  - m4
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=imagemagick
 + sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
-Ign http://download.opensuse.org  InRelease
 Hit http://archive.ubuntu.com trusty Release.gpg
+Ign http://download.opensuse.org  InRelease
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
-Hit http://download.opensuse.org  Release.gpg
 Hit http://archive.ubuntu.com trusty Release
 Get:3 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
-Hit http://download.opensuse.org  Release
+Hit http://download.opensuse.org  Release.gpg
 Get:4 http://archive.ubuntu.com trusty-security Release [63.5 kB]
+Hit http://download.opensuse.org  Release
 Hit http://archive.ubuntu.com trusty/main Sources
 Hit http://archive.ubuntu.com trusty/restricted Sources
 Hit http://archive.ubuntu.com trusty/universe Sources
@@ -41,8 +41,11 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [24.5 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [337 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [130 kB]
-Fetched 2150 kB in 3s (557 kB/s)
+Fetched 2150 kB in 3s (555 kB/s)
 Reading package lists...
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 643906 643961
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages.gz is not what the server reported 358789 358790
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_main_binary-amd64_Packages.gz is not what the server reported 336529 336580
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libmagickcore-dev m4
@@ -542,10 +545,10 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [imagemagick: from default] Command started
 [ocamlfind: from default] Command started
-[imagemagick: from default] Command started
-[default] http://opam-archive:8080/archives/imagemagick.0.34+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[imagemagick: from default] Command started
+[default] http://opam-archive:8080/archives/imagemagick.0.34+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -627,8 +630,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_metascanner.ml
 - ocamlc -I +compiler-libs -c fl_topo.mli
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
-- ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -674,6 +675,8 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -c fl_package_base.mli
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
@@ -741,6 +744,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -785,7 +789,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -879,6 +882,7 @@ The following actions will be performed:
 - imagemagick_wrap.c:2246:31: note: in expansion of macro 'Val_int'
 -      value int_quantum_range = Val_int( (int) range );
 -                                ^
+- gcc -fPIC -c -I"/usr/lib/ocaml" -fopenmp -I/usr/include/ImageMagick   imagemagick_list.c
 - imagemagick_wrap.c: In function 'imper_imagetoblob_stdout':
 - imagemagick_wrap.c:6713:12: warning: format '%d' expects argument of type 'int', but argument 3 has type 'size_t' [-Wformat=]
 -             "\n", mime_type, blob_size);
@@ -892,7 +896,6 @@ The following actions will be performed:
 -                      sizeof(Quantum) * CHAR_BIT,  CHAR_BIT);
 -                      ^
 - imagemagick_wrap.c:6952:21: warning: format '%d' expects argument of type 'int', but argument 3 has type 'long unsigned int' [-Wformat=]
-- gcc -fPIC -c -I"/usr/lib/ocaml" -fopenmp -I/usr/include/ImageMagick   imagemagick_list.c
 - ocamlmklib  -o  imagemagick_stubs  imagemagick_wrap.o imagemagick_list.o  \
 - 	     -lMagickCore  
 - ocamlc -a  -o magick.cma  magick.cmo  -dllib -limagemagick_stubs \
