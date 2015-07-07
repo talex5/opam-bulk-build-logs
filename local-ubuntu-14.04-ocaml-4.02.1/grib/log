@@ -1,8 +1,8 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-# Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=grib
+# Detecting depexts using flags: x86_64 linux ubuntu
 # The following system packages are needed:
 #  - libgrib-api-dev
 #  - libjasper-dev
@@ -13,9 +13,9 @@
 #  - m4
 #  - pkg-config
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=grib
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
 Ign http://download.opensuse.org  InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
@@ -36,10 +36,10 @@ Hit http://archive.ubuntu.com trusty/main amd64 Packages
 Hit http://archive.ubuntu.com trusty/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty/universe amd64 Packages
 Get:5 http://archive.ubuntu.com trusty-updates/main Sources [257 kB]
-Get:6 http://archive.ubuntu.com trusty-updates/restricted Sources [2310 B]
+Get:6 http://archive.ubuntu.com trusty-updates/restricted Sources [3158 B]
 Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [146 kB]
 Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [654 kB]
-Get:9 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [15.1 kB]
+Get:9 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [18.1 kB]
 Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [365 kB]
 Get:11 http://archive.ubuntu.com trusty-security/main Sources [100 kB]
 Get:12 http://archive.ubuntu.com trusty-security/restricted Sources [1874 B]
@@ -47,20 +47,20 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [28.0 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [341 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [133 kB]
-Fetched 2187 kB in 5s (369 kB/s)
+Fetched 2191 kB in 6s (329 kB/s)
 Reading package lists...
-+ sudo apt-get install -qq -yy libgrib-api-dev libjasper-dev libjpeg-dev libopenjpeg-dev libpcre3-dev libpng-dev m4 pkg-config
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libgrib-api-dev libjasper-dev libjpeg-dev libopenjpeg-dev libpcre3-dev libpng-dev m4 pkg-config
++ sudo apt-get install -qq -yy libgrib-api-dev libjasper-dev libjpeg-dev libopenjpeg-dev libpcre3-dev libpng-dev m4 pkg-config
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
-Selecting previously unselected package libgfortran3:amd64.
 debconf: unable to initialize frontend: Readline
 debconf: (This frontend requires a controlling tty.)
 debconf: falling back to frontend: Teletype
 dpkg-preconfigure: unable to re-open stdin: 
+Selecting previously unselected package libgfortran3:amd64.
 (Reading database ... 22842 files and directories currently installed.)
 Preparing to unpack .../libgfortran3_4.8.2-19ubuntu1_amd64.deb ...
 Unpacking libgfortran3:amd64 (4.8.2-19ubuntu1) ...
@@ -147,8 +147,8 @@ The following actions will be performed:
 [pcre: from default] Command started
 [batteries: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[pcre: from default] Command started
 [default] http://opam-archive:8080/archives/batteries.2.3.1+opam.tar.gz downloaded
+[pcre: from default] Command started
 [default] http://opam-archive:8080/archives/pcre.7.1.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -346,6 +346,13 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 		cp topfind.ml.in topfind.ml;                             \
+- 	else                                                             \
+- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 			> topfind.ml ;                                   \
+- 	fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -354,13 +361,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 		cp topfind.ml.in topfind.ml;                             \
-- 	else                                                             \
-- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 			> topfind.ml ;                                   \
-- 	fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -934,6 +934,7 @@ The following actions will be performed:
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batRef.ml > src/batRef.ml.depends
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batResult.mli > src/batResult.mli.depends
 - ocamlfind ocamlc -c -g -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batResult.cmi src/batResult.mli
+- ocamlfind: Package `bisect' not found
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batResult.ml > src/batResult.ml.depends
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batReturn.ml > src/batReturn.ml.depends
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batSeq.mli > src/batSeq.mli.depends
@@ -944,7 +945,6 @@ The following actions will be performed:
 - ocamlfind ocamlc -c -g -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batTuple.cmi src/batTuple.mli
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batTuple.ml > src/batTuple.ml.depends
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batUref.mli > src/batUref.mli.depends
-- ocamlfind: Package `bisect' not found
 - ocamlfind ocamlc -c -g -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batUref.cmi src/batUref.mli
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batUref.ml > src/batUref.ml.depends
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batVect.ml > src/batVect.ml.depends
