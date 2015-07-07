@@ -10,21 +10,22 @@
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=opus
 + sudo apt-get update
 Not running as root, system installation will be done through "sudo"
-Hit http://security.debian.org stable/updates Release.gpg
-Hit http://security.debian.org stable/updates Release
-Hit http://security.debian.org stable/updates/main amd64 Packages
 Hit http://http.debian.net stable Release.gpg
 Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
-Get:2 http://http.debian.net stable-updates Release [124 kB]
 Hit http://http.debian.net stable Release
+Get:2 http://http.debian.net stable-updates Release [124 kB]
 Hit http://http.debian.net stable/main amd64 Packages
-Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
-Fetched 129 kB in 2s (53.0 kB/s)
+Get:3 http://security.debian.org stable/updates Release.gpg [836 B]
+Get:4 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
+Get:5 http://security.debian.org stable/updates Release [102 kB]
+W: Size of file /var/lib/apt/lists/security.debian.org_dists_stable_updates_main_binary-amd64_Packages.gz is not what the server reported 382091 382217
++ sudo apt-get install -qq -yy libavutil-dev libogg-dev libopus-dev m4
+debconf: delaying package configuration, since apt-utils is not installed
+Get:6 http://security.debian.org stable/updates/main amd64 Packages [382 kB]
+Fetched 614 kB in 1s (326 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
-+ sudo apt-get install -qq -yy libavutil-dev libogg-dev libopus-dev m4
-debconf: delaying package configuration, since apt-utils is not installed
 Selecting previously unselected package libavutil51:amd64.
 (Reading database ... 20143 files and directories currently installed.)
 Unpacking libavutil51:amd64 (from .../libavutil51_6%3a0.8.17-1_amd64.deb) ...
@@ -55,12 +56,12 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [ogg: from default] Command started
 [opus: from default] Command started
+[ocamlfind: from default] Command started
 [ogg: from default] Command started
 [opus: from default] Command started
-[default] http://opam-archive:8080/archives/ogg.0.4.3+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/opus.0.1.0+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ogg.0.4.3+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/opus.0.1.0+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -80,6 +81,8 @@ The following actions will be performed:
 - compiler-libs: found
 - dbm: not present (normal since OCaml-4.00)
 - bytes: not found, installing compat library
+- File "itest-aux/ppx.ml", line 1, characters 0-25:
+- Error: Unbound value Toploop.preprocess_phrase
 - Configuration for dynlink written to site-lib-src/dynlink/META
 - Configuration for graphics written to site-lib-src/graphics/META
 - Configuration for num written to site-lib-src/num/META
@@ -116,8 +119,6 @@ The following actions will be performed:
 - Configuration has been written to Makefile.config
 - 
 - You can now do 'make all', and optionally 'make opt', to build ocamlfind.
-- File "itest-aux/ppx.ml", line 1, characters 0-25:
-- Error: Unbound value Toploop.preprocess_phrase
 [ocamlfind: make all] Command started
 + make "all" (CWD=/home/opam/.opam/4.01.0/build/ocamlfind.1.5.5)
 - for p in findlib bytes; do ( cd src/$p; make all ) || exit; done
@@ -213,6 +214,8 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
+[ERROR] The compilation of opus failed at "./configure --prefix
+        /home/opam/.opam/4.01.0".
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -332,7 +335,8 @@ The following actions will be performed:
 - checking for camlp4r... camlp4r
 - checking for camlp4rf... camlp4rf
 - checking for ocamlfind... ocamlfind
-- checking for caml/threads.h... yes
+- checking for caml/threads.h... 
+- yes
 - checking for gcc option to produce PIC... -fPIC
 - checking for pkg-config... /usr/bin/pkg-config
 - checking pkg-config is at least version 0.9.0... yes
@@ -458,18 +462,23 @@ The following actions will be performed:
 - checking for camlp4r... camlp4r
 - checking for camlp4rf... camlp4rf
 - checking for ocamlfind... ocamlfind
-- checking for caml/threads.h... 
-- yes
+- checking for caml/threads.h... yes
 - checking for gcc option to produce PIC... -fPIC
 - checking for pkg-config... /usr/bin/pkg-config
 - checking pkg-config is at least version 0.9.0... yes
 - checking whether pkg-config knows about opus >= 1.0.0... 
 - configure: error: requires version >= 1.0.0, found 0.9.14
-[ERROR] The compilation of opus failed at "./configure --prefix
-        /home/opam/.opam/4.01.0".
 [opus: ocamlfind remove] Command started
 + ocamlfind "remove" "opus" (CWD=/home/opam/.opam/4.01.0/build/opus.0.1.0)
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/4.01.0/lib/opus
+
+
+=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+The following actions failed
+  - install opus 0.1.0
+The following changes have been performed
+  - install ocamlfind 1.5.5
+  - install ogg       0.4.3
 
 #=== ERROR while installing opus.0.1.0 ========================================#
 # opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
@@ -497,14 +506,6 @@ The following actions will be performed:
 # configure: error: requires version >= 1.0.0, found 0.9.14
 
 
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions failed
-  - install opus 0.1.0
-The following changes have been performed
-  - install ocamlfind 1.5.5
-  - install ogg       0.4.3
-
 The former state can be restored with:
-    opam switch import "~/.opam/4.01.0/backup/state-20150318174326.export"
+    opam switch import "~/.opam/4.01.0/backup/state-20150319081900.export"
 'opam install opus' failed.
