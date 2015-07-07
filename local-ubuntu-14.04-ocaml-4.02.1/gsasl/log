@@ -4,26 +4,25 @@
 + lsb_release -i -s
 # Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=gsasl
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=gsasl
 # The following system packages are needed:
 #  - libffi-dev
 #  - libgsasl7-dev
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=gsasl
 Not running as root, system installation will be done through "sudo"
 + sudo apt-get update
-Ign http://download.opensuse.org  InRelease
-Hit http://download.opensuse.org  Release.gpg
-Hit http://download.opensuse.org  Release
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
-Hit http://download.opensuse.org  Packages
 Hit http://archive.ubuntu.com trusty Release.gpg
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
+Ign http://download.opensuse.org  InRelease
 Hit http://archive.ubuntu.com trusty Release
 Get:3 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
+Hit http://download.opensuse.org  Release.gpg
 Get:4 http://archive.ubuntu.com trusty-security Release [63.5 kB]
+Hit http://download.opensuse.org  Release
 Hit http://archive.ubuntu.com trusty/main Sources
 Hit http://archive.ubuntu.com trusty/restricted Sources
 Hit http://archive.ubuntu.com trusty/universe Sources
@@ -31,6 +30,7 @@ Hit http://archive.ubuntu.com trusty/main amd64 Packages
 Hit http://archive.ubuntu.com trusty/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty/universe amd64 Packages
 Get:5 http://archive.ubuntu.com trusty-updates/main Sources [242 kB]
+Hit http://download.opensuse.org  Packages
 Get:6 http://archive.ubuntu.com trusty-updates/restricted Sources [2310 B]
 Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [135 kB]
 Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [621 kB]
@@ -42,11 +42,11 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [21.0 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [320 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [118 kB]
-Fetched 2057 kB in 8s (234 kB/s)
-Reading package lists...+ sudo apt-get install -qq -yy libffi-dev libgsasl7-dev m4
-
+Fetched 2057 kB in 3s (542 kB/s)
+Reading package lists...
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
++ sudo apt-get install -qq -yy libffi-dev libgsasl7-dev m4
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
@@ -124,8 +124,8 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [ctypes: from default] Command started
 [gsasl: from default] Command started
-[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ctypes.0.3.4+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/gsasl.0.10.0+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
@@ -215,6 +215,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -260,12 +262,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -274,8 +276,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -495,16 +495,16 @@ The following actions will be performed:
 - cd _build/src/ctypes && ocamlfind ocamlc -c -ccopt -fPIC -ccopt -Wall -ccopt -O3 -ccopt -I -ccopt /home/opam/opam-repository/src -ccopt -I -ccopt /home/opam/opam-repository/tests -o unsigned_stubs.o  /home/opam/.opam/system/build/ctypes.0.3.4/src/ctypes/unsigned_stubs.c
 - ocamlmklib -o _build/ctypes_stubs _build/src/ctypes/complex_stubs.o _build/src/ctypes/ctypes_bigarray_stubs.o _build/src/ctypes/managed_buffer_stubs.o _build/src/ctypes/posix_types_stubs.o _build/src/ctypes/raw_pointer_stubs.o _build/src/ctypes/type_info_stubs.o _build/src/ctypes/unsigned_stubs.o 
 - ocamlfind opt -c -o _build/src/ctypes/common.cmx -package str -package bigarray -package bytes    -package str -package bigarray -package bytes   -I _build/src/ctypes  src/ctypes/common.ml
-- ocamlfind opt -c -o _build/src/ctypes/ctypes_path.cmx -package str -package bigarray -package bytes    -package str -package bigarray -package bytes   -I _build/src/ctypes  src/ctypes/ctypes_path.ml
-- ocamlfind opt -c -o _build/src/ctypes/unsigned.cmx -package str -package bigarray -package bytes    -package str -package bigarray -package bytes   -I _build/src/ctypes  src/ctypes/unsigned.ml
-- ocamlfind opt -c -o _build/src/ctypes/signed.cmx -package str -package bigarray -package bytes    -package str -package bigarray -package bytes   -I _build/src/ctypes  src/ctypes/signed.ml
-- ocamlfind opt -c -o _build/src/ctypes/primitives.cmx -package str -package bigarray -package bytes    -package str -package bigarray -package bytes   -I _build/src/ctypes  src/ctypes/primitives.ml
-- ocamlfind opt -c -o _build/src/ctypes/ctypes_primitives.cmx -package str -package bigarray -package bytes    -package str -package bigarray -package bytes   -I _build/src/ctypes  src/ctypes/ctypes_primitives.ml
 - /home/opam/.opam/system/build/ctypes.0.3.4/src/ctypes/type_info_stubs.c: In function 'ctypes_string_of_prim':
 - /home/opam/.opam/system/build/ctypes.0.3.4/src/ctypes/type_info_stubs.c:130:3: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'int64' [-Wformat=]
 -    case Int64_t: len = snprintf(buf, sizeof buf, "%" PRId64, Int64_val(v)); break;
 -    ^
 - /home/opam/.opam/system/build/ctypes.0.3.4/src/ctypes/type_info_stubs.c:130:3: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'int64' [-Wformat=]
+- ocamlfind opt -c -o _build/src/ctypes/ctypes_path.cmx -package str -package bigarray -package bytes    -package str -package bigarray -package bytes   -I _build/src/ctypes  src/ctypes/ctypes_path.ml
+- ocamlfind opt -c -o _build/src/ctypes/unsigned.cmx -package str -package bigarray -package bytes    -package str -package bigarray -package bytes   -I _build/src/ctypes  src/ctypes/unsigned.ml
+- ocamlfind opt -c -o _build/src/ctypes/signed.cmx -package str -package bigarray -package bytes    -package str -package bigarray -package bytes   -I _build/src/ctypes  src/ctypes/signed.ml
+- ocamlfind opt -c -o _build/src/ctypes/primitives.cmx -package str -package bigarray -package bytes    -package str -package bigarray -package bytes   -I _build/src/ctypes  src/ctypes/primitives.ml
+- ocamlfind opt -c -o _build/src/ctypes/ctypes_primitives.cmx -package str -package bigarray -package bytes    -package str -package bigarray -package bytes   -I _build/src/ctypes  src/ctypes/ctypes_primitives.ml
 - ocamlfind opt -c -o _build/src/ctypes/ctypes_raw.cmx -package str -package bigarray -package bytes    -package str -package bigarray -package bytes   -I _build/src/ctypes  src/ctypes/ctypes_raw.ml
 - ocamlfind opt -c -o _build/src/ctypes/memory_stubs.cmx -package str -package bigarray -package bytes    -package str -package bigarray -package bytes   -I _build/src/ctypes  src/ctypes/memory_stubs.ml
 - ocamlfind opt -c -o _build/src/ctypes/std_view_stubs.cmx -package str -package bigarray -package bytes    -package str -package bigarray -package bytes   -I _build/src/ctypes  src/ctypes/std_view_stubs.ml
@@ -573,7 +573,6 @@ The following actions will be performed:
 - ocamlfind opt -c -o _build/src/ctypes-foreign-base/libffi_abi.cmx        -I _build/src/ctypes-foreign-base  -I _build/src/ctypes src/ctypes-foreign-base/libffi_abi.ml
 - ocamlfind opt -c -o _build/src/ctypes-foreign-base/weakRef.cmx        -I _build/src/ctypes-foreign-base  -I _build/src/ctypes src/ctypes-foreign-base/weakRef.ml
 - ocamlfind opt -c -o _build/src/ctypes-foreign-base/ffi.cmx        -I _build/src/ctypes-foreign-base  -I _build/src/ctypes src/ctypes-foreign-base/ffi.ml
-- Unknown option -Wl,--no-as-needed
 - ocamlfind opt -c -o _build/src/ctypes-foreign-base/foreign_basis.cmx        -I _build/src/ctypes-foreign-base  -I _build/src/ctypes src/ctypes-foreign-base/foreign_basis.ml
 - ocamlfind opt -a -linkall     -cclib -lctypes-foreign-base_stubs -o _build/ctypes-foreign-base.cmxa _build/src/ctypes-foreign-base/closure_properties.cmx _build/src/ctypes-foreign-base/dl.cmx _build/src/ctypes-foreign-base/ffi_stubs.cmx _build/src/ctypes-foreign-base/libffi_abi.cmx _build/src/ctypes-foreign-base/weakRef.cmx _build/src/ctypes-foreign-base/ffi.cmx _build/src/ctypes-foreign-base/foreign_basis.cmx -cclib -Wl,--no-as-needed -cclib -lffi
 - ocamlfind opt -shared -linkall     -o _build/ctypes-foreign-base.cmxs _build/src/ctypes-foreign-base/closure_properties.cmx _build/src/ctypes-foreign-base/dl.cmx _build/src/ctypes-foreign-base/ffi_stubs.cmx _build/src/ctypes-foreign-base/libffi_abi.cmx _build/src/ctypes-foreign-base/weakRef.cmx _build/src/ctypes-foreign-base/ffi.cmx _build/src/ctypes-foreign-base/foreign_basis.cmx _build/src/ctypes-foreign-base/dl_stubs.o _build/src/ctypes-foreign-base/ffi_call_stubs.o _build/src/ctypes-foreign-base/ffi_type_stubs.o -cclib -Wl,--no-as-needed -cclib -lffi
@@ -591,6 +590,7 @@ The following actions will be performed:
 - ocamlfind opt -c -o _build/src/ctypes-foreign-unthreaded/foreign.cmx        -I _build/src/ctypes-foreign-unthreaded  -I _build/src/ctypes  -I _build/src/ctypes-foreign-base src/ctypes-foreign-unthreaded/foreign.ml
 - ocamlfind opt -a -linkall      -o _build/ctypes-foreign-unthreaded.cmxa _build/src/ctypes-foreign-unthreaded/gc_mutex.cmx _build/src/ctypes-foreign-unthreaded/foreign.cmx -cclib -Wl,--no-as-needed -cclib -lffi
 - ocamlfind opt -shared -linkall     -o _build/ctypes-foreign-unthreaded.cmxs _build/src/ctypes-foreign-unthreaded/gc_mutex.cmx _build/src/ctypes-foreign-unthreaded/foreign.cmx  -cclib -Wl,--no-as-needed -cclib -lffi
+- Unknown option -Wl,--no-as-needed
 - ocamlfind ocamlc -c -o _build/src/ctypes-top/ctypes_printers.cmi -package compiler-libs   -I _build/src/ctypes-top  -I _build/src/ctypes src/ctypes-top/ctypes_printers.mli
 - ocamlfind ocamlc -package compiler-libs     -c -o _build/src/ctypes-top/ctypes_printers.cmo -I _build/src/ctypes-top  -I _build/src/ctypes src/ctypes-top/ctypes_printers.ml
 - ocamlfind ocamlc -package compiler-libs     -c -o _build/src/ctypes-top/install_printers.cmo -I _build/src/ctypes-top  -I _build/src/ctypes src/ctypes-top/install_printers.ml
@@ -803,8 +803,8 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -ccopt -I -ccopt /home/opam/.opam/system/lib/ctypes/.. -package ctypes -package ctypes.foreign -package ctypes.stubs -I lib -o lib/gsasl_genstubs.cmo lib/gsasl_genstubs.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -g -linkpkg -package ctypes -package ctypes.foreign -package ctypes.stubs lib/gsasl_bindings.cmo lib/gsasl_genstubs.cmo -o lib/gsasl_genstubs.byte
 - lib/gsasl_genstubs.byte
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -ccopt -I -ccopt /home/opam/.opam/system/lib/ctypes/.. -c lib/gsasl_stubs.c
 - W: Cannot find source file matching module 'Gsasl_generated' in library gsasl
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -ccopt -I -ccopt /home/opam/.opam/system/lib/ctypes/.. -c lib/gsasl_stubs.c
 - + /home/opam/.opam/system/bin/ocamlfind ocamlc -ccopt -I -ccopt /home/opam/.opam/system/lib/ctypes/.. -c lib/gsasl_stubs.c
 - lib/gsasl_stubs.c: In function 'libgsasl__3_gsasl_strerror':
 - lib/gsasl_stubs.c:19:16: warning: initialization discards 'const' qualifier from pointer target type [enabled by default]
