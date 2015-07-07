@@ -1,39 +1,39 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-+ opam list --safe --recursive --external=x86_64,linux,debian --required-by=mpi
 # Detecting depexts using flags: x86_64 linux debian
++ opam list --safe --recursive --external=x86_64,linux,debian --required-by=mpi
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=mpi
 # The following system packages are needed:
 #  - m4
 #  - mpi-default-dev
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=mpi
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
 Hit http://security.debian.org stable/updates InRelease
 Ign http://download.opensuse.org  InRelease
 Hit http://httpredir.debian.org stable InRelease
-Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
+Hit http://httpredir.debian.org stable-updates InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Get:2 http://security.debian.org stable/updates/main amd64 Packages [83.8 kB]
+Get:1 http://security.debian.org stable/updates/main amd64 Packages [84.4 kB]
+Get:2 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
 Get:3 http://download.opensuse.org  Packages [5783 B]
-Get:4 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
-Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9238 kB in 9s (1021 kB/s)
+Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
+Fetched 9113 kB in 4s (1887 kB/s)
 Reading package lists...
 + sudo apt-get install -qq -yy m4 mpi-default-dev
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4 mpi-default-dev
 debconf: unable to initialize frontend: Dialog
+Selecting previously unselected package libgfortran3:amd64.
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
 debconf: unable to initialize frontend: Readline
 debconf: (This frontend requires a controlling tty.)
 debconf: falling back to frontend: Teletype
 dpkg-preconfigure: unable to re-open stdin: 
-Selecting previously unselected package libgfortran3:amd64.
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 22907 files and directories currently installed.)
 Preparing to unpack .../libgfortran3_4.9.2-10_amd64.deb ...
 Unpacking libgfortran3:amd64 (4.9.2-10) ...
@@ -206,6 +206,9 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -251,14 +254,18 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 	cp topfind.ml.in topfind.ml;                             \
+- else                                                             \
+- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 		> topfind.ml ;                                   \
+- fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -267,13 +274,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 	cp topfind.ml.in topfind.ml;                             \
-- else                                                             \
-- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 		> topfind.ml ;                                   \
-- fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -436,7 +436,6 @@ The following actions will be performed:
 - rm -f libcamlmpi.a
 - ar rc libcamlmpi.a init.o comm.o msgs.o collcomm.o groups.o utils.o
 - ocamlc -c mpi.mli
-- ocamlc -c mpi.ml
 - collcomm.c: In function 'caml_mpi_scatter_float':
 - collcomm.c:123:12: warning: unused variable 'len' [-Wunused-variable]
 -    mlsize_t len = Wosize_val(data) / Double_wosize;
@@ -453,6 +452,7 @@ The following actions will be performed:
 - collcomm.c:245:12: warning: unused variable 'reslen' [-Wunused-variable]
 -    mlsize_t reslen = Wosize_val(result) / Double_wosize;
 -             ^
+- ocamlc -c mpi.ml
 - ocamlc -a -o mpi.cma -custom mpi.cmo -cclib -lcamlmpi -ccopt -L/usr/lib/openmpi/lib -cclib -lmpi
 - File "mpi.ml", line 200, characters 15-28:
 - Warning 3: deprecated: String.create
