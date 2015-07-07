@@ -1,21 +1,21 @@
 + uname -m
+# Detecting depexts using flags: x86_64 linux debian
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=gettext
-# Detecting depexts using flags: x86_64 linux debian
 # The following system packages are needed:
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=gettext
-+ sudo apt-get update
 Not running as root, system installation will be done through "sudo"
-Hit http://security.debian.org stable/updates Release.gpg
++ sudo apt-get update
 Hit http://download.opensuse.org  Release.gpg
-Hit http://security.debian.org stable/updates Release
 Hit http://download.opensuse.org  Release
-Hit http://security.debian.org stable/updates/main amd64 Packages
 Hit http://download.opensuse.org  Packages
+Hit http://security.debian.org stable/updates Release.gpg
+Hit http://security.debian.org stable/updates Release
 Hit http://http.debian.net stable Release.gpg
 Hit http://http.debian.net stable-updates Release.gpg
 Hit http://http.debian.net stable Release
+Hit http://security.debian.org stable/updates/main amd64 Packages
 Hit http://http.debian.net stable-updates Release
 Hit http://http.debian.net stable/main amd64 Packages
 Hit http://http.debian.net stable-updates/main amd64 Packages
@@ -43,11 +43,11 @@ The following actions will be performed:
 [default] http://opam-archive:8080/archives/gettext.0.3.5+opam.tar.gz downloaded
 [ounit: from default] Command started
 [camomile: from default] Command started
-[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/camomile.0.8.5+opam.tar.gz downloaded
 [ounit: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ounit.2.0.0+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -80,7 +80,8 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) ok
+- Detecting compiler arguments: (extractor built) 
+- ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /home/opam/.opam/4.02.1/lib/ocaml
@@ -133,6 +134,9 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -178,10 +182,9 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c fl_args.ml
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -190,8 +193,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -1486,6 +1487,14 @@ The following actions will be performed:
 - tools/camomilecharmap.opt -d charmaps charmaps/JIS_X0201 || true
 - tools/camomilecharmap.opt -d charmaps charmaps/JOHAB || true
 - tools/camomilecharmap.opt -d charmaps charmaps/JUS_I.B1.002 || true
+- Fatal error: exception Failure("Broken entry: <NUL>	/x00/x00	NULL (NUL)")
+- Fatal error: exception Failure("Broken entry: <NUL>                   \d000   NULL")
+- Fatal error: exception Failure("Broken entry: <NU>                   /x00   <U0000> NULL (NUL)")
+- Fatal error: exception Failure("Broken entry: <NU>                   /x00   <U0000> NULL (NUL)")
+- Fatal error: exception Failure("Broken entry: <NU>                   /x00   <U0000> NULL (NUL)")
+- Fatal error: exception Failure("Broken entry: <NU>                   /x00   <U0000> NULL (NUL)")
+- Fatal error: exception Failure("Broken entry: <NU>                   /x00   <U0000> NULL (NUL)")
+- Fatal error: exception Failure("Broken entry: <NU>                   /x00   <U0000> NULL (NUL)")
 - tools/camomilecharmap.opt -d charmaps charmaps/JUS_I.B1.003-MAC || true
 - tools/camomilecharmap.opt -d charmaps charmaps/JUS_I.B1.003-SERB || true
 - tools/camomilecharmap.opt -d charmaps charmaps/KOI-8 || true
@@ -1531,14 +1540,6 @@ The following actions will be performed:
 - tools/camomilecharmap.opt -d charmaps charmaps/TIS-620 || true
 - tools/camomilecharmap.opt -d charmaps charmaps/TSCII || true
 - tools/camomilecharmap.opt -d charmaps charmaps/UTF-8 || true
-- Fatal error: exception Failure("Broken entry: <NUL>	/x00/x00	NULL (NUL)")
-- Fatal error: exception Failure("Broken entry: <NUL>                   \d000   NULL")
-- Fatal error: exception Failure("Broken entry: <NU>                   /x00   <U0000> NULL (NUL)")
-- Fatal error: exception Failure("Broken entry: <NU>                   /x00   <U0000> NULL (NUL)")
-- Fatal error: exception Failure("Broken entry: <NU>                   /x00   <U0000> NULL (NUL)")
-- Fatal error: exception Failure("Broken entry: <NU>                   /x00   <U0000> NULL (NUL)")
-- Fatal error: exception Failure("Broken entry: <NU>                   /x00   <U0000> NULL (NUL)")
-- Fatal error: exception Failure("Broken entry: <NU>                   /x00   <U0000> NULL (NUL)")
 - Fatal error: exception Failure("Broken entry: <comment> %")
 - Fatal error: exception Failure("Broken entry: <A!>                   /x41   <U00C0> LATIN CAPITAL LETTER A WITH GRAVE")
 - Fatal error: exception Failure("Broken entry: <A!>                   /x41   <U00C0> LATIN CAPITAL LETTER A WITH GRAVE")
@@ -1547,12 +1548,6 @@ The following actions will be performed:
 - tools/camomilecharmap.opt -d charmaps charmaps/VISCII || true
 - tools/camomilecharmap.opt -d charmaps charmaps/WINDOWS-31J || true
 - ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . tools/camomilelocaledef.ml
-- File "tools/camomilelocaledef.ml", line 303, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "tools/camomilelocaledef.ml", line 307, characters 11-30:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 - ocamlopt.opt -noassert -I internal -I public -I toolslib -I . -o tools/camomilelocaledef.opt bigarray.cmxa str.cmxa toolslib.cmxa tools/camomilelocaledef.cmx
 - tools/camomilelocaledef.opt --file locales/af.txt locales 
 - tools/camomilelocaledef.opt --file locales/af_ZA.txt locales 
@@ -1564,15 +1559,21 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/ar_DZ.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar_EG.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar_IN.txt locales 
+- File "tools/camomilelocaledef.ml", line 303, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "tools/camomilelocaledef.ml", line 307, characters 11-30:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "tools/camomilelocaledef.ml", line 162, characters 9-37:
+- Warning 26: unused variable data.
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/ar_IQ.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar_JO.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar_KW.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar_LB.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar_LY.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar_MA.txt locales 
-- File "tools/camomilelocaledef.ml", line 162, characters 9-37:
-- Warning 26: unused variable data.
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/ar_OM.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar_QA.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar_SA.txt locales 
@@ -1590,8 +1591,8 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/bn_IN.txt locales 
 - tools/camomilelocaledef.opt --file locales/ca.txt locales 
 - tools/camomilelocaledef.opt --file locales/ca_ES.txt locales 
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/ca_ES_PREEURO.txt locales 
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/cs.txt locales 
 - tools/camomilelocaledef.opt --file locales/cs_CZ.txt locales 
 - tools/camomilelocaledef.opt --file locales/da.txt locales 
@@ -1608,10 +1609,11 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/de_LU_PREEURO.txt locales 
 - tools/camomilelocaledef.opt --file locales/de__PHONEBOOK.txt locales 
 - tools/camomilelocaledef.opt --file locales/div.txt locales 
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/div_MV.txt locales 
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/el.txt locales 
 - tools/camomilelocaledef.opt --file locales/el_GR.txt locales 
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/el_GR_PREEURO.txt locales 
 - tools/camomilelocaledef.opt --file locales/en.txt locales 
 - tools/camomilelocaledef.opt --file locales/en_AS.txt locales 
@@ -1626,7 +1628,6 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/en_GU.txt locales 
 - tools/camomilelocaledef.opt --file locales/en_HK.txt locales 
 - tools/camomilelocaledef.opt --file locales/en_IE.txt locales 
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/en_IE_PREEURO.txt locales 
 - tools/camomilelocaledef.opt --file locales/en_IN.txt locales 
 - tools/camomilelocaledef.opt --file locales/en_JM.txt locales 
@@ -1676,12 +1677,12 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/fa_IN.txt locales 
 - tools/camomilelocaledef.opt --file locales/fa_IR.txt locales 
 - tools/camomilelocaledef.opt --file locales/fi.txt locales 
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/fi_FI.txt locales 
 - tools/camomilelocaledef.opt --file locales/fi_FI_PREEURO.txt locales 
 - tools/camomilelocaledef.opt --file locales/fo.txt locales 
 - tools/camomilelocaledef.opt --file locales/fo_FO.txt locales 
 - tools/camomilelocaledef.opt --file locales/fr.txt locales 
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/fr_BE.txt locales 
 - tools/camomilelocaledef.opt --file locales/fr_BE_PREEURO.txt locales 
 - tools/camomilelocaledef.opt --file locales/fr_CA.txt locales 
@@ -1704,9 +1705,10 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/he.txt locales 
 - tools/camomilelocaledef.opt --file locales/he_IL.txt locales 
 - tools/camomilelocaledef.opt --file locales/hi.txt locales 
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/hi_IN.txt locales 
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/hi__DIRECT.txt locales 
 - tools/camomilelocaledef.opt --file locales/hr.txt locales 
 - tools/camomilelocaledef.opt --file locales/hr_HR.txt locales 
@@ -1715,9 +1717,8 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/hy.txt locales 
 - tools/camomilelocaledef.opt --file locales/hy_AM.txt locales 
 - tools/camomilelocaledef.opt --file locales/hy_AM_REVISED.txt locales 
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/id.txt locales 
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/id_ID.txt locales 
 - tools/camomilelocaledef.opt --file locales/index.txt locales 
 - tools/camomilelocaledef.opt --file locales/is.txt locales 
@@ -1731,13 +1732,13 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/ja.txt locales 
 - tools/camomilelocaledef.opt --file locales/ja_JP.txt locales 
 - tools/camomilelocaledef.opt --file locales/ka.txt locales 
+- Warning : strength option is not supported
 - tools/camomilelocaledef.opt --file locales/ka_GE.txt locales 
 - tools/camomilelocaledef.opt --file locales/kk.txt locales 
 - tools/camomilelocaledef.opt --file locales/kk_KZ.txt locales 
 - tools/camomilelocaledef.opt --file locales/kl.txt locales 
 - tools/camomilelocaledef.opt --file locales/kl_GL.txt locales 
 - tools/camomilelocaledef.opt --file locales/kn.txt locales 
-- Warning : strength option is not supported
 - Warning : normalization option is not supported
 - Warning : normalization option is not supported
 - Warning : normalization option is not supported
@@ -1753,11 +1754,11 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/lt.txt locales 
 - tools/camomilelocaledef.opt --file locales/lt_LT.txt locales 
 - tools/camomilelocaledef.opt --file locales/lv.txt locales 
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/lv_LV.txt locales 
 - tools/camomilelocaledef.opt --file locales/mk.txt locales 
 - tools/camomilelocaledef.opt --file locales/mk_MK.txt locales 
 - tools/camomilelocaledef.opt --file locales/mn.txt locales 
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/mn_MN.txt locales 
 - tools/camomilelocaledef.opt --file locales/mr.txt locales 
 - tools/camomilelocaledef.opt --file locales/mr_IN.txt locales 
@@ -1765,9 +1766,9 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/ms_BN.txt locales 
 - tools/camomilelocaledef.opt --file locales/ms_MY.txt locales 
 - tools/camomilelocaledef.opt --file locales/mt.txt locales 
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/mt_MT.txt locales 
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/nb.txt locales 
 - tools/camomilelocaledef.opt --file locales/nb_NO.txt locales 
 - tools/camomilelocaledef.opt --file locales/nl.txt locales 
@@ -1784,9 +1785,9 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/om_ET.txt locales 
 - tools/camomilelocaledef.opt --file locales/om_KE.txt locales 
 - tools/camomilelocaledef.opt --file locales/pa.txt locales 
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/pa_IN.txt locales 
 - tools/camomilelocaledef.opt --file locales/pl.txt locales 
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/pl_PL.txt locales 
 - tools/camomilelocaledef.opt --file locales/pt.txt locales 
 - tools/camomilelocaledef.opt --file locales/pt_BR.txt locales 
@@ -1827,15 +1828,13 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/ta.txt locales 
 - tools/camomilelocaledef.opt --file locales/ta_IN.txt locales 
 - tools/camomilelocaledef.opt --file locales/te.txt locales 
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/te_IN.txt locales 
 - tools/camomilelocaledef.opt --file locales/test_1.txt locales 
 - tools/camomilelocaledef.opt --file locales/th.txt locales 
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/th_TH.txt locales 
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
-- Warning : file loading is not supported.
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/ti.txt locales 
 - tools/camomilelocaledef.opt --file locales/ti_ER.txt locales 
 - tools/camomilelocaledef.opt --file locales/ti_ET.txt locales 
@@ -1844,17 +1843,19 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/tt.txt locales 
 - tools/camomilelocaledef.opt --file locales/tt_RU.txt locales 
 - tools/camomilelocaledef.opt --file locales/uk.txt locales 
+- Warning : file loading is not supported.
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/uk_UA.txt locales 
 - tools/camomilelocaledef.opt --file locales/ur.txt locales 
 - tools/camomilelocaledef.opt --file locales/ur_PK.txt locales 
 - tools/camomilelocaledef.opt --file locales/uz.txt locales 
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/uz_UZ.txt locales 
 - tools/camomilelocaledef.opt --file locales/vi.txt locales 
 - tools/camomilelocaledef.opt --file locales/vi_VN.txt locales 
 - tools/camomilelocaledef.opt --file locales/zh.txt locales 
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
 - Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/zh_CN.txt locales 
 - tools/camomilelocaledef.opt --file locales/zh_HK.txt locales 
@@ -1959,11 +1960,10 @@ The following actions will be performed:
 - ocamlfind ocamlc   -package "fileutils"   -c gettextMo_lexer.ml
 - ocamlfind ocamlc   -package "fileutils"   -c gettextMo.ml
 - ocamlfind ocamlc   -package "fileutils"   -c gettextDummy.ml
-- 14 shift/reduce conflicts.
-- 14 shift/reduce conflicts.
-[ERROR] The compilation of gettext failed at "make".
 - ocamlfind ocamlc   -a -o gettextBase.cma gettextConfig.cmo gettextCategory.cmo gettextTypes.cmo gettextUtils.cmo gettextModules.cmo gettextCompat.cmo gettext.cmo gettextFormat_parser.cmo gettextFormat_lexer.cmo gettextFormat.cmo gettextMo_int32.cmo gettextMo_parser.cmo gettextMo_lexer.cmo gettextMo.cmo gettextDummy.cmo 
 - ocamlfind ocamlopt  -package "fileutils"   -c gettextConfig.ml
+- 14 shift/reduce conflicts.
+- 14 shift/reduce conflicts.
 - ocamlfind ocamlopt  -package "fileutils"   -c gettextCategory.ml
 - ocamlfind ocamlopt  -package "fileutils"   -c gettextTypes.ml
 - ocamlfind ocamlopt  -package "fileutils"   -c gettextUtils.ml
@@ -2011,10 +2011,10 @@ The following actions will be performed:
 - ocamlfind ocamlopt  -package "fileutils"   -c gettextLocale_lexer.ml
 - ocamlfind ocamlopt  -package "fileutils"   -c gettextLocale.ml
 - ocamlfind ocamlopt  -package "fileutils"   -c gettextDomain.ml
+- 12 shift/reduce conflicts.
 - ocamlfind ocamlopt  -package "fileutils"   -c gettextCharset.ml
 - ocamlfind ocamlopt  -package "fileutils"   -c gettextTranslate.ml
 - ocamlfind ocamlopt  -package "fileutils"   -c gettextRealize.ml
-- 12 shift/reduce conflicts.
 - ocamlfind ocamlopt  -package "fileutils"   -c gettextPo_utils.ml
 - ocamlfind ocamlopt  -package "fileutils"   -c gettextPoComment_parser.ml
 - ocamlfind ocamlopt  -package "fileutils"   -c gettextPo_lexer.ml
@@ -2036,6 +2036,7 @@ The following actions will be performed:
 - Error: Unbound module Camlp4
 - make[1]: *** [pr_gettext.cmo] Error 2
 - make: *** [all] Error 2
+[ERROR] The compilation of gettext failed at "make".
 [gettext: rm] Command started
 + rm "-rf" "/home/opam/.opam/4.02.1/lib/gettext/share" (CWD=/home/opam/.opam/4.02.1/build/gettext.0.3.5)
 [gettext: ocamlfind remove] Command started
@@ -2048,16 +2049,6 @@ The following actions will be performed:
 + ocamlfind "remove" "gettext" (CWD=/home/opam/.opam/4.02.1/build/gettext.0.3.5)
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/4.02.1/lib/gettext
 
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions failed
-  - install gettext 0.3.5
-The following changes have been performed
-  - install camomile  0.8.5
-  - install fileutils 0.4.4
-  - install ocamlfind 1.5.5
-  - install ounit     2.0.0
-
 #=== ERROR while installing gettext.0.3.5 =====================================#
 # opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
 # os                   linux
@@ -2065,9 +2056,9 @@ The following changes have been performed
 # path                 /home/opam/.opam/4.02.1/build/gettext.0.3.5
 # compiler             4.02.1
 # exit-code            2
-# env-file             /home/opam/.opam/4.02.1/build/gettext.0.3.5/gettext-6-326a35.env
-# stdout-file          /home/opam/.opam/4.02.1/build/gettext.0.3.5/gettext-6-326a35.out
-# stderr-file          /home/opam/.opam/4.02.1/build/gettext.0.3.5/gettext-6-326a35.err
+# env-file             /home/opam/.opam/4.02.1/build/gettext.0.3.5/gettext-5-326a35.env
+# stdout-file          /home/opam/.opam/4.02.1/build/gettext.0.3.5/gettext-5-326a35.out
+# stderr-file          /home/opam/.opam/4.02.1/build/gettext.0.3.5/gettext-5-326a35.err
 ### stdout ###
 # [...]
 # ocamlc \
@@ -2090,6 +2081,16 @@ The following changes have been performed
 # make: *** [all] Error 2
 
 
+
+=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+The following actions failed
+  - install gettext 0.3.5
+The following changes have been performed
+  - install camomile  0.8.5
+  - install fileutils 0.4.4
+  - install ocamlfind 1.5.5
+  - install ounit     2.0.0
+
 The former state can be restored with:
-    opam switch import "~/.opam/4.02.1/backup/state-20150309043936.export"
+    opam switch import "~/.opam/4.02.1/backup/state-20150309172556.export"
 'opam install gettext' failed.
