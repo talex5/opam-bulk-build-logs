@@ -2,15 +2,15 @@
 + uname -s
 # Detecting depexts using flags: x86_64 linux centos
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=camldm
-+ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=camldm
 # The following system packages are needed:
 #  - device-mapper-devel
++ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=camldm
 Not running as root, system installation will be done through "sudo"
 + sudo yum update
 Loaded plugins: fastestmirror
 Determining fastest mirrors
- * base: mirrors.melbourne.co.uk
- * extras: mirrors.melbourne.co.uk
+ * base: mirror.vorboss.net
+ * extras: mirror.sov.uk.goscomb.net
  * updates: mirrors.melbourne.co.uk
 No packages marked for update
 # OS package update successful
@@ -18,8 +18,8 @@ Not running as root, system installation will be done through "sudo"
 + sudo yum install -y device-mapper-devel
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: mirrors.melbourne.co.uk
- * extras: mirrors.melbourne.co.uk
+ * base: mirror.vorboss.net
+ * extras: mirror.sov.uk.goscomb.net
  * updates: mirrors.melbourne.co.uk
 Resolving Dependencies
 --> Running transaction check
@@ -58,7 +58,7 @@ Total download size: 1.0 M
 Installed size: 2.1 M
 Downloading packages:
 --------------------------------------------------------------------------------
-Total                                              780 kB/s | 1.0 MB  00:01     
+Total                                              1.8 MB/s | 1.0 MB  00:00     
 Running transaction check
 Running transaction test
 Transaction test succeeded
@@ -97,8 +97,8 @@ The following actions will be performed:
 [camldm: from default] Command started
 [lwt: from default] Command started
 [ocamlfind: from default] Command started
-[lwt: from default] Command started
-[default] http://opam-archive:8080/archives/lwt.2.4.5+opam.tar.gz downloaded
+[camldm: from default] Command started
+[default] http://opam-archive:8080/archives/camldm.0.1.0+opam.tar.gz downloaded
 [rpc: from default] Command started
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
@@ -106,12 +106,12 @@ The following actions will be performed:
 [rpc: from default] Command started
 [default] http://opam-archive:8080/archives/rpc.1.5.1+opam.tar.gz downloaded
 [xmlm: from default] Command started
-[camldm: from default] Command started
-[default] http://opam-archive:8080/archives/camldm.0.1.0+opam.tar.gz downloaded
-[xmlm: from default] Command started
-[default] http://opam-archive:8080/archives/xmlm.1.2.0+opam.tar.gz downloaded
 [type_conv: from default] Command started
 [default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
+[lwt: from default] Command started
+[default] http://opam-archive:8080/archives/lwt.2.4.5+opam.tar.gz downloaded
+[xmlm: from default] Command started
+[default] http://opam-archive:8080/archives/xmlm.1.2.0+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlp4: sh] Command started
@@ -197,8 +197,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_metascanner.ml
 - ocamlc -I +compiler-libs -c fl_topo.mli
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
-- ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -244,6 +242,8 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -c fl_package_base.mli
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
@@ -255,11 +255,11 @@ The following actions will be performed:
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -311,6 +311,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -349,7 +350,6 @@ The following actions will be performed:
 - File "fl_meta.mll", line 62, characters 11-22:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_metascanner.ml", line 111, characters 23-32:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
@@ -786,13 +786,6 @@ The following actions will be performed:
 - Use (||) instead.
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -a syntax/pa_optcomp.cmo -o syntax/optcomp.cma
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -package camlp4 -syntax camlp4o -package camlp4.extend -syntax camlp4o -package camlp4.quotations.o -syntax camlp4o -I syntax -o syntax/pa_optcomp.cmx syntax/pa_optcomp.ml
-- File "setup.ml", line 254, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "setup.ml", line 2419, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
-- ocamlfind: Package `wikidoc' not found
 - + /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -package camlp4 -syntax camlp4o -package camlp4.extend -syntax camlp4o -package camlp4.quotations.o -syntax camlp4o -I syntax -o syntax/pa_optcomp.cmx syntax/pa_optcomp.ml
 - File "syntax/pa_optcomp.ml", line 217, characters 50-52:
 - Warning 3: deprecated: Pervasives.or
@@ -812,6 +805,13 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -I src/core -o src/core/lwt_list.cmi src/core/lwt_list.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -modules src/core/lwt_list.ml > src/core/lwt_list.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -modules src/core/lwt.ml > src/core/lwt.ml.depends
+- File "setup.ml", line 254, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "setup.ml", line 2419, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
+- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -modules src/core/lwt_mutex.ml > src/core/lwt_mutex.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -modules src/core/lwt_mvar.mli > src/core/lwt_mvar.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -I src/core -o src/core/lwt_mvar.cmi src/core/lwt_mvar.mli
@@ -1312,19 +1312,19 @@ The following actions will be performed:
 - ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o rpc_client.cmi rpc_client.mli
 - ocamlfind ocamlc -annot -g -package xmlm,lwt -c -o rpc_client.cmo rpc_client.ml
 - ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o rpc_client.o rpc_client.ml
-- File "jsonrpc.ml", line 204, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "jsonrpc.ml", line 207, characters 6-16:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "jsonrpc.ml", line 204, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "jsonrpc.ml", line 207, characters 6-16:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 - make[1]: Leaving directory `/home/opam/.opam/system/build/rpc.1.5.1/lib'
+- File "jsonrpc.ml", line 204, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "jsonrpc.ml", line 207, characters 6-16:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "jsonrpc.ml", line 204, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "jsonrpc.ml", line 207, characters 6-16:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 [rpc: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/rpc.1.5.1)
 - cd lib && make install
