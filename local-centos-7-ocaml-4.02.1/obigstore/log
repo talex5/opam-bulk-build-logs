@@ -1,30 +1,30 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux centos
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=obigstore
+# Detecting depexts using flags: x86_64 linux centos
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=obigstore
 # The following system packages are needed:
 #  - zlib-devel
++ sudo yum -y update
 Not running as root, the following command will be run through "sudo":
     yum -y update
-+ sudo yum -y update
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: mirrors.melbourne.co.uk
- * extras: mirrors.melbourne.co.uk
+ * base: mirror.vorboss.net
+ * extras: mirrors.vooservers.com
  * updates: centos.serverspace.co.uk
 No packages marked for update
++ sudo yum install -y zlib-devel
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     yum install -y zlib-devel
 Not running as root, the following command will be run through "sudo":
     rpm -q zlib-devel
-+ sudo yum install -y zlib-devel
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
  * base: mirror.sov.uk.goscomb.net
- * extras: mirror.econdc.com
- * updates: centos.serverspace.co.uk
+ * extras: mirrors.melbourne.co.uk
+ * updates: mirror.sov.uk.goscomb.net
 Resolving Dependencies
 --> Running transaction check
 ---> Package zlib-devel.x86_64 0:1.2.7-13.el7 will be installed
@@ -60,7 +60,6 @@ Complete!
 zlib-devel-1.2.7-13.el7.x86_64
 # OS packages installation successful
 The following actions will be performed:
-[ERROR] The compilation of conf-leveldb failed at "cc -c test.cc".
   - install camlp4       4.02.1+system                          [required by lwt]
   - install conf-leveldb 1                                      [required by leveldb]
   - install ocamlfind    1.5.5                                  [required by obigstore]
@@ -81,39 +80,40 @@ The following actions will be performed:
 [batteries: from default] Command started
 [cryptokit: from default] Command started
 [extlib: from default] Command started
-[extlib: from default] Command started
-[default] http://opam-archive:8080/archives/extlib.1.6.1+opam.tar.gz downloaded
-[extprot: from default] Command started
-[batteries: from default] Command started
 [cryptokit: from default] Command started
-[default] http://opam-archive:8080/archives/batteries.2.3.1+opam.tar.gz downloaded
-[leveldb: from default] Command started
-[extprot: from default] Command started
+[extlib: from default] Command started
+[batteries: from default] Command started
 [default] http://opam-archive:8080/archives/cryptokit.1.10+opam.tar.gz downloaded
+[extprot: from default] Command started
+[default] http://opam-archive:8080/archives/extlib.1.6.1+opam.tar.gz downloaded
+[leveldb: from default] Command started
+[default] http://opam-archive:8080/archives/batteries.2.3.1+opam.tar.gz downloaded
 [lwt: from default] Command started
 [leveldb: from default] Command started
-[default] http://opam-archive:8080/archives/extprot.1.1.2+opam.tar.gz downloaded
-[obigstore: from default] Command started
 [default] http://opam-archive:8080/archives/leveldb.1.0.3+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
+[obigstore: from default] Command started
 [obigstore: from default] Command started
 [default] http://opam-archive:8080/archives/obigstore.0.9.1+opam.tar.gz downloaded
-[omake: from default] Command started
+[ocamlfind: from default] Command started
+[ocamlfind: from default] Command started
+[extprot: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [omake: from default] Command started
 [lwt: from default] Command started
-[ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/omake.0.9.8.6-0.rc1+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/extprot.1.1.2+opam.tar.gz downloaded
 [ounit: from default] Command started
 [default] http://opam-archive:8080/archives/lwt.2.4.5+opam.tar.gz downloaded
 [sexplib: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[type_conv: from default] Command started
 [ounit: from default] Command started
-[sexplib: from default] Command started
 [default] http://opam-archive:8080/archives/ounit.2.0.0+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/sexplib.112.24.01+opam.tar.gz downloaded
+[type_conv: from default] Command started
+[omake: from default] Command started
+[default] http://opam-archive:8080/archives/omake.0.9.8.6-0.rc1+opam.tar.gz downloaded
 [type_conv: from default] Command started
 [default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
+[sexplib: from default] Command started
+[ERROR] The compilation of conf-leveldb failed at "cc -c test.cc".
+[default] http://opam-archive:8080/archives/sexplib.112.24.01+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlp4: sh] Command started
@@ -260,6 +260,13 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 	cp topfind.ml.in topfind.ml;                             \
+- else                                                             \
+- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 		> topfind.ml ;                                   \
+- fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -268,13 +275,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 	cp topfind.ml.in topfind.ml;                             \
-- else                                                             \
-- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 		> topfind.ml ;                                   \
-- fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -5078,19 +5078,18 @@ The following actions will be performed:
 - --- Checking for hevea... (FAILED - no hevea found)
 - --- Checking for date... (found /usr/bin/date)
 - --- Checking for date... (found /usr/bin/date)
-- *** omake: finished reading OMakefiles (1.95 sec)
+- *** omake: finished reading OMakefiles (1.91 sec)
 - Updating the .config file.
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
 - *** omake: saved .omakedb
-- *** omake: saved .omakedb
-- *** omake: done (32.15 sec, 234/234 scans, 343/505 rules, 788/2323 digests)
+- *** omake: done (31.85 sec, 234/234 scans, 343/505 rules, 788/2325 digests)
 - OMAKEFLAGS= OMAKEPATH=lib src/main/omake --dotomake .omake --force-dotomake -j2 all
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.07 sec)
+- *** omake: finished reading OMakefiles (0.06 sec)
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
-- *** omake: done (7.32 sec, 219/235 scans, 27/534 rules, 39/1843 digests)
+- *** omake: done (7.05 sec, 219/235 scans, 27/534 rules, 39/1843 digests)
 [omake: make install] Command started
 + make "install" "PREFIX=/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/omake.0.9.8.6-0.rc1)
 - make[1]: Entering directory `/home/opam/.opam/system/build/omake.0.9.8.6-0.rc1/boot'
@@ -5102,25 +5101,23 @@ The following actions will be performed:
 - touch .config
 - OMAKEFLAGS= OMAKEPATH=lib ./omake-boot --dotomake .omake --force-dotomake -j2 main
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.33 sec)
+- *** omake: finished reading OMakefiles (0.31 sec)
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
-- *** omake: done (3.90 sec, 0/234 scans, 0/505 rules, 1/1762 digests)
+- *** omake: done (3.83 sec, 0/234 scans, 0/505 rules, 1/1762 digests)
 - OMAKEFLAGS= OMAKEPATH=lib src/main/omake --dotomake .omake --force-dotomake -j2 all
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.07 sec)
-- *** omake: done (0.52 sec, 0/235 scans, 0/534 rules, 0/1821 digests)
+- *** omake: finished reading OMakefiles (0.05 sec)
+- *** omake: done (0.53 sec, 0/235 scans, 0/534 rules, 0/1821 digests)
 - OMAKEFLAGS= OMAKEPATH=lib src/main/omake --dotomake .omake --force-dotomake -j2 install
 - *** omake: reading OMakefiles
 - *** omake: finished reading OMakefiles (0.05 sec)
-- *** omake: done (1.27 sec, 0/235 scans, 2/536 rules, 0/1821 digests)
-- *** omake: warning: stdout is not a tty, disabling the progress bar
--    (use --progress to override).
+- *** omake: done (0.55 sec, 0/235 scans, 2/536 rules, 0/1821 digests)
 -> installed omake.0.9.8.6-0.rc1
 [extprot: omake] Command started
 + omake  (CWD=/home/opam/.opam/system/build/extprot.1.1.2)
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.14 sec)
+- *** omake: finished reading OMakefiles (0.16 sec)
 - --- Checking if ocamldep understands -modules... (yes)
 - --- Checking for ocamlfind... (found /home/opam/.opam/system/bin/ocamlfind)
 - --- Checking for ocamlc.opt... (found /usr/bin/ocamlc.opt)
@@ -5131,7 +5128,24 @@ The following actions will be performed:
 -    This expression should use a => binding.
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
-- *** omake: done (16.47 sec, 21/21 scans, 30/81 rules, 119/316 digests)
+- *** omake: done (16.06 sec, 21/21 scans, 30/81 rules, 119/316 digests)
+[extprot: omake install] Command started
++ omake "install" "prefix=/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/extprot.1.1.2)
+- *** omake: reading OMakefiles
+- *** omake: finished reading OMakefiles (0.04 sec)
+- - build . <install>
+- + ocamlfind install -patch-version git extprot runtime/META runtime/extprot.cma runtime/extprot.cmxa runtime/extprot.cmx runtime/extprot.cmi runtime/extprot.a runtime/*.mli
+- *** omake: done (0.07 sec, 0/0 scans, 1/1 rules, 0/77 digests)
+- Installed /home/opam/.opam/system/lib/extprot/conv.mli
+- Installed /home/opam/.opam/system/lib/extprot/limits.mli
+- Installed /home/opam/.opam/system/lib/extprot/reader.mli
+- Installed /home/opam/.opam/system/lib/extprot/extprot.a
+- Installed /home/opam/.opam/system/lib/extprot/extprot.cmi
+- Installed /home/opam/.opam/system/lib/extprot/extprot.cmx
+- Installed /home/opam/.opam/system/lib/extprot/extprot.cmxa
+- Installed /home/opam/.opam/system/lib/extprot/extprot.cma
+- Installed /home/opam/.opam/system/lib/extprot/META
+-> installed extprot.1.1.2
 
 #=== ERROR while installing conf-leveldb.1 ====================================#
 # opam-version         1.2.2 (391297300524717e1475deaea37bca287c7f5e36)
@@ -5149,23 +5163,6 @@ The following actions will be performed:
 #                         ^
 # compilation terminated.
 
-[extprot: omake install] Command started
-+ omake "install" "prefix=/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/extprot.1.1.2)
-- *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.05 sec)
-- - build . <install>
-- + ocamlfind install -patch-version git extprot runtime/META runtime/extprot.cma runtime/extprot.cmxa runtime/extprot.cmx runtime/extprot.cmi runtime/extprot.a runtime/*.mli
-- *** omake: done (0.08 sec, 0/0 scans, 1/1 rules, 0/77 digests)
-- Installed /home/opam/.opam/system/lib/extprot/conv.mli
-- Installed /home/opam/.opam/system/lib/extprot/limits.mli
-- Installed /home/opam/.opam/system/lib/extprot/reader.mli
-- Installed /home/opam/.opam/system/lib/extprot/extprot.a
-- Installed /home/opam/.opam/system/lib/extprot/extprot.cmi
-- Installed /home/opam/.opam/system/lib/extprot/extprot.cmx
-- Installed /home/opam/.opam/system/lib/extprot/extprot.cmxa
-- Installed /home/opam/.opam/system/lib/extprot/extprot.cma
-- Installed /home/opam/.opam/system/lib/extprot/META
--> installed extprot.1.1.2
 
 
 =-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -5193,5 +5190,5 @@ The following changes have been performed
    your system.
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150411200939.export"
+    opam switch import "~/.opam/system/backup/state-20150412105439.export"
 'opam install obigstore' failed.
