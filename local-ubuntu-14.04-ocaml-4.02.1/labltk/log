@@ -3,11 +3,11 @@
 + lsb_release -i -s
 # Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=labltk
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=labltk
 # The following system packages are needed:
 #  - m4
 #  - tcl-dev
 #  - tk-dev
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=labltk
 Not running as root, the following command will be run through "sudo":
     apt-get update
 + sudo apt-get update
@@ -32,6 +32,7 @@ Hit http://archive.ubuntu.com trusty/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty/universe amd64 Packages
 Get:3 http://archive.ubuntu.com trusty-updates/main Sources [253 kB]
 Get:4 http://archive.ubuntu.com trusty-updates/restricted Sources [2310 B]
++ sudo apt-get install -qq -yy m4 tcl-dev tk-dev
 Get:5 http://archive.ubuntu.com trusty-updates/universe Sources [142 kB]
 Get:6 http://archive.ubuntu.com trusty-updates/main amd64 Packages [650 kB]
 Get:7 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [15.1 kB]
@@ -42,12 +43,11 @@ Hit http://archive.ubuntu.com trusty-security/universe Sources
 Hit http://archive.ubuntu.com trusty-security/main amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/universe amd64 Packages
-Fetched 1487 kB in 5s (279 kB/s)
+Fetched 1487 kB in 10s (138 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4 tcl-dev tk-dev
-+ sudo apt-get install -qq -yy m4 tcl-dev tk-dev
 debconf: unable to initialize frontend: Dialog
 Selecting previously unselected package libelf1:amd64.
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
@@ -320,10 +320,10 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [labltk: from default] Command started
 [ocamlfind: from default] Command started
-[labltk: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/labltk.8.06.0+opam.tar.gz downloaded
+[labltk: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/labltk.8.06.0+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -356,7 +356,8 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) ok
+- Detecting compiler arguments: (extractor built) 
+- ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib/ocaml
@@ -408,7 +409,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -454,6 +454,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
@@ -673,7 +674,6 @@ The following actions will be performed:
 - gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -I/usr/lib/ocaml/caml -I/usr/include/tcl8.6 -I/usr/include/tk8.6  -fPIC -c cltkMisc.c
 - gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -I/usr/lib/ocaml/caml -I/usr/include/tcl8.6 -I/usr/include/tk8.6  -fPIC -c cltkTimer.c
 - gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -I/usr/lib/ocaml/caml -I/usr/include/tcl8.6 -I/usr/include/tk8.6  -fPIC -c cltkVar.c
-- gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -I/usr/lib/ocaml/caml -I/usr/include/tcl8.6 -I/usr/include/tk8.6  -fPIC -c cltkWait.c
 - cltkEval.c: In function 'camltk_tcl_eval':
 - cltkEval.c:78:5: warning: passing argument 1 of 'tcl_string_to_caml' discards 'const' qualifier from pointer target type [enabled by default]
 -      return tcl_string_to_caml(Tcl_GetStringResult(cltclinterp));
@@ -741,30 +741,7 @@ The following actions will be performed:
 - camltk.h:56:19: note: expected 'char *' but argument is of type 'const char *'
 -  CAMLTKextern void tk_error(char * errmsg) Noreturn;
 -                    ^
-- cltkVar.c: In function 'camltk_getvar':
-- cltkVar.c:41:5: warning: passing argument 1 of 'tk_error' discards 'const' qualifier from pointer target type [enabled by default]
--      tk_error(Tcl_GetStringResult(cltclinterp));
--      ^
-- In file included from cltkVar.c:27:0:
-- camltk.h:56:19: note: expected 'char *' but argument is of type 'const char *'
--  CAMLTKextern void tk_error(char * errmsg) Noreturn;
--                    ^
-- cltkVar.c: In function 'camltk_setvar':
-- cltkVar.c:67:5: warning: passing argument 1 of 'tk_error' discards 'const' qualifier from pointer target type [enabled by default]
--      tk_error(Tcl_GetStringResult(cltclinterp));
--      ^
-- In file included from cltkVar.c:27:0:
-- camltk.h:56:19: note: expected 'char *' but argument is of type 'const char *'
--  CAMLTKextern void tk_error(char * errmsg) Noreturn;
--                    ^
-- cltkVar.c: In function 'camltk_trace_var':
-- cltkVar.c:107:5: warning: passing argument 1 of 'tk_error' discards 'const' qualifier from pointer target type [enabled by default]
--      tk_error(Tcl_GetStringResult(cltclinterp));
--      ^
-- In file included from cltkVar.c:27:0:
-- camltk.h:56:19: note: expected 'char *' but argument is of type 'const char *'
--  CAMLTKextern void tk_error(char * errmsg) Noreturn;
--                    ^
+- gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -I/usr/lib/ocaml/caml -I/usr/include/tcl8.6 -I/usr/include/tk8.6  -fPIC -c cltkWait.c
 - gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -I/usr/lib/ocaml/caml -I/usr/include/tcl8.6 -I/usr/include/tk8.6  -fPIC -c cltkImg.c
 - /usr/bin/ocamlmklib -o labltk cltkCaml.o cltkUtf.o cltkEval.o cltkEvent.o cltkFile.o cltkMain.o cltkMisc.o cltkTimer.o cltkVar.o cltkWait.o cltkImg.o -ldopt "-ltk8.6" -ldopt "-ltcl8.6" -ldopt "-L/usr/lib/x86_64-linux-gnu" -ldopt "-lX11"
 - make[1]: Leaving directory `/home/opam/.opam/system/build/labltk.8.06.0/support'
@@ -831,6 +808,30 @@ The following actions will be performed:
 - /usr/bin/ocamlrun ../compiler/pp < _tk.ml > tk.ml
 - rm -f _tk.ml
 - /usr/bin/ocamldep -slash -I ../support [a-z]*.mli [a-z]*.ml > .depend
+- cltkVar.c: In function 'camltk_getvar':
+- cltkVar.c:41:5: warning: passing argument 1 of 'tk_error' discards 'const' qualifier from pointer target type [enabled by default]
+-      tk_error(Tcl_GetStringResult(cltclinterp));
+-      ^
+- In file included from cltkVar.c:27:0:
+- camltk.h:56:19: note: expected 'char *' but argument is of type 'const char *'
+-  CAMLTKextern void tk_error(char * errmsg) Noreturn;
+-                    ^
+- cltkVar.c: In function 'camltk_setvar':
+- cltkVar.c:67:5: warning: passing argument 1 of 'tk_error' discards 'const' qualifier from pointer target type [enabled by default]
+-      tk_error(Tcl_GetStringResult(cltclinterp));
+-      ^
+- In file included from cltkVar.c:27:0:
+- camltk.h:56:19: note: expected 'char *' but argument is of type 'const char *'
+-  CAMLTKextern void tk_error(char * errmsg) Noreturn;
+-                    ^
+- cltkVar.c: In function 'camltk_trace_var':
+- cltkVar.c:107:5: warning: passing argument 1 of 'tk_error' discards 'const' qualifier from pointer target type [enabled by default]
+-      tk_error(Tcl_GetStringResult(cltclinterp));
+-      ^
+- In file included from cltkVar.c:27:0:
+- camltk.h:56:19: note: expected 'char *' but argument is of type 'const char *'
+-  CAMLTKextern void tk_error(char * errmsg) Noreturn;
+-                    ^
 - cltkWait.c: In function 'camltk_wait_vis':
 - cltkWait.c:69:5: warning: passing argument 1 of 'tk_error' discards 'const' qualifier from pointer target type [enabled by default]
 -      tk_error(Tcl_GetStringResult(cltclinterp));
@@ -954,6 +955,24 @@ The following actions will be performed:
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../support toplevel.ml
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../support grid.mli
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../support grid.ml
+- File "pixmap.ml", line 49, characters 18-31:
+- Warning 3: deprecated: StdLabels.String.create
+- Use BytesLabels.create instead.
+- File "pixmap.ml", line 71, characters 10-23:
+- Warning 3: deprecated: StdLabels.String.create
+- Use BytesLabels.create instead.
+- File "pixmap.ml", line 98, characters 10-23:
+- Warning 3: deprecated: StdLabels.String.create
+- Use BytesLabels.create instead.
+- File "pixmap.ml", line 99, characters 2-21:
+- Warning 3: deprecated: StdLabels.String.set
+- Use BytesLabels.set instead.
+- File "pixmap.ml", line 100, characters 2-21:
+- Warning 3: deprecated: StdLabels.String.set
+- Use BytesLabels.set instead.
+- File "pixmap.ml", line 101, characters 2-21:
+- Warning 3: deprecated: StdLabels.String.set
+- Use BytesLabels.set instead.
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../support labltk.ml
 - make[1]: Leaving directory `/home/opam/.opam/system/build/labltk.8.06.0/labltk'
 - cd camltk; make -f Makefile.gen
@@ -988,24 +1007,6 @@ The following actions will be performed:
 - /usr/bin/ocamlrun ../compiler/pp < _cTk.ml > cTk.ml
 - rm -f _cTk.ml
 - /usr/bin/ocamldep -slash -I ../support [a-z]*.mli [a-z]*.ml > .depend
-- File "pixmap.ml", line 49, characters 18-31:
-- Warning 3: deprecated: StdLabels.String.create
-- Use BytesLabels.create instead.
-- File "pixmap.ml", line 71, characters 10-23:
-- Warning 3: deprecated: StdLabels.String.create
-- Use BytesLabels.create instead.
-- File "pixmap.ml", line 98, characters 10-23:
-- Warning 3: deprecated: StdLabels.String.create
-- Use BytesLabels.create instead.
-- File "pixmap.ml", line 99, characters 2-21:
-- Warning 3: deprecated: StdLabels.String.set
-- Use BytesLabels.set instead.
-- File "pixmap.ml", line 100, characters 2-21:
-- Warning 3: deprecated: StdLabels.String.set
-- Use BytesLabels.set instead.
-- File "pixmap.ml", line 101, characters 2-21:
-- Warning 3: deprecated: StdLabels.String.set
-- Use BytesLabels.set instead.
 - make[1]: Leaving directory `/home/opam/.opam/system/build/labltk.8.06.0/camltk'
 - cd camltk; make
 - make[1]: Entering directory `/home/opam/.opam/system/build/labltk.8.06.0/camltk'
@@ -1070,24 +1071,6 @@ The following actions will be performed:
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../support cImagebitmap.ml
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../support cEncoding.mli
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../support cEncoding.ml
-- File "cPixmap.ml", line 48, characters 18-31:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "cPixmap.ml", line 70, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "cPixmap.ml", line 97, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "cPixmap.ml", line 98, characters 2-21:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "cPixmap.ml", line 99, characters 2-21:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "cPixmap.ml", line 100, characters 2-21:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../support cOptionmenu.mli
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../support cOptionmenu.ml
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../support cCheckbutton.mli
@@ -1126,6 +1109,24 @@ The following actions will be performed:
 - /usr/bin/ocamlmklib -ocamlc '/usr/bin/ocamlc' -o labltk \
 - 	  -I ../labltk -I ../camltk ../support/support.cmo ../support/rawwidget.cmo ../support/widget.cmo ../support/protocol.cmo ../support/textvariable.cmo ../support/timer.cmo ../support/fileevent.cmo ../support/camltkwrap.cmo tk.cmo bell.cmo scale.cmo winfo.cmo scrollbar.cmo entry.cmo listbox.cmo wm.cmo tkwait.cmo grab.cmo font.cmo canvas.cmo image.cmo clipboard.cmo label.cmo message.cmo text.cmo imagephoto.cmo option.cmo frame.cmo selection.cmo dialog.cmo place.cmo pixmap.cmo menubutton.cmo radiobutton.cmo focus.cmo pack.cmo imagebitmap.cmo encoding.cmo optionmenu.cmo checkbutton.cmo tkvars.cmo palette.cmo menu.cmo button.cmo toplevel.cmo grid.cmo cTk.cmo cBell.cmo cScale.cmo cWinfo.cmo cScrollbar.cmo cEntry.cmo cListbox.cmo cWm.cmo cTkwait.cmo cGrab.cmo cFont.cmo cCanvas.cmo cImage.cmo cClipboard.cmo cLabel.cmo cResource.cmo cMessage.cmo cText.cmo cImagephoto.cmo cOption.cmo cFrame.cmo cSelection.cmo cDialog.cmo cPlace.cmo cPixmap.cmo cMenubutton.cmo cRadiobutton.cmo cFocus.cmo cPack.cmo cImagebitmap.cmo cEncoding.cmo cOptionmenu.cmo cCheckbutton.cmo cTkvars.cmo cPalette.cmo cMenu.cmo cButton.cmo cToplevel.cmo cGrid.cmo labltk.cmo camltk.cmo \
 - 	  -cclib "\"-ltk8.6 -ltcl8.6  -L/usr/lib/x86_64-linux-gnu -lX11\""
+- File "cPixmap.ml", line 48, characters 18-31:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "cPixmap.ml", line 70, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "cPixmap.ml", line 97, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "cPixmap.ml", line 98, characters 2-21:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "cPixmap.ml", line 99, characters 2-21:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "cPixmap.ml", line 100, characters 2-21:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 - /usr/bin/ocamlc.opt -verbose -linkall -o labltktop -I ../support \
 - 	       ocamlcommon.cma ocamlbytecomp.cma ocamltoplevel.cma \
 - 	       -I +compiler-libs unix.cma \
@@ -1158,9 +1159,6 @@ The following actions will be performed:
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../camltk -I ../support frx_entry.ml
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../camltk -I ../support frx_text.mli
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../camltk -I ../support frx_text.ml
-- File "jpf_font.ml", line 173, characters 2-11:
-- Warning 3: deprecated: Sort.list
-- Use List.sort instead.
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../camltk -I ../support frx_listbox.mli
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../camltk -I ../support frx_listbox.ml
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../camltk -I ../support frx_req.mli
@@ -1196,6 +1194,9 @@ The following actions will be performed:
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../labltk -I ../lib -I ../support -I +compiler-libs jg_config.ml
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../labltk -I ../lib -I ../support -I +compiler-libs jg_bind.mli
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../labltk -I ../lib -I ../support -I +compiler-libs jg_bind.ml
+- File "jpf_font.ml", line 173, characters 2-11:
+- Warning 3: deprecated: Sort.list
+- Use List.sort instead.
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../labltk -I ../lib -I ../support -I +compiler-libs jg_completion.mli
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../labltk -I ../lib -I ../support -I +compiler-libs jg_completion.ml
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../labltk -I ../lib -I ../support -I +compiler-libs jg_box.ml
@@ -1222,9 +1223,6 @@ The following actions will be performed:
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../labltk -I ../lib -I ../support -I +compiler-libs fileselect.mli
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../labltk -I ../lib -I ../support -I +compiler-libs fileselect.ml
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../labltk -I ../lib -I ../support -I +compiler-libs searchid.mli
-- File "fileselect.ml", line 134, characters 8-18:
-- Warning 3: deprecated: Sort.merge
-- Use List.merge instead.
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../labltk -I ../lib -I ../support -I +compiler-libs searchid.ml
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../labltk -I ../lib -I ../support -I +compiler-libs searchpos.mli
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../labltk -I ../lib -I ../support -I +compiler-libs searchpos.ml
@@ -1244,6 +1242,21 @@ The following actions will be performed:
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../labltk -I ../lib -I ../support -I +compiler-libs editor.mli
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../labltk -I ../lib -I ../support -I +compiler-libs editor.ml
 - /usr/bin/ocamlc.opt -c -warn-error A-3 -I ../labltk -I ../lib -I ../support -I +compiler-libs main.ml
+- File "fileselect.ml", line 134, characters 8-18:
+- Warning 3: deprecated: Sort.merge
+- Use List.merge instead.
+- File "shell.ml", line 115, characters 16-29:
+- Warning 3: deprecated: StdLabels.String.create
+- Use BytesLabels.create instead.
+- File "shell.ml", line 195, characters 18-31:
+- Warning 3: deprecated: StdLabels.String.create
+- Use BytesLabels.create instead.
+- File "viewer.ml", line 47, characters 17-26:
+- Warning 3: deprecated: Sort.list
+- Use List.sort instead.
+- File "editor.ml", line 467, characters 16-29:
+- Warning 3: deprecated: StdLabels.String.create
+- Use BytesLabels.create instead.
 - /usr/bin/ocamlc.opt -o ocamlbrowser -I ../labltk -I ../lib -I ../support -I +compiler-libs \
 - 		ocamlcommon.cma \
 - 		unix.cma str.cma  labltk.cma jglib.cma \
@@ -1270,18 +1283,6 @@ The following actions will be performed:
 - cd labltk; make opt
 - make[1]: Entering directory `/home/opam/.opam/system/build/labltk.8.06.0/labltk'
 - /usr/bin/ocamlopt.opt -c -I ../support tk.ml
-- File "shell.ml", line 115, characters 16-29:
-- Warning 3: deprecated: StdLabels.String.create
-- Use BytesLabels.create instead.
-- File "shell.ml", line 195, characters 18-31:
-- Warning 3: deprecated: StdLabels.String.create
-- Use BytesLabels.create instead.
-- File "viewer.ml", line 47, characters 17-26:
-- Warning 3: deprecated: Sort.list
-- Use List.sort instead.
-- File "editor.ml", line 467, characters 16-29:
-- Warning 3: deprecated: StdLabels.String.create
-- Use BytesLabels.create instead.
 - /usr/bin/ocamlopt.opt -c -I ../support bell.ml
 - /usr/bin/ocamlopt.opt -c -I ../support scale.ml
 - /usr/bin/ocamlopt.opt -c -I ../support winfo.ml
@@ -1308,6 +1309,15 @@ The following actions will be performed:
 - /usr/bin/ocamlopt.opt -c -I ../support menubutton.ml
 - /usr/bin/ocamlopt.opt -c -I ../support radiobutton.ml
 - /usr/bin/ocamlopt.opt -c -I ../support focus.ml
+- /usr/bin/ocamlopt.opt -c -I ../support pack.ml
+- /usr/bin/ocamlopt.opt -c -I ../support imagebitmap.ml
+- /usr/bin/ocamlopt.opt -c -I ../support encoding.ml
+- /usr/bin/ocamlopt.opt -c -I ../support optionmenu.ml
+- /usr/bin/ocamlopt.opt -c -I ../support checkbutton.ml
+- /usr/bin/ocamlopt.opt -c -I ../support tkvars.ml
+- /usr/bin/ocamlopt.opt -c -I ../support palette.ml
+- /usr/bin/ocamlopt.opt -c -I ../support menu.ml
+- /usr/bin/ocamlopt.opt -c -I ../support button.ml
 - File "pixmap.ml", line 49, characters 18-31:
 - Warning 3: deprecated: StdLabels.String.create
 - Use BytesLabels.create instead.
@@ -1326,15 +1336,6 @@ The following actions will be performed:
 - File "pixmap.ml", line 101, characters 2-21:
 - Warning 3: deprecated: StdLabels.String.set
 - Use BytesLabels.set instead.
-- /usr/bin/ocamlopt.opt -c -I ../support pack.ml
-- /usr/bin/ocamlopt.opt -c -I ../support imagebitmap.ml
-- /usr/bin/ocamlopt.opt -c -I ../support encoding.ml
-- /usr/bin/ocamlopt.opt -c -I ../support optionmenu.ml
-- /usr/bin/ocamlopt.opt -c -I ../support checkbutton.ml
-- /usr/bin/ocamlopt.opt -c -I ../support tkvars.ml
-- /usr/bin/ocamlopt.opt -c -I ../support palette.ml
-- /usr/bin/ocamlopt.opt -c -I ../support menu.ml
-- /usr/bin/ocamlopt.opt -c -I ../support button.ml
 - /usr/bin/ocamlopt.opt -c -I ../support toplevel.ml
 - /usr/bin/ocamlopt.opt -c -I ../support grid.ml
 - /usr/bin/ocamlopt.opt -c -I ../support labltk.ml
@@ -1373,6 +1374,24 @@ The following actions will be performed:
 - /usr/bin/ocamlopt.opt -c -I ../support cMenubutton.ml
 - /usr/bin/ocamlopt.opt -c -I ../support cRadiobutton.ml
 - /usr/bin/ocamlopt.opt -c -I ../support cFocus.ml
+- File "cPixmap.ml", line 48, characters 18-31:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "cPixmap.ml", line 70, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "cPixmap.ml", line 97, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "cPixmap.ml", line 98, characters 2-21:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "cPixmap.ml", line 99, characters 2-21:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "cPixmap.ml", line 100, characters 2-21:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 - /usr/bin/ocamlopt.opt -c -I ../support cPack.ml
 - /usr/bin/ocamlopt.opt -c -I ../support cImagebitmap.ml
 - /usr/bin/ocamlopt.opt -c -I ../support cEncoding.ml
@@ -1410,24 +1429,6 @@ The following actions will be performed:
 - cd jpf; make opt
 - make[1]: Entering directory `/home/opam/.opam/system/build/labltk.8.06.0/jpf'
 - /usr/bin/ocamlopt.opt -c -I ../labltk -I ../support fileselect.ml
-- File "cPixmap.ml", line 48, characters 18-31:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "cPixmap.ml", line 70, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "cPixmap.ml", line 97, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "cPixmap.ml", line 98, characters 2-21:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "cPixmap.ml", line 99, characters 2-21:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "cPixmap.ml", line 100, characters 2-21:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 - /usr/bin/ocamlopt.opt -c -I ../labltk -I ../support balloon.ml
 - /usr/bin/ocamlopt.opt -c -I ../labltk -I ../support shell.ml
 - /usr/bin/ocamlopt.opt -c -I ../labltk -I ../support jpf_font.ml
