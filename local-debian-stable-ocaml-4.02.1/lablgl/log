@@ -3,29 +3,29 @@
 + lsb_release -i -s
 # Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=lablgl
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=lablgl
 # The following system packages are needed:
 #  - freeglut3-dev
 #  - libglu1-mesa-dev
 #  - m4
 #  - mesa-common-dev
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=lablgl
 Not running as root, the following command will be run through "sudo":
     apt-get update
 + sudo apt-get update
 Hit http://security.debian.org stable/updates InRelease
 Ign http://download.opensuse.org  InRelease
 Hit http://httpredir.debian.org stable InRelease
-Hit http://httpredir.debian.org stable-updates InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Get:1 http://security.debian.org stable/updates/main amd64 Packages [58.9 kB]
-Get:2 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
-Get:3 http://download.opensuse.org  Packages [5783 B]
-Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9088 kB in 4s (2036 kB/s)
+Get:1 http://security.debian.org stable/updates/main amd64 Packages [59.5 kB]
+Get:2 http://download.opensuse.org  Packages [5783 B]
+Get:3 http://httpredir.debian.org stable-updates InRelease [126 kB]
+Get:4 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
+Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
+Fetched 9214 kB in 3s (2361 kB/s)
 Reading package lists...
-# OS package update successful
 + sudo apt-get install -qq -yy freeglut3-dev libglu1-mesa-dev m4 mesa-common-dev
+# OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy freeglut3-dev libglu1-mesa-dev m4 mesa-common-dev
 debconf: unable to initialize frontend: Dialog
@@ -292,9 +292,9 @@ The following actions will be performed:
 [lablgl: from default] Command started
 [ocamlfind: from default] Command started
 [camlp4: from default] Command started
-[default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/lablgl.1.05+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -487,7 +487,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -532,6 +531,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -1229,10 +1229,10 @@ The following actions will be performed:
 - ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_shader.c
 - ocamlc -c -w s -I +labltk raw.mli
 - ocamlc -c -w s -I +labltk raw.ml
+- ocamlc -c -w s -I +labltk gl.mli
 - File "raw.ml", line 24, characters 13-15:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
-- ocamlc -c -w s -I +labltk gl.mli
 - ocamlc -c -w s -I +labltk gl.ml
 - ocamlc -c -w s -I +labltk glLight.mli
 - ocamlc -c -w s -I +labltk glLight.ml
@@ -1267,6 +1267,8 @@ The following actions will be performed:
 - ocamlc -c -w s -I +labltk glArray.mli
 - ocamlc -c -w s -I +labltk glArray.ml
 - ocamlc -c -w s -I +labltk glShader.mli
+- ocamlc -c -w s -I +labltk glShader.ml
+- ocamlmklib -o lablgl ml_gl.o	ml_glu.o	ml_raw.o ml_glarray.o ml_glutess.o	ml_shader.o raw.cmo gl.cmo		glLight.cmo	glList.cmo	glMap.cmo glMat.cmo	glMisc.cmo	glPix.cmo	glClear.cmo glTex.cmo	glDraw.cmo	glFunc.cmo	gluMisc.cmo gluNurbs.cmo	gluQuadric.cmo	gluTess.cmo	gluMat.cmo glArray.cmo	glShader.cmo -lGL -lGLU 
 - File "glMat.ml", line 73, characters 10-22:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
@@ -1282,8 +1284,6 @@ The following actions will be performed:
 - File "gluNurbs.ml", line 57, characters 23-25:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
-- ocamlc -c -w s -I +labltk glShader.ml
-- ocamlmklib -o lablgl ml_gl.o	ml_glu.o	ml_raw.o ml_glarray.o ml_glutess.o	ml_shader.o raw.cmo gl.cmo		glLight.cmo	glList.cmo	glMap.cmo glMat.cmo	glMisc.cmo	glPix.cmo	glClear.cmo glTex.cmo	glDraw.cmo	glFunc.cmo	gluMisc.cmo gluNurbs.cmo	gluQuadric.cmo	gluTess.cmo	gluMat.cmo glArray.cmo	glShader.cmo -lGL -lGLU 
 - make[2]: Leaving directory '/home/opam/.opam/4.02.1/build/lablgl.1.05/src'
 - make[1]: Leaving directory '/home/opam/.opam/4.02.1/build/lablgl.1.05/src'
 - cd LablGlut/src && make
@@ -1363,6 +1363,7 @@ The following actions will be performed:
 - ocamlopt -c -I +labltk gluNurbs.ml
 - ocamlopt -c -I +labltk gluQuadric.ml
 - ocamlopt -c -I +labltk gluTess.ml
+- ocamlopt -c -I +labltk gluMat.ml
 - File "raw.ml", line 24, characters 13-15:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
@@ -1381,7 +1382,6 @@ The following actions will be performed:
 - File "gluNurbs.ml", line 57, characters 23-25:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
-- ocamlopt -c -I +labltk gluMat.ml
 - ocamlopt -c -I +labltk glArray.ml
 - ocamlopt -c -I +labltk glShader.ml
 - ocamlmklib -o lablgl ml_gl.o	ml_glu.o	ml_raw.o ml_glarray.o ml_glutess.o	ml_shader.o raw.cmx gl.cmx glLight.cmx glList.cmx glMap.cmx glMat.cmx glMisc.cmx glPix.cmx glClear.cmx glTex.cmx glDraw.cmx glFunc.cmx gluMisc.cmx gluNurbs.cmx gluQuadric.cmx gluTess.cmx gluMat.cmx glArray.cmx glShader.cmx -lGL -lGLU 
