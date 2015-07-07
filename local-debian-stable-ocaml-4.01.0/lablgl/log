@@ -1,22 +1,28 @@
++ uname -m
++ uname -s
++ opam list --safe --recursive --external=x86_64,linux,debian --required-by=lablgl
 # Detecting depexts using flags: x86_64 linux debian
 # The following system packages are needed:
 #  - freeglut3-dev
 #  - libglu1-mesa-dev
 #  - mesa-common-dev
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=lablgl
 Not running as root, system installation will be done through "sudo"
+Hit http://security.debian.org stable/updates Release.gpg
 Hit http://http.debian.net stable Release.gpg
 Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
-Hit http://http.debian.net stable Release
-Hit http://security.debian.org stable/updates Release.gpg
-Get:2 http://http.debian.net stable-updates Release [124 kB]
 Hit http://security.debian.org stable/updates Release
+Hit http://http.debian.net stable Release
+Get:2 http://http.debian.net stable-updates Release [124 kB]
 Hit http://security.debian.org stable/updates/main amd64 Packages
 Hit http://http.debian.net stable/main amd64 Packages
 Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
-Fetched 129 kB in 1s (93.7 kB/s)
+Fetched 129 kB in 1s (125 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
++ sudo apt-get update
++ sudo apt-get install -qq -yy freeglut3-dev libglu1-mesa-dev mesa-common-dev
 debconf: delaying package configuration, since apt-utils is not installed
 Selecting previously unselected package freeglut3:amd64.
 (Reading database ... 20143 files and directories currently installed.)
@@ -83,8 +89,6 @@ The following actions will be performed:
 - ocamlrun ../src/var2def < glu_tags.var > glu_tags.h
 - ocamlrun ../src/var2switch GLU_ < glu_tags.var > glu_tags.c
 - ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_glu.c
-- ocamlrun ../src/var2def < raw_tags.var > raw_tags.h
-- ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_raw.c
 - ml_gl.c: In function 'ml_glGetString':
 - ml_gl.c:225:1: warning: pointer targets in passing argument 1 of 'lablgl_copy_string_check' differ in signedness [-Wpointer-sign]
 - ml_gl.c:40:7: note: expected 'const char *' but argument is of type 'const GLubyte *'
@@ -96,6 +100,8 @@ The following actions will be performed:
 - ml_glu.c:96:1: warning: pointer targets in passing argument 1 of 'lablgl_copy_string_check' differ in signedness [-Wpointer-sign]
 - In file included from ml_glu.c:19:0:
 - ml_gl.h:10:7: note: expected 'const char *' but argument is of type 'const GLubyte *'
+- ocamlrun ../src/var2def < raw_tags.var > raw_tags.h
+- ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_raw.c
 - ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_glarray.c
 - ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_glutess.c
 - ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_shader.c
@@ -104,13 +110,13 @@ The following actions will be performed:
 - ocamlc -c -w s -I +labltk gl.mli
 - ocamlc -c -w s -I +labltk gl.ml
 - ocamlc -c -w s -I +labltk glLight.mli
+- File "raw.ml", line 24, characters 13-15:
+- Warning 3: deprecated feature: operator (or); you should use (||) instead
 - ocamlc -c -w s -I +labltk glLight.ml
 - ocamlc -c -w s -I +labltk glList.mli
 - ocamlc -c -w s -I +labltk glList.ml
 - ocamlc -c -w s -I +labltk glMap.mli
 - ocamlc -c -w s -I +labltk glMap.ml
-- File "raw.ml", line 24, characters 13-15:
-- Warning 3: deprecated feature: operator (or); you should use (||) instead
 - ocamlc -c -w s -I +labltk glMat.mli
 - ocamlc -c -w s -I +labltk glMat.ml
 - ocamlc -c -w s -I +labltk glMisc.mli
@@ -151,16 +157,6 @@ The following actions will be performed:
 - Warning 3: deprecated feature: operator (or); you should use (||) instead
 - File "gluNurbs.ml", line 57, characters 23-25:
 - Warning 3: deprecated feature: operator (or); you should use (||) instead
-- wrap_glut.c: In function 'ml_glutBitmapLength':
-- wrap_glut.c:393:3: warning: pointer targets in passing argument 2 of 'glutBitmapLength' differ in signedness [-Wpointer-sign]
-- In file included from /usr/include/GL/glut.h:17:0,
--                  from wrap_glut.c:17:
-- /usr/include/GL/freeglut_std.h:508:26: note: expected 'const unsigned char *' but argument is of type 'char *'
-- wrap_glut.c: In function 'ml_glutStrokeLength':
-- wrap_glut.c:399:3: warning: pointer targets in passing argument 2 of 'glutStrokeLength' differ in signedness [-Wpointer-sign]
-- In file included from /usr/include/GL/glut.h:17:0,
--                  from wrap_glut.c:17:
-- /usr/include/GL/freeglut_std.h:509:26: note: expected 'const unsigned char *' but argument is of type 'char *'
 - ocamlc -c -w s  glut.mli
 - ocamlc -c -w s  glut.ml
 - ocamlmklib -o lablglut wrap_glut.o glut.cmo -lglut -lGL -lGLU 
@@ -177,6 +173,16 @@ The following actions will be performed:
 - chmod 755 lablglut
 - make[2]: Leaving directory `/home/opam/.opam/4.01.0/build/lablgl.1.05/LablGlut/src'
 - make[1]: Leaving directory `/home/opam/.opam/4.01.0/build/lablgl.1.05/LablGlut/src'
+- wrap_glut.c: In function 'ml_glutBitmapLength':
+- wrap_glut.c:393:3: warning: pointer targets in passing argument 2 of 'glutBitmapLength' differ in signedness [-Wpointer-sign]
+- In file included from /usr/include/GL/glut.h:17:0,
+-                  from wrap_glut.c:17:
+- /usr/include/GL/freeglut_std.h:508:26: note: expected 'const unsigned char *' but argument is of type 'char *'
+- wrap_glut.c: In function 'ml_glutStrokeLength':
+- wrap_glut.c:399:3: warning: pointer targets in passing argument 2 of 'glutStrokeLength' differ in signedness [-Wpointer-sign]
+- In file included from /usr/include/GL/glut.h:17:0,
+-                  from wrap_glut.c:17:
+- /usr/include/GL/freeglut_std.h:509:26: note: expected 'const unsigned char *' but argument is of type 'char *'
 [lablgl: make glutopt] Command started
 + make "glutopt" (CWD=/home/opam/.opam/4.01.0/build/lablgl.1.05)
 - cd src && make opt
@@ -196,8 +202,6 @@ The following actions will be performed:
 - ocamlopt -c -I +labltk gluMisc.ml
 - ocamlopt -c -I +labltk gluNurbs.ml
 - ocamlopt -c -I +labltk gluQuadric.ml
-- ocamlopt -c -I +labltk gluTess.ml
-- ocamlopt -c -I +labltk gluMat.ml
 - File "raw.ml", line 24, characters 13-15:
 - Warning 3: deprecated feature: operator (or); you should use (||) instead
 - File "glMisc.ml", line 26, characters 15-17:
@@ -206,6 +210,8 @@ The following actions will be performed:
 - Warning 3: deprecated feature: operator (or); you should use (||) instead
 - File "gluNurbs.ml", line 57, characters 23-25:
 - Warning 3: deprecated feature: operator (or); you should use (||) instead
+- ocamlopt -c -I +labltk gluTess.ml
+- ocamlopt -c -I +labltk gluMat.ml
 - ocamlopt -c -I +labltk glArray.ml
 - ocamlopt -c -I +labltk glShader.ml
 - ocamlmklib -o lablgl ml_gl.o	ml_glu.o	ml_raw.o ml_glarray.o ml_glutess.o	ml_shader.o raw.cmx gl.cmx glLight.cmx glList.cmx glMap.cmx glMat.cmx glMisc.cmx glPix.cmx glClear.cmx glTex.cmx glDraw.cmx glFunc.cmx gluMisc.cmx gluNurbs.cmx gluQuadric.cmx gluTess.cmx gluMat.cmx glArray.cmx glShader.cmx -lGL -lGLU 
