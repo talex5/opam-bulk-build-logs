@@ -12,10 +12,10 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [labltk: from default] Command started
 [ocamlfind: from default] Command started
-[labltk: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/labltk.8.06.0+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[labltk: from default] Command started
+[default] http://opam-archive:8080/archives/labltk.8.06.0+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -152,6 +152,13 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 	cp topfind.ml.in topfind.ml;                             \
+- else                                                             \
+- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 		> topfind.ml ;                                   \
+- fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -160,13 +167,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 	cp topfind.ml.in topfind.ml;                             \
-- else                                                             \
-- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 		> topfind.ml ;                                   \
-- fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -323,12 +323,47 @@ The following actions will be performed:
 [labltk: ./configure] Command started
 + ./configure "-use-findlib" "-installbindir" "/home/opam/.opam/system/bin" (CWD=/home/opam/.opam/system/build/labltk.8.06.0)
 - Configuring LablTk...
-[ERROR] The compilation of labltk failed at "make all opt".
 - tcl.h and/or tk.h not found.
 - 
 - ** Configuration summary **
 - 
 - The "labltk" library: not supported
+[ERROR] The compilation of labltk failed at "make all opt".
+
+#=== ERROR while installing labltk.8.06.0 =====================================#
+# opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
+# os                   linux
+# command              make all opt
+# path                 /home/opam/.opam/system/build/labltk.8.06.0
+# compiler             system (4.02.1)
+# exit-code            2
+# env-file             /home/opam/.opam/system/build/labltk.8.06.0/labltk-1-60459a.env
+# stdout-file          /home/opam/.opam/system/build/labltk.8.06.0/labltk-1-60459a.out
+# stderr-file          /home/opam/.opam/system/build/labltk.8.06.0/labltk-1-60459a.err
+### stdout ###
+# [...]
+# /usr/bin/ocamlc.opt -c -warn-error A-3  timer.mli
+# /usr/bin/ocamlc.opt -c -warn-error A-3  timer.ml
+# /usr/bin/ocamlc.opt -c -warn-error A-3  fileevent.mli
+# /usr/bin/ocamlc.opt -c -warn-error A-3  fileevent.ml
+# /usr/bin/ocamlc.opt -c -warn-error A-3  camltkwrap.mli
+# /usr/bin/ocamlc.opt -c -warn-error A-3  camltkwrap.ml
+# /usr/bin/ocamlc.opt -c -warn-error A-3  -I +threads -I vmthreads tkthread.mli
+# /usr/bin/ocamlc.opt -c -warn-error A-3  -I +threads -I vmthreads tkthread.ml
+# gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches   -m64 -mtune=generic -I/usr/lib64/ocaml/caml  -fPIC -c cltkCaml.c
+# make[1]: Leaving directory `/home/opam/.opam/system/build/labltk.8.06.0/support'
+### stderr ###
+# cltkCaml.c:19:17: fatal error: tcl.h: No such file or directory
+#  #include <tcl.h>
+#                  ^
+# compilation terminated.
+# make[1]: *** [cltkCaml.o] Error 1
+# make: *** [all] Error 2
+
+
+The former state can be restored with:
+    opam switch import "~/.opam/system/backup/state-20150307003514.export"
+'opam install labltk' failed.
 [labltk: make all] Command started
 + make "all" "opt" (CWD=/home/opam/.opam/system/build/labltk.8.06.0)
 - cd support; make
@@ -373,38 +408,3 @@ The following changes have been performed
 =-=- labltk.8.06.0 troubleshooting =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 => This package requires Tcl/Tk with its development packages installed on your
    system
-
-#=== ERROR while installing labltk.8.06.0 =====================================#
-# opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
-# os                   linux
-# command              make all opt
-# path                 /home/opam/.opam/system/build/labltk.8.06.0
-# compiler             system (4.02.1)
-# exit-code            2
-# env-file             /home/opam/.opam/system/build/labltk.8.06.0/labltk-1-60459a.env
-# stdout-file          /home/opam/.opam/system/build/labltk.8.06.0/labltk-1-60459a.out
-# stderr-file          /home/opam/.opam/system/build/labltk.8.06.0/labltk-1-60459a.err
-### stdout ###
-# [...]
-# /usr/bin/ocamlc.opt -c -warn-error A-3  timer.mli
-# /usr/bin/ocamlc.opt -c -warn-error A-3  timer.ml
-# /usr/bin/ocamlc.opt -c -warn-error A-3  fileevent.mli
-# /usr/bin/ocamlc.opt -c -warn-error A-3  fileevent.ml
-# /usr/bin/ocamlc.opt -c -warn-error A-3  camltkwrap.mli
-# /usr/bin/ocamlc.opt -c -warn-error A-3  camltkwrap.ml
-# /usr/bin/ocamlc.opt -c -warn-error A-3  -I +threads -I vmthreads tkthread.mli
-# /usr/bin/ocamlc.opt -c -warn-error A-3  -I +threads -I vmthreads tkthread.ml
-# gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches   -m64 -mtune=generic -I/usr/lib64/ocaml/caml  -fPIC -c cltkCaml.c
-# make[1]: Leaving directory `/home/opam/.opam/system/build/labltk.8.06.0/support'
-### stderr ###
-# cltkCaml.c:19:17: fatal error: tcl.h: No such file or directory
-#  #include <tcl.h>
-#                  ^
-# compilation terminated.
-# make[1]: *** [cltkCaml.o] Error 1
-# make: *** [all] Error 2
-
-
-The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150305041700.export"
-'opam install labltk' failed.
