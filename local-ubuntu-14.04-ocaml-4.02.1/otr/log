@@ -3,26 +3,26 @@
 + lsb_release -i -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=otr
 # Detecting depexts using flags: x86_64 linux ubuntu
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=otr
 # The following system packages are needed:
 #  - libgmp-dev
 #  - m4
 #  - time
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=otr
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
-Ign http://download.opensuse.org  InRelease
 Hit http://archive.ubuntu.com trusty Release.gpg
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
-Hit http://download.opensuse.org  Release.gpg
 Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
+Ign http://download.opensuse.org  InRelease
 Hit http://archive.ubuntu.com trusty Release
 Get:3 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
-Hit http://download.opensuse.org  Release
+Hit http://download.opensuse.org  Release.gpg
 Get:4 http://archive.ubuntu.com trusty-security Release [63.5 kB]
+Hit http://download.opensuse.org  Release
 Hit http://archive.ubuntu.com trusty/main Sources
 Hit http://archive.ubuntu.com trusty/restricted Sources
 Hit http://archive.ubuntu.com trusty/universe Sources
@@ -42,10 +42,9 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [24.5 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [341 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [130 kB]
-Fetched 2167 kB in 3s (643 kB/s)
+Fetched 2167 kB in 3s (649 kB/s)
 Reading package lists...
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_main_source_Sources.gz is not what the server reported 99919 99925
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_main_binary-amd64_Packages.gz is not what the server reported 340544 340547
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 651869 651871
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libgmp-dev m4 time
@@ -92,27 +91,27 @@ The following actions will be performed:
 [cppo: from default] Command started
 [cstruct: from default] Command started
 [ctypes: from default] Command started
-[cppo: from default] Command started
 [cstruct: from default] Command started
+[cppo: from default] Command started
 [ctypes: from default] Command started
-[default] http://opam-archive:8080/archives/cppo.1.1.2+opam.tar.gz downloaded
-[nocrypto: from default] Command started
 [default] http://opam-archive:8080/archives/cstruct.1.6.0+opam.tar.gz downloaded
+[nocrypto: from default] Command started
+[default] http://opam-archive:8080/archives/cppo.1.1.2+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ctypes.0.4.1+opam.tar.gz downloaded
 [ocplib-endian: from default] Command started
 [ocamlfind: from default] Command started
+[ocplib-endian: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [otr: from default] Command started
-[ocplib-endian: from default] Command started
 [default] http://opam-archive:8080/archives/ocplib-endian.0.8+opam.tar.gz downloaded
 [sexplib: from default] Command started
 [nocrypto: from default] Command started
-[otr: from default] Command started
-[default] http://opam-archive:8080/archives/otr.0.1.0+opam.tar.gz downloaded
-[type_conv: from default] Command started
-[sexplib: from default] Command started
 [default] http://opam-archive:8080/archives/nocrypto.0.3.1+opam.tar.gz downloaded
+[type_conv: from default] Command started
+[otr: from default] Command started
+[sexplib: from default] Command started
+[default] http://opam-archive:8080/archives/otr.0.1.0+opam.tar.gz downloaded
 [zarith: from default] Command started
 [default] http://opam-archive:8080/archives/sexplib.112.24.01+opam.tar.gz downloaded
 [type_conv: from default] Command started
@@ -260,6 +259,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -268,8 +269,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -321,6 +320,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -365,7 +365,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -1148,10 +1147,10 @@ The following actions will be performed:
 - pkg_type_conv: ....................................... /home/opam/.opam/system/lib/type_conv
 - 
 - ./setup.exe -build 
-- ocamlfind ocamlopt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa -linkpkg myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
 - W: Cannot find source file matching module 'sexplib_unix' in library sexplib_unix
 - W: Cannot find source file matching module 'sexplib_num' in library sexplib_num
 - W: Cannot find source file matching module 'sexplib' in library sexplib
+- ocamlfind ocamlopt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa -linkpkg myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bigarray -modules lib/conv.mli > lib/conv.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bigarray -modules lib/sexp.mli > lib/sexp.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bigarray -modules lib/sexp_intf.ml > lib/sexp_intf.ml.depends
