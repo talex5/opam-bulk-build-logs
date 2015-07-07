@@ -1,26 +1,26 @@
 + uname -m
-+ uname -s
 # Detecting depexts using flags: x86_64 linux debian
++ uname -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=libvirt
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=libvirt
 # The following system packages are needed:
 #  - libvirt-dev
 #  - m4
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=libvirt
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
+Hit http://security.debian.org stable/updates Release.gpg
 Hit http://http.debian.net stable Release.gpg
+Hit http://security.debian.org stable/updates Release
 Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
 Hit http://http.debian.net stable Release
 Get:2 http://http.debian.net stable-updates Release [124 kB]
-Get:3 http://security.debian.org stable/updates Release.gpg [836 B]
+Hit http://security.debian.org stable/updates/main amd64 Packages
 Hit http://http.debian.net stable/main amd64 Packages
-Get:4 http://http.debian.net stable-updates/main amd64 Packages [4369 B]
-Get:5 http://security.debian.org stable/updates Release [102 kB]
-Get:6 http://security.debian.org stable/updates/main amd64 Packages [382 kB]
-+ sudo apt-get install -qq -yy libvirt-dev m4
-Fetched 614 kB in 1s (468 kB/s)
+Get:3 http://http.debian.net stable-updates/main amd64 Packages [4369 B]
+Fetched 129 kB in 1s (116 kB/s)
 Reading package lists...
++ sudo apt-get install -qq -yy libvirt-dev m4
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libvirt-dev m4
@@ -33,7 +33,6 @@ Unpacking libavahi-common-data:amd64 (from .../libavahi-common-data_0.6.31-2_amd
 Selecting previously unselected package libavahi-common3:amd64.
 Unpacking libavahi-common3:amd64 (from .../libavahi-common3_0.6.31-2_amd64.deb) ...
 Selecting previously unselected package libavahi-client3:amd64.
-invoke-rc.d: policy-rc.d denied execution of start.
 Unpacking libavahi-client3:amd64 (from .../libavahi-client3_0.6.31-2_amd64.deb) ...
 Selecting previously unselected package dmsetup.
 Unpacking dmsetup (from .../dmsetup_2%3a1.02.74-8_amd64.deb) ...
@@ -64,6 +63,7 @@ Unpacking libnuma1 (from .../libnuma1_2.0.8~rc4-1_amd64.deb) ...
 Selecting previously unselected package libxenstore3.0.
 Unpacking libxenstore3.0 (from .../libxenstore3.0_4.1.4-3+deb7u5_amd64.deb) ...
 Selecting previously unselected package libvirt0.
+invoke-rc.d: policy-rc.d denied execution of start.
 Unpacking libvirt0 (from .../libvirt0_0.9.12.3-1+deb7u1_amd64.deb) ...
 Selecting previously unselected package libxen-4.1.
 Unpacking libxen-4.1 (from .../libxen-4.1_4.1.4-3+deb7u5_amd64.deb) ...
@@ -105,8 +105,8 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [libvirt: from default] Command started
 [ocamlfind: from default] Command started
-[ocamlfind: from default] Command started
 [libvirt: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/libvirt.0.6.1.2+opam.tar.gz downloaded
 
@@ -140,7 +140,10 @@ The following actions will be performed:
 - Configuration for camlp4 written to site-lib-src/camlp4/META
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
-- Detecting compiler arguments: (extractor built) ok
+- Detecting compiler arguments: (extractor built) 
+- File "itest-aux/ppx.ml", line 1, characters 0-25:
+- Error: Unbound value Toploop.preprocess_phrase
+- ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /home/opam/.opam/4.01.0/lib/ocaml
@@ -164,8 +167,6 @@ The following actions will be performed:
 - Configuration has been written to Makefile.config
 - 
 - You can now do 'make all', and optionally 'make opt', to build ocamlfind.
-- File "itest-aux/ppx.ml", line 1, characters 0-25:
-- Error: Unbound value Toploop.preprocess_phrase
 [ocamlfind: make all] Command started
 + make "all" (CWD=/home/opam/.opam/4.01.0/build/ocamlfind.1.5.5)
 - for p in findlib bytes; do ( cd src/$p; make all ) || exit; done
@@ -193,9 +194,9 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
-- Makefile:160: depend: No such file or directory
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
+- Makefile:160: depend: No such file or directory
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
@@ -342,28 +343,30 @@ The following actions will be performed:
 - checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
-- checking for gcc option to accept ISO C89... none needed
+- checking for gcc option to accept ISO C89... 
+- none needed
 - checking for a BSD-compatible install... /usr/bin/install -c
 - checking how to run the C preprocessor... gcc -E
 - checking for function prototypes... yes
-- checking whether gcc and cc understand -c and -o together... yes
+- checking whether gcc and cc understand -c and -o together... 
+- yes
 - checking build system type... x86_64-unknown-linux-gnu
 - checking host system type... x86_64-unknown-linux-gnu
 - checking for virConnectOpen in -lvirt... yes
 - checking for grep that handles long lines and -e... /bin/grep
 - checking for egrep... /bin/grep -E
-- checking for ANSI C header files... yes
+- checking for ANSI C header files... 
+- yes
 - checking for sys/types.h... yes
 - checking for sys/stat.h... yes
 - checking for stdlib.h... yes
-- checking for string.h... 
-- yes
+- checking for string.h... yes
 - checking for memory.h... yes
 - checking for strings.h... yes
-- checking for inttypes.h... yes
-- checking for stdint.h... yes
-- checking for unistd.h... 
+- checking for inttypes.h... 
 - yes
+- checking for stdint.h... yes
+- checking for unistd.h... yes
 - checking libvirt/libvirt.h usability... yes
 - checking libvirt/libvirt.h presence... yes
 - checking for libvirt/libvirt.h... yes
@@ -377,9 +380,9 @@ The following actions will be performed:
 - checking for virDomainBlockStats... yes
 - checking for virDomainGetSchedulerParameters... yes
 - checking for virDomainGetSchedulerType... yes
-- checking for virDomainInterfaceStats... yes
-- checking for virDomainMigrate... 
+- checking for virDomainInterfaceStats... 
 - yes
+- checking for virDomainMigrate... yes
 - checking for virDomainSetSchedulerParameters... yes
 - checking for virNodeGetFreeMemory... yes
 - checking for virNodeGetCellsFreeMemory... yes
@@ -401,12 +404,14 @@ The following actions will be performed:
 - checking for virStoragePoolCreate... yes
 - checking for virStoragePoolDestroy... yes
 - checking for virStoragePoolDelete... yes
-- checking for virStoragePoolFree... yes
+- checking for virStoragePoolFree... 
+- yes
 - checking for virStoragePoolRefresh... yes
 - checking for virStoragePoolGetName... yes
 - checking for virStoragePoolGetUUID... yes
 - checking for virStoragePoolGetUUIDString... yes
-- checking for virStoragePoolGetInfo... yes
+- checking for virStoragePoolGetInfo... 
+- yes
 - checking for virStoragePoolGetXMLDesc... yes
 - checking for virStoragePoolGetAutostart... yes
 - checking for virStoragePoolSetAutostart... yes
@@ -421,14 +426,16 @@ The following actions will be performed:
 - checking for virStorageVolCreateXML... yes
 - checking for virStorageVolDelete... yes
 - checking for virStorageVolFree... yes
-- checking for virStorageVolGetInfo... yes
+- checking for virStorageVolGetInfo... 
+- yes
 - checking for virStorageVolGetXMLDesc... yes
 - checking for virStorageVolGetPath... yes
 - checking for virDomainBlockPeek... yes
 - checking for virDomainMemoryPeek... yes
 - checking for virDomainGetCPUStats... yes
 - checking for virStoragePoolPtr... yes
-- checking for virStorageVolPtr... yes
+- checking for virStorageVolPtr... 
+- yes
 - checking for ocamlc... ocamlc
 - OCaml version is 4.01.0
 - OCaml library path is /home/opam/.opam/4.01.0/lib/ocaml
