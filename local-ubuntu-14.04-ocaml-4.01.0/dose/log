@@ -3,12 +3,12 @@
 + lsb_release -i -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=dose
 # Detecting depexts using flags: x86_64 linux ubuntu
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=dose
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=dose
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
@@ -36,13 +36,15 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [24.5 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [341 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [130 kB]
-Fetched 2158 kB in 7s (295 kB/s)
+Fetched 2158 kB in 5s (370 kB/s)
 Reading package lists...
 W# OS package update successful
-: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 647951 648025
-+ sudo apt-get install -qq -yy m4
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
+: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_source_Sources.gz is not what the server reported 250796 250800
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_main_source_Sources.gz is not what the server reported 99937 99938
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_main_binary-amd64_Packages.gz is not what the server reported 340536 340605
++ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind     1.5.5                                 [required by ocamlgraph, re]
@@ -60,13 +62,13 @@ The following actions will be performed:
 [dose: from default] Command started
 [extlib-compat: from default] Command started
 [cudf: from default] Command started
-[default] http://opam-archive:8080/archives/cudf.0.7+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
 [dose: from default] Command started
 [extlib-compat: from default] Command started
-[default] http://opam-archive:8080/archives/extlib-compat.1.6.1+opam.tar.gz downloaded
-[ocamlgraph: from default] Command started
+[default] http://opam-archive:8080/archives/cudf.0.7+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/dose.3.3+opam.tar.gz downloaded
+[ocamlgraph: from default] Command started
+[default] http://opam-archive:8080/archives/extlib-compat.1.6.1+opam.tar.gz downloaded
 [re: from default] Command started
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
@@ -1045,7 +1047,8 @@ The following actions will be performed:
 - checking how to run the C preprocessor... gcc -E
 - checking for grep that handles long lines and -e... /bin/grep
 - checking for egrep... /bin/grep -E
-- checking for ANSI C header files... yes
+- checking for ANSI C header files... 
+- yes
 - configure: creating ./config.status
 - config.status: creating Makefile.config
 - config.status: creating _tags
@@ -1351,6 +1354,8 @@ The following actions will be performed:
 - pod2html strongdeps.pod > strongdeps.html
 - make[1]: Leaving directory `/home/opam/.opam/system/build/dose.3.3/doc/manpages'
 - ocamlbuild  -j 10 applications/apps.otarget
+- ocamlfind ocamldep -package extlib -package re.pcre -package unix -package cudf -package ocamlgraph -package re.str -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs  -DHASOCAMLGRAPH' -modules applications/distcheck.ml > applications/distcheck.ml.depends
+- ocamlfind ocamlc -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package unix -package cudf -package ocamlgraph -package re.str -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs  -DHASOCAMLGRAPH' -I applications -I doselibs -o applications/distcheck.cmo applications/distcheck.ml
 - Cannot find "deb-control(5)" in podpath: cannot find suitable replacement path, cannot resolve link
 - Cannot find "dose3-distcheck(1)" in podpath: cannot find suitable replacement path, cannot resolve link
 - Cannot find "distcheck(1)" in podpath: cannot find suitable replacement path, cannot resolve link
@@ -1361,8 +1366,6 @@ The following actions will be performed:
 - Cannot find "distcheck(5)" in podpath: cannot find suitable replacement path, cannot resolve link
 - Cannot find "challenged(5)" in podpath: cannot find suitable replacement path, cannot resolve link
 - make: Circular all <- all dependency dropped.
-- ocamlfind ocamldep -package extlib -package re.pcre -package unix -package cudf -package ocamlgraph -package re.str -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs  -DHASOCAMLGRAPH' -modules applications/distcheck.ml > applications/distcheck.ml.depends
-- ocamlfind ocamlc -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package unix -package cudf -package ocamlgraph -package re.str -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs  -DHASOCAMLGRAPH' -I applications -I doselibs -o applications/distcheck.cmo applications/distcheck.ml
 - ocamlfind ocamlopt -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package unix -package cudf -package ocamlgraph -package re.str -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs  -DHASOCAMLGRAPH' -I applications -I doselibs -o applications/distcheck.cmx applications/distcheck.ml
 - ocamlfind ocamldep -package extlib -package re.pcre -package unix -package cudf -package ocamlgraph -package re.str -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs  -DHASOCAMLGRAPH' -modules applications/deb-buildcheck.ml > applications/deb-buildcheck.ml.depends
 - ocamlfind ocamlc -c -w -24 -ccopt -O9 -package extlib -package re.pcre -package unix -package cudf -package ocamlgraph -package re.str -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs' -pp 'camlp4o.opt -I_build Camlp4MacroParser.cmxs  -DHASOCAMLGRAPH' -I applications -I doselibs -o applications/deb-buildcheck.cmo applications/deb-buildcheck.ml
