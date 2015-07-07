@@ -1,34 +1,34 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-# Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=caml2html
+# Detecting depexts using flags: x86_64 linux ubuntu
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=caml2html
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=caml2html
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
+Ign http://download.opensuse.org  InRelease
+Hit http://download.opensuse.org  Release.gpg
+Hit http://download.opensuse.org  Release
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
 Hit http://archive.ubuntu.com trusty Release.gpg
+Hit http://download.opensuse.org  Packages
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
-Ign http://download.opensuse.org  InRelease
 Hit http://archive.ubuntu.com trusty Release
 Get:3 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
 Get:4 http://archive.ubuntu.com trusty-security Release [63.5 kB]
-Hit http://download.opensuse.org  Release.gpg
 Hit http://archive.ubuntu.com trusty/main Sources
-Hit http://download.opensuse.org  Release
 Hit http://archive.ubuntu.com trusty/restricted Sources
 Hit http://archive.ubuntu.com trusty/universe Sources
 Hit http://archive.ubuntu.com trusty/main amd64 Packages
 Hit http://archive.ubuntu.com trusty/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty/universe amd64 Packages
 Get:5 http://archive.ubuntu.com trusty-updates/main Sources [248 kB]
-Hit http://download.opensuse.org  Packages
 Get:6 http://archive.ubuntu.com trusty-updates/restricted Sources [2310 B]
 Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [141 kB]
 Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [636 kB]
@@ -40,10 +40,8 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [23.3 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [329 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [128 kB]
-Fetched 2122 kB in 9s (227 kB/s)
+Fetched 2122 kB in 11s (187 kB/s)
 Reading package lists...
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 635587 635616
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages.gz is not what the server reported 356350 356387
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
@@ -59,12 +57,12 @@ The following actions will be performed:
 [caml2html: from default] Command started
 [camlmix: from default] Command started
 [ocamlfind: from default] Command started
-[caml2html: from default] Command started
 [camlmix: from default] Command started
+[caml2html: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/caml2html.1.4.3+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/camlmix.1.3.0+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/camlmix.1.3.0+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/caml2html.1.4.3+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlmix: make] Command started
@@ -239,11 +237,11 @@ The following actions will be performed:
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -295,6 +293,8 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -339,8 +339,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -432,6 +430,10 @@ The following actions will be performed:
 - ocamlc -i caml2html_test.ml > caml2html_test.mli
 - ocamlc -c caml2html_test.mli
 - ocamlc -c -dtypes caml2html_test.ml
+- File "caml2html_test.ml", line 35, characters 7-14:
+- Warning 3: deprecated: ISO-Latin1 characters in identifiers
+- File "caml2html_test.mli", line 3, characters 7-14:
+- Warning 3: deprecated: ISO-Latin1 characters in identifiers
 - ./caml2html -o caml2html_test.html \
 - 		caml2html_test.mli caml2html_test.ml caml2html_test2.ml \
 - 		-ln -ie7 \
@@ -444,18 +446,14 @@ The following actions will be performed:
 - 		output_latex.mli output_latex.ml \
 - 		main.ml \
 - 		-ln
-- File "caml2html_test.ml", line 35, characters 7-14:
-- Warning 3: deprecated: ISO-Latin1 characters in identifiers
-- File "caml2html_test.mli", line 3, characters 7-14:
-- Warning 3: deprecated: ISO-Latin1 characters in identifiers
-- File "caml2html_test.ml", line 35, characters 7-14:
-- Warning 3: deprecated: ISO-Latin1 characters in identifiers
 - ./caml2html -latex -o caml2html_self_test.tex \
 - 		tag.ml annot.mli annot.ml plugin.mli plugin.ml \
 - 		input.mli input.mll output.mli output.ml \
 - 		output_latex.mli output_latex.ml \
 - 		main.ml \
 - 		-ln
+- File "caml2html_test.ml", line 35, characters 7-14:
+- Warning 3: deprecated: ISO-Latin1 characters in identifiers
 [caml2html: make lib] Command started
 + make "lib" (CWD=/home/opam/.opam/system/build/caml2html.1.4.3)
 - ocamlc -w A -dtypes -c hashtbl2.ml
@@ -465,6 +463,7 @@ The following actions will be performed:
 - ocamlc -w A -dtypes -c plugin.ml
 - ocamlc -w A -dtypes -c input.ml
 - ocamlc -w A -dtypes -c output.ml
+- ocamlc -w A -dtypes -c output_latex.ml
 - File "hashtbl2.ml", line 32, characters 2-6:
 - Warning 27: unused variable data.
 - File "hashtbl2.ml", line 33, characters 8-10:
@@ -523,12 +522,6 @@ The following actions will be performed:
 - Warning 29: unescaped end-of-line in a string constant (non-portable code)
 - File "output.ml", line 487, characters 74-75:
 - Warning 29: unescaped end-of-line in a string constant (non-portable code)
-- ocamlc -w A -dtypes -c output_latex.ml
-- ocamlc -w A -dtypes -c main.ml
-- ocamlc -w A -custom -o caml2html.byte str.cma unix.cma  hashtbl2.cmo  version.cmo  annot.cmo  tag.cmo  plugin.cmo  input.cmo  output.cmo  output_latex.cmo  main.cmo
-- camlmix -clean caml2html.mli.mlx -o caml2html.mli
-- ocamlc -w A -c caml2html.mli
-- camlmix -clean caml2html.ml.mlx -o caml2html.ml
 - File "output_latex.ml", line 153, characters 23-24:
 - Warning 29: unescaped end-of-line in a string constant (non-portable code)
 - File "output_latex.ml", line 158, characters 31-32:
@@ -553,6 +546,12 @@ The following actions will be performed:
 - Warning 27: unused variable info.
 - File "output_latex.ml", line 327, characters 19-24:
 - Warning 27: unused variable param.
+- ocamlc -w A -dtypes -c main.ml
+- ocamlc -w A -custom -o caml2html.byte str.cma unix.cma  hashtbl2.cmo  version.cmo  annot.cmo  tag.cmo  plugin.cmo  input.cmo  output.cmo  output_latex.cmo  main.cmo
+- camlmix -clean caml2html.mli.mlx -o caml2html.mli
+- ocamlc -w A -c caml2html.mli
+- camlmix -clean caml2html.ml.mlx -o caml2html.ml
+- ocamlc -w A -dtypes -c caml2html.ml
 - File "main.ml", line 63, characters 3-4:
 - Warning 29: unescaped end-of-line in a string constant (non-portable code)
 - File "main.ml", line 64, characters 77-78:
@@ -629,7 +628,6 @@ The following actions will be performed:
 - Warning 29: unescaped end-of-line in a string constant (non-portable code)
 - File "main.ml", line 178, characters 55-56:
 - Warning 29: unescaped end-of-line in a string constant (non-portable code)
-- ocamlc -w A -dtypes -c caml2html.ml
 - File "input.ml", line 1985, characters 42-43:
 - Warning 29: unescaped end-of-line in a string constant (non-portable code)
 - File "input.ml", line 1986, characters 6-7:
