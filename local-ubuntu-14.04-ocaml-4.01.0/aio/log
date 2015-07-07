@@ -1,15 +1,15 @@
 + uname -m
+# Detecting depexts using flags: x86_64 linux ubuntu
 + uname -s
 + lsb_release -i -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=aio
-# Detecting depexts using flags: x86_64 linux ubuntu
 # The following system packages are needed:
 #  - libaio-dev
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=aio
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
@@ -37,14 +37,12 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [25.7 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [341 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [131 kB]
-Fetched 2177 kB in 4s (493 kB/s)
-Reading package lists...
-W# OS package update successful
+Fetched 2177 kB in 10s (209 kB/s)
+Reading package lists...+ sudo apt-get install -qq -yy libaio-dev m4
+
+# OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libaio-dev m4
-: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages.gz is not what the server reported 362446 362539
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-security_universe_binary-amd64_Packages.gz is not what the server reported 131273 131275
-+ sudo apt-get install -qq -yy libaio-dev m4
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
@@ -315,10 +313,6 @@ The following actions will be performed:
 - ocamlc -c -cc "cc" -ccopt "-fPIC -O2 -g -W -Wall \
 - 				-DPIC   \
 - 				    -o aio_buffer_stubs.o " aio_buffer_stubs.c
-- aio_stubs.c: In function 'caml_aio_run':
-- aio_stubs.c:272:3: warning: ignoring return value of 'read', declared with attribute warn_unused_result [-Wunused-result]
--    (void)read(ctx->fd, &num, sizeof(num));
--    ^
 - ar rcs libaio_stubs.a  aio_stubs.o aio_buffer_stubs.o
 - ocamlc -c aio_buffer.ml
 - ocamlc -c aio.mli
@@ -326,6 +320,10 @@ The following actions will be performed:
 - ocamlmklib         \
 - 				-o aio_stubs  aio_stubs.o aio_buffer_stubs.o -laio  \
 - 				
+- aio_stubs.c: In function 'caml_aio_run':
+- aio_stubs.c:272:3: warning: ignoring return value of 'read', declared with attribute warn_unused_result [-Wunused-result]
+-    (void)read(ctx->fd, &num, sizeof(num));
+-    ^
 - ocamlc -a -cclib -laio_stubs -cclib -laio   -dllib dllaio_stubs.so -custom             -o aio.cma aio_buffer.cmo aio.cmo
 - make[2]: Leaving directory `/home/opam/.opam/system/build/aio.0.0.3/lib'
 - make[2]: Entering directory `/home/opam/.opam/system/build/aio.0.0.3/lib'
