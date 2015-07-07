@@ -1,13 +1,14 @@
 + uname -m
+# Detecting depexts using flags: x86_64 linux debian
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=cil
-# Detecting depexts using flags: x86_64 linux debian
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=cil
 # The following system packages are needed:
 #  - m4
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=cil
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
++ sudo apt-get install -qq -yy m4
 Hit http://download.opensuse.org  Release.gpg
 Hit http://http.debian.net stable Release.gpg
 Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
@@ -15,18 +16,16 @@ Hit http://download.opensuse.org  Release
 Hit http://http.debian.net stable Release
 Get:2 http://http.debian.net stable-updates Release [124 kB]
 Hit http://download.opensuse.org  Packages
+Get:3 http://security.debian.org stable/updates Release.gpg [836 B]
 Hit http://http.debian.net stable/main amd64 Packages
-Get:3 http://http.debian.net stable-updates/main amd64 Packages [4369 B]
-Get:4 http://security.debian.org stable/updates Release.gpg [836 B]
+Get:4 http://http.debian.net stable-updates/main amd64 Packages [4369 B]
 Get:5 http://security.debian.org stable/updates Release [102 kB]
 Get:6 http://security.debian.org stable/updates/main amd64 Packages [382 kB]
-Fetched 614 kB in 3s (203 kB/s)
+Fetched 614 kB in 1s (340 kB/s)
 Reading package lists...
-W: Size of file /var/lib/apt/lists/security.debian.org_dists_stable_updates_main_binary-amd64_Packages.gz is not what the server reported 382354 382384
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
-+ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind 1.5.5                                     [required by cil]
@@ -72,8 +71,7 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) 
-- ok
+- Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /home/opam/.opam/4.02.1/lib/ocaml
@@ -124,6 +122,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -169,12 +169,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -183,8 +183,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -237,6 +235,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -281,7 +280,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -355,10 +353,10 @@ The following actions will be performed:
 - checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
-- checking for gcc option to accept ISO C89... none needed
+- checking for gcc option to accept ISO C89... 
+- none needed
 - checking for a BSD-compatible install... /usr/bin/install -c
-- checking build system type... 
-- x86_64-unknown-linux-gnu
+- checking build system type... x86_64-unknown-linux-gnu
 - checking host system type... x86_64-unknown-linux-gnu
 - checking target system type... x86_64-unknown-linux-gnu
 - checking for msvc cl.exe (optional)... not found
@@ -389,9 +387,9 @@ The following actions will be performed:
 - checking for string.h... yes
 - checking for memory.h... yes
 - checking for strings.h... yes
-- checking for inttypes.h... yes
-- checking for stdint.h... 
+- checking for inttypes.h... 
 - yes
+- checking for stdint.h... yes
 - checking for unistd.h... yes
 - checking for __builtin_va_list... yes
 - checking if __thread is a keyword... true
@@ -409,12 +407,12 @@ The following actions will be performed:
 - checking stdbool.h usability... yes
 - checking stdbool.h presence... yes
 - checking for stdbool.h... yes
-- checking for an ANSI C-conforming const... yes
+- checking for an ANSI C-conforming const... 
+- yes
 - checking for inline... inline
 - checking whether time.h and sys/time.h may both be included... yes
 - checking for working memcmp... yes
-- checking for mkdir... 
-- yes
+- checking for mkdir... yes
 - checking for select... yes
 - checking for socket... yes
 - checking for __sysv_signal... yes
@@ -1054,23 +1052,11 @@ The following actions will be performed:
 - 	  sed -e "s|nogcc64model|` _build/machdep-ml64.exe --env`|" lib/App/Cilly.pm > lib/App/Cilly.pm.tmp; \
 - 	  mv lib/App/Cilly.pm.tmp lib/App/Cilly.pm; \
 - 	fi
-- cd lib; perl Makefile.PL
 - In file included from /usr/include/stdio.h:28:0,
 -                  from src/machdep-ml.c:40:
 - /usr/include/features.h:323:26: fatal error: bits/predefs.h: No such file or directory
 - compilation terminated.
-- src/machdep-ml.c: In function 'main':
-- src/machdep-ml.c:106:21: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-- src/machdep-ml.c:115:19: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-- src/machdep-ml.c:124:20: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-- src/machdep-ml.c:133:20: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-- src/machdep-ml.c:142:24: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-- src/machdep-ml.c:151:19: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-- src/machdep-ml.c:160:20: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-- src/machdep-ml.c:169:21: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-- src/machdep-ml.c:178:22: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-- src/machdep-ml.c:187:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-- Generating CIL_MACHINE machine dependency information string (for CIL)
+- cd lib; perl Makefile.PL
 - Checking if your kit is complete...
 - Looks good
 - Writing Makefile for cilly
@@ -1085,6 +1071,18 @@ The following actions will be performed:
 - cp ../bin/cilly blib/script/cilly
 - /usr/bin/perl -MExtUtils::MY -e 'MY->fixin(shift)' -- blib/script/cilly
 - make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/cil.1.7.3/lib'
+- src/machdep-ml.c: In function 'main':
+- src/machdep-ml.c:106:21: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+- src/machdep-ml.c:115:19: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+- src/machdep-ml.c:124:20: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+- src/machdep-ml.c:133:20: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+- src/machdep-ml.c:142:24: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+- src/machdep-ml.c:151:19: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+- src/machdep-ml.c:160:20: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+- src/machdep-ml.c:169:21: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+- src/machdep-ml.c:178:22: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+- src/machdep-ml.c:187:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+- Generating CIL_MACHINE machine dependency information string (for CIL)
 [cil: make install] Command started
 + make "install" (CWD=/home/opam/.opam/4.02.1/build/cil.1.7.3)
 - ocamlbuild -build-dir _build -no-links -classic-display src/main.native
@@ -1099,14 +1097,6 @@ The following actions will be performed:
 - ocamlfind install -patch-version 1.7.3 cil META _build/src/cil.cma _build/src/cil.cmxa _build/src/cil.a `cat _build/src/cil.libfiles`
 - make -C lib pure_install
 - make[1]: Entering directory `/home/opam/.opam/4.02.1/build/cil.1.7.3/lib'
-- Installing /home/opam/.opam/4.02.1/lib/perl5/App/Cilly.pm
-- Installing /home/opam/.opam/4.02.1/lib/perl5/App/Cilly/CilConfig.pm
-- Installing /home/opam/.opam/4.02.1/lib/perl5/App/Cilly/KeptFile.pm
-- Installing /home/opam/.opam/4.02.1/lib/perl5/App/Cilly/OutputFile.pm
-- Installing /home/opam/.opam/4.02.1/lib/perl5/App/Cilly/TempFile.pm
-- Installing /home/opam/.opam/4.02.1/bin/cilly
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/cil.1.7.3/lib'
-- /usr/bin/install -c -m 0755 bin/cilly.* /home/opam/.opam/4.02.1/bin
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/4.02.1/lib/cil
 - Installed /home/opam/.opam/4.02.1/lib/cil/whitetrack.mli
 - Installed /home/opam/.opam/4.02.1/lib/cil/whitetrack.cmx
@@ -1328,5 +1318,13 @@ The following actions will be performed:
 - Installed /home/opam/.opam/4.02.1/lib/cil/cil.cmxa
 - Installed /home/opam/.opam/4.02.1/lib/cil/cil.cma
 - Installed /home/opam/.opam/4.02.1/lib/cil/META
+- Installing /home/opam/.opam/4.02.1/lib/perl5/App/Cilly.pm
+- Installing /home/opam/.opam/4.02.1/lib/perl5/App/Cilly/CilConfig.pm
+- Installing /home/opam/.opam/4.02.1/lib/perl5/App/Cilly/KeptFile.pm
+- Installing /home/opam/.opam/4.02.1/lib/perl5/App/Cilly/OutputFile.pm
+- Installing /home/opam/.opam/4.02.1/lib/perl5/App/Cilly/TempFile.pm
+- Installing /home/opam/.opam/4.02.1/bin/cilly
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/cil.1.7.3/lib'
+- /usr/bin/install -c -m 0755 bin/cilly.* /home/opam/.opam/4.02.1/bin
 -> installed cil.1.7.3
 Done.
