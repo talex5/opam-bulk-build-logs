@@ -1,11 +1,11 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-+ opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=hardcaml-reedsolomon
 # Detecting depexts using flags: x86_64 linux ubuntu
++ opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=hardcaml-reedsolomon
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=hardcaml-reedsolomon
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=hardcaml-reedsolomon
 Not running as root, the following command will be run through "sudo":
     apt-get update
 + sudo apt-get update
@@ -40,7 +40,7 @@ Hit http://archive.ubuntu.com trusty-security/universe Sources
 Hit http://archive.ubuntu.com trusty-security/main amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/universe amd64 Packages
-Fetched 1487 kB in 5s (285 kB/s)
+Fetched 1487 kB in 4s (318 kB/s)
 Reading package lists...
 + sudo apt-get install -qq -yy m4
 # OS package update successful
@@ -71,20 +71,20 @@ The following actions will be performed:
 [camomile: from default] Command started
 [hardcaml: from default] Command started
 [hardcaml-examples: from default] Command started
-[hardcaml-examples: from default] Command started
-[default] http://opam-archive:8080/archives/hardcaml-examples.0.2+opam.tar.gz downloaded
-[hardcaml-reedsolomon: from default] Command started
 [hardcaml: from default] Command started
-[default] http://opam-archive:8080/archives/hardcaml.1.1.1+opam.tar.gz downloaded
-[hardcaml-waveterm: from default] Command started
-[hardcaml-reedsolomon: from default] Command started
-[default] http://opam-archive:8080/archives/hardcaml-reedsolomon.0.2+opam.tar.gz downloaded
-[js_of_ocaml: from default] Command started
-[hardcaml-waveterm: from default] Command started
-[default] http://opam-archive:8080/archives/hardcaml-waveterm.0.1.0+opam.tar.gz downloaded
-[lambda-term: from default] Command started
+[hardcaml-examples: from default] Command started
 [camomile: from default] Command started
+[default] http://opam-archive:8080/archives/hardcaml.1.1.1+opam.tar.gz downloaded
+[hardcaml-reedsolomon: from default] Command started
+[default] http://opam-archive:8080/archives/hardcaml-examples.0.2+opam.tar.gz downloaded
+[hardcaml-waveterm: from default] Command started
 [default] http://opam-archive:8080/archives/camomile.0.8.5+opam.tar.gz downloaded
+[js_of_ocaml: from default] Command started
+[hardcaml-reedsolomon: from default] Command started
+[hardcaml-waveterm: from default] Command started
+[default] http://opam-archive:8080/archives/hardcaml-reedsolomon.0.2+opam.tar.gz downloaded
+[lambda-term: from default] Command started
+[default] http://opam-archive:8080/archives/hardcaml-waveterm.0.1.0+opam.tar.gz downloaded
 [lwt: from default] Command started
 [js_of_ocaml: from default] Command started
 [lambda-term: from default] Command started
@@ -108,10 +108,10 @@ The following actions will be performed:
 [react: from default] Command started
 [default] http://opam-archive:8080/archives/ppx_tools.0.99.2+opam.tar.gz downloaded
 [zed: from default] Command started
-[default] http://opam-archive:8080/archives/react.1.2.0+opam.tar.gz downloaded
 [reedsolomon: from default] Command started
-[default] http://opam-archive:8080/archives/reedsolomon.0.2+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/react.1.2.0+opam.tar.gz downloaded
 [zed: from default] Command started
+[default] http://opam-archive:8080/archives/reedsolomon.0.2+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/zed.1.4+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -201,6 +201,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -246,11 +247,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -259,8 +261,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -313,7 +313,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -358,6 +357,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -1800,46 +1800,6 @@ The following actions will be performed:
 - Warning : normalization option is not supported
 - Warning : normalization option is not supported
 [camomile: make install] Command started
-+ make "install" (CWD=/home/opam/.opam/system/build/camomile.0.8.5)
-- files= &&\
-- 	if [ -f camomileLibrary.cmx ]; then files=camomileLibrary.cmx; fi && \
-- 	if [ -f camomileLibrary.cma ]; then files="camomileLibrary.cma $files"; fi && \
-- 	if [ -f camomileLibrary.cmxa ]; then files="camomileLibrary.cmxa $files"; fi && \
-- 	if [ -f camomileLibraryDefault.cmx ]; then files="camomileLibraryDefault.cmx $files"; fi && \
-- 	if [ -f camomileLibraryDyn.cmx ]; then files="camomileLibraryDyn.cmx $files"; fi && \
-- 	if [ -f camomile.cma ]; then files="camomile.cma $files"; fi&& \
-- 	if [ -f camomile.cmxa ]; then files="camomile.cmxa $files"; fi&& \
-- 	if [ -f camomile.cmxs ]; then files="camomile.cmxs $files"; fi&& \
-- 	if [ -f camomile.a ]; then files="camomile.a $files"; fi && \
-- 	ocamlfind install camomile $files META camomileLibrary.mli camomileLibraryDefault.mli camomileLibraryDyn.mli camomileLibrary.cmi camomileLibraryDefault.cmi camomileLibraryDyn.cmi
-- mkdir -p '/home/opam/.opam/system/share'
-- mkdir -p '/home/opam/.opam/system/share'/camomile
-- mkdir -p '/home/opam/.opam/system/share'/camomile/database
-- cp -f database/*.mar '/home/opam/.opam/system/share'/camomile/database || true
-- mkdir -p '/home/opam/.opam/system/share'/camomile/charmaps
-- cp -f charmaps/*.mar '/home/opam/.opam/system/share'/camomile/charmaps || true
-- mkdir -p '/home/opam/.opam/system/share'/camomile/mappings
-- cp -f mappings/*.mar '/home/opam/.opam/system/share'/camomile/mappings || true
-- mkdir -p '/home/opam/.opam/system/share'/camomile/locales
-- cp -f locales/*.mar '/home/opam/.opam/system/share'/camomile/locales || true
-- Installed /home/opam/.opam/system/lib/camomile/camomileLibraryDyn.cmi
-- Installed /home/opam/.opam/system/lib/camomile/camomileLibraryDefault.cmi
-- Installed /home/opam/.opam/system/lib/camomile/camomileLibrary.cmi
-- Installed /home/opam/.opam/system/lib/camomile/camomileLibraryDyn.mli
-- Installed /home/opam/.opam/system/lib/camomile/camomileLibraryDefault.mli
-- Installed /home/opam/.opam/system/lib/camomile/camomileLibrary.mli
-- Installed /home/opam/.opam/system/lib/camomile/camomileLibrary.cmx
-- Installed /home/opam/.opam/system/lib/camomile/camomileLibrary.cma
-- Installed /home/opam/.opam/system/lib/camomile/camomileLibrary.cmxa
-- Installed /home/opam/.opam/system/lib/camomile/camomileLibraryDefault.cmx
-- Installed /home/opam/.opam/system/lib/camomile/camomileLibraryDyn.cmx
-- Installed /home/opam/.opam/system/lib/camomile/camomile.cma
-- Installed /home/opam/.opam/system/lib/camomile/camomile.cmxa
-- Installed /home/opam/.opam/system/lib/camomile/camomile.cmxs
-- Installed /home/opam/.opam/system/lib/camomile/camomile.a
-- Installed /home/opam/.opam/system/lib/camomile/META
--> installed camomile.0.8.5
-[omd: ocaml setup.ml] Command started
 + make "PREFIX=/home/opam/.opam/system" "docdir=/home/opam/.opam/system/doc/menhir" "libdir=/home/opam/.opam/system/lib/menhir" "mandir=/home/opam/.opam/system/man/man1" (CWD=/home/opam/.opam/system/build/menhir.20141215)
 - rm -f src/installation.ml
 - echo "let libdir = \"/home/opam/.opam/system/lib/menhir\"" > src/installation.ml
@@ -2636,6 +2596,46 @@ The following actions will be performed:
 - Installed /home/opam/.opam/system/lib/menhirLib/menhirLib.cmi
 - Installed /home/opam/.opam/system/lib/menhirLib/META
 -> installed menhir.20141215
+[omd: ocaml setup.ml] Command started
++ make "install" (CWD=/home/opam/.opam/system/build/camomile.0.8.5)
+- files= &&\
+- 	if [ -f camomileLibrary.cmx ]; then files=camomileLibrary.cmx; fi && \
+- 	if [ -f camomileLibrary.cma ]; then files="camomileLibrary.cma $files"; fi && \
+- 	if [ -f camomileLibrary.cmxa ]; then files="camomileLibrary.cmxa $files"; fi && \
+- 	if [ -f camomileLibraryDefault.cmx ]; then files="camomileLibraryDefault.cmx $files"; fi && \
+- 	if [ -f camomileLibraryDyn.cmx ]; then files="camomileLibraryDyn.cmx $files"; fi && \
+- 	if [ -f camomile.cma ]; then files="camomile.cma $files"; fi&& \
+- 	if [ -f camomile.cmxa ]; then files="camomile.cmxa $files"; fi&& \
+- 	if [ -f camomile.cmxs ]; then files="camomile.cmxs $files"; fi&& \
+- 	if [ -f camomile.a ]; then files="camomile.a $files"; fi && \
+- 	ocamlfind install camomile $files META camomileLibrary.mli camomileLibraryDefault.mli camomileLibraryDyn.mli camomileLibrary.cmi camomileLibraryDefault.cmi camomileLibraryDyn.cmi
+- mkdir -p '/home/opam/.opam/system/share'
+- mkdir -p '/home/opam/.opam/system/share'/camomile
+- mkdir -p '/home/opam/.opam/system/share'/camomile/database
+- cp -f database/*.mar '/home/opam/.opam/system/share'/camomile/database || true
+- mkdir -p '/home/opam/.opam/system/share'/camomile/charmaps
+- cp -f charmaps/*.mar '/home/opam/.opam/system/share'/camomile/charmaps || true
+- mkdir -p '/home/opam/.opam/system/share'/camomile/mappings
+- cp -f mappings/*.mar '/home/opam/.opam/system/share'/camomile/mappings || true
+- mkdir -p '/home/opam/.opam/system/share'/camomile/locales
+- cp -f locales/*.mar '/home/opam/.opam/system/share'/camomile/locales || true
+- Installed /home/opam/.opam/system/lib/camomile/camomileLibraryDyn.cmi
+- Installed /home/opam/.opam/system/lib/camomile/camomileLibraryDefault.cmi
+- Installed /home/opam/.opam/system/lib/camomile/camomileLibrary.cmi
+- Installed /home/opam/.opam/system/lib/camomile/camomileLibraryDyn.mli
+- Installed /home/opam/.opam/system/lib/camomile/camomileLibraryDefault.mli
+- Installed /home/opam/.opam/system/lib/camomile/camomileLibrary.mli
+- Installed /home/opam/.opam/system/lib/camomile/camomileLibrary.cmx
+- Installed /home/opam/.opam/system/lib/camomile/camomileLibrary.cma
+- Installed /home/opam/.opam/system/lib/camomile/camomileLibrary.cmxa
+- Installed /home/opam/.opam/system/lib/camomile/camomileLibraryDefault.cmx
+- Installed /home/opam/.opam/system/lib/camomile/camomileLibraryDyn.cmx
+- Installed /home/opam/.opam/system/lib/camomile/camomile.cma
+- Installed /home/opam/.opam/system/lib/camomile/camomile.cmxa
+- Installed /home/opam/.opam/system/lib/camomile/camomile.cmxs
+- Installed /home/opam/.opam/system/lib/camomile/camomile.a
+- Installed /home/opam/.opam/system/lib/camomile/META
+-> installed camomile.0.8.5
 [ppx_tools: make all] Command started
 + ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/omd.1.2.6)
 - 
@@ -3306,7 +3306,6 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -a src/logger/lwt_log_rules.cmx src/logger/lwt_log_core.cmx -o src/logger/lwt-log.cmxa
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared src/logger/lwt-log.cmxa src/logger/lwt_log_rules.cmx src/logger/lwt_log_core.cmx -o src/logger/lwt-log.cmxs
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -ccopt -I/usr/include -ccopt -Isrc/unix -c src/unix/lwt_unix_stubs.c
-- ocamlfind: Package `wikidoc' not found
 - mv lwt_unix_stubs.o src/unix/lwt_unix_stubs.o
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -ccopt -I/usr/include -ccopt -Isrc/unix -c src/unix/lwt_libev_stubs.c
 - mv lwt_libev_stubs.o src/unix/lwt_libev_stubs.o
@@ -3322,6 +3321,7 @@ The following actions will be performed:
 - mv lwt_unix_job_chown.o src/unix/jobs-unix/lwt_unix_job_chown.o
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -ccopt -Isrc/unix -c src/unix/jobs-unix/lwt_unix_job_chroot.c
 - mv lwt_unix_job_chroot.o src/unix/jobs-unix/lwt_unix_job_chroot.o
+- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -ccopt -Isrc/unix -c src/unix/jobs-unix/lwt_unix_job_close.c
 - mv lwt_unix_job_close.o src/unix/jobs-unix/lwt_unix_job_close.o
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -ccopt -Isrc/unix -c src/unix/jobs-unix/lwt_unix_job_fchmod.c
@@ -4207,61 +4207,6 @@ The following actions will be performed:
 - W: Cannot find source file matching module 'HardCamlWaveLTerm' in library HardCamlWaveLTerm
 - W: Cannot find source file matching module 'HardCamlWaveTerm' in library HardCamlWaveTerm
 [hardcaml-waveterm: make install] Command started
-+ make "install" (CWD=/home/opam/.opam/system/build/hardcaml-waveterm.0.1.0)
-- ocaml setup.ml -build
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared src/HardCamlWaveTerm.cmxa src/HardCamlWaveTerm.cmx -o src/HardCamlWaveTerm.cmxs
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared lterm/HardCamlWaveLTerm.cmxa lterm/HardCamlWaveLTerm.cmx -o lterm/HardCamlWaveLTerm.cmxs
-- ocaml setup.ml -install
-- W: Cannot find source file matching module 'HardCamlWaveLTerm' in library HardCamlWaveLTerm
-- W: Cannot find source file matching module 'HardCamlWaveTerm' in library HardCamlWaveTerm
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/wave.mli
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/gfx.mli
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/render.mli
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/write.mli
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/sim.mli
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveTerm.cmt
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveTerm.cmi
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveTerm.cma
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveTerm.cmxa
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveTerm.a
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveTerm.cmxs
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/sim.cmti
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/sim.cmt
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/sim.annot
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/write.cmti
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/write.cmt
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/write.annot
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/render.cmti
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/render.cmt
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/render.annot
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/gfx.cmti
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/gfx.cmt
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/gfx.annot
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/wave.cmti
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/wave.cmt
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/wave.annot
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveTerm.cmx
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/gfx_lterm.mli
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/ui.mli
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/api.ml
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveLTerm.cmt
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveLTerm.cmi
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveLTerm.cma
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveLTerm.cmxa
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveLTerm.a
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveLTerm.cmxs
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/api.cmt
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/api.annot
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/ui.cmti
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/ui.cmt
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/ui.annot
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/gfx_lterm.cmti
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/gfx_lterm.cmt
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/gfx_lterm.annot
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveLTerm.cmx
-- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/META
--> installed hardcaml-waveterm.0.1.0
-[hardcaml-examples: make all] Command started
 + make "build" (CWD=/home/opam/.opam/system/build/js_of_ocaml.2.5)
 - make -C compiler all lib
 - make[1]: Entering directory `/home/opam/.opam/system/build/js_of_ocaml.2.5/compiler'
@@ -4640,6 +4585,61 @@ The following actions will be performed:
 - ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/system/lib/stublibs is not mentioned in ld.conf
 -> installed js_of_ocaml.2.5
 [reedsolomon: make all] Command started
++ make "install" (CWD=/home/opam/.opam/system/build/hardcaml-waveterm.0.1.0)
+- ocaml setup.ml -build
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared src/HardCamlWaveTerm.cmxa src/HardCamlWaveTerm.cmx -o src/HardCamlWaveTerm.cmxs
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared lterm/HardCamlWaveLTerm.cmxa lterm/HardCamlWaveLTerm.cmx -o lterm/HardCamlWaveLTerm.cmxs
+- ocaml setup.ml -install
+- W: Cannot find source file matching module 'HardCamlWaveLTerm' in library HardCamlWaveLTerm
+- W: Cannot find source file matching module 'HardCamlWaveTerm' in library HardCamlWaveTerm
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/wave.mli
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/gfx.mli
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/render.mli
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/write.mli
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/sim.mli
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveTerm.cmt
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveTerm.cmi
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveTerm.cma
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveTerm.cmxa
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveTerm.a
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveTerm.cmxs
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/sim.cmti
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/sim.cmt
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/sim.annot
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/write.cmti
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/write.cmt
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/write.annot
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/render.cmti
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/render.cmt
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/render.annot
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/gfx.cmti
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/gfx.cmt
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/gfx.annot
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/wave.cmti
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/wave.cmt
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/wave.annot
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveTerm.cmx
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/gfx_lterm.mli
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/ui.mli
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/api.ml
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveLTerm.cmt
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveLTerm.cmi
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveLTerm.cma
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveLTerm.cmxa
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveLTerm.a
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveLTerm.cmxs
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/api.cmt
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/api.annot
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/ui.cmti
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/ui.cmt
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/ui.annot
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/gfx_lterm.cmti
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/gfx_lterm.cmt
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/gfx_lterm.annot
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/HardCamlWaveLTerm.cmx
+- Installed /home/opam/.opam/system/lib/hardcaml-waveterm/META
+-> installed hardcaml-waveterm.0.1.0
+[hardcaml-examples: make all] Command started
 + make "all" (CWD=/home/opam/.opam/system/build/reedsolomon.0.2)
 - ocaml setup.ml -configure --enable-webdemo
 - 
@@ -4893,6 +4893,8 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package hardcaml -syntax camlp4o -package hardcaml.syntax -for-pack HardCamlExamples -I src -o src/rac.cmx src/rac.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package hardcaml -syntax camlp4o -package hardcaml.syntax -for-pack HardCamlExamples -I src -o src/cordic.cmx src/cordic.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package hardcaml -syntax camlp4o -package hardcaml.syntax -for-pack HardCamlExamples -I src -o src/prefix.cmx src/prefix.ml
+- W: Cannot find source file matching module 'HardCamlExamplesApp' in library HardCamlExamplesApp
+- W: Cannot find source file matching module 'HardCamlExamples' in library HardCamlExamples
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package hardcaml -syntax camlp4o -package hardcaml.syntax -for-pack HardCamlExamples -I src -o src/mul.cmx src/mul.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package hardcaml -syntax camlp4o -package hardcaml.syntax -for-pack HardCamlExamples -I src -o src/lfsr.cmx src/lfsr.ml
 - touch src/HardCamlExamples.mli  ; if  /home/opam/.opam/system/bin/ocamlfind ocamlopt -pack -g -annot -bin-annot -I src src/framework.cmx src/add.cmx src/sorting.cmx src/rac.cmx src/cordic.cmx src/prefix.cmx src/mul.cmx src/lfsr.cmx -o src/HardCamlExamples.cmx  ; then  rm -f src/HardCamlExamples.mli  ; else  rm -f src/HardCamlExamples.mli  ; exit 1; fi
@@ -4923,8 +4925,6 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I src -I app -package hardcaml -package hardcaml-waveterm.lterm -package hardcaml.dynlink -syntax camlp4o -package hardcaml.syntax -package omd -package str -I app -I src -o app/hclfsr.cmo app/hclfsr.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I src -I app -package hardcaml -package hardcaml-waveterm.lterm -package hardcaml.dynlink -syntax camlp4o -package hardcaml.syntax -package omd -package str -I app -I src -o app/hclfsr.cmx app/hclfsr.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -linkpkg -package hardcaml -package hardcaml-waveterm.lterm -package hardcaml.dynlink -package hardcaml.syntax -package omd -package str app/HardCamlExamplesApp.cmxa app/omd_term.cmx src/HardCamlExamples.cmxa app/app.cmx app/hclfsr.cmx -o app/hclfsr.native
-- W: Cannot find source file matching module 'HardCamlExamplesApp' in library HardCamlExamplesApp
-- W: Cannot find source file matching module 'HardCamlExamples' in library HardCamlExamples
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package hardcaml -package hardcaml-waveterm.lterm -package hardcaml.dynlink -syntax camlp4o -package hardcaml.syntax -package omd -package str -modules app/hcprefix.ml > app/hcprefix.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I src -I app -package hardcaml -package hardcaml-waveterm.lterm -package hardcaml.dynlink -syntax camlp4o -package hardcaml.syntax -package omd -package str -I app -I src -o app/hcprefix.cmo app/hcprefix.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I src -I app -package hardcaml -package hardcaml-waveterm.lterm -package hardcaml.dynlink -syntax camlp4o -package hardcaml.syntax -package omd -package str -I app -I src -o app/hcprefix.cmx app/hcprefix.ml
@@ -5066,8 +5066,8 @@ The following actions will be performed:
 - 
 - ocaml setup.ml -build
 - /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
-- /home/opam/.opam/system/bin/ocamlfind ocamldep -package hardcaml -syntax camlp4o -package hardcaml.syntax -package reedsolomon -modules src/galois.mli > src/galois.mli.depends
 - W: Cannot find source file matching module 'HardCamlReedsolomon' in library HardCamlReedsolomon
+- /home/opam/.opam/system/bin/ocamlfind ocamldep -package hardcaml -syntax camlp4o -package hardcaml.syntax -package reedsolomon -modules src/galois.mli > src/galois.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package hardcaml -syntax camlp4o -package hardcaml.syntax -package reedsolomon -I src -o src/galois.cmi src/galois.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package hardcaml -syntax camlp4o -package hardcaml.syntax -package reedsolomon -modules src/galois.ml > src/galois.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package hardcaml -syntax camlp4o -package hardcaml.syntax -package reedsolomon -modules src/codec.mli > src/codec.mli.depends
