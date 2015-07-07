@@ -1,7 +1,7 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux centos
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=io-page
+# Detecting depexts using flags: x86_64 linux centos
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=io-page
 # No extra OS packages requirements found.
 The following actions will be performed:
@@ -19,24 +19,24 @@ The following actions will be performed:
 [cstruct: from default] Command started
 [io-page: from default] Command started
 [ocamlfind: from default] Command started
+[io-page: from default] Command started
 [cstruct: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/cstruct.1.6.0+opam.tar.gz downloaded
 [ocplib-endian: from default] Command started
+[default] http://opam-archive:8080/archives/io-page.1.5.1+opam.tar.gz downloaded
+[optcomp: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[sexplib: from default] Command started
 [ocplib-endian: from default] Command started
 [default] http://opam-archive:8080/archives/ocplib-endian.0.4+opam.tar.gz downloaded
-[optcomp: from default] Command started
-[optcomp: from default] Command started
-[default] http://opam-archive:8080/archives/optcomp.1.6+opam.tar.gz downloaded
-[sexplib: from default] Command started
+[type_conv: from default] Command started
 [sexplib: from default] Command started
 [default] http://opam-archive:8080/archives/sexplib.112.24.01+opam.tar.gz downloaded
 [type_conv: from default] Command started
-[io-page: from default] Command started
-[ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/io-page.1.5.1+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[type_conv: from default] Command started
 [default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
+[optcomp: from default] Command started
+[default] http://opam-archive:8080/archives/optcomp.1.6+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlp4: sh] Command started
@@ -73,7 +73,8 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) ok
+- Detecting compiler arguments: (extractor built) 
+- ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib64/ocaml
@@ -126,6 +127,9 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -171,20 +175,9 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c fl_args.ml
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -217,6 +210,14 @@ The following actions will be performed:
 - if ocamlopt.opt >/dev/null 2>&1; then \
 - 	echo 'ocamlopt="ocamlopt.opt"' >>findlib.conf; \
 - fi
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - if ocamldep.opt >/dev/null 2>&1; then \
 - 	echo 'ocamldep="ocamldep.opt"' >>findlib.conf; \
 - fi
@@ -236,6 +237,8 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -280,8 +283,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -511,71 +512,6 @@ The following actions will be performed:
 - Installed /home/opam/.opam/system/lib/type_conv/META
 -> installed type_conv.112.01.01
 [sexplib: ./configure] Command started
-+ ./configure "--enable-syntax" (CWD=/home/opam/.opam/system/build/sexplib.112.24.01)
-- 
-- Configuration: 
-- ocamlfind: ........................................... /home/opam/.opam/system/bin/ocamlfind
-- ocamlc: .............................................. /usr/bin/ocamlc.opt
-- ocamlopt: ............................................ /usr/bin/ocamlopt.opt
-- ocamlbuild: .......................................... /usr/bin/ocamlbuild
-- Package name: ........................................ sexplib
-- Package version: ..................................... 112.24.01
-- os_type: ............................................. Unix
-- system: .............................................. linux
-- architecture: ........................................ amd64
-- ccomp_type: .......................................... cc
-- ocaml_version: ....................................... 4.02.1
-- standard_library_default: ............................ /usr/lib64/ocaml
-- standard_library: .................................... /usr/lib64/ocaml
-- standard_runtime: .................................... /usr/bin/ocamlrun
-- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches   -m64 -mtune=generic -fPIC
-- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches   -m64 -mtune=generic
-- model: ............................................... default
-- ext_obj: ............................................. .o
-- ext_asm: ............................................. .s
-- ext_lib: ............................................. .a
-- ext_dll: ............................................. .so
-- default_executable_name: ............................. a.out
-- systhread_supported: ................................. true
-- Install architecture-independent files dir: .......... /usr/local
-- Install architecture-dependent files in dir: ......... $prefix
-- User executables: .................................... $exec_prefix/bin
-- System admin executables: ............................ $exec_prefix/sbin
-- Program executables: ................................. $exec_prefix/libexec
-- Read-only single-machine data: ....................... $prefix/etc
-- Modifiable architecture-independent data: ............ $prefix/com
-- Modifiable single-machine data: ...................... $prefix/var
-- Object code libraries: ............................... $exec_prefix/lib
-- Read-only arch-independent data root: ................ $prefix/share
-- Read-only architecture-independent data: ............. $datarootdir
-- Info documentation: .................................. $datarootdir/info
-- Locale-dependent data: ............................... $datarootdir/locale
-- Man documentation: ................................... $datarootdir/man
-- Documentation root: .................................. $datarootdir/doc/$pkg_name
-- HTML documentation: .................................. $docdir
-- DVI documentation: ................................... $docdir
-- PDF documentation: ................................... $docdir
-- PS documentation: .................................... $docdir
-- findlib_version: ..................................... 1.5.5
-- is_native: ........................................... true
-- suffix_program: ...................................... 
-- Remove a file.: ...................................... rm -f
-- Remove a directory.: ................................. rm -rf
-- Turn ocaml debug flag on: ............................ true
-- Turn ocaml profile flag on: .......................... false
-- Compiler support generation of .cmxs.: ............... true
-- OCamlbuild additional flags: ......................... 
-- Build the syntax extension: .......................... true
-- Create documentations: ............................... true
-- Compile tests executable and library and run them: ... false
-- pkg_bigarray: ........................................ /usr/lib64/ocaml
-- pkg_num: ............................................. /home/opam/.opam/system/lib/num
-- pkg_unix: ............................................ /usr/lib64/ocaml
-- pkg_camlp4_quotations: ............................... /usr/lib64/ocaml/camlp4
-- pkg_camlp4_extend: ................................... /usr/lib64/ocaml/camlp4
-- pkg_type_conv: ....................................... /home/opam/.opam/system/lib/type_conv
-- 
-[sexplib: make] Command started
 + make  (CWD=/home/opam/.opam/system/build/optcomp.1.6)
 - ocamlopt.opt -o setup.exe setup.ml || ocamlopt -o setup.exe setup.ml || ocamlc -o setup.exe setup.ml
 - rm -f setup.cmx setup.cmi setup.o setup.obj setup.cmo
@@ -689,6 +625,71 @@ The following actions will be performed:
 - Installed /home/opam/.opam/system/lib/optcomp/META
 -> installed optcomp.1.6
 [ocplib-endian: ocaml setup.ml] Command started
++ ./configure "--enable-syntax" (CWD=/home/opam/.opam/system/build/sexplib.112.24.01)
+- 
+- Configuration: 
+- ocamlfind: ........................................... /home/opam/.opam/system/bin/ocamlfind
+- ocamlc: .............................................. /usr/bin/ocamlc.opt
+- ocamlopt: ............................................ /usr/bin/ocamlopt.opt
+- ocamlbuild: .......................................... /usr/bin/ocamlbuild
+- Package name: ........................................ sexplib
+- Package version: ..................................... 112.24.01
+- os_type: ............................................. Unix
+- system: .............................................. linux
+- architecture: ........................................ amd64
+- ccomp_type: .......................................... cc
+- ocaml_version: ....................................... 4.02.1
+- standard_library_default: ............................ /usr/lib64/ocaml
+- standard_library: .................................... /usr/lib64/ocaml
+- standard_runtime: .................................... /usr/bin/ocamlrun
+- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches   -m64 -mtune=generic -fPIC
+- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches   -m64 -mtune=generic
+- model: ............................................... default
+- ext_obj: ............................................. .o
+- ext_asm: ............................................. .s
+- ext_lib: ............................................. .a
+- ext_dll: ............................................. .so
+- default_executable_name: ............................. a.out
+- systhread_supported: ................................. true
+- Install architecture-independent files dir: .......... /usr/local
+- Install architecture-dependent files in dir: ......... $prefix
+- User executables: .................................... $exec_prefix/bin
+- System admin executables: ............................ $exec_prefix/sbin
+- Program executables: ................................. $exec_prefix/libexec
+- Read-only single-machine data: ....................... $prefix/etc
+- Modifiable architecture-independent data: ............ $prefix/com
+- Modifiable single-machine data: ...................... $prefix/var
+- Object code libraries: ............................... $exec_prefix/lib
+- Read-only arch-independent data root: ................ $prefix/share
+- Read-only architecture-independent data: ............. $datarootdir
+- Info documentation: .................................. $datarootdir/info
+- Locale-dependent data: ............................... $datarootdir/locale
+- Man documentation: ................................... $datarootdir/man
+- Documentation root: .................................. $datarootdir/doc/$pkg_name
+- HTML documentation: .................................. $docdir
+- DVI documentation: ................................... $docdir
+- PDF documentation: ................................... $docdir
+- PS documentation: .................................... $docdir
+- findlib_version: ..................................... 1.5.5
+- is_native: ........................................... true
+- suffix_program: ...................................... 
+- Remove a file.: ...................................... rm -f
+- Remove a directory.: ................................. rm -rf
+- Turn ocaml debug flag on: ............................ true
+- Turn ocaml profile flag on: .......................... false
+- Compiler support generation of .cmxs.: ............... true
+- OCamlbuild additional flags: ......................... 
+- Build the syntax extension: .......................... true
+- Create documentations: ............................... true
+- Compile tests executable and library and run them: ... false
+- pkg_bigarray: ........................................ /usr/lib64/ocaml
+- pkg_num: ............................................. /home/opam/.opam/system/lib/num
+- pkg_unix: ............................................ /usr/lib64/ocaml
+- pkg_camlp4_quotations: ............................... /usr/lib64/ocaml/camlp4
+- pkg_camlp4_extend: ................................... /usr/lib64/ocaml/camlp4
+- pkg_type_conv: ....................................... /home/opam/.opam/system/lib/type_conv
+- 
+[sexplib: make] Command started
 + ocaml "setup.ml" "-configure" "--disable-debug" "--prefix" "/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/ocplib-endian.0.4)
 - 
 - Configuration: 
@@ -1011,6 +1012,9 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package bigarray -for-pack Sexplib -I lib -o lib/type_with_layout.cmx lib/type_with_layout.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package bigarray -for-pack Sexplib -I lib -o lib/parser.cmx lib/parser.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package bigarray -for-pack Sexplib -I lib -o lib/parser_with_layout.cmx lib/parser_with_layout.ml
+- W: Cannot find source file matching module 'sexplib_unix' in library sexplib_unix
+- W: Cannot find source file matching module 'sexplib_num' in library sexplib_num
+- W: Cannot find source file matching module 'sexplib' in library sexplib
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package bigarray -for-pack Sexplib -I lib -o lib/lexer.cmx lib/lexer.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -pp 'cpp -undef -traditional -Isyntax -w' -package bigarray -for-pack Sexplib -I lib -o lib/pre_sexp.cmx lib/pre_sexp.ml
 - + /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -pp 'cpp -undef -traditional -Isyntax -w' -package bigarray -for-pack Sexplib -I lib -o lib/pre_sexp.cmx lib/pre_sexp.ml
@@ -1112,9 +1116,6 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -package type_conv -package camlp4.quotations -package camlp4.extend -modules syntax/pa_sexp_conv.mli > syntax/pa_sexp_conv.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -package type_conv -package camlp4.quotations -package camlp4.extend -I syntax -o syntax/pa_sexp_conv.cmi syntax/pa_sexp_conv.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -syntax camlp4o -package type_conv -package camlp4.quotations -package camlp4.extend -modules syntax/pa_sexp_conv.ml > syntax/pa_sexp_conv.ml.depends
-- W: Cannot find source file matching module 'sexplib_unix' in library sexplib_unix
-- W: Cannot find source file matching module 'sexplib_num' in library sexplib_num
-- W: Cannot find source file matching module 'sexplib' in library sexplib
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package type_conv -package camlp4.quotations -package camlp4.extend -I syntax -o syntax/pa_sexp_conv.cmo syntax/pa_sexp_conv.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -a syntax/pa_sexp_conv.cmo -o syntax/pa_sexp_conv.cma
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package type_conv -package camlp4.quotations -package camlp4.extend -I syntax -o syntax/pa_sexp_conv.cmx syntax/pa_sexp_conv.ml
