@@ -2,28 +2,28 @@
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=zed
 # Detecting depexts using flags: x86_64 linux debian
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=zed
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=zed
-Not running as root, system installation will be done through "sudo"
 + sudo apt-get update
-Hit http://download.opensuse.org  Release.gpg
+Not running as root, system installation will be done through "sudo"
 Hit http://http.debian.net stable Release.gpg
-Hit http://download.opensuse.org  Release
 Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
 Hit http://http.debian.net stable Release
 Get:2 http://http.debian.net stable-updates Release [124 kB]
-Hit http://download.opensuse.org  Packages
+Hit http://security.debian.org stable/updates Release.gpg
 Hit http://http.debian.net stable/main amd64 Packages
 Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
-Get:4 http://security.debian.org stable/updates Release.gpg [836 B]
-Get:5 http://security.debian.org stable/updates Release [102 kB]
-Get:6 http://security.debian.org stable/updates/main amd64 Packages [374 kB]
-Fetched 606 kB in 2s (213 kB/s)
+Hit http://download.opensuse.org  Release.gpg
+Hit http://security.debian.org stable/updates Release
+Hit http://download.opensuse.org  Release
+Hit http://download.opensuse.org  Packages
+Hit http://security.debian.org stable/updates/main amd64 Packages
+Fetched 129 kB in 1s (112 kB/s)
 Reading package lists...
-+ sudo apt-get install -qq -yy m4
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
++ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind  1.5.5                                    [required by zed]
@@ -39,12 +39,12 @@ The following actions will be performed:
 [react: from default] Command started
 [react: from default] Command started
 [ocamlfind: from default] Command started
-[camomile: from default] Command started
 [default] http://opam-archive:8080/archives/react.1.2.0+opam.tar.gz downloaded
 [zed: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/camomile.0.8.5+opam.tar.gz downloaded
+[camomile: from default] Command started
 [zed: from default] Command started
+[default] http://opam-archive:8080/archives/camomile.0.8.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/zed.1.4+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -129,6 +129,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -174,12 +176,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -188,8 +190,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -242,6 +242,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -286,7 +287,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -473,6 +473,15 @@ The following actions will be performed:
 - ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . internal/hangul.ml
 - ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . internal/unidata.mli
 - ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . internal/unidata.ml
+- ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . internal/charmap.mli
+- ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . internal/charmap.ml
+- ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . internal/unimap.mli
+- ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . internal/unimap.ml
+- ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . public/charEncoding.mli
+- ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . public/charEncoding.ml
+- ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . public/uTF8.mli
+- ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . public/uTF8.ml
+- ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . public/uTF16.mli
 - File "internal/bitsvect.ml", line 74, characters 2-24:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
@@ -501,15 +510,69 @@ The following actions will be performed:
 - File "public/oOChannel.ml", line 119, characters 6-19:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . internal/charmap.mli
-- ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . internal/charmap.ml
-- ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . internal/unimap.mli
-- ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . internal/unimap.ml
-- ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . public/charEncoding.mli
-- ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . public/charEncoding.ml
-- ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . public/uTF8.mli
-- ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . public/uTF8.ml
-- ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . public/uTF16.mli
+- File "public/charEncoding.ml", line 334, characters 4-17:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "public/charEncoding.ml", line 410, characters 6-30:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "public/charEncoding.ml", line 416, characters 6-19:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "public/charEncoding.ml", line 1018, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "public/charEncoding.ml", line 1041, characters 32-50:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "public/charEncoding.ml", line 1052, characters 2-39:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "public/charEncoding.ml", line 1113, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "public/charEncoding.ml", line 1196, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "public/charEncoding.ml", line 1209, characters 37-55:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "public/charEncoding.ml", line 1220, characters 7-44:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "public/charEncoding.ml", line 1260, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "public/charEncoding.ml", line 1351, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "public/charEncoding.ml", line 1365, characters 39-57:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "public/charEncoding.ml", line 1376, characters 7-44:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "public/charEncoding.ml", line 1398, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "public/charEncoding.ml", line 1483, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "public/charEncoding.ml", line 1500, characters 32-50:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "public/charEncoding.ml", line 1502, characters 21-39:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "public/charEncoding.ml", line 1517, characters 29-47:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "public/charEncoding.ml", line 1519, characters 7-44:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "public/charEncoding.ml", line 1560, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . public/uTF16.ml
 - ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . public/uCS4.mli
 - ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . public/uCS4.ml
@@ -537,75 +600,6 @@ The following actions will be performed:
 - ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . public/stringPrep.mli
 - ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . public/stringPrep.ml
 - ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . camomileLibrary.mli
-- File "public/charEncoding.ml", line 334, characters 4-17:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "public/charEncoding.ml", line 410, characters 6-30:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "public/charEncoding.ml", line 416, characters 6-19:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "public/charEncoding.ml", line 1018, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "public/charEncoding.ml", line 1041, characters 32-50:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "public/charEncoding.ml", line 1052, characters 2-39:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "public/charEncoding.ml", line 1113, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "public/charEncoding.ml", line 1196, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "public/charEncoding.ml", line 1209, characters 37-55:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "public/charEncoding.ml", line 1220, characters 7-44:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "public/charEncoding.ml", line 1260, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "public/charEncoding.ml", line 1351, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "public/charEncoding.ml", line 1365, characters 39-57:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "public/charEncoding.ml", line 1376, characters 7-44:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "public/charEncoding.ml", line 1398, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "public/charEncoding.ml", line 1483, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "public/charEncoding.ml", line 1500, characters 32-50:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "public/charEncoding.ml", line 1502, characters 21-39:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "public/charEncoding.ml", line 1517, characters 29-47:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "public/charEncoding.ml", line 1519, characters 7-44:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "public/charEncoding.ml", line 1560, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "public/uCol.ml", line 142, characters 4-25:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "public/uCol.ml", line 143, characters 4-21:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 - ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . camomileLibrary.ml
 - ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . camomileLibraryDefault.mli
 - ocamlc.opt -c -noassert -I internal -I public -I toolslib -I . camomileLibraryDefault.ml
@@ -614,6 +608,12 @@ The following actions will be performed:
 - ocamlc.opt -a -o camomile.cma public/unicodeString.cmo configInt.cmo internal/uReStrParserType.cmo internal/database.cmo camomileDefaultConfig.cmo internal/bitsvect.cmo internal/bytesvect.cmo internal/avlTree.cmo internal/iSet.cmo internal/iMap.cmo internal/tbl31.cmo internal/byte_labeled_dag.cmo internal/xArray.cmo public/oOChannel.cmo public/uChar.cmo public/uSet.cmo public/uMap.cmo public/uCharTbl.cmo public/uText.cmo public/xString.cmo public/subText.cmo public/uLine.cmo public/locale.cmo internal/hangul.cmo internal/unidata.cmo internal/charmap.cmo internal/unimap.cmo public/charEncoding.cmo public/uTF8.cmo public/uTF16.cmo public/uCS4.cmo public/uPervasives.cmo public/uCharInfo.cmo public/uNF.cmo public/uCol.cmo public/caseMap.cmo public/uRe.cmo internal/uReStrParser.cmo internal/uReStrLexer.cmo public/uReStr.cmo internal/stringPrep_data.cmo public/stringPrep.cmo camomileLibrary.cmo camomileLibraryDefault.cmo camomileLibraryDyn.cmo
 - ocamlc.opt -a -o camomileLibrary.cma public/unicodeString.cmo configInt.cmo internal/uReStrParserType.cmo internal/database.cmo camomileDefaultConfig.cmo internal/bitsvect.cmo internal/bytesvect.cmo internal/avlTree.cmo internal/iSet.cmo internal/iMap.cmo internal/tbl31.cmo internal/byte_labeled_dag.cmo internal/xArray.cmo public/oOChannel.cmo public/uChar.cmo public/uSet.cmo public/uMap.cmo public/uCharTbl.cmo public/uText.cmo public/xString.cmo public/subText.cmo public/uLine.cmo public/locale.cmo internal/hangul.cmo internal/unidata.cmo internal/charmap.cmo internal/unimap.cmo public/charEncoding.cmo public/uTF8.cmo public/uTF16.cmo public/uCS4.cmo public/uPervasives.cmo public/uCharInfo.cmo public/uNF.cmo public/uCol.cmo public/caseMap.cmo public/uRe.cmo internal/uReStrParser.cmo internal/uReStrLexer.cmo public/uReStr.cmo internal/stringPrep_data.cmo public/stringPrep.cmo camomileLibrary.cmo
 - ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . -impl public/unicodeString.mli
+- File "public/uCol.ml", line 142, characters 4-25:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "public/uCol.ml", line 143, characters 4-21:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 - ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . -impl configInt.mli
 - ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . -impl internal/uReStrParserType.mli
 - ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . internal/database.ml
@@ -629,6 +629,15 @@ The following actions will be performed:
 - ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/oOChannel.ml
 - ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/uChar.ml
 - ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/uSet.ml
+- ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/uMap.ml
+- ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/uCharTbl.ml
+- ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/uText.ml
+- ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/xString.ml
+- ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/subText.ml
+- ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/uLine.ml
+- ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/locale.ml
+- ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . internal/hangul.ml
+- ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . internal/unidata.ml
 - File "internal/bitsvect.ml", line 74, characters 2-24:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
@@ -657,18 +666,11 @@ The following actions will be performed:
 - File "public/oOChannel.ml", line 119, characters 6-19:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/uMap.ml
-- ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/uCharTbl.ml
-- ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/uText.ml
-- ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/xString.ml
-- ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/subText.ml
-- ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/uLine.ml
-- ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/locale.ml
-- ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . internal/hangul.ml
-- ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . internal/unidata.ml
 - ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . internal/charmap.ml
 - ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . internal/unimap.ml
 - ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/charEncoding.ml
+- ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/uTF8.ml
+- ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/uTF16.ml
 - File "public/charEncoding.ml", line 334, characters 4-17:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
@@ -732,20 +734,12 @@ The following actions will be performed:
 - File "public/charEncoding.ml", line 1560, characters 10-23:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/uTF8.ml
-- ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/uTF16.ml
 - ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/uCS4.ml
 - ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/uPervasives.ml
 - ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/uCharInfo.ml
 - ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/uNF.ml
 - ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/uCol.ml
 - ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/caseMap.ml
-- File "public/uCol.ml", line 142, characters 4-25:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "public/uCol.ml", line 143, characters 4-21:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 - ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . public/uRe.ml
 - ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . internal/uReStrParser.ml
 - ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . internal/uReStrLexer.ml
@@ -755,6 +749,12 @@ The following actions will be performed:
 - ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . camomileLibrary.ml
 - ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . camomileLibraryDefault.ml
 - ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . camomileLibraryDyn.ml
+- File "public/uCol.ml", line 142, characters 4-25:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "public/uCol.ml", line 143, characters 4-21:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 - ocamlopt.opt -a -o camomile.cmxa public/unicodeString.cmx configInt.cmx internal/uReStrParserType.cmx internal/database.cmx camomileDefaultConfig.cmx internal/bitsvect.cmx internal/bytesvect.cmx internal/avlTree.cmx internal/iSet.cmx internal/iMap.cmx internal/tbl31.cmx internal/byte_labeled_dag.cmx internal/xArray.cmx public/oOChannel.cmx public/uChar.cmx public/uSet.cmx public/uMap.cmx public/uCharTbl.cmx public/uText.cmx public/xString.cmx public/subText.cmx public/uLine.cmx public/locale.cmx internal/hangul.cmx internal/unidata.cmx internal/charmap.cmx internal/unimap.cmx public/charEncoding.cmx public/uTF8.cmx public/uTF16.cmx public/uCS4.cmx public/uPervasives.cmx public/uCharInfo.cmx public/uNF.cmx public/uCol.cmx public/caseMap.cmx public/uRe.cmx internal/uReStrParser.cmx internal/uReStrLexer.cmx public/uReStr.cmx internal/stringPrep_data.cmx public/stringPrep.cmx camomileLibrary.cmx camomileLibraryDefault.cmx camomileLibraryDyn.cmx
 - ocamlopt.opt -shared -linkall -o camomile.cmxs camomile.cmxa
 - ocamlopt.opt -a -o camomileLibrary.cmxa public/unicodeString.cmx configInt.cmx internal/uReStrParserType.cmx internal/database.cmx camomileDefaultConfig.cmx internal/bitsvect.cmx internal/bytesvect.cmx internal/avlTree.cmx internal/iSet.cmx internal/iMap.cmx internal/tbl31.cmx internal/byte_labeled_dag.cmx internal/xArray.cmx public/oOChannel.cmx public/uChar.cmx public/uSet.cmx public/uMap.cmx public/uCharTbl.cmx public/uText.cmx public/xString.cmx public/subText.cmx public/uLine.cmx public/locale.cmx internal/hangul.cmx internal/unidata.cmx internal/charmap.cmx internal/unimap.cmx public/charEncoding.cmx public/uTF8.cmx public/uTF16.cmx public/uCS4.cmx public/uPervasives.cmx public/uCharInfo.cmx public/uNF.cmx public/uCol.cmx public/caseMap.cmx public/uRe.cmx internal/uReStrParser.cmx internal/uReStrLexer.cmx public/uReStr.cmx internal/stringPrep_data.cmx public/stringPrep.cmx camomileLibrary.cmx
@@ -838,15 +838,26 @@ The following actions will be performed:
 - tools/parse_allkeys.opt database < unidata/tr10/allkeys.txt
 - ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . mappings/gen_mappings.ml
 - ocamlopt.opt -noassert -I internal -I public -I toolslib -I . -o mappings/gen_mappings.opt bigarray.cmxa str.cmxa toolslib.cmxa mappings/gen_mappings.cmx
-- cd mappings && ./gen_mappings.opt
 - File "mappings/gen_mappings.ml", line 91, characters 11-24:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
 - File "mappings/gen_mappings.ml", line 93, characters 4-30:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- cd mappings && ./gen_mappings.opt
 - ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . tools/camomilecharmap.ml
 - ocamlopt.opt -noassert -I internal -I public -I toolslib -I . -o tools/camomilecharmap.opt bigarray.cmxa str.cmxa toolslib.cmxa tools/camomilecharmap.cmx
+- File "tools/camomilecharmap.ml", line 153, characters 11-22:
+- Warning 3: deprecated: String.copy
+- File "tools/camomilecharmap.ml", line 156, characters 2-14:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "tools/camomilecharmap.ml", line 161, characters 2-34:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "tools/camomilecharmap.ml", line 162, characters 2-35:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 - tools/camomilecharmap.opt -d charmaps charmaps/ANSI_X3.110-1983 || true
 - tools/camomilecharmap.opt -d charmaps charmaps/ANSI_X3.4-1968 || true
 - tools/camomilecharmap.opt -d charmaps charmaps/ARMSCII-8 || true
@@ -859,17 +870,6 @@ The following actions will be performed:
 - tools/camomilecharmap.opt -d charmaps charmaps/CP10007 || true
 - tools/camomilecharmap.opt -d charmaps charmaps/CP1125 || true
 - tools/camomilecharmap.opt -d charmaps charmaps/CP1250 || true
-- File "tools/camomilecharmap.ml", line 153, characters 11-22:
-- Warning 3: deprecated: String.copy
-- File "tools/camomilecharmap.ml", line 156, characters 2-14:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "tools/camomilecharmap.ml", line 161, characters 2-34:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "tools/camomilecharmap.ml", line 162, characters 2-35:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 - tools/camomilecharmap.opt -d charmaps charmaps/CP1251 || true
 - tools/camomilecharmap.opt -d charmaps charmaps/CP1252 || true
 - tools/camomilecharmap.opt -d charmaps charmaps/CP1253 || true
@@ -1023,6 +1023,7 @@ The following actions will be performed:
 - tools/camomilecharmap.opt -d charmaps charmaps/ISO_646.IRV || true
 - tools/camomilecharmap.opt -d charmaps charmaps/ISO_6937 || true
 - tools/camomilecharmap.opt -d charmaps charmaps/ISO_6937-2-25 || true
+- Fatal error: exception Failure("Broken entry: <NUL>	/x00/x00	NULL (NUL)")
 - tools/camomilecharmap.opt -d charmaps charmaps/ISO_6937-2-ADD || true
 - tools/camomilecharmap.opt -d charmaps charmaps/ISO_8859-1,GL || true
 - tools/camomilecharmap.opt -d charmaps charmaps/ISO_8859-SUPP || true
@@ -1034,12 +1035,6 @@ The following actions will be performed:
 - tools/camomilecharmap.opt -d charmaps charmaps/JIS_C6229-1984-B-ADD || true
 - tools/camomilecharmap.opt -d charmaps charmaps/JIS_C6229-1984-HAND || true
 - tools/camomilecharmap.opt -d charmaps charmaps/JIS_C6229-1984-HAND-ADD || true
-- Fatal error: exception Failure("Broken entry: <NUL>	/x00/x00	NULL (NUL)")
-- Fatal error: exception Failure("Broken entry: <NUL>                   \d000   NULL")
-- Fatal error: exception Failure("Broken entry: <NU>                   /x00   <U0000> NULL (NUL)")
-- Fatal error: exception Failure("Broken entry: <NU>                   /x00   <U0000> NULL (NUL)")
-- Fatal error: exception Failure("Broken entry: <NU>                   /x00   <U0000> NULL (NUL)")
-- Fatal error: exception Failure("Broken entry: <NU>                   /x00   <U0000> NULL (NUL)")
 - tools/camomilecharmap.opt -d charmaps charmaps/JIS_C6229-1984-KANA || true
 - tools/camomilecharmap.opt -d charmaps charmaps/JIS_X0201 || true
 - tools/camomilecharmap.opt -d charmaps charmaps/JOHAB || true
@@ -1089,6 +1084,11 @@ The following actions will be performed:
 - tools/camomilecharmap.opt -d charmaps charmaps/TIS-620 || true
 - tools/camomilecharmap.opt -d charmaps charmaps/TSCII || true
 - tools/camomilecharmap.opt -d charmaps charmaps/UTF-8 || true
+- Fatal error: exception Failure("Broken entry: <NUL>                   \d000   NULL")
+- Fatal error: exception Failure("Broken entry: <NU>                   /x00   <U0000> NULL (NUL)")
+- Fatal error: exception Failure("Broken entry: <NU>                   /x00   <U0000> NULL (NUL)")
+- Fatal error: exception Failure("Broken entry: <NU>                   /x00   <U0000> NULL (NUL)")
+- Fatal error: exception Failure("Broken entry: <NU>                   /x00   <U0000> NULL (NUL)")
 - Fatal error: exception Failure("Broken entry: <NU>                   /x00   <U0000> NULL (NUL)")
 - Fatal error: exception Failure("Broken entry: <NU>                   /x00   <U0000> NULL (NUL)")
 - Fatal error: exception Failure("Broken entry: <comment> %")
@@ -1099,6 +1099,12 @@ The following actions will be performed:
 - tools/camomilecharmap.opt -d charmaps charmaps/VISCII || true
 - tools/camomilecharmap.opt -d charmaps charmaps/WINDOWS-31J || true
 - ocamlopt.opt -c -noassert -I internal -I public -I toolslib -I . tools/camomilelocaledef.ml
+- ocamlopt.opt -noassert -I internal -I public -I toolslib -I . -o tools/camomilelocaledef.opt bigarray.cmxa str.cmxa toolslib.cmxa tools/camomilelocaledef.cmx
+- tools/camomilelocaledef.opt --file locales/af.txt locales 
+- tools/camomilelocaledef.opt --file locales/af_ZA.txt locales 
+- tools/camomilelocaledef.opt --file locales/am.txt locales 
+- tools/camomilelocaledef.opt --file locales/am_ET.txt locales 
+- tools/camomilelocaledef.opt --file locales/ar.txt locales 
 - File "tools/camomilelocaledef.ml", line 303, characters 10-23:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -1107,12 +1113,7 @@ The following actions will be performed:
 - Use Bytes.set instead.
 - File "tools/camomilelocaledef.ml", line 162, characters 9-37:
 - Warning 26: unused variable data.
-- ocamlopt.opt -noassert -I internal -I public -I toolslib -I . -o tools/camomilelocaledef.opt bigarray.cmxa str.cmxa toolslib.cmxa tools/camomilelocaledef.cmx
-- tools/camomilelocaledef.opt --file locales/af.txt locales 
-- tools/camomilelocaledef.opt --file locales/af_ZA.txt locales 
-- tools/camomilelocaledef.opt --file locales/am.txt locales 
-- tools/camomilelocaledef.opt --file locales/am_ET.txt locales 
-- tools/camomilelocaledef.opt --file locales/ar.txt locales 
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/ar_AE.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar_BH.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar_DZ.txt locales 
@@ -1124,7 +1125,6 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/ar_LB.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar_LY.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar_MA.txt locales 
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/ar_OM.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar_QA.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar_SA.txt locales 
@@ -1140,9 +1140,9 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/bg_BG.txt locales 
 - tools/camomilelocaledef.opt --file locales/bn.txt locales 
 - tools/camomilelocaledef.opt --file locales/bn_IN.txt locales 
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/ca.txt locales 
 - tools/camomilelocaledef.opt --file locales/ca_ES.txt locales 
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/ca_ES_PREEURO.txt locales 
 - tools/camomilelocaledef.opt --file locales/cs.txt locales 
 - tools/camomilelocaledef.opt --file locales/cs_CZ.txt locales 
@@ -1227,8 +1227,8 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/fa.txt locales 
 - tools/camomilelocaledef.opt --file locales/fa_IN.txt locales 
 - tools/camomilelocaledef.opt --file locales/fa_IR.txt locales 
-- tools/camomilelocaledef.opt --file locales/fi.txt locales 
 - Warning : normalization option is not supported
+- tools/camomilelocaledef.opt --file locales/fi.txt locales 
 - tools/camomilelocaledef.opt --file locales/fi_FI.txt locales 
 - tools/camomilelocaledef.opt --file locales/fi_FI_PREEURO.txt locales 
 - tools/camomilelocaledef.opt --file locales/fo.txt locales 
@@ -1250,9 +1250,9 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/gl_ES.txt locales 
 - tools/camomilelocaledef.opt --file locales/gl_ES_PREEURO.txt locales 
 - tools/camomilelocaledef.opt --file locales/gu.txt locales 
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/gu_IN.txt locales 
 - tools/camomilelocaledef.opt --file locales/gv.txt locales 
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/gv_GB.txt locales 
 - tools/camomilelocaledef.opt --file locales/he.txt locales 
 - tools/camomilelocaledef.opt --file locales/he_IL.txt locales 
@@ -1295,9 +1295,9 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/ko.txt locales 
 - tools/camomilelocaledef.opt --file locales/ko_KR.txt locales 
 - tools/camomilelocaledef.opt --file locales/kok.txt locales 
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/kok_IN.txt locales 
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/kw.txt locales 
 - tools/camomilelocaledef.opt --file locales/kw_GB.txt locales 
 - tools/camomilelocaledef.opt --file locales/ky.txt locales 
@@ -1311,14 +1311,13 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/mn.txt locales 
 - tools/camomilelocaledef.opt --file locales/mn_MN.txt locales 
 - tools/camomilelocaledef.opt --file locales/mr.txt locales 
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/mr_IN.txt locales 
 - tools/camomilelocaledef.opt --file locales/ms.txt locales 
 - tools/camomilelocaledef.opt --file locales/ms_BN.txt locales 
 - tools/camomilelocaledef.opt --file locales/ms_MY.txt locales 
 - tools/camomilelocaledef.opt --file locales/mt.txt locales 
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/mt_MT.txt locales 
 - tools/camomilelocaledef.opt --file locales/nb.txt locales 
 - tools/camomilelocaledef.opt --file locales/nb_NO.txt locales 
@@ -1331,13 +1330,13 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/nn_NO.txt locales 
 - tools/camomilelocaledef.opt --file locales/no.txt locales 
 - tools/camomilelocaledef.opt --file locales/no_NO.txt locales 
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/no_NO_NY.txt locales 
 - tools/camomilelocaledef.opt --file locales/om.txt locales 
 - tools/camomilelocaledef.opt --file locales/om_ET.txt locales 
 - tools/camomilelocaledef.opt --file locales/om_KE.txt locales 
 - tools/camomilelocaledef.opt --file locales/pa.txt locales 
 - tools/camomilelocaledef.opt --file locales/pa_IN.txt locales 
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/pl.txt locales 
 - tools/camomilelocaledef.opt --file locales/pl_PL.txt locales 
 - tools/camomilelocaledef.opt --file locales/pt.txt locales 
@@ -1352,8 +1351,9 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/ru_UA.txt locales 
 - tools/camomilelocaledef.opt --file locales/sa.txt locales 
 - tools/camomilelocaledef.opt --file locales/sa_IN.txt locales 
-- tools/camomilelocaledef.opt --file locales/sh.txt locales 
 - Warning : normalization option is not supported
+- Warning : normalization option is not supported
+- tools/camomilelocaledef.opt --file locales/sh.txt locales 
 - tools/camomilelocaledef.opt --file locales/sh_YU.txt locales 
 - tools/camomilelocaledef.opt --file locales/sk.txt locales 
 - tools/camomilelocaledef.opt --file locales/sk_SK.txt locales 
@@ -1387,13 +1387,13 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/ti_ER.txt locales 
 - tools/camomilelocaledef.opt --file locales/ti_ET.txt locales 
 - tools/camomilelocaledef.opt --file locales/tr.txt locales 
+- tools/camomilelocaledef.opt --file locales/tr_TR.txt locales 
+- tools/camomilelocaledef.opt --file locales/tt.txt locales 
 - Warning : normalization option is not supported
 - Warning : normalization option is not supported
 - Warning : normalization option is not supported
 - Warning : file loading is not supported.
 - Warning : normalization option is not supported
-- tools/camomilelocaledef.opt --file locales/tr_TR.txt locales 
-- tools/camomilelocaledef.opt --file locales/tt.txt locales 
 - tools/camomilelocaledef.opt --file locales/tt_RU.txt locales 
 - tools/camomilelocaledef.opt --file locales/uk.txt locales 
 - tools/camomilelocaledef.opt --file locales/uk_UA.txt locales 
@@ -1404,11 +1404,11 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/vi.txt locales 
 - tools/camomilelocaledef.opt --file locales/vi_VN.txt locales 
 - tools/camomilelocaledef.opt --file locales/zh.txt locales 
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/zh_CN.txt locales 
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/zh_HK.txt locales 
 - tools/camomilelocaledef.opt --file locales/zh_MO.txt locales 
 - tools/camomilelocaledef.opt --file locales/zh_SG.txt locales 
