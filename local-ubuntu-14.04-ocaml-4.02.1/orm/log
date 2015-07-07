@@ -1,29 +1,28 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-# Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=orm
+# Detecting depexts using flags: x86_64 linux ubuntu
 # The following system packages are needed:
 #  - libsqlite3-dev
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=orm
-+ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-Ign http://download.opensuse.org  InRelease
-+ sudo apt-get install -qq -yy libsqlite3-dev m4
-Hit http://download.opensuse.org  Release.gpg
-Hit http://download.opensuse.org  Release
++ sudo apt-get update
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
-Hit http://download.opensuse.org  Packages
 Hit http://archive.ubuntu.com trusty Release.gpg
+Ign http://download.opensuse.org  InRelease
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
 Hit http://archive.ubuntu.com trusty Release
 Get:3 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
+Hit http://download.opensuse.org  Release.gpg
 Get:4 http://archive.ubuntu.com trusty-security Release [63.5 kB]
+Hit http://download.opensuse.org  Release
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_source_Sources.gz is not what the server reported 247996 248009
 Hit http://archive.ubuntu.com trusty/main Sources
 Hit http://archive.ubuntu.com trusty/restricted Sources
 Hit http://archive.ubuntu.com trusty/universe Sources
@@ -32,8 +31,9 @@ Hit http://archive.ubuntu.com trusty/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty/universe amd64 Packages
 Get:5 http://archive.ubuntu.com trusty-updates/main Sources [248 kB]
 Get:6 http://archive.ubuntu.com trusty-updates/restricted Sources [2310 B]
-Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [140 kB]
+Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [141 kB]
 Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [636 kB]
+Hit http://download.opensuse.org  Packages
 Get:9 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [15.1 kB]
 Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [356 kB]
 Get:11 http://archive.ubuntu.com trusty-security/main Sources [97.2 kB]
@@ -42,19 +42,20 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [23.3 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [329 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [128 kB]
-Fetched 2119 kB in 5s (358 kB/s)
+Fetched 2120 kB in 3s (628 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libsqlite3-dev m4
++ sudo apt-get install -qq -yy libsqlite3-dev m4
 debconf: unable to initialize frontend: Dialog
-Selecting previously unselected package libsqlite3-dev:amd64.
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
 debconf: unable to initialize frontend: Readline
 debconf: (This frontend requires a controlling tty.)
 debconf: falling back to frontend: Teletype
 dpkg-preconfigure: unable to re-open stdin: 
+Selecting previously unselected package libsqlite3-dev:amd64.
 (Reading database ... 22842 files and directories currently installed.)
 Preparing to unpack .../libsqlite3-dev_3.8.2-1ubuntu2_amd64.deb ...
 Unpacking libsqlite3-dev:amd64 (3.8.2-1ubuntu2) ...
@@ -75,9 +76,9 @@ The following actions will be performed:
 [orm: from default] Command started
 [dyntype: from default] Command started
 [orm: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/dyntype.0.9.0+opam.tar.gz downloaded
 [sqlite3: from default] Command started
-[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/orm.0.7.0+opam.tar.gz downloaded
 [type_conv: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
@@ -174,6 +175,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -219,12 +221,18 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 		cp topfind.ml.in topfind.ml;                             \
+- 	else                                                             \
+- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 			> topfind.ml ;                                   \
+- 	fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -233,13 +241,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 		cp topfind.ml.in topfind.ml;                             \
-- 	else                                                             \
-- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 			> topfind.ml ;                                   \
-- 	fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -284,6 +285,8 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -328,8 +331,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -469,6 +470,23 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -a -cclib -lsqlite3_stubs -cclib -lsqlite3 -cclib -lsqlite3 -cclib -lsqlite3 lib/sqlite3.cmx -o lib/sqlite3.cmxa
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared -cclib -lsqlite3_stubs -I lib -cclib -lsqlite3 lib/sqlite3.cmxa lib/sqlite3.cmx -o lib/sqlite3.cmxs
 [sqlite3: ocaml setup.ml] Command started
++ ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/system/build/sqlite3.2.0.9)
+- Installed /home/opam/.opam/system/lib/sqlite3/sqlite3.mli
+- Installed /home/opam/.opam/system/lib/sqlite3/libsqlite3_stubs.a
+- Installed /home/opam/.opam/system/lib/sqlite3/sqlite3.cma
+- Installed /home/opam/.opam/system/lib/sqlite3/sqlite3.cmxa
+- Installed /home/opam/.opam/system/lib/sqlite3/sqlite3.a
+- Installed /home/opam/.opam/system/lib/sqlite3/sqlite3.cmxs
+- Installed /home/opam/.opam/system/lib/sqlite3/sqlite3.cmi
+- Installed /home/opam/.opam/system/lib/sqlite3/sqlite3.cmti
+- Installed /home/opam/.opam/system/lib/sqlite3/sqlite3.cmt
+- Installed /home/opam/.opam/system/lib/sqlite3/sqlite3.annot
+- Installed /home/opam/.opam/system/lib/sqlite3/sqlite3.cmx
+- Installed /home/opam/.opam/system/lib/sqlite3/META
+- Installed /home/opam/.opam/system/lib/stublibs/dllsqlite3_stubs.so
+- Installed /home/opam/.opam/system/lib/stublibs/dllsqlite3_stubs.so.owner
+- ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/system/lib/stublibs is not mentioned in ld.conf
+-> installed sqlite3.2.0.9
 + make  (CWD=/home/opam/.opam/system/build/type_conv.112.01.01)
 - ocamlopt.opt -o setup.exe setup.ml || ocamlopt -o setup.exe setup.ml || ocamlc -o setup.exe setup.ml
 - rm -f setup.cmx setup.cmi setup.o setup.obj setup.cmo
@@ -564,23 +582,6 @@ The following actions will be performed:
 - Installed /home/opam/.opam/system/lib/type_conv/META
 -> installed type_conv.112.01.01
 [dyntype: make] Command started
-+ ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/system/build/sqlite3.2.0.9)
-- Installed /home/opam/.opam/system/lib/sqlite3/sqlite3.mli
-- Installed /home/opam/.opam/system/lib/sqlite3/libsqlite3_stubs.a
-- Installed /home/opam/.opam/system/lib/sqlite3/sqlite3.cma
-- Installed /home/opam/.opam/system/lib/sqlite3/sqlite3.cmxa
-- Installed /home/opam/.opam/system/lib/sqlite3/sqlite3.a
-- Installed /home/opam/.opam/system/lib/sqlite3/sqlite3.cmxs
-- Installed /home/opam/.opam/system/lib/sqlite3/sqlite3.cmi
-- Installed /home/opam/.opam/system/lib/sqlite3/sqlite3.cmti
-- Installed /home/opam/.opam/system/lib/sqlite3/sqlite3.cmt
-- Installed /home/opam/.opam/system/lib/sqlite3/sqlite3.annot
-- Installed /home/opam/.opam/system/lib/sqlite3/sqlite3.cmx
-- Installed /home/opam/.opam/system/lib/sqlite3/META
-- Installed /home/opam/.opam/system/lib/stublibs/dllsqlite3_stubs.so
-- Installed /home/opam/.opam/system/lib/stublibs/dllsqlite3_stubs.so.owner
-- ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/system/lib/stublibs is not mentioned in ld.conf
--> installed sqlite3.2.0.9
 + make  (CWD=/home/opam/.opam/system/build/dyntype.0.9.0)
 - ocamlbuild dyntype.cmxa dyntype.cma
 - /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
@@ -684,6 +685,9 @@ The following actions will be performed:
 - ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot weakid.mli
 - ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm weakid.ml
 - ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm sql_backend.ml
+- ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm sql_init.ml
+- ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm sql_save.ml
+- ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm sql_get.ml
 - File "weakid.ml", line 71, characters 11-23:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
@@ -696,9 +700,9 @@ The following actions will be performed:
 - Warning 43: the label field is not optional.
 - File "sql_backend.ml", line 267, characters 73-93:
 - Warning 43: the label field is not optional.
-- ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm sql_init.ml
-- ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm sql_save.ml
-- ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm sql_get.ml
+- File "sql_save.ml", line 138, characters 12-24:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
 - ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm sql_delete.ml
 - ocamlfind ocamlopt -package sqlite3,dyntype.syntax -c -annot -for-pack Orm sql_cache.ml
 - ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot db.mli
@@ -714,10 +718,6 @@ The following actions will be performed:
 - ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm sql_init.ml
 - ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm sql_save.ml
 - ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm sql_get.ml
-- ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm sql_delete.ml
-- File "sql_save.ml", line 138, characters 12-24:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
 - File "weakid.ml", line 71, characters 11-23:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
@@ -733,6 +733,7 @@ The following actions will be performed:
 - File "sql_save.ml", line 138, characters 12-24:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
+- ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm sql_delete.ml
 - ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm sql_cache.ml
 - ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm db.ml
 - ocamlfind ocamlc -package sqlite3,dyntype.syntax -c -annot -g -for-pack Orm sig.ml
