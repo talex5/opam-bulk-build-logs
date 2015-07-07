@@ -1,53 +1,20 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux centos
 + uname -s
+# Detecting depexts using flags: x86_64 linux centos
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=apron
-+ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=apron
 # The following system packages are needed:
 #  - gmp
 #  - gmp-devel
++ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=apron
++ sudo yum -y update
 Not running as root, the following command will be run through "sudo":
     yum -y update
-+ sudo yum -y update
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: mirror.ukhost4u.com
- * extras: mirror.vorboss.net
- * updates: anorien.csc.warwick.ac.uk
-Resolving Dependencies
---> Running transaction check
----> Package tzdata.noarch 0:2015c-1.el7 will be updated
----> Package tzdata.noarch 0:2015d-1.el7 will be an update
---> Finished Dependency Resolution
-
-Dependencies Resolved
-
-================================================================================
- Package         Arch            Version                 Repository        Size
-================================================================================
-Updating:
- tzdata          noarch          2015d-1.el7             updates          431 k
-
-Transaction Summary
-================================================================================
-Upgrade  1 Package
-
-Total download size: 431 k
-Downloading packages:
-Delta RPMs disabled because /usr/bin/applydeltarpm not installed.
-Running transaction check
-Running transaction test
-Transaction test succeeded
-Running transaction
-  Updating   : tzdata-2015d-1.el7.noarch                                    1/2 
-  Cleanup    : tzdata-2015c-1.el7.noarch                                    2/2 
-  Verifying  : tzdata-2015d-1.el7.noarch                                    1/2 
-  Verifying  : tzdata-2015c-1.el7.noarch                                    2/2 
-
-Updated:
-  tzdata.noarch 0:2015d-1.el7                                                   
-
-Complete!
+ * base: mirror.millry.co
+ * extras: mirror.lug.udel.edu
+ * updates: mirror.dattobackup.com
+No packages marked for update
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     yum install -y gmp gmp-devel
@@ -56,9 +23,9 @@ Not running as root, the following command will be run through "sudo":
 + sudo yum install -y gmp gmp-devel
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: centos.serverspace.co.uk
- * extras: centos.serverspace.co.uk
- * updates: anorien.csc.warwick.ac.uk
+ * base: mirror.millry.co
+ * extras: mirror.lug.udel.edu
+ * updates: mirror.dattobackup.com
 Package 1:gmp-6.0.0-11.el7.x86_64 already installed and latest version
 Resolving Dependencies
 --> Running transaction check
@@ -107,11 +74,11 @@ The following actions will be performed:
 [apron: from default] Command started
 [camlidl: from default] Command started
 [ocamlfind: from default] Command started
-[ocamlfind: from default] Command started
 [camlidl: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[apron: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/camlidl.1.05+opam.tar.gz downloaded
+[apron: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/apron.0.9.10+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -122,6 +89,7 @@ The following actions will be performed:
 + mkdir "-p" "/home/opam/.opam/system/bin" "/home/opam/.opam/system/lib/camlidl" "/home/opam/.opam/system/lib/camlidl/caml" (CWD=/home/opam/.opam/system/build/camlidl.1.05)
 [camlidl: make all] Command started
 + sh "-c" "cc -c $CFLAGS test.c" (CWD=/home/opam/.opam/system/build/conf-gmp.1)
+[ERROR] The compilation of conf-mpfr failed at "cc test.c -lgmp -lmpfr".
 -> installed conf-gmp.1
 [conf-mpfr: cc test.c] Command started
 + cc "test.c" "-lgmp" "-lmpfr" (CWD=/home/opam/.opam/system/build/conf-mpfr.1)
@@ -129,7 +97,6 @@ The following actions will be performed:
 -  #include <mpfr.h>
 -                   ^
 - compilation terminated.
-[ERROR] The compilation of conf-mpfr failed at "cc test.c -lgmp -lmpfr".
 [ocamlfind: ./configure] Command started
 + ./configure "-bindir" "/home/opam/.opam/system/bin" "-sitelib" "/home/opam/.opam/system/lib" "-mandir" "/home/opam/.opam/system/man" "-config" "/home/opam/.opam/system/lib/findlib.conf" "-no-topfind" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
 - Welcome to findlib version 1.5.5
@@ -481,6 +448,11 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
+- if [ 1 -gt 0 ]; then \
+-     ocamlopt -I +compiler-libs -shared -o findlib.cmxs findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx; \
+- fi
+- ocamlopt -I +compiler-libs -c ocaml_args.ml
+- ocamlopt -I +compiler-libs -c frontend.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -525,11 +497,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- if [ 1 -gt 0 ]; then \
--     ocamlopt -I +compiler-libs -shared -o findlib.cmxs findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx; \
-- fi
-- ocamlopt -I +compiler-libs -c ocaml_args.ml
-- ocamlopt -I +compiler-libs -c frontend.ml
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -541,23 +508,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -o ocamlfind_opt findlib.cmxa unix.cmxa \
 - 	   ocaml_args.cmx frontend.cmx
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
-
-#=== ERROR while installing conf-mpfr.1 =======================================#
-# opam-version         1.2.2 (96efec2011c66532520b3222536e4ebc9f7a6032)
-# os                   linux
-# command              cc test.c -lgmp -lmpfr
-# path                 /home/opam/.opam/system/build/conf-mpfr.1
-# compiler             system (4.02.1)
-# exit-code            1
-# env-file             /home/opam/.opam/system/build/conf-mpfr.1/conf-mpfr-1-60459a.env
-# stdout-file          /home/opam/.opam/system/build/conf-mpfr.1/conf-mpfr-1-60459a.out
-# stderr-file          /home/opam/.opam/system/build/conf-mpfr.1/conf-mpfr-1-60459a.err
-### stderr ###
-# test.c:2:18: fatal error: mpfr.h: No such file or directory
-#  #include <mpfr.h>
-#                   ^
-# compilation terminated.
-
 [ocamlfind: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
 - mkdir -p "/home/opam/.opam/system/bin"
@@ -603,6 +553,23 @@ The following actions will be performed:
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5'
 -> installed ocamlfind.1.5.5
 
+#=== ERROR while installing conf-mpfr.1 =======================================#
+# opam-version         1.2.2 (391297300524717e1475deaea37bca287c7f5e36)
+# os                   linux
+# command              cc test.c -lgmp -lmpfr
+# path                 /home/opam/.opam/system/build/conf-mpfr.1
+# compiler             system (4.02.1)
+# exit-code            1
+# env-file             /home/opam/.opam/system/build/conf-mpfr.1/conf-mpfr-1-60459a.env
+# stdout-file          /home/opam/.opam/system/build/conf-mpfr.1/conf-mpfr-1-60459a.out
+# stderr-file          /home/opam/.opam/system/build/conf-mpfr.1/conf-mpfr-1-60459a.err
+### stderr ###
+# test.c:2:18: fatal error: mpfr.h: No such file or directory
+#  #include <mpfr.h>
+#                   ^
+# compilation terminated.
+
+
 
 =-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 The following actions were aborted
@@ -620,5 +587,5 @@ The following changes have been performed
    your system.
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150404050018.export"
+    opam switch import "~/.opam/system/backup/state-20150404195633.export"
 'opam install apron' failed.
