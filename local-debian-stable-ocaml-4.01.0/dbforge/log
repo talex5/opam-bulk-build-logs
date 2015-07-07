@@ -2,6 +2,7 @@
 # Detecting depexts using flags: x86_64 linux debian
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=dbforge
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=dbforge
 # The following system packages are needed:
 #  - libexpat1-dev
 #  - libglade2-dev
@@ -9,20 +10,19 @@
 #  - libgtksourceview2.0-dev
 #  - libmysqlclient-dev
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=dbforge
-+ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-Hit http://security.debian.org stable/updates Release.gpg
++ sudo apt-get update
 Hit http://http.debian.net stable Release.gpg
 Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
-Hit http://security.debian.org stable/updates Release
 Hit http://http.debian.net stable Release
 Get:2 http://http.debian.net stable-updates Release [124 kB]
-Hit http://security.debian.org stable/updates/main amd64 Packages
 Hit http://http.debian.net stable/main amd64 Packages
 Get:3 http://http.debian.net stable-updates/main amd64 Packages [4369 B]
-Fetched 129 kB in 1s (124 kB/s)
+Get:4 http://security.debian.org stable/updates Release.gpg [836 B]
+Get:5 http://security.debian.org stable/updates Release [102 kB]
+Get:6 http://security.debian.org stable/updates/main amd64 Packages [382 kB]
+Fetched 614 kB in 2s (277 kB/s)
 Reading package lists...
 + sudo apt-get install -qq -yy libexpat1-dev libglade2-dev libgtk2.0-dev libgtksourceview2.0-dev libmysqlclient-dev m4
 # OS package update successful
@@ -261,13 +261,13 @@ Setting up fontconfig (2.9.0-7.1) ...
 Regenerating fonts cache... done.
 Setting up libpango1.0-0:amd64 (1.30.0-1) ...
 Setting up libxcursor1:amd64 (1:1.1.13-1+deb7u1) ...
+debconf: unable to initialize frontend: Dialog
 Setting up libgtk2.0-0:amd64 (2.24.10-2) ...
 Setting up mysql-common (5.5.43-0+deb7u1) ...
 Setting up libmysqlclient18:amd64 (5.5.43-0+deb7u1) ...
 Setting up libpcrecpp0:amd64 (1:8.30-5) ...
 Setting up bsdmainutils (9.0.3) ...
-update-alternatives: using /usr/bin/bsd-write to provide /usr/bin/write (write) in auto modedebconf: unable to initialize frontend: Dialog
-
+update-alternatives: using /usr/bin/bsd-write to provide /usr/bin/write (write) in auto mode
 update-alternatives: using /usr/bin/bsd-from to provide /usr/bin/from (from) in auto mode
 Setting up groff-base (1.21-9) ...
 Setting up man-db (2.6.2-1) ...
@@ -353,14 +353,14 @@ The following actions will be performed:
 [config-file: from default] Command started
 [dbforge: from default] Command started
 [lablgtk: from default] Command started
-[dbforge: from default] Command started
 [config-file: from default] Command started
+[dbforge: from default] Command started
 [lablgtk: from default] Command started
-[default] http://opam-archive:8080/archives/lablgtk.2.18.3+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/config-file.1.2+opam.tar.gz downloaded
 [lablgtk-extras: from default] Command started
 [default] http://opam-archive:8080/archives/dbforge.2.0.1+opam.tar.gz downloaded
 [mysql: from default] Command started
-[default] http://opam-archive:8080/archives/config-file.1.2+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/lablgtk.2.18.3+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [lablgtk-extras: from default] Command started
 [mysql: from default] Command started
@@ -371,8 +371,8 @@ The following actions will be performed:
 [xmlm: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [xml-light: from default] Command started
-[default] http://opam-archive:8080/archives/xml-light.2.4+opam.tar.gz downloaded
 [xmlm: from default] Command started
+[default] http://opam-archive:8080/archives/xml-light.2.4+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/xmlm.1.2.0+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -401,8 +401,6 @@ The following actions will be performed:
 - dbm: not present (normal since OCaml-4.00)
 - bytes: not found, installing compat library
 - Configuration for dynlink written to site-lib-src/dynlink/META
-- File "itest-aux/ppx.ml", line 1, characters 0-25:
-- Error: Unbound value Toploop.preprocess_phrase
 - Configuration for graphics written to site-lib-src/graphics/META
 - Configuration for num written to site-lib-src/num/META
 - Configuration for num-top written to site-lib-src/num-top/META
@@ -438,6 +436,8 @@ The following actions will be performed:
 - Configuration has been written to Makefile.config
 - 
 - You can now do 'make all', and optionally 'make opt', to build ocamlfind.
+- File "itest-aux/ppx.ml", line 1, characters 0-25:
+- Error: Unbound value Toploop.preprocess_phrase
 [ocamlfind: make all] Command started
 + make "all" (CWD=/home/opam/.opam/4.01.0/build/ocamlfind.1.5.5)
 - for p in findlib bytes; do ( cd src/$p; make all ) || exit; done
@@ -467,10 +467,10 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
-- Makefile:160: depend: No such file or directory
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
+- Makefile:160: depend: No such file or directory
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
@@ -891,6 +891,7 @@ The following actions will be performed:
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libxml2 -I/usr/include/libglade-2.0 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O' -verbose ml_gtklist.c
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libxml2 -I/usr/include/libglade-2.0 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O' -verbose ml_gtkmenu.c
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libxml2 -I/usr/include/libglade-2.0 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O' -verbose ml_gtkmisc.c
+- ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libxml2 -I/usr/include/libglade-2.0 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O' -verbose ml_gtkpack.c
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libxml2 -I/usr/include/libglade-2.0 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.01.0/lib/ocaml' 'ml_gdkpixbuf.c'
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libxml2 -I/usr/include/libglade-2.0 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.01.0/lib/ocaml' 'ml_gdk.c'
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libxml2 -I/usr/include/libglade-2.0 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.01.0/lib/ocaml' 'ml_glib.c'
@@ -912,10 +913,9 @@ The following actions will be performed:
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libxml2 -I/usr/include/libglade-2.0 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.01.0/lib/ocaml' 'ml_gtklist.c'
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libxml2 -I/usr/include/libglade-2.0 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.01.0/lib/ocaml' 'ml_gtkmenu.c'
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libxml2 -I/usr/include/libglade-2.0 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.01.0/lib/ocaml' 'ml_gtkmisc.c'
-- ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libxml2 -I/usr/include/libglade-2.0 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O' -verbose ml_gtkpack.c
+- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libxml2 -I/usr/include/libglade-2.0 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.01.0/lib/ocaml' 'ml_gtkpack.c'
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libxml2 -I/usr/include/libglade-2.0 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O' -verbose ml_gtkrange.c
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libxml2 -I/usr/include/libglade-2.0 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O' -verbose ml_gtkstock.c
-- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libxml2 -I/usr/include/libglade-2.0 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.01.0/lib/ocaml' 'ml_gtkpack.c'
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libxml2 -I/usr/include/libglade-2.0 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.01.0/lib/ocaml' 'ml_gtkrange.c'
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libxml2 -I/usr/include/libglade-2.0 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.01.0/lib/ocaml' 'ml_gtkstock.c'
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libxml2 -I/usr/include/libglade-2.0 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O' -verbose ml_gtktext.c
@@ -972,6 +972,11 @@ The following actions will be performed:
 - ./propcc gtkTree.props
 - ocamlc.opt   -w s -c  gtkTreeProps.ml
 - ./propcc gtkFile.props
+- Warning: no conversion for type PangoAttrList in class GtkLabel
+- Warning: no conversion for type GdkPixbufAnimation in class GtkImage
+- Warning: no conversion for type PangoTabArray in class GtkTextView
+- Warning: no conversion for type PangoTabArray in class GtkTextTag
+- Warning: no conversion for type PangoAttrList in class GtkCellRendererText
 - ocamlc.opt   -w s -c  gtkFileProps.ml
 - ./propcc gtkAction.props
 - ocamlc.opt   -w s -c  gtkActionProps.ml
@@ -986,11 +991,6 @@ The following actions will be performed:
 - ocamlc.opt   -w s -c  gtkAssistant.ml
 - ocamlc.opt   -w s -c  gtkMenu.ml
 - ocamlc.opt   -w s -c  gtkMisc.ml
-- Warning: no conversion for type PangoAttrList in class GtkLabel
-- Warning: no conversion for type GdkPixbufAnimation in class GtkImage
-- Warning: no conversion for type PangoTabArray in class GtkTextView
-- Warning: no conversion for type PangoTabArray in class GtkTextTag
-- Warning: no conversion for type PangoAttrList in class GtkCellRendererText
 - ocamlc.opt   -w s -c  gtkWindow.ml
 - ocamlc.opt   -w s -c  gtkList.ml
 - ocamlc.opt   -w s -c  gtkBin.ml
@@ -1066,7 +1066,6 @@ The following actions will be performed:
 - + ar rc ./liblablgtk2.a  ml_gdkpixbuf.o ml_gdk.o ml_glib.o ml_gobject.o ml_gpointer.o ml_gvaluecaml.o wrappers.o ml_gtk.o ml_pango.o ml_gtkaction.o ml_gtkbin.o ml_gtkbroken.o ml_gtkbutton.o ml_gtkassistant.o ml_gtkedit.o ml_gtkfile.o ml_gtklist.o ml_gtkmenu.o ml_gtkmisc.o ml_gtkpack.o ml_gtkrange.o ml_gtkstock.o ml_gtktext.o ml_gtktree.o; ranlib ./liblablgtk2.a
 - + ocamlc.opt -a  -o lablgtk.cma  gaux.cmo gpointer.cmo gutf8.cmo glib.cmo gobject.cmo gdkEnums.cmo pangoEnums.cmo gtkEnums.cmo pango.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo gdkPixbuf.cmo gtk.cmo gtkSignal.cmo gtkStock.cmo gtkObject.cmo gtkBaseProps.cmo gtkBinProps.cmo gtkButtonProps.cmo gtkEditProps.cmo gtkListProps.cmo gtkMenuProps.cmo gtkMiscProps.cmo gtkPackProps.cmo gtkRangeProps.cmo gtkTextProps.cmo gtkTreeProps.cmo gtkFileProps.cmo gtkActionProps.cmo gtkBrokenProps.cmo gtkAssistantProps.cmo gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo gtkAssistant.cmo gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkList.cmo gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkText.cmo gtkTree.cmo gtkFile.cmo gtkMain.cmo gtkBroken.cmo gPango.cmo gDraw.cmo gObj.cmo ogtkBaseProps.cmo gData.cmo ogtkBinProps.cmo ogtkButtonProps.cmo ogtkEditProps.cmo ogtkListProps.cmo ogtkMenuProps.cmo ogtkMiscProps.cmo ogtkPackProps.cmo ogtkRangeProps.cmo ogtkTextProps.cmo ogtkTreeProps.cmo ogtkFileProps.cmo ogtkActionProps.cmo ogtkBrokenProps.cmo ogtkAssistantProps.cmo gMain.cmo gContainer.cmo gPack.cmo gButton.cmo gText.cmo gMenu.cmo gMisc.cmo gTree.cmo gList.cmo gFile.cmo gWindow.cmo gAssistant.cmo gBin.cmo gEdit.cmo gRange.cmo gAction.cmo gBroken.cmo gUtil.cmo gToolbox.cmo -dllib -llablgtk2 -cclib -llablgtk2   -cclib -lgtk-x11-2.0 -cclib -lgdk-x11-2.0 -cclib -latk-1.0 -cclib -lgio-2.0 -cclib -lpangoft2-1.0 -cclib -lpangocairo-1.0 -cclib -lgdk_pixbuf-2.0 -cclib -lcairo -cclib -lpango-1.0 -cclib -lfreetype -cclib -lfontconfig -cclib -lgobject-2.0 -cclib -lglib-2.0 
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libxml2 -I/usr/include/libglade-2.0 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O' -verbose ml_glade.c
-- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libxml2 -I/usr/include/libglade-2.0 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.01.0/lib/ocaml' 'ml_glade.c'
 - ocamlc.opt   -w s -c glade.mli
 - ocamlc.opt   -w s -c  glade.ml
 - ocamlmklib -verbose -ocamlc "ocamlc.opt" -ocamlopt "ocamlopt.opt" -o lablglade -oc lablglade2 ml_glade.o glade.cmo -lglade-2.0 -lgtk-x11-2.0 -lxml2 -lgdk-x11-2.0 -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lpangocairo-1.0 -lgdk_pixbuf-2.0 -lcairo -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lglib-2.0
@@ -1075,6 +1074,8 @@ The following actions will be performed:
 - + ocamlc.opt -a  -o lablglade.cma  glade.cmo -dllib -llablglade2 -cclib -llablglade2   -cclib -lglade-2.0 -cclib -lgtk-x11-2.0 -cclib -lxml2 -cclib -lgdk-x11-2.0 -cclib -latk-1.0 -cclib -lgio-2.0 -cclib -lpangoft2-1.0 -cclib -lpangocairo-1.0 -cclib -lgdk_pixbuf-2.0 -cclib -lcairo -cclib -lpango-1.0 -cclib -lfreetype -cclib -lfontconfig -cclib -lgobject-2.0 -cclib -lglib-2.0 
 - ./varcc sourceView2_tags.var
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libxml2 -I/usr/include/libglade-2.0 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O' -verbose ml_gtksourceview2.c
+- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libxml2 -I/usr/include/libglade-2.0 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.01.0/lib/ocaml' 'ml_glade.c'
+- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libxml2 -I/usr/include/libglade-2.0 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.01.0/lib/ocaml' 'ml_gtksourceview2.c'
 - ocamlc.opt   -w s -c  sourceView2Enums.ml
 - ocamlc.opt   -w s -c gtkSourceView2_types.mli
 - ./propcc gtkSourceView2.props
@@ -1082,11 +1083,6 @@ The following actions will be performed:
 - ocamlc.opt   -w s -c  ogtkSourceView2Props.ml
 - ocamlc.opt   -w s -c  gtkSourceView2.ml
 - ocamlc.opt   -w s -c gSourceView2.mli
-- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/libxml2 -I/usr/include/libglade-2.0 -I/usr/include/gtksourceview-2.0   -imacros ml_domain.h -O  -I'/home/opam/.opam/4.01.0/lib/ocaml' 'ml_gtksourceview2.c'
-- ml_gtksourceview2.c: In function 'ml_gtk_source_view_set_mark_category_pixbuf':
-- ml_gtksourceview2.c:749:1: warning: 'gtk_source_view_set_mark_category_pixbuf' is deprecated (declared at /usr/include/gtksourceview-2.0/gtksourceview/gtksourceview.h:194) [-Wdeprecated-declarations]
-- ml_gtksourceview2.c: In function 'ml_gtk_source_view_get_mark_category_pixbuf':
-- ml_gtksourceview2.c:751:1: warning: 'gtk_source_view_get_mark_category_pixbuf' is deprecated (declared at /usr/include/gtksourceview-2.0/gtksourceview/gtksourceview.h:216) [-Wdeprecated-declarations]
 - ocamlc.opt   -w s -c  gSourceView2.ml
 - ocamlmklib -verbose -ocamlc "ocamlc.opt" -ocamlopt "ocamlopt.opt" -o lablgtksourceview2 ml_gtksourceview2.o sourceView2Enums.cmo gtkSourceView2Props.cmo ogtkSourceView2Props.cmo gtkSourceView2.cmo gSourceView2.cmo -lgtksourceview-2.0 -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lpangocairo-1.0 -lgdk_pixbuf-2.0 -lcairo -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lglib-2.0
 - + gcc -shared -o ./dlllablgtksourceview2.so ml_gtksourceview2.o    -lgtksourceview-2.0 -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lpangocairo-1.0 -lgdk_pixbuf-2.0 -lcairo -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lglib-2.0
@@ -1096,6 +1092,10 @@ The following actions will be performed:
 - ocamlc.opt   -w s -c -thread gtkThread.ml
 - ocamlmktop  -thread  -o lablgtktop unix.cma threads.cma  \
 - 	   -I . lablgtk.cma lablglade.cma lablgtksourceview2.cma gtkThread.cmo
+- ml_gtksourceview2.c: In function 'ml_gtk_source_view_set_mark_category_pixbuf':
+- ml_gtksourceview2.c:749:1: warning: 'gtk_source_view_set_mark_category_pixbuf' is deprecated (declared at /usr/include/gtksourceview-2.0/gtksourceview/gtksourceview.h:194) [-Wdeprecated-declarations]
+- ml_gtksourceview2.c: In function 'ml_gtk_source_view_get_mark_category_pixbuf':
+- ml_gtksourceview2.c:751:1: warning: 'gtk_source_view_get_mark_category_pixbuf' is deprecated (declared at /usr/include/gtksourceview-2.0/gtksourceview/gtksourceview.h:216) [-Wdeprecated-declarations]
 - sed -e "s|@INSTALLDIR@|/home/opam/.opam/4.01.0/lib/ocaml/lablgtk2|g" \
 - 	    -e "s|@LABLGLDIR@|/home/opam/.opam/4.01.0/lib/lablgl|g" \
 - 	    -e "s|@MLLIBS@| lablgtk.cma lablglade.cma lablgtksourceview2.cma|g" \
@@ -1238,16 +1238,16 @@ The following actions will be performed:
 - ocamlopt.opt  -w s -c -thread gtkThread.ml
 - ocamlopt.opt -verbose -o lablgtk.cmxs -shared -linkall -I . \
 -         -ccopt '' lablgtk.cmxa
-- + as -o 'lablgtk.cmxs.startup.o' '/tmp/camlstartupe00eb1.s'
+- + as -o 'lablgtk.cmxs.startup.o' '/tmp/camlstartup9e9528.s'
 - + gcc -shared -o 'lablgtk.cmxs'   '-L.' '-L/home/opam/.opam/4.01.0/lib/ocaml'  'lablgtk.cmxs.startup.o' 'lablgtk.a' '-llablgtk2' '-lgtk-x11-2.0' '-lgdk-x11-2.0' '-latk-1.0' '-lgio-2.0' '-lpangoft2-1.0' '-lpangocairo-1.0' '-lgdk_pixbuf-2.0' '-lcairo' '-lpango-1.0' '-lfreetype' '-lfontconfig' '-lgobject-2.0' '-lglib-2.0' 
 - ocamlopt.opt -verbose -o lablglade.cmxs -shared -linkall -I . \
 -         -ccopt '' lablglade.cmxa
 - ocamlopt.opt -verbose -o lablgtksourceview2.cmxs -shared -linkall -I . \
 -         -ccopt '' lablgtksourceview2.cmxa
 - make[1]: Leaving directory `/home/opam/.opam/4.01.0/build/lablgtk.2.18.3/src'
-- + as -o 'lablglade.cmxs.startup.o' '/tmp/camlstartupc69003.s'
+- + as -o 'lablglade.cmxs.startup.o' '/tmp/camlstartup1903c6.s'
 - + gcc -shared -o 'lablglade.cmxs'   '-L.' '-L/home/opam/.opam/4.01.0/lib/ocaml'  'lablglade.cmxs.startup.o' 'lablglade.a' '-llablglade2' '-lglade-2.0' '-lgtk-x11-2.0' '-lxml2' '-lgdk-x11-2.0' '-latk-1.0' '-lgio-2.0' '-lpangoft2-1.0' '-lpangocairo-1.0' '-lgdk_pixbuf-2.0' '-lcairo' '-lpango-1.0' '-lfreetype' '-lfontconfig' '-lgobject-2.0' '-lglib-2.0' 
-- + as -o 'lablgtksourceview2.cmxs.startup.o' '/tmp/camlstartup7116b0.s'
+- + as -o 'lablgtksourceview2.cmxs.startup.o' '/tmp/camlstartupa9bfc2.s'
 - + gcc -shared -o 'lablgtksourceview2.cmxs'   '-L.' '-L/home/opam/.opam/4.01.0/lib/ocaml'  'lablgtksourceview2.cmxs.startup.o' 'lablgtksourceview2.a' '-llablgtksourceview2' '-lgtksourceview-2.0' '-lgtk-x11-2.0' '-lgdk-x11-2.0' '-latk-1.0' '-lgio-2.0' '-lpangoft2-1.0' '-lpangocairo-1.0' '-lgdk_pixbuf-2.0' '-lcairo' '-lpango-1.0' '-lfreetype' '-lfontconfig' '-lgobject-2.0' '-lglib-2.0' 
 [lablgtk: make install] Command started
 + make "install" (CWD=/home/opam/.opam/4.01.0/build/lablgtk.2.18.3)
@@ -1744,13 +1744,13 @@ The following actions will be performed:
 - 
 - ###
 - ocaml library path is /home/opam/.opam/4.01.0/lib/ocaml
+- configure: creating ./config.status
+- config.status: creating master.Makefile
+- config.status: creating src/gtke_version.ml
 - File "checkocaml.ml", line 425, characters 18-20:
 - Warning 3: deprecated feature: operator (or); you should use (||) instead
 - File "checkocaml.ml", line 830, characters 33-35:
 - Warning 3: deprecated feature: operator (or); you should use (||) instead
-- configure: creating ./config.status
-- config.status: creating master.Makefile
-- config.status: creating src/gtke_version.ml
 - config.status: creating src/gtke_install.ml
 - 
 - ### Results of configuration ###
@@ -1837,8 +1837,8 @@ The following actions will be performed:
 - 	configwin.mli configwin_keys.ml
 - Effective set of compiler predicates: 
 - + ocamldoc.opt -I /home/opam/.opam/4.01.0/lib/config-file -I /home/opam/.opam/4.01.0/lib/lablgtk2 -I /home/opam/.opam/4.01.0/lib/xmlm -sort -d ocamldoc -html -t Lablgtk-extras gtke_version.mli gtke_install.mli gstuff.mli okey.mli gdir.mli gmylist.mli gmytree.mli gtksv_utils.mli configwin.mli configwin_keys.ml
-- Warning: Class or class type Config_file.cp_custom_type not found
 - make[1]: Leaving directory `/home/opam/.opam/4.01.0/build/lablgtk-extras.1.4/src'
+- Warning: Class or class type Config_file.cp_custom_type not found
 - Warning: Element Config_file not found
 - Warning: Tag @cgname not handled by this generator
 - Warning: Tag @cgname not handled by this generator
@@ -1953,12 +1953,12 @@ The following actions will be performed:
 - ###
 - Debug level is set to 0
 - configure: creating ./config.status
+- config.status: creating master.Makefile
+- config.status: creating src/dbf/META
 - File "checkocaml.ml", line 423, characters 18-20:
 - Warning 3: deprecated feature: operator (or); you should use (||) instead
 - File "checkocaml.ml", line 828, characters 33-35:
 - Warning 3: deprecated feature: operator (or); you should use (||) instead
-- config.status: creating master.Makefile
-- config.status: creating src/dbf/META
 - config.status: creating src/sqml/META
 - config.status: creating src/dbf/dbf_installation.ml
 - ====
@@ -1997,9 +1997,9 @@ The following actions will be performed:
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -package str,config-file,xmlm,lablgtk2-extras.configwin,lablgtk2.glade  -I '/home/opam/.opam/4.01.0/lib/xml-light' -I sqml -I dbf -I tmpl -annot -c sqml/sqml_sqlstx.ml
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -package str,config-file,xmlm,lablgtk2-extras.configwin,lablgtk2.glade  -I '/home/opam/.opam/4.01.0/lib/xml-light' -I sqml -I dbf -I tmpl -annot -c sqml/sqml_helper_lp.ml
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -package str,config-file,xmlm,lablgtk2-extras.configwin,lablgtk2.glade  -I '/home/opam/.opam/4.01.0/lib/xml-light' -I sqml -I dbf -I tmpl -annot -c sqml/sqml_parser.ml
+- 1 shift/reduce conflict.
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -package str,config-file,xmlm,lablgtk2-extras.configwin,lablgtk2.glade  -I '/home/opam/.opam/4.01.0/lib/xml-light' -I sqml -I dbf -I tmpl -annot -c sqml/sqml_lexer.ml
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -package str,config-file,xmlm,lablgtk2-extras.configwin,lablgtk2.glade  -I '/home/opam/.opam/4.01.0/lib/xml-light' -I sqml -I dbf -I tmpl -annot -c sqml/sqml_pp.ml
-- 1 shift/reduce conflict.
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -package str,config-file,xmlm,lablgtk2-extras.configwin,lablgtk2.glade  -I '/home/opam/.opam/4.01.0/lib/xml-light' -I sqml -I dbf -I tmpl -annot -c sqml/sqml.ml
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -a -o sqml/sqml.cmxa -I '/home/opam/.opam/4.01.0/lib/xml-light' -I sqml -I dbf -I tmpl sqml/sqml_sqlstx.cmx sqml/sqml_helper_lp.cmx sqml/sqml_parser.cmx sqml/sqml_lexer.cmx sqml/sqml_pp.cmx sqml/sqml.cmx
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -package str,config-file,xmlm,lablgtk2-extras.configwin,lablgtk2.glade  -I '/home/opam/.opam/4.01.0/lib/xml-light' -I sqml -I dbf -I tmpl -annot -c dbf/dbf_installation.mli
@@ -2037,9 +2037,9 @@ The following actions will be performed:
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -package str,config-file,xmlm,lablgtk2-extras.configwin,lablgtk2.glade  -I '/home/opam/.opam/4.01.0/lib/xml-light' -I sqml -I dbf -I tmpl -annot -c dbf/dbforge_gtk.mli
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -package str,config-file,xmlm,lablgtk2-extras.configwin,lablgtk2.glade  -I '/home/opam/.opam/4.01.0/lib/xml-light' -I sqml -I dbf -I tmpl -annot -c dbf/dbf_gtk2Misc.ml
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -package str,config-file,xmlm,lablgtk2-extras.configwin,lablgtk2.glade  -I '/home/opam/.opam/4.01.0/lib/xml-light' -I sqml -I dbf -I tmpl -annot -c dbf/dbf_gladeWidgets.ml
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -package str,config-file,xmlm,lablgtk2-extras.configwin,lablgtk2.glade  -I '/home/opam/.opam/4.01.0/lib/xml-light' -I sqml -I dbf -I tmpl -annot -c dbf/dbf_dbStores.ml
 - File "dbf/dbf_gtk.ml", line 596, characters 21-30:
 - Warning 43: the label name is not optional.
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -package str,config-file,xmlm,lablgtk2-extras.configwin,lablgtk2.glade  -I '/home/opam/.opam/4.01.0/lib/xml-light' -I sqml -I dbf -I tmpl -annot -c dbf/dbf_dbStores.ml
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -package str,config-file,xmlm,lablgtk2-extras.configwin,lablgtk2.glade  -I '/home/opam/.opam/4.01.0/lib/xml-light' -I sqml -I dbf -I tmpl -annot -c dbf/dbf_selectWidget.ml
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -package str,config-file,xmlm,lablgtk2-extras.configwin,lablgtk2.glade  -I '/home/opam/.opam/4.01.0/lib/xml-light' -I sqml -I dbf -I tmpl -annot -c dbf/dbf_dbWidget.ml
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -package str,config-file,xmlm,lablgtk2-extras.configwin,lablgtk2.glade  -I '/home/opam/.opam/4.01.0/lib/xml-light' -I sqml -I dbf -I tmpl -annot -c dbf/dbf_columnGUI.ml
@@ -2050,6 +2050,8 @@ The following actions will be performed:
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -package str,config-file,xmlm,lablgtk2-extras.configwin,lablgtk2.glade  -I '/home/opam/.opam/4.01.0/lib/xml-light' -I sqml -I dbf -I tmpl -annot -c dbf/dbf_gtk.ml
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -package str,config-file,xmlm,lablgtk2-extras.configwin,lablgtk2.glade  -I '/home/opam/.opam/4.01.0/lib/xml-light' -I sqml -I dbf -I tmpl -annot -c dbf/dbforge_gtk.ml
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -package str,config-file,xmlm,lablgtk2-extras.configwin,lablgtk2.glade -a -o dbf/dbforge_gtk.cmxa dbf/dbf_gtk2Misc.cmx dbf/dbf_gladeWidgets.cmx dbf/dbf_dbStores.cmx dbf/dbf_selectWidget.cmx dbf/dbf_dbWidget.cmx dbf/dbf_columnGUI.cmx dbf/dbf_indexGUI.cmx dbf/dbf_virtualTableGUI.cmx dbf/dbf_tableGUI.cmx dbf/dbf_queryGUI.cmx dbf/dbf_gtk.cmx dbf/dbforge_gtk.cmx
+- File "dbf/dbf_gtk.ml", line 596, characters 21-30:
+- Warning 43: the label name is not optional.
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -package str,config-file,xmlm,lablgtk2-extras.configwin,lablgtk2.glade  -I '/home/opam/.opam/4.01.0/lib/xml-light' -I sqml -I dbf -I tmpl -annot -c dbf/dbf_sql_driver.ml
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -package str,config-file,xmlm,lablgtk2-extras.configwin,lablgtk2.glade  -I '/home/opam/.opam/4.01.0/lib/xml-light' -I sqml -I dbf -I tmpl -annot -c dbf/dbf_sql_misc.ml
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -package str,config-file,xmlm,lablgtk2-extras.configwin,lablgtk2.glade  -I '/home/opam/.opam/4.01.0/lib/xml-light' -I sqml -I dbf -I tmpl -annot -c dbf/dbf_sql_driver.ml
@@ -2058,8 +2060,6 @@ The following actions will be performed:
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -c -I '/home/opam/.opam/4.01.0/lib/xml-light' -I sqml -I dbf -I tmpl -annot -package mysql dbf/dbf_mysql.mli
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -c -I '/home/opam/.opam/4.01.0/lib/xml-light' -I sqml -I dbf -I tmpl -annot -package mysql dbf/dbf_mysql.ml
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -a -o dbf/dbf_mysql.cmxa -I '/home/opam/.opam/4.01.0/lib/xml-light' -I sqml -I dbf -I tmpl -annot dbf/dbf_mysql.cmx
-- File "dbf/dbf_gtk.ml", line 596, characters 21-30:
-- Warning 43: the label name is not optional.
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -package str,config-file,xmlm,lablgtk2-extras.configwin,lablgtk2.glade  -I '/home/opam/.opam/4.01.0/lib/xml-light' -I sqml -I dbf -I tmpl -annot -c dbf/dbf_main.ml
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -package str,config-file,xmlm,lablgtk2-extras.configwin,lablgtk2.glade  -I '/home/opam/.opam/4.01.0/lib/xml-light' -I sqml -I dbf -I tmpl -annot -c dbf/dbf_main.ml
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -package str,config-file,xmlm -linkpkg -o dbforge -I '/home/opam/.opam/4.01.0/lib/xml-light' -I sqml -I dbf -I tmpl \
