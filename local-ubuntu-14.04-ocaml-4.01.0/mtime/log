@@ -1,14 +1,14 @@
 + uname -m
+# Detecting depexts using flags: x86_64 linux ubuntu
 + uname -s
 + lsb_release -i -s
-# Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=mtime
 # The following system packages are needed:
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=mtime
-+ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
++ sudo apt-get update
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
@@ -16,6 +16,7 @@ Hit http://archive.ubuntu.com trusty Release.gpg
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
 Hit http://archive.ubuntu.com trusty Release
++ sudo apt-get install -qq -yy m4
 Get:3 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
 Get:4 http://archive.ubuntu.com trusty-security Release [63.5 kB]
 Hit http://archive.ubuntu.com trusty/main Sources
@@ -36,12 +37,11 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [28.0 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [341 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [133 kB]
-Fetched 2187 kB in 4s (515 kB/s)
+Fetched 2187 kB in 8s (261 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
-+ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install base-no-ppx base                                    [required by lwt]
@@ -50,7 +50,7 @@ The following actions will be performed:
   - install menhir      20140422                                [required by js_of_ocaml]
   - install lwt         2.4.8                                   [required by js_of_ocaml]
   - install js_of_ocaml 2.5                                     [required by mtime]
-  - install mtime       0.8.1   
+  - install mtime       0.8.2   
 ===== 7 to install =====
 
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -58,16 +58,16 @@ The following actions will be performed:
 [lwt: from default] Command started
 [menhir: from default] Command started
 [lwt: from default] Command started
-[menhir: from default] Command started
-[js_of_ocaml: from default] Command started
 [default] http://opam-archive:8080/archives/lwt.2.4.8+opam.tar.gz downloaded
 [mtime: from default] Command started
+[menhir: from default] Command started
+[js_of_ocaml: from default] Command started
 [default] http://opam-archive:8080/archives/menhir.20140422+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/js_of_ocaml.2.5+opam.tar.gz downloaded
 [mtime: from default] Command started
+[default] http://opam-archive:8080/archives/js_of_ocaml.2.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/mtime.0.8.2+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/mtime.0.8.1+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -103,7 +103,10 @@ The following actions will be performed:
 - Configuration for camlp4 written to site-lib-src/camlp4/META
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
-- Detecting compiler arguments: (extractor built) ok
+- Detecting compiler arguments: (extractor built) 
+- File "itest-aux/ppx.ml", line 1, characters 0-25:
+- Error: Unbound value Toploop.preprocess_phrase
+- ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib/ocaml
@@ -127,8 +130,6 @@ The following actions will be performed:
 - Configuration has been written to Makefile.config
 - 
 - You can now do 'make all', and optionally 'make opt', to build ocamlfind.
-- File "itest-aux/ppx.ml", line 1, characters 0-25:
-- Error: Unbound value Toploop.preprocess_phrase
 [ocamlfind: make all] Command started
 + make "all" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
 - for p in findlib bytes; do ( cd src/$p; make all ) || exit; done
@@ -158,11 +159,11 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
+- Makefile:160: depend: No such file or directory
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
-- Makefile:160: depend: No such file or directory
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
 - if [ "false" = "true" ]; then                 \
@@ -1510,6 +1511,7 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -a syntax/pa_lwt.cmo -o syntax/lwt-syntax.cma
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -I syntax -o syntax/pa_lwt_options.cmx syntax/pa_lwt_options.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -I syntax -o syntax/pa_lwt.cmx syntax/pa_lwt.ml
+- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -a syntax/pa_lwt.cmx -o syntax/lwt-syntax.cmxa
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared syntax/lwt-syntax.cmxa syntax/pa_lwt.cmx -o syntax/lwt-syntax.cmxs
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -a syntax/pa_lwt_options.cmo -o syntax/lwt-syntax-options.cma
@@ -1521,7 +1523,6 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -I syntax -o syntax/pa_lwt_log.cmo syntax/pa_lwt_log.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -a syntax/pa_lwt_log.cmo -o syntax/lwt-syntax-log.cma
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -I syntax -o syntax/pa_lwt_log.cmx syntax/pa_lwt_log.ml
-- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -a syntax/pa_lwt_log.cmx -o syntax/lwt-syntax-log.cmxa
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared syntax/lwt-syntax-log.cmxa syntax/pa_lwt_log.cmx -o syntax/lwt-syntax-log.cmxs
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -package unix -package bytes -package bigarray -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -modules examples/unix/logging.ml > examples/unix/logging.ml.depends
@@ -1790,10 +1791,10 @@ The following actions will be performed:
 - ocamlfind ocamlc -package bytes -package findlib,cmdliner -c js_token.mli
 - ocamlfind ocamlopt -package bytes -package findlib,cmdliner -for-pack Compiler -g -c js_token.ml
 - menhir --infer --external-tokens Js_token --explain js_parser.mly
-- Warning: 12 states have shift/reduce conflicts.
-- Warning: 47 shift/reduce conflicts were arbitrarily resolved.
 - ocamlfind ocamlc -package bytes -package findlib,cmdliner -c js_parser.mli
 - ocamlfind ocamlopt -package bytes -package findlib,cmdliner -for-pack Compiler -g -c js_parser.ml
+- Warning: 12 states have shift/reduce conflicts.
+- Warning: 47 shift/reduce conflicts were arbitrarily resolved.
 - ocamlfind ocamlc -package bytes -package findlib,cmdliner -c js_lexer.mli
 - ocamllex js_lexer.mll
 - 111 states, 948 transitions, table size 4458 bytes
@@ -2009,15 +2010,6 @@ The following actions will be performed:
 - ocamlfind ocamlopt -linkpkg -g -package bytes \
 - 	-package compiler-libs.common,findlib \
 - 	../compiler/compiler.cmxa jsoo_common.cmx jsoo_mktop.cmx -o jsoo_mktop.opt
-- findlib: [WARNING] Interface subst.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface primitive.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface compile.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface subst.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface primitive.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface compile.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
 - cp jsoo_mktop.opt jsoo_mktop
 - ocamlfind ocamlopt -c -g -package bytes \
 - 	-package compiler-libs.common,findlib \
@@ -2035,7 +2027,15 @@ The following actions will be performed:
 - 		-ppopt syntax/pa_js.cmo \
 - 		-I toplevel -I ../compiler -I +compiler-libs \
 - 		-c toplevel/jsooTop.ml -o toplevel/jsooTop.cmo
-- make[1]: Leaving directory `/home/opam/.opam/system/build/js_of_ocaml.2.5/lib'
+- findlib: [WARNING] Interface subst.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface primitive.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface compile.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface subst.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface primitive.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface compile.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
 - findlib: [WARNING] Interface subst.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
 - findlib: [WARNING] Interface primitive.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
@@ -2045,6 +2045,7 @@ The following actions will be performed:
 - findlib: [WARNING] Interface primitive.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, ../compiler
 - findlib: [WARNING] Interface compile.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, ../compiler
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- make[1]: Leaving directory `/home/opam/.opam/system/build/js_of_ocaml.2.5/lib'
 [js_of_ocaml: make install-lib] Command started
 + make "install-lib" "BINDIR=/home/opam/.opam/system/bin" (CWD=/home/opam/.opam/system/build/js_of_ocaml.2.5)
 - ocamlfind install -patch-version 2.5 js_of_ocaml lib/META lib/*.cmi lib/log/*.cmi lib/graphics/*.cmi lib/toplevel/jsooTop.cmi ocamlbuild/_build/ocamlbuild_js_of_ocaml.cmi lib/js_of_ocaml.cma lib/syntax/pa_js.cmo lib/dlljs_of_ocaml.so lib/libjs_of_ocaml.a lib/log/logger.cma lib/syntax/pa_js.cmx lib/syntax/pa_js.cmxs lib/graphics/graphics.cma lib/toplevel/jsooTop.cmo ocamlbuild/_build/ocamlbuild_js_of_ocaml.cma ocamlbuild/_build/ocamlbuild_js_of_ocaml.cmxa ocamlbuild/_build/ocamlbuild_js_of_ocaml.a ocamlbuild/_build/ocamlbuild_js_of_ocaml.cmxs runtime/runtime.js runtime/weak.js runtime/polyfill/classlist.js runtime/polyfill/array.js runtime/toplevel.js runtime/graphics.js runtime/nat.js  lib/*.mli lib/log/*.mli lib/graphics/*.mli lib/toplevel/jsooTop.mli ocamlbuild/_build/ocamlbuild_js_of_ocaml.mli compiler/compiler.cmi compiler/compiler.cma
@@ -2127,9 +2128,9 @@ The following actions will be performed:
 - ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/system/lib/stublibs is not mentioned in ld.conf
 -> installed js_of_ocaml.2.5
 [mtime: ocaml] Command started
-+ ocaml "pkg/git.ml" (CWD=/home/opam/.opam/system/build/mtime.0.8.1)
++ ocaml "pkg/git.ml" (CWD=/home/opam/.opam/system/build/mtime.0.8.2)
 [mtime: ocaml] Command started
-+ ocaml "pkg/build.ml" "native=true" "native-dynlink=true" "jsoo=true" (CWD=/home/opam/.opam/system/build/mtime.0.8.1)
++ ocaml "pkg/build.ml" "native=true" "native-dynlink=true" "jsoo=true" (CWD=/home/opam/.opam/system/build/mtime.0.8.2)
 - ocamlfind ocamlopt -package unix -package ocamlbuild -linkpkg -package js_of_ocaml.ocamlbuild myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
 - ocamlfind ocamldep -package js_of_ocaml -syntax camlp4o -package js_of_ocaml.syntax -modules src-jsoo/mtime_base.ml > src-jsoo/mtime_base.ml.depends
 - ocamlfind ocamlc -c -g -bin-annot -package js_of_ocaml -syntax camlp4o -package js_of_ocaml.syntax -I src-jsoo -o src-jsoo/mtime_base.cmo src-jsoo/mtime_base.ml
@@ -2152,9 +2153,9 @@ The following actions will be performed:
 - ocamlfind ocamlc -c -g -bin-annot -I src-os -o src-os/mtime.cmi src-os/mtime.mli
 - ocamlfind ocamlopt -c -g -bin-annot -I src-os -o src-os/mtime_base.cmx src-os/mtime_base.ml
 - ocamlfind ocamlopt -c -g -bin-annot -I src-os -o src-os/mtime.cmx src-os/mtime.ml
-- ocamlfind ocamlopt -a -cclib -lmtime_stubs src-os/mtime_base.cmx src-os/mtime.cmx -o src-os/mtime.cmxa
+- ocamlfind ocamlopt -a -cclib -lmtime_stubs -cclib -lrt src-os/mtime_base.cmx src-os/mtime.cmx -o src-os/mtime.cmxa
 - ocamlfind ocamlc -c -g -bin-annot -I src-os -o src-os/mtime.cmo src-os/mtime.ml
-- ocamlfind ocamlc -a -dllib -lmtime_stubs src-os/mtime_base.cmo src-os/mtime.cmo -o src-os/mtime.cma
+- ocamlfind ocamlc -a -dllib -lmtime_stubs -dllib -lrt src-os/mtime_base.cmo src-os/mtime.cmo -o src-os/mtime.cma
 - ocamlfind ocamlopt -shared src-os/libmtime_stubs.a src-os/mtime.cmx -o src-os/mtime.cmxs
 - ocamlfind ocamldep -package compiler-libs.toplevel -modules src-os/mtime_top.ml > src-os/mtime_top.ml.depends
 - ocamlfind ocamlc -c -g -bin-annot -package compiler-libs.toplevel -I src-os -o src-os/mtime_top.cmo src-os/mtime_top.ml
@@ -2172,5 +2173,5 @@ The following actions will be performed:
 - ocamlfind ocamlopt -shared -package compiler-libs.toplevel src-os/mtime_top.cmx -o src-os/mtime_top.cmxs
 - + ocamlfind ocamlopt -shared -package compiler-libs.toplevel src-os/mtime_top.cmx -o src-os/mtime_top.cmxs
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
--> installed mtime.0.8.1
+-> installed mtime.0.8.2
 Done.
