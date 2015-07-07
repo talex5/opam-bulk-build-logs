@@ -1,27 +1,33 @@
++ uname -m
++ uname -s
 # Detecting depexts using flags: x86_64 linux debian
++ opam list --safe --recursive --external=x86_64,linux,debian --required-by=xen-block-driver
 # The following system packages are needed:
 #  - libpcre3-dev
 #  - libxen-dev
 #  - m4
 #  - pkg-config
 #  - uuid-dev
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=xen-block-driver
 Not running as root, system installation will be done through "sudo"
-Hit http://http.debian.net stable Release.gpg
-Hit http://security.debian.org stable/updates Release.gpg
++ sudo apt-get update
 Hit http://download.opensuse.org  Release.gpg
+Hit http://http.debian.net stable Release.gpg
 Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
 Hit http://http.debian.net stable Release
-Hit http://security.debian.org stable/updates Release
 Hit http://download.opensuse.org  Release
 Get:2 http://http.debian.net stable-updates Release [124 kB]
-Hit http://http.debian.net stable/main amd64 Packages
-Hit http://security.debian.org stable/updates/main amd64 Packages
 Hit http://download.opensuse.org  Packages
+Hit http://http.debian.net stable/main amd64 Packages
 Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
-Fetched 129 kB in 1s (112 kB/s)
+Hit http://security.debian.org stable/updates Release.gpg
+Hit http://security.debian.org stable/updates Release
+Hit http://security.debian.org stable/updates/main amd64 Packages
+Fetched 129 kB in 1s (102 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
++ sudo apt-get install -qq -yy libpcre3-dev libxen-dev m4 pkg-config uuid-dev
 debconf: delaying package configuration, since apt-utils is not installed
 Selecting previously unselected package libpcrecpp0:amd64.
 (Reading database ... 19958 files and directories currently installed.)
@@ -69,9 +75,9 @@ The following actions will be performed:
 [cstruct: http] Command started
 [io-page: from default] Command started
 [io-page: from default] Command started
+[camlp4: from default] Command started
 [default] http://opam-archive:8080/archives/io-page.1.4.0+opam.tar.gz downloaded
 [lwt: from default] Command started
-[camlp4: from default] Command started
 [default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
 [mirage-clock-unix: from default] Command started
 [lwt: from default] Command started
@@ -102,9 +108,9 @@ The following actions will be performed:
 [default] http://opam-archive:8080/archives/sexplib.112.24.01+opam.tar.gz downloaded
 [type_conv: from default] Command started
 [shared-memory-ring: from default] Command started
+[type_conv: from default] Command started
 [default] http://opam-archive:8080/archives/shared-memory-ring.1.1.0+opam.tar.gz downloaded
 [xen-block-driver: from default] Command started
-[type_conv: from default] Command started
 [default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
 [xenctrl: from default] Command started
 [xen-block-driver: from default] Command started
@@ -113,12 +119,12 @@ The following actions will be performed:
 [xenctrl: from default] Command started
 [default] http://opam-archive:8080/archives/xenctrl.0.9.26+opam.tar.gz downloaded
 [xenstore_transport: from default] Command started
+[cstruct: http] Command started
+[cstruct.1.5.0] https://github.com/mirage/ocaml-cstruct/archive/v1.5.0.tar.gz downloaded
 [xenstore: from default] Command started
 [default] http://opam-archive:8080/archives/xenstore.1.2.5+opam.tar.gz downloaded
 [xenstore_transport: from default] Command started
 [default] http://opam-archive:8080/archives/xenstore_transport.0.9.4+opam.tar.gz downloaded
-[cstruct: http] Command started
-[cstruct.1.5.0] https://github.com/mirage/ocaml-cstruct/archive/v1.5.0.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -201,7 +207,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_topo.mli
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -247,6 +252,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
@@ -258,11 +264,11 @@ The following actions will be performed:
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -314,7 +320,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -359,6 +364,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -759,7 +765,6 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -I camlp4/config -I camlp4 -o camlp4/config/Camlp4_config.cmi camlp4/config/Camlp4_config.mli
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w a -I camlp4/import -warn-error A-3 -I camlp4/config -I camlp4/boot -o camlp4/boot/Camlp4.cmo camlp4/boot/Camlp4.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w a -I camlp4/import -warn-error A-3 -I camlp4/config -I camlp4/boot -o camlp4/boot/camlp4boot.cmo camlp4/boot/camlp4boot.ml
-- + echo camlp4/Camlp4.cmo camlp4/Camlp4Top.cmo camlp4/camlp4prof.byte camlp4/mkcamlp4.byte camlp4/camlp4.byte camlp4/camlp4fulllib.cma camlp4/camlp4boot.byte camlp4/camlp4boot.cma camlp4/camlp4r.byte camlp4/camlp4r.cma camlp4/camlp4rf.byte camlp4/camlp4rf.cma camlp4/camlp4o.byte camlp4/camlp4o.cma camlp4/camlp4of.byte camlp4/camlp4of.cma camlp4/camlp4oof.byte camlp4/camlp4oof.cma camlp4/camlp4orf.byte camlp4/camlp4orf.cma camlp4/Camlp4Parsers/Camlp4AstLoader.cmo camlp4/Camlp4Parsers/Camlp4DebugParser.cmo camlp4/Camlp4Parsers/Camlp4GrammarParser.cmo camlp4/Camlp4Parsers/Camlp4ListComprehension.cmo camlp4/Camlp4Parsers/Camlp4MacroParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4OCamlParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmo camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmo camlp4/Camlp4Printers/Camlp4AstDumper.cmo camlp4/Camlp4Printers/Camlp4AutoPrinter.cmo camlp4/Camlp4Printers/Camlp4NullDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlPrinter.cmo camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.cmo camlp4/Camlp4Filters/Camlp4AstLifter.cmo camlp4/Camlp4Filters/Camlp4ExceptionTracer.cmo camlp4/Camlp4Filters/Camlp4FoldGenerator.cmo camlp4/Camlp4Filters/Camlp4LocationStripper.cmo camlp4/Camlp4Filters/Camlp4MapGenerator.cmo camlp4/Camlp4Filters/Camlp4MetaGenerator.cmo camlp4/Camlp4Filters/Camlp4Profiler.cmo camlp4/Camlp4Filters/Camlp4TrashRemover.cmo
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules camlp4/config/Camlp4_config.ml > camlp4/config/Camlp4_config.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules camlp4/config/gen_import.ml > camlp4/config/gen_import.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I +compiler-libs -I camlp4/import -warn-error A-3 -I camlp4/config -I camlp4 -o camlp4/config/gen_import.cmo camlp4/config/gen_import.ml
@@ -770,6 +775,7 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -g -w Z -I camlp4/import -warn-error A-3 -I camlp4/config -I camlp4 -o camlp4/config/Camlp4_import.cmx camlp4/config/Camlp4_import.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -g -w Z -I camlp4/import -warn-error A-3 -I camlp4/config -I camlp4 -o camlp4/config/Camlp4_config.cmx camlp4/config/Camlp4_config.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -g -w a -I camlp4/import -warn-error A-3 -I camlp4/config -I camlp4/boot -o camlp4/boot/Camlp4.cmx camlp4/boot/Camlp4.ml
+- + echo camlp4/Camlp4.cmo camlp4/Camlp4Top.cmo camlp4/camlp4prof.byte camlp4/mkcamlp4.byte camlp4/camlp4.byte camlp4/camlp4fulllib.cma camlp4/camlp4boot.byte camlp4/camlp4boot.cma camlp4/camlp4r.byte camlp4/camlp4r.cma camlp4/camlp4rf.byte camlp4/camlp4rf.cma camlp4/camlp4o.byte camlp4/camlp4o.cma camlp4/camlp4of.byte camlp4/camlp4of.cma camlp4/camlp4oof.byte camlp4/camlp4oof.cma camlp4/camlp4orf.byte camlp4/camlp4orf.cma camlp4/Camlp4Parsers/Camlp4AstLoader.cmo camlp4/Camlp4Parsers/Camlp4DebugParser.cmo camlp4/Camlp4Parsers/Camlp4GrammarParser.cmo camlp4/Camlp4Parsers/Camlp4ListComprehension.cmo camlp4/Camlp4Parsers/Camlp4MacroParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4OCamlParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmo camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmo camlp4/Camlp4Printers/Camlp4AstDumper.cmo camlp4/Camlp4Printers/Camlp4AutoPrinter.cmo camlp4/Camlp4Printers/Camlp4NullDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlPrinter.cmo camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.cmo camlp4/Camlp4Filters/Camlp4AstLifter.cmo camlp4/Camlp4Filters/Camlp4ExceptionTracer.cmo camlp4/Camlp4Filters/Camlp4FoldGenerator.cmo camlp4/Camlp4Filters/Camlp4LocationStripper.cmo camlp4/Camlp4Filters/Camlp4MapGenerator.cmo camlp4/Camlp4Filters/Camlp4MetaGenerator.cmo camlp4/Camlp4Filters/Camlp4Profiler.cmo camlp4/Camlp4Filters/Camlp4TrashRemover.cmo
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -g -w a -I camlp4/import -warn-error A-3 -I camlp4/config -I camlp4/boot -o camlp4/boot/camlp4boot.cmx camlp4/boot/camlp4boot.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt dynlink.cmxa -g -I +compiler-libs ocamlcommon.cmxa ocamlbytecomp.cmxa camlp4/config/Camlp4_import.cmx camlp4/config/Camlp4_config.cmx camlp4/boot/Camlp4.cmx camlp4/boot/camlp4boot.cmx -o camlp4/boot/camlp4boot.native
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4/Debug.mli > camlp4/Camlp4/Debug.mli.depends
@@ -2767,6 +2773,13 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -package threads -package unix -modules src/extra/lwt_lib.mli > src/extra/lwt_lib.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I src/core -I src/logger -I src/unix -I src/preemptive -package bigarray -package threads -package unix -thread -I src/extra -I src/core -I src/preemptive -o src/extra/lwt_lib.cmi src/extra/lwt_lib.mli
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package bigarray -package camlp4 -package threads -package unix -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -ppopt syntax/pa_optcomp.cmo -modules src/extra/lwt_lib.ml > src/extra/lwt_lib.ml.depends
+- File "setup.ml", line 254, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "setup.ml", line 2419, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
+- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -I src/core -I src/logger -I src/unix -I src/preemptive -package bigarray -package camlp4 -package threads -package unix -syntax camlp4o -thread -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -ppopt syntax/pa_optcomp.cmo -I src/extra -I src/core -I src/preemptive -o src/extra/lwt_lib.cmo src/extra/lwt_lib.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a src/extra/lwt_lib.cmo -o src/extra/lwt-extra.cma
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -I src/core -I src/logger -I src/unix -I src/preemptive -package bigarray -package camlp4 -package threads -package unix -syntax camlp4o -thread -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -ppopt syntax/pa_optcomp.cmo -I src/extra -I src/core -I src/preemptive -o src/extra/lwt_lib.cmx src/extra/lwt_lib.ml
@@ -2775,13 +2788,6 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a syntax/pa_lwt.cmo -o syntax/lwt-syntax.cma
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -package camlp4 -syntax camlp4o -package camlp4.extend -syntax camlp4o -package camlp4.quotations.o -syntax camlp4o -I syntax -o syntax/pa_lwt_options.cmx syntax/pa_lwt_options.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -g -package camlp4 -syntax camlp4o -package camlp4.extend -syntax camlp4o -package camlp4.quotations.o -syntax camlp4o -I syntax -o syntax/pa_lwt.cmx syntax/pa_lwt.ml
-- File "setup.ml", line 254, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "setup.ml", line 2419, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
-- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a syntax/pa_lwt.cmx -o syntax/lwt-syntax.cmxa
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared syntax/lwt-syntax.cmxa syntax/pa_lwt.cmx -o syntax/lwt-syntax.cmxs
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a syntax/pa_lwt_options.cmo -o syntax/lwt-syntax-options.cma
@@ -3605,10 +3611,10 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldoc -dump lwt/lwt_ring.odoc -I lib -package cstruct -syntax camlp4o -package cstruct.syntax -package lwt -syntax camlp4o -package lwt.syntax -syntax camlp4o -I lib -I lwt -I xen lwt/lwt_ring.mli
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldoc -dump xen/xenstore_ring.odoc -I lib -package cstruct -syntax camlp4o -package cstruct.syntax -syntax camlp4o -I lib -I xen -I lwt xen/xenstore_ring.mli
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldoc -dump xen/console_ring.odoc -I lib -package cstruct -syntax camlp4o -package cstruct.syntax -syntax camlp4o -I lib -I xen -I lwt xen/console_ring.mli
-- + /home/opam/.opam/4.02.1/bin/ocamlfind ocamldoc -dump xen/console_ring.odoc -I lib -package cstruct -syntax camlp4o -package cstruct.syntax -syntax camlp4o -I lib -I xen -I lwt xen/console_ring.mli
-- Warning: Module type Ring.Bidirectional_byte_stream not found
-- Warning: Module type Ring.Bidirectional_byte_stream not found
 - + /home/opam/.opam/4.02.1/bin/ocamlfind ocamldoc -dump xen/xenstore_ring.odoc -I lib -package cstruct -syntax camlp4o -package cstruct.syntax -syntax camlp4o -I lib -I xen -I lwt xen/xenstore_ring.mli
+- Warning: Module type Ring.Bidirectional_byte_stream not found
+- Warning: Module type Ring.Bidirectional_byte_stream not found
+- + /home/opam/.opam/4.02.1/bin/ocamlfind ocamldoc -dump xen/console_ring.odoc -I lib -package cstruct -syntax camlp4o -package cstruct.syntax -syntax camlp4o -I lib -I xen -I lwt xen/console_ring.mli
 - Warning: Module type Ring.Bidirectional_byte_stream not found
 - Warning: Module type Ring.Bidirectional_byte_stream not found
 - rm -rf doc/api.docdir
@@ -3827,12 +3833,6 @@ The following actions will be performed:
 - ocamlfind ocamldep -package unix -package threads -package cstruct.syntax -package cstruct -syntax camlp4o -modules client_unix/xs_client_unix.ml > client_unix/xs_client_unix.ml.depends
 - ocamlfind ocamlc -c -g -annot -I core -package unix -package threads -package cstruct.syntax -package cstruct -syntax camlp4o -thread -I client_unix -I core -I server -I client_lwt -o client_unix/xs_client_unix.cmo client_unix/xs_client_unix.ml
 - ocamlfind ocamlc -a client_unix/xs_client_unix.cmo -o client_unix/xenstore_client_unix.cma
-- File "setup.ml", line 213, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "setup.ml", line 1793, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
 - ocamlfind ocamlopt -c -g -annot -I core -package unix -package threads -package cstruct.syntax -package cstruct -syntax camlp4o -thread -I client_unix -I core -I server -I client_lwt -o client_unix/xs_client_unix.cmx client_unix/xs_client_unix.ml
 - ocamlfind ocamlopt -a client_unix/xs_client_unix.cmx -o client_unix/xenstore_client_unix.cmxa
 - ocamlfind ocamlopt -shared -linkall client_unix/xenstore_client_unix.cmxa -o client_unix/xenstore_client_unix.cmxs
@@ -3846,6 +3846,12 @@ The following actions will be performed:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
 - ocamlfind ocamldep -package lwt.syntax -package lwt -package cstruct.syntax -package cstruct -syntax camlp4o -modules server/namespace.ml > server/namespace.ml.depends
+- File "setup.ml", line 213, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "setup.ml", line 1793, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
 - ocamlfind ocamldep -package lwt -package cstruct.syntax -package cstruct -modules server/perms.mli > server/perms.mli.depends
 - ocamlfind ocamldep -package lwt -package cstruct.syntax -package cstruct -modules server/store.mli > server/store.mli.depends
 - ocamlfind ocamlc -c -g -annot -I core -package lwt -package cstruct.syntax -package cstruct -I server -I core -I client_unix -I client_lwt -o server/perms.cmi server/perms.mli
@@ -4153,9 +4159,9 @@ The following actions will be performed:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
 - ocamlfind: Package `mirage' not found
-- W: Field 'pkg_mirage' is not set: Command ''/home/opam/.opam/4.02.1/bin/ocamlfind' query -format %d mirage > '/tmp/oasis-b79ae7.txt'' terminated with error code 2
+- W: Field 'pkg_mirage' is not set: Command ''/home/opam/.opam/4.02.1/bin/ocamlfind' query -format %d mirage > '/tmp/oasis-dc9ab2.txt'' terminated with error code 2
 - ocamlfind: Package `mirage' not found
-- W: Failure("Command ''/home/opam/.opam/4.02.1/bin/ocamlfind' query -format %d mirage > '/tmp/oasis-93fa7a.txt'' terminated with error code 2")
+- W: Failure("Command ''/home/opam/.opam/4.02.1/bin/ocamlfind' query -format %d mirage > '/tmp/oasis-b5a749.txt'' terminated with error code 2")
 - E: Cannot find findlib package mirage
 - E: Failure("1 configuration error")
 - make: *** [setup.data] Error 1
@@ -4171,9 +4177,9 @@ The following actions will be performed:
 # path                 /home/opam/.opam/4.02.1/build/xen-block-driver.0.2.5
 # compiler             4.02.1
 # exit-code            2
-# env-file             /home/opam/.opam/4.02.1/build/xen-block-driver.0.2.5/xen-block-driver-6-abfa5b.env
-# stdout-file          /home/opam/.opam/4.02.1/build/xen-block-driver.0.2.5/xen-block-driver-6-abfa5b.out
-# stderr-file          /home/opam/.opam/4.02.1/build/xen-block-driver.0.2.5/xen-block-driver-6-abfa5b.err
+# env-file             /home/opam/.opam/4.02.1/build/xen-block-driver.0.2.5/xen-block-driver-5-abfa5b.env
+# stdout-file          /home/opam/.opam/4.02.1/build/xen-block-driver.0.2.5/xen-block-driver-5-abfa5b.out
+# stderr-file          /home/opam/.opam/4.02.1/build/xen-block-driver.0.2.5/xen-block-driver-5-abfa5b.err
 ### stdout ###
 # ocamlfind ocamlopt -package "cmdliner,findlib" -linkpkg configure.ml -o configure
 # ./configure
@@ -4183,9 +4189,9 @@ The following actions will be performed:
 # Warning 3: deprecated: Lazy.lazy_from_fun
 # Use Lazy.from_fun instead.
 # ocamlfind: Package `mirage' not found
-# W: Field 'pkg_mirage' is not set: Command ''/home/opam/.opam/4.02.1/bin/ocamlfind' query -format %d mirage > '/tmp/oasis-b79ae7.txt'' terminated with error code 2
+# W: Field 'pkg_mirage' is not set: Command ''/home/opam/.opam/4.02.1/bin/ocamlfind' query -format %d mirage > '/tmp/oasis-dc9ab2.txt'' terminated with error code 2
 # ocamlfind: Package `mirage' not found
-# W: Failure("Command ''/home/opam/.opam/4.02.1/bin/ocamlfind' query -format %d mirage > '/tmp/oasis-93fa7a.txt'' terminated with error code 2")
+# W: Failure("Command ''/home/opam/.opam/4.02.1/bin/ocamlfind' query -format %d mirage > '/tmp/oasis-b5a749.txt'' terminated with error code 2")
 # E: Cannot find findlib package mirage
 # E: Failure("1 configuration error")
 # make: *** [setup.data] Error 1
@@ -4215,5 +4221,5 @@ The following changes have been performed
   - install xenstore_transport 0.9.4    
 
 The former state can be restored with:
-    opam switch import "~/.opam/4.02.1/backup/state-20150301011947.export"
+    opam switch import "~/.opam/4.02.1/backup/state-20150303175145.export"
 'opam install xen-block-driver' failed.
