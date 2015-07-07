@@ -1,28 +1,28 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-# Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=sha
+# Detecting depexts using flags: x86_64 linux debian
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=sha
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=sha
 + sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
 Hit http://security.debian.org stable/updates InRelease
 Ign http://download.opensuse.org  InRelease
 Hit http://httpredir.debian.org stable InRelease
-Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
 Hit http://download.opensuse.org  Release.gpg
-Hit http://download.opensuse.org  Release
+Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
 Get:2 http://security.debian.org stable/updates/main amd64 Packages [121 kB]
+Hit http://download.opensuse.org  Release
 Get:3 http://httpredir.debian.org stable/main amd64 Packages [9038 kB]
 Get:4 http://download.opensuse.org  Packages [5783 B]
 Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9293 kB in 4s (2158 kB/s)
-Reading package lists...+ sudo apt-get install -qq -yy m4
-
+Fetched 9293 kB in 3s (2524 kB/s)
+Reading package lists...
 # OS package update successful
++ sudo apt-get install -qq -yy m4
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
 # OS packages installation successful
@@ -70,8 +70,7 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) 
-- ok
+- Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /home/opam/.opam/4.02.1/lib/ocaml
@@ -349,6 +348,8 @@ The following actions will be performed:
 - ocamlmklib -o sha1 sha1.lib.o sha1_stubs.o sha1.cmo
 - ocamlopt  -c -o sha1.cmx sha1.ml
 - ocamlmklib -o sha1 sha1.lib.o sha1_stubs.o sha1.cmx
+- ocamlc -c -o sha256.cmi sha256.mli
+- ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha256.o sha256.c
 - sha1_stubs.c: In function 'stub_sha1_file':
 - sha1_stubs.c:118:2: warning: implicit declaration of function 'strcpy' [-Wimplicit-function-declaration]
 -   char *name_dup = strdupa(String_val(name));
@@ -382,13 +383,14 @@ The following actions will be performed:
 - File "sha1.ml", line 61, characters 11-24:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -c -o sha256.cmi sha256.mli
-- ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha256.o sha256.c
 - mv sha256.o sha256.lib.o
 - ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha256_stubs.o sha256_stubs.c
 - ocamlc -c -o sha256.cmo sha256.ml
 - ocamlmklib -o sha256 sha256.lib.o sha256_stubs.o sha256.cmo
 - ocamlopt  -c -o sha256.cmx sha256.ml
+- ocamlmklib -o sha256 sha256.lib.o sha256_stubs.o sha256.cmx
+- ocamlc -c -o sha512.cmi sha512.mli
+- ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha512.o sha512.c
 - sha256_stubs.c: In function 'stub_sha256_file':
 - sha256_stubs.c:116:2: warning: implicit declaration of function 'strcpy' [-Wimplicit-function-declaration]
 -   char *name_dup = strdupa(String_val(name));
@@ -419,15 +421,16 @@ The following actions will be performed:
 - File "sha256.ml", line 62, characters 11-24:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlmklib -o sha256 sha256.lib.o sha256_stubs.o sha256.cmx
-- ocamlc -c -o sha512.cmi sha512.mli
-- ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha512.o sha512.c
-- mv sha512.o sha512.lib.o
-- ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha512_stubs.o sha512_stubs.c
-- ocamlc -c -o sha512.cmo sha512.ml
 - File "sha256.ml", line 62, characters 11-24:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- mv sha512.o sha512.lib.o
+- ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha512_stubs.o sha512_stubs.c
+- ocamlc -c -o sha512.cmo sha512.ml
+- ocamlmklib -o sha512 sha512.lib.o sha512_stubs.o sha512.cmo
+- ocamlopt  -c -o sha512.cmx sha512.ml
+- ocamlmklib -o sha512 sha512.lib.o sha512_stubs.o sha512.cmx
+- ocamlmklib -o sha  sha1.lib.o sha1_stubs.o sha1.cmo  sha256.lib.o sha256_stubs.o sha256.cmo  sha512.lib.o sha512_stubs.o sha512.cmo
 - sha512_stubs.c: In function 'stub_sha512_file':
 - sha512_stubs.c:116:2: warning: implicit declaration of function 'strcpy' [-Wimplicit-function-declaration]
 -   char *name_dup = strdupa(String_val(name));
@@ -455,18 +458,14 @@ The following actions will be performed:
 -   memcpy((sha512_digest *)result, &digest, sizeof(sha512_digest));
 -   ^
 - sha512_stubs.c:126:2: warning: incompatible implicit declaration of built-in function 'memcpy'
-- ocamlmklib -o sha512 sha512.lib.o sha512_stubs.o sha512.cmo
-- ocamlopt  -c -o sha512.cmx sha512.ml
-- ocamlmklib -o sha512 sha512.lib.o sha512_stubs.o sha512.cmx
-- ocamlmklib -o sha  sha1.lib.o sha1_stubs.o sha1.cmo  sha256.lib.o sha256_stubs.o sha256.cmo  sha512.lib.o sha512_stubs.o sha512.cmo
+- File "sha512.ml", line 60, characters 11-24:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "sha512.ml", line 60, characters 11-24:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlmklib -o sha  sha1.lib.o sha1_stubs.o sha1.cmx  sha256.lib.o sha256_stubs.o sha256.cmx  sha512.lib.o sha512_stubs.o sha512.cmx
 - rm sha1.o sha256.o sha512.o
-- File "sha512.ml", line 60, characters 11-24:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "sha512.ml", line 60, characters 11-24:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 [sha: make install] Command started
 + make "install" (CWD=/home/opam/.opam/4.02.1/build/sha.1.9)
 - ocamlfind install sha META *.cmx sha1.cmi sha1.cma sha1.cmxa sha256.cmi sha256.cma sha256.cmxa sha512.cmi sha512.cma sha512.cmxa sha.cma sha.cmxa *.a *.so
