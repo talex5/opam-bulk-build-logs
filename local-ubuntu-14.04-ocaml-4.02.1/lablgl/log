@@ -8,10 +8,10 @@
 #  - libglu1-mesa-dev
 #  - mesa-common-dev
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=lablgl
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
 Ign http://download.opensuse.org  InRelease
-+ sudo apt-get update
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
 Ign http://archive.ubuntu.com trusty InRelease
@@ -42,20 +42,22 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [23.3 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [329 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [128 kB]
-Fetched 2122 kB in 11s (190 kB/s)
-Reading package lists...+ sudo apt-get install -qq -yy freeglut3-dev libglu1-mesa-dev mesa-common-dev
-
+Fetched 2122 kB in 13s (154 kB/s)
+Reading package lists...
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 635587 635616
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages.gz is not what the server reported 356350 356387
++ sudo apt-get install -qq -yy freeglut3-dev libglu1-mesa-dev mesa-common-dev
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy freeglut3-dev libglu1-mesa-dev mesa-common-dev
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
-Selecting previously unselected package libelf1:amd64.
 debconf: unable to initialize frontend: Readline
 debconf: (This frontend requires a controlling tty.)
 debconf: falling back to frontend: Teletype
 dpkg-preconfigure: unable to re-open stdin: 
+Selecting previously unselected package libelf1:amd64.
 (Reading database ... 22842 files and directories currently installed.)
 Preparing to unpack .../libelf1_0.158-0ubuntu5.2_amd64.deb ...
 Unpacking libelf1:amd64 (0.158-0ubuntu5.2) ...
@@ -329,8 +331,6 @@ The following actions will be performed:
 - ocamlrun ../src/var2def < glu_tags.var > glu_tags.h
 - ocamlrun ../src/var2switch GLU_ < glu_tags.var > glu_tags.c
 - ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_glu.c
-- ocamlrun ../src/var2def < raw_tags.var > raw_tags.h
-- ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_raw.c
 - ml_gl.c: In function 'ml_glGetString':
 - ml_gl.c:225:1: warning: pointer targets in passing argument 1 of 'lablgl_copy_string_check' differ in signedness [-Wpointer-sign]
 -  ML_1_ (glGetString, GLenum_val, copy_string_check)
@@ -350,6 +350,10 @@ The following actions will be performed:
 - /usr/include/GL/gl.h:1311:23: note: expected 'GLuint *' but argument is of type 'int *'
 -  GLAPI void GLAPIENTRY glGenTextures( GLsizei n, GLuint *textures );
 -                        ^
+- ocamlrun ../src/var2def < raw_tags.var > raw_tags.h
+- ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_raw.c
+- ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_glarray.c
+- ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_glutess.c
 - ml_glu.c: In function 'ml_gluGetString':
 - ml_glu.c:96:1: warning: pointer targets in passing argument 1 of 'lablgl_copy_string_check' differ in signedness [-Wpointer-sign]
 -  ML_1_ (gluGetString, GLUenum_val, copy_string_check)
@@ -361,8 +365,6 @@ The following actions will be performed:
 - ml_gl.h:10:7: note: in expansion of macro 'copy_string_check'
 -  value copy_string_check (const char *str);
 -        ^
-- ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_glarray.c
-- ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_glutess.c
 - ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_shader.c
 - ocamlc -c -w s -I +labltk raw.mli
 - ocamlc -c -w s -I +labltk raw.ml
@@ -375,9 +377,6 @@ The following actions will be performed:
 - ocamlc -c -w s -I +labltk glMap.mli
 - ocamlc -c -w s -I +labltk glMap.ml
 - ocamlc -c -w s -I +labltk glMat.mli
-- File "raw.ml", line 24, characters 13-15:
-- Warning 3: deprecated: Pervasives.or
-- Use (||) instead.
 - ocamlc -c -w s -I +labltk glMat.ml
 - ocamlc -c -w s -I +labltk glMisc.mli
 - ocamlc -c -w s -I +labltk glMisc.ml
@@ -393,6 +392,21 @@ The following actions will be performed:
 - ocamlc -c -w s -I +labltk glFunc.ml
 - ocamlc -c -w s -I +labltk gluMisc.mli
 - ocamlc -c -w s -I +labltk gluMisc.ml
+- File "raw.ml", line 24, characters 13-15:
+- Warning 3: deprecated: Pervasives.or
+- Use (||) instead.
+- File "glMat.ml", line 73, characters 10-22:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
+- File "glMisc.ml", line 26, characters 15-17:
+- Warning 3: deprecated: Pervasives.or
+- Use (||) instead.
+- File "glTex.ml", line 111, characters 12-24:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
+- File "glDraw.ml", line 30, characters 28-30:
+- Warning 3: deprecated: Pervasives.or
+- Use (||) instead.
 - ocamlc -c -w s -I +labltk gluNurbs.mli
 - ocamlc -c -w s -I +labltk gluNurbs.ml
 - ocamlc -c -w s -I +labltk gluQuadric.mli
@@ -406,26 +420,19 @@ The following actions will be performed:
 - ocamlc -c -w s -I +labltk glShader.mli
 - ocamlc -c -w s -I +labltk glShader.ml
 - ocamlmklib -o lablgl ml_gl.o	ml_glu.o	ml_raw.o ml_glarray.o ml_glutess.o	ml_shader.o raw.cmo gl.cmo		glLight.cmo	glList.cmo	glMap.cmo glMat.cmo	glMisc.cmo	glPix.cmo	glClear.cmo glTex.cmo	glDraw.cmo	glFunc.cmo	gluMisc.cmo gluNurbs.cmo	gluQuadric.cmo	gluTess.cmo	gluMat.cmo glArray.cmo	glShader.cmo -lGL -lGLU 
+- File "gluNurbs.ml", line 57, characters 23-25:
+- Warning 3: deprecated: Pervasives.or
+- Use (||) instead.
 - make[2]: Leaving directory `/home/opam/.opam/system/build/lablgl.1.05/src'
 - make[1]: Leaving directory `/home/opam/.opam/system/build/lablgl.1.05/src'
 - cd LablGlut/src && make
 - make[1]: Entering directory `/home/opam/.opam/system/build/lablgl.1.05/LablGlut/src'
 - ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include -I../../src" wrap_glut.c
-- File "glMat.ml", line 73, characters 10-22:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
-- File "glMisc.ml", line 26, characters 15-17:
-- Warning 3: deprecated: Pervasives.or
-- Use (||) instead.
-- File "glTex.ml", line 111, characters 12-24:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
-- File "glDraw.ml", line 30, characters 28-30:
-- Warning 3: deprecated: Pervasives.or
-- Use (||) instead.
-- File "gluNurbs.ml", line 57, characters 23-25:
-- Warning 3: deprecated: Pervasives.or
-- Use (||) instead.
+- ocamlc -c -w s  glut.mli
+- ocamlc -c -w s  glut.ml
+- ocamlmklib -o lablglut wrap_glut.o glut.cmo -lglut -lGL -lGLU 
+- ocamlmktop  -I . -I ../../src  -o lablgluttop \
+- 	  lablglut.cma lablgl.cma
 - wrap_glut.c: In function 'ml_glutBitmapLength':
 - wrap_glut.c:393:3: warning: pointer targets in passing argument 2 of 'glutBitmapLength' differ in signedness [-Wpointer-sign]
 -    return Val_int(glutBitmapLength(i2font(Int_val(font)), String_val(str)));
@@ -444,11 +451,6 @@ The following actions will be performed:
 - /usr/include/GL/freeglut_std.h:518:26: note: expected 'const unsigned char *' but argument is of type 'char *'
 -  FGAPI int     FGAPIENTRY glutStrokeLength( void* font, const unsigned char* string );
 -                           ^
-- ocamlc -c -w s  glut.mli
-- ocamlc -c -w s  glut.ml
-- ocamlmklib -o lablglut wrap_glut.o glut.cmo -lglut -lGL -lGLU 
-- ocamlmktop  -I . -I ../../src  -o lablgluttop \
-- 	  lablglut.cma lablgl.cma
 - make INSTALLDIR="`ocamlc -where`/lablGL" real-lablglut
 - make[2]: Entering directory `/home/opam/.opam/system/build/lablgl.1.05/LablGlut/src'
 - generate lablglut
@@ -470,6 +472,12 @@ The following actions will be performed:
 - ocamlopt -c -I +labltk glList.ml
 - ocamlopt -c -I +labltk glMap.ml
 - ocamlopt -c -I +labltk glMat.ml
+- File "raw.ml", line 24, characters 13-15:
+- Warning 3: deprecated: Pervasives.or
+- Use (||) instead.
+- File "glMat.ml", line 73, characters 10-22:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
 - ocamlopt -c -I +labltk glMisc.ml
 - ocamlopt -c -I +labltk glPix.ml
 - ocamlopt -c -I +labltk glClear.ml
@@ -480,12 +488,14 @@ The following actions will be performed:
 - ocamlopt -c -I +labltk gluNurbs.ml
 - ocamlopt -c -I +labltk gluQuadric.ml
 - ocamlopt -c -I +labltk gluTess.ml
-- File "raw.ml", line 24, characters 13-15:
-- Warning 3: deprecated: Pervasives.or
-- Use (||) instead.
-- File "glMat.ml", line 73, characters 10-22:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
+- ocamlopt -c -I +labltk gluMat.ml
+- ocamlopt -c -I +labltk glArray.ml
+- ocamlopt -c -I +labltk glShader.ml
+- ocamlmklib -o lablgl ml_gl.o	ml_glu.o	ml_raw.o ml_glarray.o ml_glutess.o	ml_shader.o raw.cmx gl.cmx glLight.cmx glList.cmx glMap.cmx glMat.cmx glMisc.cmx glPix.cmx glClear.cmx glTex.cmx glDraw.cmx glFunc.cmx gluMisc.cmx gluNurbs.cmx gluQuadric.cmx gluTess.cmx gluMat.cmx glArray.cmx glShader.cmx -lGL -lGLU 
+- make[1]: Leaving directory `/home/opam/.opam/system/build/lablgl.1.05/src'
+- cd LablGlut/src && make opt
+- make[1]: Entering directory `/home/opam/.opam/system/build/lablgl.1.05/LablGlut/src'
+- ocamlopt -c  glut.ml
 - File "glMisc.ml", line 26, characters 15-17:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
@@ -498,14 +508,6 @@ The following actions will be performed:
 - File "gluNurbs.ml", line 57, characters 23-25:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
-- ocamlopt -c -I +labltk gluMat.ml
-- ocamlopt -c -I +labltk glArray.ml
-- ocamlopt -c -I +labltk glShader.ml
-- ocamlmklib -o lablgl ml_gl.o	ml_glu.o	ml_raw.o ml_glarray.o ml_glutess.o	ml_shader.o raw.cmx gl.cmx glLight.cmx glList.cmx glMap.cmx glMat.cmx glMisc.cmx glPix.cmx glClear.cmx glTex.cmx glDraw.cmx glFunc.cmx gluMisc.cmx gluNurbs.cmx gluQuadric.cmx gluTess.cmx gluMat.cmx glArray.cmx glShader.cmx -lGL -lGLU 
-- make[1]: Leaving directory `/home/opam/.opam/system/build/lablgl.1.05/src'
-- cd LablGlut/src && make opt
-- make[1]: Entering directory `/home/opam/.opam/system/build/lablgl.1.05/LablGlut/src'
-- ocamlopt -c  glut.ml
 - ocamlmklib -o lablglut wrap_glut.o glut.cmx -lglut -lGL -lGLU 
 - make[1]: Leaving directory `/home/opam/.opam/system/build/lablgl.1.05/LablGlut/src'
 [lablgl: make install] Command started
