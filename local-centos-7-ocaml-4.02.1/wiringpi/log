@@ -1,57 +1,45 @@
 + uname -m
-+ uname -s
 # Detecting depexts using flags: x86_64 linux centos
++ uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=wiringpi
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=wiringpi
-+ sudo yum update
 # The following scripts need to be run:
 #  - https://gist.github.com/Leonidas-from-XIV/a1a7315ac01f7fbee3f0/raw
 Not running as root, system installation will be done through "sudo"
++ sudo yum update
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: mirrors.melbourne.co.uk
- * extras: mirrors.melbourne.co.uk
++ curl -L "https://gist.github.com/Leonidas-from-XIV/a1a7315ac01f7fbee3f0/raw" | bash -ex -
+ * base: mirror.vorboss.net
+ * extras: mirror.sov.uk.goscomb.net
  * updates: mirrors.melbourne.co.uk
 No packages marked for update
-+ curl -L "https://gist.github.com/Leonidas-from-XIV/a1a7315ac01f7fbee3f0/raw" | bash -ex -
 # OS package update successful
 /usr/bin/curl
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
-  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0100   200  100   200    0     0    140      0  0:00:01  0:00:01 --:--:--  1058
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   200  100   200    0     0    192      0  0:00:01  0:00:01 --:--:--  1047
 + git clone git://git.drogon.net/wiringPi
 Cloning into 'wiringPi'...
 + cd wiringPi
 wiringPi Build script
 =====================
 
++ ./build
 
 WiringPi Library
 [UnInstall]
+[Compile] wiringSerial.c
 [Compile] wiringPi.c
 [Compile] wiringShift.c
 [Compile] piHiPri.c
 [Compile] piThread.c
-[Compile] wiringSerial.c
 [Compile] wiringPiSPI.c
 [Compile] wiringPiI2C.c
 [Compile] softPwm.c
 [Compile] softTone.c
 [Compile] mcp23008.c
-[Compile] mcp23016.c
-[Compile] mcp23017.c
-[Compile] mcp23s08.c
-[Compile] mcp23s17.c
-[Compile] sr595.c
-[Compile] pcf8574.c
-[Compile] pcf8591.c
-[Compile] mcp3002.c
-[Compile] mcp3004.c
-[Compile] mcp4802.c
-[Compile] mcp3422.c
-[Compile] max31855.c
-+ ./build
 wiringPi.c: In function 'wiringPiSetup':
 wiringPi.c:1861:7: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
    if ((int32_t)gpio == -1)
@@ -65,6 +53,18 @@ wiringPi.c:1873:7: warning: cast from pointer to integer of different size [-Wpo
 wiringPi.c:1879:7: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
    if ((int32_t)pads == -1)
        ^
+[Compile] mcp23016.c
+[Compile] mcp23017.c
+[Compile] mcp23s08.c
+[Compile] mcp23s17.c
+[Compile] sr595.c
+[Compile] pcf8574.c
+[Compile] pcf8591.c
+[Compile] mcp3002.c
+[Compile] mcp3004.c
+[Compile] mcp4802.c
+[Compile] mcp3422.c
+[Compile] max31855.c
 [Compile] max5322.c
 [Compile] sn3218.c
 [Compile] drcSerial.c
@@ -78,8 +78,8 @@ WiringPi Devices Library
 [Compile] ds1302.c
 [Compile] maxdetect.c
 [Compile] piNes.c
-[Compile] piFace.c
 [Compile] gertboard.c
+[Compile] piFace.c
 [Compile] lcd128x64.c
 [Compile] lcd.c
 [Compile] piGlow.c
@@ -112,10 +112,10 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: from default] Command started
 [wiringpi: from default] Command started
-[wiringpi: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/wiringpi.0.0.1+opam.tar.gz downloaded
+[wiringpi: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/wiringpi.0.0.1+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -202,6 +202,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -247,8 +249,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
