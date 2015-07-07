@@ -2,21 +2,21 @@
 + uname -s
 /usr/bin/lsb_release
 + lsb_release -i -s
-# Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=cil
+# Detecting depexts using flags: x86_64 linux ubuntu
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=cil
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=cil
-+ sudo apt-get update
 Not running as root, system installation will be done through "sudo"
++ sudo apt-get update
 Ign http://download.opensuse.org  InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
-Hit http://archive.ubuntu.com trusty Release.gpg
 Hit http://download.opensuse.org  Packages
+Hit http://archive.ubuntu.com trusty Release.gpg
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
 Hit http://archive.ubuntu.com trusty Release
@@ -40,11 +40,12 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [21.5 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [324 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [119 kB]
-Fetched 2072 kB in 4s (430 kB/s)
+Fetched 2072 kB in 5s (366 kB/s)
 Reading package lists...
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 627682 627847
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages.gz is not what the server reported 343475 343487
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_source_Sources.gz is not what the server reported 243092 243099
 + sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
@@ -56,8 +57,8 @@ The following actions will be performed:
 [cil: from default] Command started
 [ocamlfind: from default] Command started
 [ocamlfind: from default] Command started
-[cil: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[cil: from default] Command started
 [default] http://opam-archive:8080/archives/cil.1.7.3+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -255,6 +256,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -299,7 +301,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -371,8 +372,7 @@ The following actions will be performed:
 - checking for suffix of executables... 
 - checking whether we are cross compiling... no
 - checking for suffix of object files... o
-- checking whether we are using the GNU C compiler... 
-- yes
+- checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
 - checking for gcc option to accept ISO C89... none needed
 - checking for a BSD-compatible install... /usr/bin/install -c
@@ -397,7 +397,8 @@ The following actions will be performed:
 - checking for ocamlyacc... ocamlyacc
 - checking for ocamlfind... ocamlfind
 - checking for perl... perl
-- checking for gcc version... checking how to run the C preprocessor... gcc -E
+- checking for gcc version... checking how to run the C preprocessor... 
+- gcc -E
 - checking for grep that handles long lines and -e... /bin/grep
 - checking for egrep... /bin/grep -E
 - checking for ANSI C header files... yes
@@ -429,12 +430,12 @@ The following actions will be performed:
 - checking for an ANSI C-conforming const... yes
 - checking for inline... inline
 - checking whether time.h and sys/time.h may both be included... yes
-- checking for working memcmp... yes
+- checking for working memcmp... 
+- yes
 - checking for mkdir... yes
 - checking for select... yes
 - checking for socket... yes
-- checking for __sysv_signal... 
-- yes
+- checking for __sysv_signal... yes
 - checking for real definition of size_t... unsigned long
 - checking for real definition of wchar_t... int
 - checking whether to use CIL feature blockinggraph... no
@@ -1092,6 +1093,8 @@ The following actions will be performed:
 - 	  mv lib/App/Cilly.pm.tmp lib/App/Cilly.pm; \
 - 	fi
 - cd lib; perl Makefile.PL
+- Checking if your kit is complete...
+- Looks good
 - In file included from /usr/include/stdio.h:27:0,
 -                  from src/machdep-ml.c:40:
 - /usr/include/features.h:374:25: fatal error: sys/cdefs.h: No such file or directory
@@ -1130,17 +1133,15 @@ The following actions will be performed:
 -      alignof_longdouble = (int)(&((struct s1*)0)->ld);
 -                           ^
 - Generating CIL_MACHINE machine dependency information string (for CIL)
-- Checking if your kit is complete...
-- Looks good
 - Writing Makefile for cilly
 - Writing MYMETA.yml and MYMETA.json
 - make -C lib
 - make[1]: Entering directory `/home/opam/.opam/system/build/cil.1.7.3/lib'
-- cp App/Cilly/CilConfig.pm blib/lib/App/Cilly/CilConfig.pm
 - cp App/Cilly/KeptFile.pm blib/lib/App/Cilly/KeptFile.pm
-- cp App/Cilly/OutputFile.pm blib/lib/App/Cilly/OutputFile.pm
 - cp App/Cilly.pm blib/lib/App/Cilly.pm
+- cp App/Cilly/CilConfig.pm blib/lib/App/Cilly/CilConfig.pm
 - cp App/Cilly/TempFile.pm blib/lib/App/Cilly/TempFile.pm
+- cp App/Cilly/OutputFile.pm blib/lib/App/Cilly/OutputFile.pm
 - cp ../bin/cilly blib/script/cilly
 - /usr/bin/perl -MExtUtils::MY -e 'MY->fixin(shift)' -- blib/script/cilly
 - make[1]: Leaving directory `/home/opam/.opam/system/build/cil.1.7.3/lib'
@@ -1159,10 +1160,10 @@ The following actions will be performed:
 - make -C lib pure_install
 - make[1]: Entering directory `/home/opam/.opam/system/build/cil.1.7.3/lib'
 - Installing /home/opam/.opam/system/lib/perl5/App/Cilly.pm
-- Installing /home/opam/.opam/system/lib/perl5/App/Cilly/CilConfig.pm
 - Installing /home/opam/.opam/system/lib/perl5/App/Cilly/KeptFile.pm
-- Installing /home/opam/.opam/system/lib/perl5/App/Cilly/OutputFile.pm
+- Installing /home/opam/.opam/system/lib/perl5/App/Cilly/CilConfig.pm
 - Installing /home/opam/.opam/system/lib/perl5/App/Cilly/TempFile.pm
+- Installing /home/opam/.opam/system/lib/perl5/App/Cilly/OutputFile.pm
 - Installing /home/opam/.opam/system/bin/cilly
 - make[1]: Leaving directory `/home/opam/.opam/system/build/cil.1.7.3/lib'
 - /usr/bin/install -c -m 0755 bin/cilly.* /home/opam/.opam/system/bin

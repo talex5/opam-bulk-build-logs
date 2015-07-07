@@ -1,5 +1,5 @@
-+ uname -m
 # Detecting depexts using flags: x86_64 linux centos
++ uname -m
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=cil
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=cil
@@ -99,6 +99,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -144,20 +146,10 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
@@ -167,6 +159,14 @@ The following actions will be performed:
 - 		> topfind.ml ;                                   \
 - fi
 - ocamlc -I +compiler-libs -c topfind.mli
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -212,6 +212,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -256,7 +257,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -329,8 +329,7 @@ The following actions will be performed:
 - checking whether we are cross compiling... no
 - checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
-- checking whether gcc accepts -g... 
-- yes
+- checking whether gcc accepts -g... yes
 - checking for gcc option to accept ISO C89... none needed
 - checking for a BSD-compatible install... /usr/bin/install -c
 - checking build system type... x86_64-unknown-linux-gnu
@@ -354,28 +353,28 @@ The following actions will be performed:
 - checking for ocamlyacc... ocamlyacc
 - checking for ocamlfind... ocamlfind
 - checking for perl... perl
-- checking for gcc version... checking how to run the C preprocessor... gcc -E
+- checking for gcc version... checking how to run the C preprocessor... 
+- gcc -E
 - checking for grep that handles long lines and -e... /usr/bin/grep
 - checking for egrep... /usr/bin/grep -E
 - checking for ANSI C header files... yes
 - checking for sys/types.h... yes
-- checking for sys/stat.h... 
-- yes
+- checking for sys/stat.h... yes
 - checking for stdlib.h... yes
 - checking for string.h... yes
 - checking for memory.h... yes
 - checking for strings.h... yes
 - checking for inttypes.h... yes
 - checking for stdint.h... yes
-- checking for unistd.h... yes
+- checking for unistd.h... 
+- yes
 - checking for __builtin_va_list... yes
 - checking if __thread is a keyword... true
 - checking if gcc adds underscores to assembly labels.... false
 - checking for ANSI C header files... (cached) yes
 - checking for stdlib.h... (cached) yes
 - checking for strings.h... (cached) yes
-- checking sys/time.h usability... 
-- yes
+- checking sys/time.h usability... yes
 - checking sys/time.h presence... yes
 - checking for sys/time.h... yes
 - checking for unistd.h... (cached) yes
@@ -390,7 +389,8 @@ The following actions will be performed:
 - checking whether time.h and sys/time.h may both be included... yes
 - checking for working memcmp... yes
 - checking for mkdir... yes
-- checking for select... yes
+- checking for select... 
+- yes
 - checking for socket... yes
 - checking for __sysv_signal... yes
 - checking for real definition of size_t... unsigned long
@@ -1035,7 +1035,6 @@ The following actions will be performed:
 - ocamlbuild -build-dir _build -no-links -classic-display src/main.native
 - /usr/bin/ocamldep.opt -modules src/main.ml > src/main.ml.depends
 - /usr/bin/ocamlc.opt -c -g -I src -I ocamlutil -I src/frontc -I src/ext -I src/ext/pta -o src/main.cmo src/main.ml
-[ERROR] The compilation of cil failed at "make".
 - /usr/bin/ocamlopt.opt -c -I src -I ocamlutil -I src/frontc -I src/ext -I src/ext/pta -o src/main.cmx src/main.ml
 - /usr/bin/ocamlopt.opt unix.cmxa str.cmxa nums.cmxa src/cil.cmxa src/main.cmx -o src/main.native
 - cp _build/src/main.native bin/cilly.native
@@ -1095,6 +1094,7 @@ The following actions will be performed:
 - make: *** [lib/Makefile] Error 2
 [cil: env] Command started
 + env "FORCE_PERL_PREFIX=1" "./configure" "--prefix" "/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/cil.1.7.3)
+[ERROR] The compilation of cil failed at "make".
 - checking for gcc... gcc
 - checking whether the C compiler works... yes
 - checking for C compiler default output file name... a.out
@@ -1129,8 +1129,7 @@ The following actions will be performed:
 - checking for gcc version... checking how to run the C preprocessor... gcc -E
 - checking for grep that handles long lines and -e... /usr/bin/grep
 - checking for egrep... /usr/bin/grep -E
-- checking for ANSI C header files... 
-- yes
+- checking for ANSI C header files... yes
 - checking for sys/types.h... yes
 - checking for sys/stat.h... yes
 - checking for stdlib.h... yes
@@ -1140,10 +1139,10 @@ The following actions will be performed:
 - checking for inttypes.h... yes
 - checking for stdint.h... yes
 - checking for unistd.h... yes
-- checking for __builtin_va_list... yes
+- checking for __builtin_va_list... 
+- yes
 - checking if __thread is a keyword... true
-- checking if gcc adds underscores to assembly labels.... 
-- false
+- checking if gcc adds underscores to assembly labels.... false
 - checking for ANSI C header files... (cached) yes
 - checking for stdlib.h... (cached) yes
 - checking for strings.h... (cached) yes
@@ -1163,10 +1162,10 @@ The following actions will be performed:
 - checking for working memcmp... yes
 - checking for mkdir... yes
 - checking for select... yes
-- checking for socket... 
-- yes
+- checking for socket... yes
 - checking for __sysv_signal... yes
-- checking for real definition of size_t... unsigned long
+- checking for real definition of size_t... 
+- unsigned long
 - checking for real definition of wchar_t... int
 - checking whether to use CIL feature blockinggraph... no
 - checking whether to use CIL feature zrapp... no
@@ -1177,6 +1176,18 @@ The following actions will be performed:
 - config.status: creating config.mk
 - config.status: creating lib/App/Cilly/CilConfig.pm
 - config.status: creating doc/index.html
+- config.status: creating doc/header.html
+- config.status: creating src/machdep-ml.c
+- config.status: creating config.h
+- config.status: config.h is unchanged
+- 
+- CIL configuration:
+-   (optional) cl.exe found:    HAS_MSVC           no
+-   gcc to use                  CC                 gcc
+-   default compiler            DEFAULT_COMPILER   _GNUCC
+-   CIL version                 CIL_VERSION        1.7.3
+-   CIL features                CIL_FEATURES       
+-   Extra source directories    EXTRASRCDIRS       
 
 #=== ERROR while installing cil.1.7.3 =========================================#
 # opam-version         1.2.1 (ab224ffd593a168871a14182d6e69d3a902c3f27)
@@ -1213,18 +1224,6 @@ The following actions will be performed:
 # BEGIN failed--compilation aborted at Makefile.PL line 4.
 # make: *** [lib/Makefile] Error 2
 
-- config.status: creating doc/header.html
-- config.status: creating src/machdep-ml.c
-- config.status: creating config.h
-- config.status: config.h is unchanged
-- 
-- CIL configuration:
--   (optional) cl.exe found:    HAS_MSVC           no
--   gcc to use                  CC                 gcc
--   default compiler            DEFAULT_COMPILER   _GNUCC
--   CIL version                 CIL_VERSION        1.7.3
--   CIL features                CIL_FEATURES       
--   Extra source directories    EXTRASRCDIRS       
 [cil: make uninstall] Command started
 + make "uninstall" (CWD=/home/opam/.opam/system/build/cil.1.7.3)
 - cp lib/App/Cilly.pm.in lib/App/Cilly.pm
@@ -1290,5 +1289,5 @@ The following changes have been performed
   - install ocamlfind 1.5.5
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150310003437.export"
+    opam switch import "~/.opam/system/backup/state-20150310232657.export"
 'opam install cil' failed.
