@@ -2,18 +2,18 @@
 + uname -s
 # Detecting depexts using flags: x86_64 linux centos
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=tls
++ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=tls
 # The following system packages are needed:
 #  - gmp
 #  - gmp-devel
-+ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=tls
 + sudo yum -y update
 Not running as root, the following command will be run through "sudo":
     yum -y update
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: mirror.millry.co
- * extras: mirror.lug.udel.edu
- * updates: mirror.dattobackup.com
+ * base: centos.serverspace.co.uk
+ * extras: mirror.ukhost4u.com
+ * updates: centos.serverspace.co.uk
 No packages marked for update
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
@@ -23,9 +23,9 @@ Not running as root, the following command will be run through "sudo":
 + sudo yum install -y gmp gmp-devel
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: mirror.millry.co
- * extras: mirror.lug.udel.edu
- * updates: mirror.dattobackup.com
+ * base: centos.serverspace.co.uk
+ * extras: mirror.mhd.uk.as44574.net
+ * updates: mirrors.coreix.net
 Package 1:gmp-6.0.0-11.el7.x86_64 already installed and latest version
 Resolving Dependencies
 --> Running transaction check
@@ -84,32 +84,32 @@ The following actions will be performed:
 [asn1-combinators: from default] Command started
 [cppo: from default] Command started
 [cstruct: from default] Command started
+[asn1-combinators: from default] Command started
 [cppo: from default] Command started
-[cstruct: from default] Command started
 [default] http://opam-archive:8080/archives/cppo.1.1.2+opam.tar.gz downloaded
 [ctypes: from default] Command started
-[default] http://opam-archive:8080/archives/cstruct.1.5.0+opam.tar.gz downloaded
+[cstruct: from default] Command started
+[default] http://opam-archive:8080/archives/asn1-combinators.0.1.1+opam.tar.gz downloaded
 [nocrypto: from default] Command started
 [ctypes: from default] Command started
+[default] http://opam-archive:8080/archives/cstruct.1.5.0+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ctypes.0.4.1+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
-[ocamlfind: from default] Command started
-[nocrypto: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [ocplib-endian: from default] Command started
-[default] http://opam-archive:8080/archives/nocrypto.0.3.1+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [sexplib: from default] Command started
-[asn1-combinators: from default] Command started
-[default] http://opam-archive:8080/archives/asn1-combinators.0.1.1+opam.tar.gz downloaded
-[tls: http] Command started
 [ocplib-endian: from default] Command started
 [default] http://opam-archive:8080/archives/ocplib-endian.0.8+opam.tar.gz downloaded
-[type_conv: from default] Command started
+[tls: http] Command started
 [sexplib: from default] Command started
-[type_conv: from default] Command started
 [default] http://opam-archive:8080/archives/sexplib.112.24.01+opam.tar.gz downloaded
-[x509: from default] Command started
+[type_conv: from default] Command started
+[type_conv: from default] Command started
+[nocrypto: from default] Command started
 [default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
+[x509: from default] Command started
+[default] http://opam-archive:8080/archives/nocrypto.0.3.1+opam.tar.gz downloaded
 [zarith: from default] Command started
 [x509: from default] Command started
 [default] http://opam-archive:8080/archives/x509.0.3.0+opam.tar.gz downloaded
@@ -260,13 +260,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
-- if [ "true" = "true" ]; then                 \
-- 	cp topfind.ml.in topfind.ml;                             \
-- else                                                             \
-- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 		> topfind.ml ;                                   \
-- fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -275,6 +268,13 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- if [ "true" = "true" ]; then                 \
+- 	cp topfind.ml.in topfind.ml;                             \
+- else                                                             \
+- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 		> topfind.ml ;                                   \
+- fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -1146,10 +1146,10 @@ The following actions will be performed:
 - pkg_type_conv: ....................................... /home/opam/.opam/system/lib/type_conv
 - 
 - ./setup.exe -build 
+- ocamlfind ocamlopt unix.cmxa -I /usr/lib64/ocaml/ocamlbuild /usr/lib64/ocaml/ocamlbuild/ocamlbuildlib.cmxa -linkpkg myocamlbuild.ml /usr/lib64/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
 - W: Cannot find source file matching module 'sexplib_unix' in library sexplib_unix
 - W: Cannot find source file matching module 'sexplib_num' in library sexplib_num
 - W: Cannot find source file matching module 'sexplib' in library sexplib
-- ocamlfind ocamlopt unix.cmxa -I /usr/lib64/ocaml/ocamlbuild /usr/lib64/ocaml/ocamlbuild/ocamlbuildlib.cmxa -linkpkg myocamlbuild.ml /usr/lib64/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bigarray -modules lib/conv.mli > lib/conv.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bigarray -modules lib/sexp.mli > lib/sexp.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bigarray -modules lib/sexp_intf.ml > lib/sexp_intf.ml.depends
@@ -2600,8 +2600,8 @@ The following actions will be performed:
 - File "_tags", line 165, characters 27-39:
 - Warning: the tag "pkg_lwt.unix" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -package cstruct.syntax -package nocrypto -syntax camlp4o -package sexplib.syntax -package x509 -modules lib/tracing.mli > lib/tracing.mli.depends
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -package cstruct.syntax -package nocrypto -syntax camlp4o -package sexplib.syntax -package x509 -I lib -o lib/tracing.cmi lib/tracing.mli
 - W: Cannot find source file matching module 'tls' in library tls
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -package cstruct.syntax -package nocrypto -syntax camlp4o -package sexplib.syntax -package x509 -I lib -o lib/tracing.cmi lib/tracing.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -package cstruct.syntax -package nocrypto -syntax camlp4o -package sexplib.syntax -package x509 -modules lib/tracing.ml > lib/tracing.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -package cstruct.syntax -package nocrypto -syntax camlp4o -package sexplib.syntax -package x509 -modules lib/sexp_ext.ml > lib/sexp_ext.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -package cstruct.syntax -package nocrypto -syntax camlp4o -package sexplib.syntax -package x509 -I lib -o lib/sexp_ext.cmo lib/sexp_ext.ml
