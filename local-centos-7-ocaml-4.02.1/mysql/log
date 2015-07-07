@@ -1,7 +1,7 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux centos
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=mysql
+# Detecting depexts using flags: x86_64 linux centos
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=mysql
 # No extra OS packages requirements found.
 The following actions will be performed:
@@ -12,10 +12,10 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [mysql: from default] Command started
 [ocamlfind: from default] Command started
-[ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [mysql: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/mysql.1.2.0+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -48,8 +48,7 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: 
-- (extractor built) ok
+- Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib64/ocaml
@@ -153,6 +152,14 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -167,14 +174,6 @@ The following actions will be performed:
 - cat topfind_rd1.p | \
 - 	../../tools/patch '@SITELIB@' '/home/opam/.opam/system/lib' \
 -     	    >topfind
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -c num_top_printers.mli
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
 - ocamlc -I +compiler-libs -c num_top.mli
@@ -258,6 +257,8 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+[ERROR] The compilation of mysql failed at "./configure --prefix
+        /home/opam/.opam/system".
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -342,14 +343,30 @@ The following actions will be performed:
 - checking how to run the C preprocessor... gcc -E
 - checking for grep that handles long lines and -e... /usr/bin/grep
 - checking for egrep... /usr/bin/grep -E
-- checking for ANSI C header files... 
-- yes
+- checking for ANSI C header files... yes
 - checking for mysql_config include... 
 - checking for mysql_config pkglibdir... 
 - configure: checking for MySQL library...
-- checking for mysql_real_connect in -lmysqlclient... no
-[ERROR] The compilation of mysql failed at "./configure --prefix
-        /home/opam/.opam/system".
+- checking for mysql_real_connect in -lmysqlclient... 
+- ./configure: line 3435: mysql_config: command not found
+- ./configure: line 3444: mysql_config: command not found
+- no
+- configure: error: MySQL client library not found
+[mysql: ocamlfind remove] Command started
++ ocamlfind "remove" "mysql" (CWD=/home/opam/.opam/system/build/mysql.1.2.0)
+- ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/mysql
+
+
+=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+The following actions failed
+  - install mysql 1.2.0
+The following changes have been performed
+  - install ocamlfind 1.5.5
+
+=-=- mysql.1.2.0 troobleshooting =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+=> This package relies on external (system) dependencies that may be missing.
+   `opam depext mysql.1.2.0' may help you find the correct installation for
+   your system.
 
 #=== ERROR while installing mysql.1.2.0 =======================================#
 # opam-version         1.2.2 (391297300524717e1475deaea37bca287c7f5e36)
@@ -380,23 +397,5 @@ The following actions will be performed:
 
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150425201657.export"
+    opam switch import "~/.opam/system/backup/state-20150426095031.export"
 'opam install mysql' failed.
-- ./configure: line 3435: mysql_config: command not found
-- ./configure: line 3444: mysql_config: command not found
-- configure: error: MySQL client library not found
-[mysql: ocamlfind remove] Command started
-+ ocamlfind "remove" "mysql" (CWD=/home/opam/.opam/system/build/mysql.1.2.0)
-- ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/mysql
-
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions failed
-  - install mysql 1.2.0
-The following changes have been performed
-  - install ocamlfind 1.5.5
-
-=-=- mysql.1.2.0 troobleshooting =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-=> This package relies on external (system) dependencies that may be missing.
-   `opam depext mysql.1.2.0' may help you find the correct installation for
-   your system.
