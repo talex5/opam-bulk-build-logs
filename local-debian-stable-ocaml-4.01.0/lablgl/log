@@ -3,26 +3,26 @@
 + lsb_release -i -s
 # Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=lablgl
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=lablgl
 # The following system packages are needed:
 #  - freeglut3-dev
 #  - libglu1-mesa-dev
 #  - mesa-common-dev
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=lablgl
 Not running as root, the following command will be run through "sudo":
     apt-get update
 + sudo apt-get update
-Get:1 http://security.debian.org stable/updates InRelease [63.1 kB]
+Hit http://security.debian.org stable/updates InRelease
 Hit http://httpredir.debian.org stable InRelease
 Hit http://httpredir.debian.org stable-updates InRelease
-Get:2 http://security.debian.org stable/updates/main amd64 Packages [54.6 kB]
-Get:3 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
-Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3618 B]
-Fetched 9141 kB in 4s (2162 kB/s)
+Get:1 http://security.debian.org stable/updates/main amd64 Packages [54.6 kB]
+Get:2 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
+Get:3 http://httpredir.debian.org stable-updates/main amd64 Packages [3618 B]
+Fetched 9078 kB in 3s (2453 kB/s)
 Reading package lists...
 # OS package update successful
++ sudo apt-get install -qq -yy freeglut3-dev libglu1-mesa-dev mesa-common-dev
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy freeglut3-dev libglu1-mesa-dev mesa-common-dev
-+ sudo apt-get install -qq -yy freeglut3-dev libglu1-mesa-dev mesa-common-dev
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
@@ -304,6 +304,9 @@ The following actions will be performed:
 - ocamlrun ../src/var2def < gl_tags.var > gl_tags.h
 - ocamlrun ../src/var2switch -table GL_ < gl_tags.var > gl_tags.c
 - ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_gl.c
+- ocamlrun ../src/var2def < glu_tags.var > glu_tags.h
+- ocamlrun ../src/var2switch GLU_ < glu_tags.var > glu_tags.c
+- ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_glu.c
 - In file included from ml_gl.c:24:0:
 - ml_gl.c: In function 'ml_glGetString':
 - ml_gl.c:225:8: warning: pointer targets in passing argument 1 of 'lablgl_copy_string_check' differ in signedness [-Wpointer-sign]
@@ -333,14 +336,6 @@ The following actions will be performed:
 - /usr/include/GL/gl.h:1307:23: note: expected 'GLuint *' but argument is of type 'int *'
 -  GLAPI void GLAPIENTRY glGenTextures( GLsizei n, GLuint *textures );
 -                        ^
-- ocamlrun ../src/var2def < glu_tags.var > glu_tags.h
-- ocamlrun ../src/var2switch GLU_ < glu_tags.var > glu_tags.c
-- ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_glu.c
-- ocamlrun ../src/var2def < raw_tags.var > raw_tags.h
-- ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_raw.c
-- ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_glarray.c
-- ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_glutess.c
-- ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_shader.c
 - In file included from ml_glu.c:19:0:
 - ml_glu.c: In function 'ml_gluGetString':
 - ml_glu.c:96:8: warning: pointer targets in passing argument 1 of 'lablgl_copy_string_check' differ in signedness [-Wpointer-sign]
@@ -355,6 +350,11 @@ The following actions will be performed:
 - ml_gl.h:10:7: note: in expansion of macro 'copy_string_check'
 -  value copy_string_check (const char *str);
 -        ^
+- ocamlrun ../src/var2def < raw_tags.var > raw_tags.h
+- ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_raw.c
+- ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_glarray.c
+- ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_glutess.c
+- ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include" ml_shader.c
 - ocamlc -c -w s -I +labltk raw.mli
 - ocamlc -c -w s -I +labltk raw.ml
 - ocamlc -c -w s -I +labltk gl.mli
@@ -377,12 +377,6 @@ The following actions will be performed:
 - ocamlc -c -w s -I +labltk glTex.ml
 - ocamlc -c -w s -I +labltk glDraw.mli
 - ocamlc -c -w s -I +labltk glDraw.ml
-- File "raw.ml", line 24, characters 13-15:
-- Warning 3: deprecated feature: operator (or); you should use (||) instead
-- File "glMisc.ml", line 26, characters 15-17:
-- Warning 3: deprecated feature: operator (or); you should use (||) instead
-- File "glDraw.ml", line 30, characters 28-30:
-- Warning 3: deprecated feature: operator (or); you should use (||) instead
 - ocamlc -c -w s -I +labltk glFunc.mli
 - ocamlc -c -w s -I +labltk glFunc.ml
 - ocamlc -c -w s -I +labltk gluMisc.mli
@@ -392,6 +386,14 @@ The following actions will be performed:
 - ocamlc -c -w s -I +labltk gluQuadric.mli
 - ocamlc -c -w s -I +labltk gluQuadric.ml
 - ocamlc -c -w s -I +labltk gluTess.mli
+- File "raw.ml", line 24, characters 13-15:
+- Warning 3: deprecated feature: operator (or); you should use (||) instead
+- File "glMisc.ml", line 26, characters 15-17:
+- Warning 3: deprecated feature: operator (or); you should use (||) instead
+- File "glDraw.ml", line 30, characters 28-30:
+- Warning 3: deprecated feature: operator (or); you should use (||) instead
+- File "gluNurbs.ml", line 57, characters 23-25:
+- Warning 3: deprecated feature: operator (or); you should use (||) instead
 - ocamlc -c -w s -I +labltk gluTess.ml
 - ocamlc -c -w s -I +labltk gluMat.mli
 - ocamlc -c -w s -I +labltk gluMat.ml
@@ -406,8 +408,10 @@ The following actions will be performed:
 - make[1]: Entering directory '/home/opam/.opam/4.01.0/build/lablgl.1.05/LablGlut/src'
 - ocamlc -c -w s -ccopt "-c -O  -I/usr/X11R6/include -I../../src" wrap_glut.c
 - ocamlc -c -w s  glut.mli
-- File "gluNurbs.ml", line 57, characters 23-25:
-- Warning 3: deprecated feature: operator (or); you should use (||) instead
+- ocamlc -c -w s  glut.ml
+- ocamlmklib -o lablglut wrap_glut.o glut.cmo -lglut -lGL -lGLU 
+- ocamlmktop  -I . -I ../../src  -o lablgluttop \
+-   lablglut.cma lablgl.cma
 - In file included from wrap_glut.c:24:0:
 - wrap_glut.c: In function 'ml_glutBitmapLength':
 - /home/opam/.opam/4.01.0/lib/ocaml/caml/mlvalues.h:226:23: warning: pointer targets in passing argument 2 of 'glutBitmapLength' differ in signedness [-Wpointer-sign]
@@ -446,10 +450,6 @@ The following actions will be performed:
 - /usr/include/GL/freeglut_std.h:518:26: note: expected 'const unsigned char *' but argument is of type 'char *'
 -  FGAPI int     FGAPIENTRY glutStrokeLength( void* font, const unsigned char* string );
 -                           ^
-- ocamlc -c -w s  glut.ml
-- ocamlmklib -o lablglut wrap_glut.o glut.cmo -lglut -lGL -lGLU 
-- ocamlmktop  -I . -I ../../src  -o lablgluttop \
--   lablglut.cma lablgl.cma
 - make INSTALLDIR="`ocamlc -where`/lablGL" real-lablglut
 - make[2]: Entering directory '/home/opam/.opam/4.01.0/build/lablgl.1.05/LablGlut/src'
 - generate lablglut
