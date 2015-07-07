@@ -1,8 +1,8 @@
 + uname -m
-+ uname -s
 /usr/bin/lsb_release
-+ lsb_release -i -s
 # Detecting depexts using flags: x86_64 linux ubuntu
++ uname -s
++ lsb_release -i -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=ancient
 # The following system packages are needed:
 #  - m4
@@ -40,10 +40,10 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [21.0 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [320 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [118 kB]
-Fetched 2057 kB in 5s (384 kB/s)
+Fetched 2057 kB in 6s (321 kB/s)
 Reading package lists...
-# OS package update successful
 + sudo apt-get install -qq -yy m4
+# OS package update successful
 Not running as root, system installation will be done through "sudo"
 # OS packages installation successful
 The following actions will be performed:
@@ -56,8 +56,8 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [ancient: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/ancient.0.9.0+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ancient.0.9.0+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -254,7 +254,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -299,6 +298,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -384,16 +384,17 @@ The following actions will be performed:
 - checking for string.h... yes
 - checking for memory.h... yes
 - checking for strings.h... yes
-- checking for inttypes.h... yes
-- checking for stdint.h... 
+- checking for inttypes.h... 
 - yes
+- checking for stdint.h... yes
 - checking for unistd.h... yes
 - checking for stdlib.h... (cached) yes
 - checking for unistd.h... (cached) yes
 - checking for getpagesize... yes
 - checking for working mmap... yes
 - checking limits.h usability... yes
-- checking limits.h presence... yes
+- checking limits.h presence... 
+- yes
 - checking for limits.h... yes
 - checking stddef.h usability... yes
 - checking stddef.h presence... yes
@@ -427,6 +428,8 @@ The following actions will be performed:
 - LIBRARY_PATH=.:$LIBRARY_PATH \
 - 	ocamlfind ocamlopt  -package unix -linkpkg -o test_ancient_dict_verify.opt ancient.cmxa test_ancient_dict_verify.cmx
 - ocamlfind ocamlopt   -package unix -c test_ancient_dict_read.ml
+- LIBRARY_PATH=.:$LIBRARY_PATH \
+- 	ocamlfind ocamlopt  -package unix -linkpkg -o test_ancient_dict_read.opt ancient.cmxa test_ancient_dict_read.cmx
 - In file included from ./mm.c:33:0:
 - ./mmtrace.c: In function 'tr_mallochook':
 - ./mmtrace.c:94:3: warning: format '%x' expects argument of type 'unsigned int', but argument 4 has type 'size_t' [-Wformat=]
@@ -440,8 +443,6 @@ The following actions will be performed:
 -        (unsigned long) hdr, size);
 -        ^
 - ar: creating libmmalloc.a
-- LIBRARY_PATH=.:$LIBRARY_PATH \
-- 	ocamlfind ocamlopt  -package unix -linkpkg -o test_ancient_dict_read.opt ancient.cmxa test_ancient_dict_read.cmx
 [ancient: make install] Command started
 + make "install" "DESTDIR=/home/opam/.opam/system/lib" (CWD=/home/opam/.opam/system/build/ancient.0.9.0)
 - rm -rf /home/opam/.opam/system/lib/ancient
