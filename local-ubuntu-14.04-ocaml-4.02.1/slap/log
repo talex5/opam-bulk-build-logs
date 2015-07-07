@@ -1,8 +1,8 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-+ opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=slap
 # Detecting depexts using flags: x86_64 linux ubuntu
++ opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=slap
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=slap
 # The following system packages are needed:
 #  - libblas-dev
@@ -42,12 +42,12 @@ Hit http://archive.ubuntu.com trusty-security/universe Sources
 Hit http://archive.ubuntu.com trusty-security/main amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/universe amd64 Packages
-Fetched 1540 kB in 5s (294 kB/s)
-Reading package lists...+ sudo apt-get install -qq -yy libblas-dev liblapack-dev m4
-
+Fetched 1540 kB in 4s (330 kB/s)
+Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libblas-dev liblapack-dev m4
++ sudo apt-get install -qq -yy libblas-dev liblapack-dev m4
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
@@ -95,12 +95,12 @@ The following actions will be performed:
 [lacaml: from default] Command started
 [ocamlfind: from default] Command started
 [cppo: from default] Command started
-[lacaml: from default] Command started
 [ocamlfind: from default] Command started
+[lacaml: from default] Command started
 [default] http://opam-archive:8080/archives/cppo.1.1.2+opam.tar.gz downloaded
 [slap: from default] Command started
-[default] http://opam-archive:8080/archives/lacaml.7.2.3+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/lacaml.7.2.3+opam.tar.gz downloaded
 [slap: from default] Command started
 [default] http://opam-archive:8080/archives/slap.1.0.1+opam.tar.gz downloaded
 
@@ -297,6 +297,8 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_split.ml
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
+- ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -335,16 +337,14 @@ The following actions will be performed:
 - File "fl_meta.mll", line 62, characters 11-22:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlopt -I +compiler-libs -c fl_metascanner.ml
-- ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
-- ocamlopt -I +compiler-libs -c findlib.ml
 - File "fl_metascanner.ml", line 111, characters 23-32:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
+- ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
 - if [ 1 -gt 0 ]; then \
@@ -1050,7 +1050,6 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package lacaml -package bigarray -package compiler-libs.toplevel -modules lib/slap_common.ml > lib/slap_common.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package lacaml -package bigarray -package compiler-libs.toplevel -modules lib/slap_size.ml > lib/slap_size.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package lacaml -package bigarray -package compiler-libs.toplevel -modules lib/slap_vec.ml > lib/slap_vec.ml.depends
-[ERROR] The compilation of slap failed at "ocaml setup.ml -build".
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package lacaml -package bigarray -package compiler-libs.toplevel -modules lib/slap_mat.ml > lib/slap_mat.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package lacaml -package bigarray -package compiler-libs.toplevel -modules lib/slap_io.ml > lib/slap_io.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package lacaml -package bigarray -package compiler-libs.toplevel -modules lib/slap_S.ml > lib/slap_S.ml.depends
@@ -1084,6 +1083,20 @@ The following actions will be performed:
 - This argument cannot be applied with label ~x
 - Command exited with code 2.
 - E: Failure("Command ''/usr/bin/ocamlbuild' lib/libslap_stubs.a lib/dllslap_stubs.so lib/slap.cma lib/slap.cmxa lib/slap.a lib/slap.cmxs lib/slap_top.cma lib/slap_top.cmxa lib/slap_top.a lib/slap_top.cmxs ppx/ppx_slap.native -use-ocamlfind -tag debug' terminated with error code 10")
+[slap: ocamlfind remove] Command started
++ ocamlfind "remove" "slap" (CWD=/home/opam/.opam/system/build/slap.1.0.1)
+- ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/slap
+
+
+=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+The following actions failed
+  - install slap 1.0.1
+The following changes have been performed
+  - install base-bytes base 
+  - install cppo       1.1.2
+  - install lacaml     7.2.3
+  - install ocamlfind  1.5.5
+[ERROR] The compilation of slap failed at "ocaml setup.ml -build".
 
 #=== ERROR while installing slap.1.0.1 ========================================#
 # opam-version         1.2.2 (c30ed46b7e70bcf0f872e482cbcbf6a1fa0c60b3)
@@ -1110,20 +1123,7 @@ The following actions will be performed:
 ### stderr ###
 # E: Failure("Command ''/usr/bin/ocamlbuild' lib/libslap_stubs.a lib/dllslap_stubs.so lib/slap.cma lib/slap.cmxa lib/slap.a lib/slap.cmxs lib/slap_top.cma lib/slap_top.cmxa lib/slap_top.a lib/slap_top.cmxs ppx/ppx_slap.native -use-ocamlfind -tag debug' terminated with error code 10")
 
-[slap: ocamlfind remove] Command started
-+ ocamlfind "remove" "slap" (CWD=/home/opam/.opam/system/build/slap.1.0.1)
-- ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/slap
-
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions failed
-  - install slap 1.0.1
-The following changes have been performed
-  - install base-bytes base 
-  - install cppo       1.1.2
-  - install lacaml     7.2.3
-  - install ocamlfind  1.5.5
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150507050028.export"
+    opam switch import "~/.opam/system/backup/state-20150507190508.export"
 'opam install slap' failed.
