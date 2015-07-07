@@ -35,32 +35,32 @@ The following actions will be performed:
 [ipaddr: from default] Command started
 [io-page: from default] Command started
 [ipaddr: from default] Command started
+[cstruct: from default] Command started
 [default] http://opam-archive:8080/archives/io-page.1.2.0+opam.tar.gz downloaded
 [lwt: from default] Command started
 [default] http://opam-archive:8080/archives/ipaddr.2.5.0+opam.tar.gz downloaded
 [mirage-clock-unix: from default] Command started
-[cstruct: from default] Command started
 [default] http://opam-archive:8080/archives/cstruct.1.5.0+opam.tar.gz downloaded
 [mirage-console: from default] Command started
-[mirage-console: from default] Command started
-[default] http://opam-archive:8080/archives/mirage-console.2.1.3+opam.tar.gz downloaded
-[mirage-net-unix: from default] Command started
-[lwt: from default] Command started
 [mirage-clock-unix: from default] Command started
-[default] http://opam-archive:8080/archives/lwt.2.4.5+opam.tar.gz downloaded
-[mirage-types: from default] Command started
-[mirage-net-unix: from default] Command started
 [default] http://opam-archive:8080/archives/mirage-clock-unix.1.0.0+opam.tar.gz downloaded
-[mirage-unix: from default] Command started
-[mirage-types: from default] Command started
+[mirage-net-unix: from default] Command started
+[mirage-net-unix: from default] Command started
 [default] http://opam-archive:8080/archives/mirage-net-unix.2.2.0+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
-[mirage-unix: from default] Command started
+[mirage-types: from default] Command started
+[mirage-types: from default] Command started
 [default] http://opam-archive:8080/archives/mirage-types.2.1.1+opam.tar.gz downloaded
-[ocplib-endian: from default] Command started
-[ocamlfind: from default] Command started
+[mirage-unix: from default] Command started
+[mirage-unix: from default] Command started
+[lwt: from default] Command started
+[mirage-console: from default] Command started
 [default] http://opam-archive:8080/archives/mirage-unix.2.0.1+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/lwt.2.4.5+opam.tar.gz downloaded
+[ocplib-endian: from default] Command started
+[default] http://opam-archive:8080/archives/mirage-console.2.1.3+opam.tar.gz downloaded
 [optcomp: from default] Command started
+[ocamlfind: from default] Command started
 [ocplib-endian: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [ounit: from default] Command started
@@ -180,6 +180,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -225,8 +227,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
@@ -238,6 +238,13 @@ The following actions will be performed:
 - fi
 - ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
+- ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
+- USE_CYGPATH="0"; \
+- export USE_CYGPATH; \
+- cat topfind_rd1.p | \
+- 	../../tools/patch '@SITELIB@' '/home/opam/.opam/system/lib' \
+-     	    >topfind
+- ocamlc -I +compiler-libs -c num_top_printers.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -246,13 +253,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
-- USE_CYGPATH="0"; \
-- export USE_CYGPATH; \
-- cat topfind_rd1.p | \
-- 	../../tools/patch '@SITELIB@' '/home/opam/.opam/system/lib' \
--     	    >topfind
-- ocamlc -I +compiler-libs -c num_top_printers.mli
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
 - ocamlc -I +compiler-libs -c num_top.mli
 - ocamlc -I +compiler-libs -g -c num_top.ml
@@ -290,7 +290,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -335,6 +334,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -2306,6 +2306,9 @@ The following actions will be performed:
 - Use Array.make instead.
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package bigarray -for-pack Sexplib -I lib -o lib/macro.cmx lib/macro.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package bigarray -for-pack Sexplib -I lib -o lib/conv_error.cmx lib/conv_error.ml
+- W: Cannot find source file matching module 'sexplib_unix' in library sexplib_unix
+- W: Cannot find source file matching module 'sexplib_num' in library sexplib_num
+- W: Cannot find source file matching module 'sexplib' in library sexplib
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package bigarray -for-pack Sexplib -I lib -o lib/exn_magic.cmx lib/exn_magic.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package bigarray -for-pack Sexplib -I lib -o lib/path.cmx lib/path.ml
 - + /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package bigarray -for-pack Sexplib -I lib -o lib/path.cmx lib/path.ml
@@ -2317,9 +2320,6 @@ The following actions will be performed:
 - Use Bytes.set instead.
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package bigarray -for-pack Sexplib -I lib -o lib/std.cmx lib/std.ml
 - touch lib/sexplib.mli  ; if  /home/opam/.opam/system/bin/ocamlfind ocamlopt -pack -g -annot -bin-annot -I lib lib/type.cmx lib/parser.cmx lib/src_pos.cmx lib/type_with_layout.cmx lib/parser_with_layout.cmx lib/lexer.cmx lib/pre_sexp.cmx lib/sexp_intf.cmx lib/sexp_with_layout.cmx lib/sexp.cmx lib/conv.cmx lib/conv_error.cmx lib/exn_magic.cmx lib/macro.cmx lib/path.cmx lib/std.cmx -o lib/sexplib.cmx  ; then  rm -f lib/sexplib.mli  ; else  rm -f lib/sexplib.mli  ; exit 1; fi
-- W: Cannot find source file matching module 'sexplib_unix' in library sexplib_unix
-- W: Cannot find source file matching module 'sexplib_num' in library sexplib_num
-- W: Cannot find source file matching module 'sexplib' in library sexplib
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -a lib/sexplib.cmx -o lib/sexplib.cmxa
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared lib/sexplib.cmxa lib/sexplib.cmx -o lib/sexplib.cmxs
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package num -package bigarray -modules num/lib/sexplib_num_conv.mli > num/lib/sexplib_num_conv.mli.depends
@@ -3500,17 +3500,17 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package cstruct -syntax camlp4o -package cstruct.syntax -syntax camlp4o -modules xen/xenstore_ring.mli > xen/xenstore_ring.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -I lib -package cstruct -syntax camlp4o -package cstruct.syntax -syntax camlp4o -I xen -I lib -I lwt -o xen/xenstore_ring.cmi xen/xenstore_ring.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package cstruct -syntax camlp4o -package cstruct.syntax -syntax camlp4o -modules xen/xenstore_ring.ml > xen/xenstore_ring.ml.depends
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -I lib -package cstruct -syntax camlp4o -package cstruct.syntax -syntax camlp4o -I xen -I lib -I lwt -o xen/xenstore_ring.cmo xen/xenstore_ring.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -a xen/xenstore_ring.cmo -o xen/xenstore_ring.cma
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -I lib -package cstruct -syntax camlp4o -package cstruct.syntax -syntax camlp4o -I xen -I lib -I lwt -o xen/xenstore_ring.cmx xen/xenstore_ring.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -a xen/xenstore_ring.cmx -o xen/xenstore_ring.cmxa
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared xen/xenstore_ring.cmx -o xen/xenstore_ring.cmxs
 - File "setup.ml", line 247, characters 8-26:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
 - File "setup.ml", line 2502, characters 6-24:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -I lib -package cstruct -syntax camlp4o -package cstruct.syntax -syntax camlp4o -I xen -I lib -I lwt -o xen/xenstore_ring.cmo xen/xenstore_ring.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -a xen/xenstore_ring.cmo -o xen/xenstore_ring.cma
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -I lib -package cstruct -syntax camlp4o -package cstruct.syntax -syntax camlp4o -I xen -I lib -I lwt -o xen/xenstore_ring.cmx xen/xenstore_ring.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -a xen/xenstore_ring.cmx -o xen/xenstore_ring.cmxa
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared xen/xenstore_ring.cmx -o xen/xenstore_ring.cmxs
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package cstruct -syntax camlp4o -package cstruct.syntax -package lwt -syntax camlp4o -package lwt.syntax -syntax camlp4o -modules lwt/lwt_ring.mli > lwt/lwt_ring.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -I lib -package cstruct -syntax camlp4o -package cstruct.syntax -package lwt -syntax camlp4o -package lwt.syntax -syntax camlp4o -I lwt -I lib -I xen -o lwt/lwt_ring.cmi lwt/lwt_ring.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package cstruct -syntax camlp4o -package cstruct.syntax -package lwt -syntax camlp4o -package lwt.syntax -syntax camlp4o -modules lwt/lwt_ring.ml > lwt/lwt_ring.ml.depends
@@ -3905,9 +3905,9 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package cstruct -syntax camlp4o -package cstruct.syntax -package io-page -package ipaddr -package lwt -package mirage-types -modules lib/wire_structs.ml > lib/wire_structs.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package cstruct -package io-page -package ipaddr -package lwt -package mirage-types -modules lib/tcpip_checksum.mli > lib/tcpip_checksum.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -principal -strict-sequence -I lib -I lib -I lib -I lib -I tcp -I dhcp -ccopt -O2 -ccopt -fno-stack-protector -ccopt -mno-red-zone -package cstruct -package io-page -package ipaddr -package lwt -package mirage-types -I lib -I dhcp -I tcp -o lib/tcpip_checksum.cmi lib/tcpip_checksum.mli
+- W: Cannot find source file matching module 'tcpv4' in library tcpv4
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package cstruct -package io-page -package ipaddr -package lwt -package mirage-types -modules lib/tcpip_checksum.ml > lib/tcpip_checksum.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -principal -strict-sequence -I lib -I lib -I lib -I lib -I tcp -I dhcp -ccopt -O2 -ccopt -fno-stack-protector -ccopt -mno-red-zone -package cstruct -syntax camlp4o -package cstruct.syntax -package io-page -package ipaddr -package lwt -package mirage-types -I lib -I dhcp -I tcp -o lib/wire_structs.cmo lib/wire_structs.ml
-- W: Cannot find source file matching module 'tcpv4' in library tcpv4
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -principal -strict-sequence -I lib -I lib -I lib -I lib -I tcp -I dhcp -ccopt -O2 -ccopt -fno-stack-protector -ccopt -mno-red-zone -package cstruct -package io-page -package ipaddr -package lwt -package mirage-types -I lib -I dhcp -I tcp -o lib/tcpip_checksum.cmo lib/tcpip_checksum.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -a -dllib -ltcpip_stubs -cclib -ltcpip_stubs lib/wire_structs.cmo lib/tcpip_checksum.cmo -o lib/tcpip.cma
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -principal -strict-sequence -I lib -I lib -I lib -I lib -I tcp -I dhcp -ccopt -O2 -ccopt -fno-stack-protector -ccopt -mno-red-zone -package cstruct -syntax camlp4o -package cstruct.syntax -package io-page -package ipaddr -package lwt -package mirage-types -I lib -I dhcp -I tcp -o lib/wire_structs.cmx lib/wire_structs.ml
