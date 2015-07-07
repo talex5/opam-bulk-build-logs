@@ -2,19 +2,19 @@
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=apron
 # Detecting depexts using flags: x86_64 linux centos
-+ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=apron
 # The following system packages are needed:
 #  - gmp
 #  - gmp-devel
-+ sudo yum -y update
++ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=apron
 Not running as root, the following command will be run through "sudo":
     yum -y update
++ sudo yum -y update
 Loaded plugins: fastestmirror
 Repodata is over 2 weeks old. Install yum-cron? Or run: yum makecache fast
 Determining fastest mirrors
- * base: anorien.csc.warwick.ac.uk
- * extras: mirror.sov.uk.goscomb.net
- * updates: mirror.sov.uk.goscomb.net
+ * base: mirror.vorboss.net
+ * extras: anorien.csc.warwick.ac.uk
+ * updates: anorien.csc.warwick.ac.uk
 Resolving Dependencies
 --> Running transaction check
 ---> Package binutils.x86_64 0:2.23.52.0.1-30.el7_1.1 will be updated
@@ -95,7 +95,7 @@ Total download size: 28 M
 Downloading packages:
 Delta RPMs disabled because /usr/bin/applydeltarpm not installed.
 --------------------------------------------------------------------------------
-Total                                              5.9 MB/s |  28 MB  00:04     
+Total                                              9.1 MB/s |  28 MB  00:03     
 Running transaction check
 Running transaction test
 Transaction test succeeded
@@ -143,8 +143,7 @@ Running transaction
   Verifying  : libblkid-2.23.2-22.el7_1.x86_64                             2/39 
   Verifying  : systemtap-2.6-10.el7_1.x86_64                               3/39 
   Verifying  : systemtap-runtime-2.6-10.el7_1.x86_64                       4/39 
-  Verifying  : libmount-2.23.2-22.el7_1.x86_64                             5/39+ sudo yum install -y gmp gmp-devel
- 
+  Verifying  : libmount-2.23.2-22.el7_1.x86_64                             5/39 
   Verifying  : systemtap-devel-2.6-10.el7_1.x86_64                         6/39 
   Verifying  : util-linux-2.23.2-22.el7_1.x86_64                           7/39 
   Verifying  : ca-certificates-2015.2.4-70.0.el7_1.noarch                  8/39 
@@ -155,7 +154,8 @@ Running transaction
   Verifying  : nss-sysinit-3.18.0-2.2.el7_1.x86_64                        13/39 
   Verifying  : libuuid-2.23.2-22.el7_1.x86_64                             14/39 
   Verifying  : binutils-2.23.52.0.1-30.el7_1.2.x86_64                     15/39 
-  Verifying  : openssh-6.6.1p1-12.el7_1.x86_64                            16/39 
+  Verifying  : openssh-6.6.1p1-12.el7_1.x86_64                            16/39+ sudo yum install -y gmp gmp-devel
+ 
   Verifying  : openssh-clients-6.6.1p1-12.el7_1.x86_64                    17/39 
   Verifying  : nss-tools-3.18.0-2.2.el7_1.x86_64                          18/39 
   Verifying  : kernel-headers-3.10.0-229.4.2.el7.x86_64                   19/39 
@@ -212,9 +212,9 @@ Not running as root, the following command will be run through "sudo":
     rpm -q gmp gmp-devel
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: anorien.csc.warwick.ac.uk
- * extras: mirror.sov.uk.goscomb.net
- * updates: mirror.sov.uk.goscomb.net
+ * base: mirror.vorboss.net
+ * extras: anorien.csc.warwick.ac.uk
+ * updates: anorien.csc.warwick.ac.uk
 Package 1:gmp-6.0.0-11.el7.x86_64 already installed and latest version
 Resolving Dependencies
 --> Running transaction check
@@ -246,13 +246,12 @@ Running transaction
 Installed:
   gmp-devel.x86_64 1:6.0.0-11.el7                                               
 
-+ sudo rpm -q gmp gmp-devel
 Complete!
++ sudo rpm -q gmp gmp-devel
 gmp-6.0.0-11.el7.x86_64
 gmp-devel-6.0.0-11.el7.x86_64
 # OS packages installation successful
 The following actions will be performed:
-[ERROR] The compilation of conf-mpfr failed at "cc test.c -lgmp -lmpfr".
   - install camlidl   1.05                                      [required by apron]
   - install conf-gmp  1                                         [required by apron]
   - install ocamlfind 1.5.5                                     [required by apron]
@@ -266,8 +265,8 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [camlidl: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/camlidl.1.05+opam.tar.gz downloaded
 [apron: from default] Command started
+[default] http://opam-archive:8080/archives/camlidl.1.05+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/apron.20150518+opam.tar.gz downloaded
 
@@ -280,6 +279,7 @@ The following actions will be performed:
 [camlidl: make all] Command started
 + sh "-c" "cc -c $CFLAGS test.c" (CWD=/home/opam/.opam/system/build/conf-gmp.1)
 -> installed conf-gmp.1
+[ERROR] The compilation of conf-mpfr failed at "cc test.c -lgmp -lmpfr".
 [conf-mpfr: cc test.c] Command started
 + cc "test.c" "-lgmp" "-lmpfr" (CWD=/home/opam/.opam/system/build/conf-mpfr.1)
 - test.c:2:18: fatal error: mpfr.h: No such file or directory
@@ -640,7 +640,6 @@ The following actions will be performed:
 - if [ 1 -gt 0 ]; then \
 -     ocamlopt -I +compiler-libs -shared -o findlib.cmxs findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx; \
 - fi
-- ocamlopt -I +compiler-libs -c ocaml_args.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -685,6 +684,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c ocaml_args.ml
 - ocamlopt -I +compiler-libs -c frontend.ml
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
@@ -697,23 +697,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -o ocamlfind_opt findlib.cmxa unix.cmxa \
 - 	   ocaml_args.cmx frontend.cmx
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
-
-#=== ERROR while installing conf-mpfr.1 =======================================#
-# opam-version         1.2.2 (391297300524717e1475deaea37bca287c7f5e36)
-# os                   linux
-# command              cc test.c -lgmp -lmpfr
-# path                 /home/opam/.opam/system/build/conf-mpfr.1
-# compiler             system (4.02.1)
-# exit-code            1
-# env-file             /home/opam/.opam/system/build/conf-mpfr.1/conf-mpfr-1-60459a.env
-# stdout-file          /home/opam/.opam/system/build/conf-mpfr.1/conf-mpfr-1-60459a.out
-# stderr-file          /home/opam/.opam/system/build/conf-mpfr.1/conf-mpfr-1-60459a.err
-### stderr ###
-# test.c:2:18: fatal error: mpfr.h: No such file or directory
-#  #include <mpfr.h>
-#                   ^
-# compilation terminated.
-
 [ocamlfind: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
 - mkdir -p "/home/opam/.opam/system/bin"
@@ -761,6 +744,23 @@ The following actions will be performed:
 
 
 =-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+#=== ERROR while installing conf-mpfr.1 =======================================#
+# opam-version         1.2.2 (391297300524717e1475deaea37bca287c7f5e36)
+# os                   linux
+# command              cc test.c -lgmp -lmpfr
+# path                 /home/opam/.opam/system/build/conf-mpfr.1
+# compiler             system (4.02.1)
+# exit-code            1
+# env-file             /home/opam/.opam/system/build/conf-mpfr.1/conf-mpfr-1-60459a.env
+# stdout-file          /home/opam/.opam/system/build/conf-mpfr.1/conf-mpfr-1-60459a.out
+# stderr-file          /home/opam/.opam/system/build/conf-mpfr.1/conf-mpfr-1-60459a.err
+### stderr ###
+# test.c:2:18: fatal error: mpfr.h: No such file or directory
+#  #include <mpfr.h>
+#                   ^
+# compilation terminated.
+
 The following actions were aborted
   - install apron 20150518
 The following actions failed
@@ -776,5 +776,5 @@ The following changes have been performed
    your system.
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150423123150.export"
+    opam switch import "~/.opam/system/backup/state-20150425191047.export"
 'opam install apron' failed.
