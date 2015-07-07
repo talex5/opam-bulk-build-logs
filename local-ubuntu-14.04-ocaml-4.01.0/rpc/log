@@ -3,9 +3,9 @@
 + lsb_release -i -s
 # Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=rpc
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=rpc
 # The following system packages are needed:
 #  - m4
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=rpc
 Not running as root, the following command will be run through "sudo":
     apt-get update
 + sudo apt-get update
@@ -36,14 +36,12 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [23.3 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [329 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [128 kB]
-Fetched 2122 kB in 6s (330 kB/s)
-Reading package lists...W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 635587 635616
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages.gz is not what the server reported 356350 356387
-
+Fetched 2122 kB in 7s (275 kB/s)
+Reading package lists...
++ sudo apt-get install -qq -yy m4
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
-+ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install base-no-ppx base                                    [required by lwt]
@@ -59,18 +57,18 @@ The following actions will be performed:
 [lwt: from default] Command started
 [ocamlfind: from default] Command started
 [rpc: from default] Command started
-[rpc: from default] Command started
 [lwt: from default] Command started
+[rpc: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/lwt.2.4.8+opam.tar.gz downloaded
-[type_conv: from default] Command started
-[default] http://opam-archive:8080/archives/rpc.1.5.1+opam.tar.gz downloaded
-[xmlm: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [type_conv: from default] Command started
+[default] http://opam-archive:8080/archives/lwt.2.4.8+opam.tar.gz downloaded
 [xmlm: from default] Command started
-[default] http://opam-archive:8080/archives/xmlm.1.2.0+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/rpc.1.5.1+opam.tar.gz downloaded
+[type_conv: from default] Command started
+[xmlm: from default] Command started
 [default] http://opam-archive:8080/archives/type_conv.111.13.00+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/xmlm.1.2.0+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 -> installed base-no-ppx.base
@@ -88,6 +86,8 @@ The following actions will be performed:
 - native dynlink: found
 - labltk: found
 - ocamlbuild: found
+- File "itest-aux/ppx.ml", line 1, characters 0-25:
+- Error: Unbound value Toploop.preprocess_phrase
 - camlp4: using camlp4, style 310
 - compiler-libs: found
 - dbm: not present (normal since OCaml-4.00)
@@ -106,8 +106,6 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Detecting compiler arguments: 
-- File "itest-aux/ppx.ml", line 1, characters 0-25:
-- Error: Unbound value Toploop.preprocess_phrase
 - (extractor built) 
 - ok
 - 
@@ -161,8 +159,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
@@ -600,6 +598,7 @@ The following actions will be performed:
 - 
 - ./setup.exe -build 
 - ocamlfind ocamlopt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa -linkpkg myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
+- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bytes -modules src/core/lwt_condition.mli > src/core/lwt_condition.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bytes -modules src/core/lwt.mli > src/core/lwt.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bytes -modules src/core/lwt_sequence.mli > src/core/lwt_sequence.mli.depends
@@ -638,7 +637,6 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package bytes -I src/core -o src/core/lwt_pool.cmo src/core/lwt_pool.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package bytes -I src/core -o src/core/lwt_sequence.cmo src/core/lwt_sequence.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package bytes -I src/core -o src/core/lwt_stream.cmo src/core/lwt_stream.ml
-- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package bytes -I src/core -o src/core/lwt_switch.cmo src/core/lwt_switch.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package bytes -I src/core -o src/core/lwt_pqueue.cmo src/core/lwt_pqueue.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -a src/core/lwt_sequence.cmo src/core/lwt.cmo src/core/lwt_mutex.cmo src/core/lwt_condition.cmo src/core/lwt_list.cmo src/core/lwt_mvar.cmo src/core/lwt_pool.cmo src/core/lwt_stream.cmo src/core/lwt_switch.cmo src/core/lwt_pqueue.cmo -o src/core/lwt.cma
@@ -1082,6 +1080,14 @@ The following actions will be performed:
 - ocamlfind ocamlc -a -I /usr/lib/ocaml/camlp4 -I /home/opam/.opam/system/lib/type_conv  -o idl.cma p4_rpc.cmo p4_idl.cmo
 - ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o xmlrpc.cmi xmlrpc.mli
 - ocamlfind ocamlc -annot -g -package xmlm,lwt -c -o xmlrpc.cmo xmlrpc.ml
+- ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o xmlrpc.o xmlrpc.ml
+- ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o jsonrpc.cmi jsonrpc.mli
+- ocamlfind ocamlc -annot -g -package xmlm,lwt -c -o jsonrpc.cmo jsonrpc.ml
+- ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o jsonrpc.o jsonrpc.ml
+- ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o rpc_client.cmi rpc_client.mli
+- ocamlfind ocamlc -annot -g -package xmlm,lwt -c -o rpc_client.cmo rpc_client.ml
+- ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o rpc_client.o rpc_client.ml
+- make[1]: Leaving directory `/home/opam/.opam/system/build/rpc.1.5.1/lib'
 - File "p4_idl.ml", line 112, characters 5-143:
 - Warning 8: this pattern-matching is not exhaustive.
 - Here is an example of a value that is not matched:
@@ -1094,14 +1100,6 @@ The following actions will be performed:
 - TySta (_, _, _)|TyVrnEq (_, _)|TyVrnSup (_, _)|TyVrnInf (_, _)|
 - TyVrnInfSup (_, _, _)|TyAmp (_, _, _)|TyOfAmp (_, _, _)|TyPkg (_, _)|
 - TyAnt (_, _))
-- ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o xmlrpc.o xmlrpc.ml
-- ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o jsonrpc.cmi jsonrpc.mli
-- ocamlfind ocamlc -annot -g -package xmlm,lwt -c -o jsonrpc.cmo jsonrpc.ml
-- ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o jsonrpc.o jsonrpc.ml
-- ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o rpc_client.cmi rpc_client.mli
-- ocamlfind ocamlc -annot -g -package xmlm,lwt -c -o rpc_client.cmo rpc_client.ml
-- ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o rpc_client.o rpc_client.ml
-- make[1]: Leaving directory `/home/opam/.opam/system/build/rpc.1.5.1/lib'
 [rpc: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/rpc.1.5.1)
 - cd lib && make install
