@@ -1,7 +1,7 @@
 + uname -m
+# Detecting depexts using flags: x86_64 linux debian
 + uname -s
 + lsb_release -i -s
-# Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=sqlgg
 # The following system packages are needed:
 #  - m4
@@ -12,19 +12,19 @@ Not running as root, the following command will be run through "sudo":
 Hit http://security.debian.org stable/updates InRelease
 Ign http://download.opensuse.org  InRelease
 Hit http://httpredir.debian.org stable InRelease
-Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
+Hit http://httpredir.debian.org stable-updates InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Get:2 http://security.debian.org stable/updates/main amd64 Packages [88.8 kB]
-Get:3 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
-Get:4 http://download.opensuse.org  Packages [5783 B]
-Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9243 kB in 3s (2354 kB/s)
+Get:1 http://security.debian.org stable/updates/main amd64 Packages [88.8 kB]
+Get:2 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
+Get:3 http://download.opensuse.org  Packages [5783 B]
+Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
+Fetched 9118 kB in 4s (1908 kB/s)
 Reading package lists...
 # OS package update successful
-+ sudo apt-get install -qq -yy m4
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
++ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind     1.5.5                                 [required by sqlgg]
@@ -42,24 +42,24 @@ The following actions will be performed:
 [camlp4: from default] Command started
 [deriving: from default] Command started
 [extlib-compat: from default] Command started
+[deriving: from default] Command started
+[default] http://opam-archive:8080/archives/deriving.0.7+opam.tar.gz downloaded
+[menhir: from default] Command started
 [camlp4: from default] Command started
 [extlib-compat: from default] Command started
-[deriving: from default] Command started
 [default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [menhir: from default] Command started
 [default] http://opam-archive:8080/archives/extlib-compat.1.6.1+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/deriving.0.7+opam.tar.gz downloaded
 [optcomp: from default] Command started
-[menhir: from default] Command started
 [default] http://opam-archive:8080/archives/menhir.20141215+opam.tar.gz downloaded
 [ounit: from default] Command started
 [ocamlfind: from default] Command started
 [optcomp: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [sqlgg: from default] Command started
-[ounit: from default] Command started
 [default] http://opam-archive:8080/archives/optcomp.1.6+opam.tar.gz downloaded
+[ounit: from default] Command started
 [default] http://opam-archive:8080/archives/ounit.2.0.0+opam.tar.gz downloaded
 [sqlgg: from default] Command started
 [default] http://opam-archive:8080/archives/sqlgg.0.3.0+opam.tar.gz downloaded
@@ -142,6 +142,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_metascanner.ml
 - ocamlc -I +compiler-libs -c fl_topo.mli
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
+- ocamlc -I +compiler-libs -c fl_package_base.mli
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -187,8 +189,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
@@ -200,11 +200,11 @@ The following actions will be performed:
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -254,6 +254,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -298,7 +299,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -1567,7 +1567,6 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4/Struct -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Struct/DynAst.cmo camlp4/Camlp4/Struct/DynAst.ml
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4/Struct/Token.ml > camlp4/Camlp4/Struct/Token.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4/Struct/Grammar/Delete.ml > camlp4/Camlp4/Struct/Grammar/Delete.ml.depends
-- + echo camlp4/Camlp4.cmo camlp4/Camlp4Top.cmo camlp4/camlp4prof.byte camlp4/mkcamlp4.byte camlp4/camlp4.byte camlp4/camlp4fulllib.cma camlp4/camlp4boot.byte camlp4/camlp4boot.cma camlp4/camlp4r.byte camlp4/camlp4r.cma camlp4/camlp4rf.byte camlp4/camlp4rf.cma camlp4/camlp4o.byte camlp4/camlp4o.cma camlp4/camlp4of.byte camlp4/camlp4of.cma camlp4/camlp4oof.byte camlp4/camlp4oof.cma camlp4/camlp4orf.byte camlp4/camlp4orf.cma camlp4/Camlp4Parsers/Camlp4AstLoader.cmo camlp4/Camlp4Parsers/Camlp4DebugParser.cmo camlp4/Camlp4Parsers/Camlp4GrammarParser.cmo camlp4/Camlp4Parsers/Camlp4ListComprehension.cmo camlp4/Camlp4Parsers/Camlp4MacroParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4OCamlParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmo camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmo camlp4/Camlp4Printers/Camlp4AstDumper.cmo camlp4/Camlp4Printers/Camlp4AutoPrinter.cmo camlp4/Camlp4Printers/Camlp4NullDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlPrinter.cmo camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.cmo camlp4/Camlp4Filters/Camlp4AstLifter.cmo camlp4/Camlp4Filters/Camlp4ExceptionTracer.cmo camlp4/Camlp4Filters/Camlp4FoldGenerator.cmo camlp4/Camlp4Filters/Camlp4LocationStripper.cmo camlp4/Camlp4Filters/Camlp4MapGenerator.cmo camlp4/Camlp4Filters/Camlp4MetaGenerator.cmo camlp4/Camlp4Filters/Camlp4Profiler.cmo camlp4/Camlp4Filters/Camlp4TrashRemover.cmo
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4/Struct/Grammar/Parser.mli > camlp4/Camlp4/Struct/Grammar/Parser.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4/Struct/Grammar/Structure.ml > camlp4/Camlp4/Struct/Grammar/Structure.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4/Struct/Grammar -I camlp4/Camlp4/Struct -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Struct/Grammar/Structure.cmo camlp4/Camlp4/Struct/Grammar/Structure.ml
@@ -1598,6 +1597,7 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4/Struct/Grammar -I camlp4/Camlp4/Struct -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Struct/Grammar/Fold.cmo camlp4/Camlp4/Struct/Grammar/Fold.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4/Struct/Grammar -I camlp4/Camlp4/Struct -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Struct/Grammar/Parser.cmo camlp4/Camlp4/Struct/Grammar/Parser.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4/Struct/Grammar -I camlp4/Camlp4/Struct -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Struct/Grammar/Print.cmo camlp4/Camlp4/Struct/Grammar/Print.ml
+- + echo camlp4/Camlp4.cmo camlp4/Camlp4Top.cmo camlp4/camlp4prof.byte camlp4/mkcamlp4.byte camlp4/camlp4.byte camlp4/camlp4fulllib.cma camlp4/camlp4boot.byte camlp4/camlp4boot.cma camlp4/camlp4r.byte camlp4/camlp4r.cma camlp4/camlp4rf.byte camlp4/camlp4rf.cma camlp4/camlp4o.byte camlp4/camlp4o.cma camlp4/camlp4of.byte camlp4/camlp4of.cma camlp4/camlp4oof.byte camlp4/camlp4oof.cma camlp4/camlp4orf.byte camlp4/camlp4orf.cma camlp4/Camlp4Parsers/Camlp4AstLoader.cmo camlp4/Camlp4Parsers/Camlp4DebugParser.cmo camlp4/Camlp4Parsers/Camlp4GrammarParser.cmo camlp4/Camlp4Parsers/Camlp4ListComprehension.cmo camlp4/Camlp4Parsers/Camlp4MacroParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4OCamlParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmo camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmo camlp4/Camlp4Printers/Camlp4AstDumper.cmo camlp4/Camlp4Printers/Camlp4AutoPrinter.cmo camlp4/Camlp4Printers/Camlp4NullDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlPrinter.cmo camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.cmo camlp4/Camlp4Filters/Camlp4AstLifter.cmo camlp4/Camlp4Filters/Camlp4ExceptionTracer.cmo camlp4/Camlp4Filters/Camlp4FoldGenerator.cmo camlp4/Camlp4Filters/Camlp4LocationStripper.cmo camlp4/Camlp4Filters/Camlp4MapGenerator.cmo camlp4/Camlp4Filters/Camlp4MetaGenerator.cmo camlp4/Camlp4Filters/Camlp4Profiler.cmo camlp4/Camlp4Filters/Camlp4TrashRemover.cmo
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4/Struct/Grammar -I camlp4/Camlp4/Struct -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Struct/Grammar/Static.cmo camlp4/Camlp4/Struct/Grammar/Static.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4/Struct -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Struct/AstFilters.cmo camlp4/Camlp4/Struct/AstFilters.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4/Struct -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Struct/Camlp4Ast.cmo camlp4/Camlp4/Struct/Camlp4Ast.ml
@@ -2481,16 +2481,16 @@ The following actions will be performed:
 - Use Bytes.create instead.
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -I +camlp4 -I +camlp4/Camlp4Parsers -I +camlp4/Camlp4Printers -I +camlp4/Camlp4Filters -g -I src -package camlp4 -package camlp4.lib -syntax camlp4o -package camlp4.quotations.o -I src -o src/optcomp_o.cmx src/optcomp_o.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -I +camlp4 camlp4fulllib.cmxa -g -linkpkg -package camlp4 -package camlp4.lib -package camlp4.quotations.o src/optcomp.cmxa src/optcomp.cmx src/optcomp_o.cmx -o src/optcomp_o.native
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package camlp4 -package camlp4.lib -syntax camlp4o -package camlp4.quotations.o -modules src/optcomp_r.ml > src/optcomp_r.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -I +camlp4 -I +camlp4/Camlp4Parsers -I +camlp4/Camlp4Printers -I +camlp4/Camlp4Filters -g -I src -package camlp4 -package camlp4.lib -syntax camlp4o -package camlp4.quotations.o -I src -o src/optcomp_r.cmo src/optcomp_r.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -I +camlp4 -I +camlp4/Camlp4Parsers -I +camlp4/Camlp4Printers -I +camlp4/Camlp4Filters -g -I src -package camlp4 -package camlp4.lib -syntax camlp4o -package camlp4.quotations.o -I src -o src/optcomp_r.cmx src/optcomp_r.ml
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -I +camlp4 camlp4fulllib.cmxa -g -linkpkg -package camlp4 -package camlp4.lib -package camlp4.quotations.o src/optcomp.cmxa src/optcomp.cmx src/optcomp_r.cmx -o src/optcomp_r.native
 - File "setup.ml", line 252, characters 8-26:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
 - File "setup.ml", line 2507, characters 6-24:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package camlp4 -package camlp4.lib -syntax camlp4o -package camlp4.quotations.o -modules src/optcomp_r.ml > src/optcomp_r.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -I +camlp4 -I +camlp4/Camlp4Parsers -I +camlp4/Camlp4Printers -I +camlp4/Camlp4Filters -g -I src -package camlp4 -package camlp4.lib -syntax camlp4o -package camlp4.quotations.o -I src -o src/optcomp_r.cmo src/optcomp_r.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -c -I +camlp4 -I +camlp4/Camlp4Parsers -I +camlp4/Camlp4Printers -I +camlp4/Camlp4Filters -g -I src -package camlp4 -package camlp4.lib -syntax camlp4o -package camlp4.quotations.o -I src -o src/optcomp_r.cmx src/optcomp_r.ml
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -I +camlp4 camlp4fulllib.cmxa -g -linkpkg -package camlp4 -package camlp4.lib -package camlp4.quotations.o src/optcomp.cmxa src/optcomp.cmx src/optcomp_r.cmx -o src/optcomp_r.native
 [optcomp: make install] Command started
 + make "install" (CWD=/home/opam/.opam/4.02.1/build/optcomp.1.6)
 - ./setup.exe -install 
@@ -2578,12 +2578,6 @@ The following actions will be performed:
 + make  (CWD=/home/opam/.opam/4.02.1/build/deriving.0.7)
 - ocamlfind ocamlopt -o setup.exe setup.ml || ocamlfind ocamlc -o setup.exe setup.ml || true
 - rm -f setup.cmi setup.cmo setup.cmx setup.o
-- File "setup.ml", line 246, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "setup.ml", line 2501, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
 - ./setup.exe -configure 
 - 
 - Configuration: 
@@ -2648,12 +2642,18 @@ The following actions will be performed:
 - pkg_bytes: ........................................... /home/opam/.opam/4.02.1/lib/bytes
 - ocamldoc: ............................................ /home/opam/.opam/4.02.1/bin/ocamldoc
 - 
+- File "setup.ml", line 246, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "setup.ml", line 2501, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
 - ./setup.exe -build 
-- W: Cannot find source file matching module 'pa_deriving_common' in library pa_deriving_common
 - ocamlfind ocamlopt unix.cmxa -I /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa -linkpkg myocamlbuild.ml /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/id.ml > syntax/common/id.ml.depends
-- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/utils.mli > syntax/common/utils.mli.depends
+- W: Cannot find source file matching module 'pa_deriving_common' in library pa_deriving_common
 - ocamlfind: Package `wikidoc' not found
+- /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/utils.mli > syntax/common/utils.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/common -o syntax/common/utils.cmi syntax/common/utils.mli
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/utils.ml > syntax/common/utils.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package camlp4.quotations.r -syntax camlp4o -package optcomp -package camlp4.extend -package camlp4 -package bytes -modules syntax/common/type.mli > syntax/common/type.mli.depends
@@ -2962,10 +2962,10 @@ The following actions will be performed:
 [sqlgg: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-build" (CWD=/home/opam/.opam/4.02.1/build/sqlgg.0.3.0)
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt unix.cmxa -I /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
-- W: Cannot find source file matching module 'sqlgg' in library sqlgg
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -modules lib/props.ml > lib/props.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -modules lib/sql.ml > lib/sql.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -modules lib/prelude.ml > lib/prelude.ml.depends
+- W: Cannot find source file matching module 'sqlgg' in library sqlgg
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -w A -w e -w -44 -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -I lib -o lib/prelude.cmo lib/prelude.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamldep -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -modules lib/stmt.ml > lib/stmt.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -c -g -annot -bin-annot -w A -w e -w -44 -package deriving -syntax camlp4o -package deriving.syntax -package extlib -syntax camlp4o -I lib -o lib/props.cmo lib/props.ml
