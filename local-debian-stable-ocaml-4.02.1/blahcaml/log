@@ -5,21 +5,20 @@
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=blahcaml
 # The following system packages are needed:
 #  - m4
-+ sudo apt-get update
 Not running as root, system installation will be done through "sudo"
-Hit http://http.debian.net stable Release.gpg
++ sudo apt-get update
 Hit http://download.opensuse.org  Release.gpg
-Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
-Hit http://http.debian.net stable Release
+Hit http://http.debian.net stable Release.gpg
+Hit http://http.debian.net stable-updates Release.gpg
 Hit http://download.opensuse.org  Release
-Get:2 http://http.debian.net stable-updates Release [124 kB]
-Hit http://http.debian.net stable/main amd64 Packages
+Hit http://http.debian.net stable Release
+Hit http://http.debian.net stable-updates Release
 Hit http://download.opensuse.org  Packages
-Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
+Hit http://http.debian.net stable/main amd64 Packages
+Hit http://http.debian.net stable-updates/main amd64 Packages
 Hit http://security.debian.org stable/updates Release.gpg
 Hit http://security.debian.org stable/updates Release
 Hit http://security.debian.org stable/updates/main amd64 Packages
-Fetched 129 kB in 1s (104 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
@@ -40,23 +39,23 @@ The following actions will be performed:
 [camlp4: from default] Command started
 [ocamlfind: from default] Command started
 [blahcaml: from default] Command started
-[camlp4: from default] Command started
-[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/blahcaml.2.1+opam.tar.gz downloaded
 [ocamlnet: from default] Command started
-[default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
-[pxp: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[ulex: from default] Command started
-[ulex: from default] Command started
 [pxp: from default] Command started
-[default] http://opam-archive:8080/archives/ulex.1.1+opam.tar.gz downloaded
+[camlp4: from default] Command started
+[default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
+[ulex: from default] Command started
+[ocamlnet: from default] Command started
+[pxp: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlnet.4.0.2+opam.tar.gz downloaded
 [xstrp4: from default] Command started
+[ulex: from default] Command started
 [default] http://opam-archive:8080/archives/pxp.1.2.3+opam.tar.gz downloaded
 [xstrp4: from default] Command started
-[ocamlnet: from default] Command started
+[default] http://opam-archive:8080/archives/ulex.1.1+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/xstrp4.1.8+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/ocamlnet.4.0.2+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -191,6 +190,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -199,8 +200,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -2518,33 +2517,6 @@ The following actions will be performed:
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS" -w -3-25 -c -p -o `basename netmech_digest.cmx .cmx`.p.cmx  netmech_digest.ml
 - ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS" -w -3-25 -c  netmech_digest_sasl.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS" -w -3-25 -c -p -o `basename netmech_digest_sasl.cmx .cmx`.p.cmx  netmech_digest_sasl.ml
-- make[1]: Circular netsys_signal.cmx <- netlog.cmx dependency dropped.
-- make[1]: Circular netsys_posix.cmx <- netlog.cmx dependency dropped.
-- File "netsys.ml", line 271, characters 6-39:
-- Warning 26: unused variable addr.
-- File "netsys.ml", line 271, characters 6-39:
-- Warning 26: unused variable addr.
-- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c  -O -g  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'netsys_c_gprof.c'
-- File "nethtml.ml", line 620, characters 4-16:
-- Warning 21: this statement never returns (or has an unsound type.)
-- File "nethtml.ml", line 620, characters 4-16:
-- Warning 21: this statement never returns (or has an unsound type.)
-- File "netmime_channels.ml", line 137, characters 33-65:
-- Warning 18: this ground coercion is not principal.
-- File "netmime_channels.ml", line 137, characters 33-65:
-- Warning 18: this ground coercion is not principal.
-- File "netgssapi_auth.ml", line 100, characters 8-17:
-- Warning 26: unused variable mech_type.
-- File "netgssapi_auth.ml", line 100, characters 8-17:
-- Warning 26: unused variable mech_type.
-- File "netmech_scram_sasl.ml", line 76, characters 14-15:
-- Warning 11: this match case is unused.
-- File "netmech_scram_sasl.ml", line 76, characters 14-15:
-- Warning 11: this match case is unused.
-- File "netmech_crammd5_sasl.ml", line 92, characters 10-14:
-- Warning 26: unused variable resp.
-- File "netmech_crammd5_sasl.ml", line 92, characters 10-14:
-- Warning 26: unused variable resp.
 - ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS" -w -3-25 -c  netmech_digest_http.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS" -w -3-25 -c -p -o `basename netmech_digest_http.cmx .cmx`.p.cmx  netmech_digest_http.ml
 - ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS" -w -3-25 -c  netmech_gs2_sasl.ml
@@ -2710,8 +2682,6 @@ The following actions will be performed:
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netstring -package "unix"  -w -3-25 -c -p -o `basename rename.cmx .cmx`.p.cmx  rename.ml
 - ocamlfind ocamlopt -g  -I ../../src/netstring -package "unix"  -w -3-25 -c  generate.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netstring -package "unix"  -w -3-25 -c -p -o `basename generate.cmx .cmx`.p.cmx  generate.ml
-- File "generate.ml", line 612, characters 6-22:
-- Warning 26: unused variable get_type_of_decl.
 - ocamlfind ocamlopt -g  -I ../../src/netstring -package "unix"  -w -3-25 -c  direct.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netstring -package "unix"  -w -3-25 -c -p -o `basename direct.cmx .cmx`.p.cmx  direct.ml
 - if [ "X" = "X" ]; then \
@@ -2734,8 +2704,6 @@ The following actions will be performed:
 - make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc'
 - make[1]: `depend' is up to date.
 - make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc'
-- File "generate.ml", line 612, characters 6-22:
-- Warning 26: unused variable get_type_of_decl.
 - make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc'
 - ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netsys -I ../../src/netstring -I ../../src/netgssapi -package "unix"  -w -3-25 -c  rpc.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netsys -I ../../src/netstring -I ../../src/netgssapi -package "unix"  -w -3-25 -c -p -o `basename rpc.cmx .cmx`.p.cmx  rpc.ml
@@ -2771,14 +2739,6 @@ The following actions will be performed:
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netsys -I ../../src/netstring -I ../../src/netgssapi -package "unix"  -w -3-25 -c -p -o `basename rpc_auth_gssapi_aux.cmx .cmx`.p.cmx  rpc_auth_gssapi_aux.ml
 - ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netsys -I ../../src/netstring -I ../../src/netgssapi -package "unix"  -w -3-25 -c  rpc_auth_gssapi.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netsys -I ../../src/netstring -I ../../src/netgssapi -package "unix"  -w -3-25 -c -p -o `basename rpc_auth_gssapi.cmx .cmx`.p.cmx  rpc_auth_gssapi.ml
-- File "rpc_auth_gssapi.ml", line 1072, characters 10-19:
-- Warning 26: unused variable get_props.
-- File "rpc_auth_gssapi.ml", line 1078, characters 12-16:
-- Warning 26: unused variable prog.
-- File "rpc_auth_gssapi.ml", line 1072, characters 10-19:
-- Warning 26: unused variable get_props.
-- File "rpc_auth_gssapi.ml", line 1078, characters 12-16:
-- Warning 26: unused variable prog.
 - ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netsys -I ../../src/netstring -I ../../src/netgssapi -package "unix"  -w -3-25 -c  rpc_proxy.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netsys -I ../../src/netstring -I ../../src/netgssapi -package "unix"  -w -3-25 -c -p -o `basename rpc_proxy.cmx .cmx`.p.cmx  rpc_proxy.ml
 - if [ "X" = "X" ]; then \
@@ -2926,6 +2886,45 @@ The following actions will be performed:
 - ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -package "unix"  -w -3-25 -c  netplex_kit.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -package "unix"  -w -3-25 -c -p -o `basename netplex_kit.cmx .cmx`.p.cmx  netplex_kit.ml
 - ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -package "unix"  -w -3-25 -c  netplex_controller.ml
+- make[1]: Circular netsys_signal.cmx <- netlog.cmx dependency dropped.
+- make[1]: Circular netsys_posix.cmx <- netlog.cmx dependency dropped.
+- File "netsys.ml", line 271, characters 6-39:
+- Warning 26: unused variable addr.
+- File "netsys.ml", line 271, characters 6-39:
+- Warning 26: unused variable addr.
+- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c  -O -g  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'netsys_c_gprof.c'
+- File "nethtml.ml", line 620, characters 4-16:
+- Warning 21: this statement never returns (or has an unsound type.)
+- File "nethtml.ml", line 620, characters 4-16:
+- Warning 21: this statement never returns (or has an unsound type.)
+- File "netmime_channels.ml", line 137, characters 33-65:
+- Warning 18: this ground coercion is not principal.
+- File "netmime_channels.ml", line 137, characters 33-65:
+- Warning 18: this ground coercion is not principal.
+- File "netgssapi_auth.ml", line 100, characters 8-17:
+- Warning 26: unused variable mech_type.
+- File "netgssapi_auth.ml", line 100, characters 8-17:
+- Warning 26: unused variable mech_type.
+- File "netmech_scram_sasl.ml", line 76, characters 14-15:
+- Warning 11: this match case is unused.
+- File "netmech_scram_sasl.ml", line 76, characters 14-15:
+- Warning 11: this match case is unused.
+- File "netmech_crammd5_sasl.ml", line 92, characters 10-14:
+- Warning 26: unused variable resp.
+- File "netmech_crammd5_sasl.ml", line 92, characters 10-14:
+- Warning 26: unused variable resp.
+- File "generate.ml", line 612, characters 6-22:
+- Warning 26: unused variable get_type_of_decl.
+- File "generate.ml", line 612, characters 6-22:
+- Warning 26: unused variable get_type_of_decl.
+- File "rpc_auth_gssapi.ml", line 1072, characters 10-19:
+- Warning 26: unused variable get_props.
+- File "rpc_auth_gssapi.ml", line 1078, characters 12-16:
+- Warning 26: unused variable prog.
+- File "rpc_auth_gssapi.ml", line 1072, characters 10-19:
+- Warning 26: unused variable get_props.
+- File "rpc_auth_gssapi.ml", line 1078, characters 12-16:
+- Warning 26: unused variable prog.
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -package "unix"  -w -3-25 -c -p -o `basename netplex_controller.cmx .cmx`.p.cmx  netplex_controller.ml
 - ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -package "unix"  -w -3-25 -c  netplex_config.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/rpc -I ../../src/netstring -I ../../src/netsys -package "unix"  -w -3-25 -c -p -o `basename netplex_config.cmx .cmx`.p.cmx  netplex_config.ml
@@ -3069,10 +3068,10 @@ The following actions will be performed:
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c -p -o `basename nethttpd_services.cmx .cmx`.p.cmx  nethttpd_services.ml
 - File "nethttpd_services.ml", line 1118, characters 4-5:
 - Warning 11: this match case is unused.
-- File "nethttpd_services.ml", line 1118, characters 4-5:
-- Warning 11: this match case is unused.
 - ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c  nethttpd_plex.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c -p -o `basename nethttpd_plex.cmx .cmx`.p.cmx  nethttpd_plex.ml
+- File "nethttpd_services.ml", line 1118, characters 4-5:
+- Warning 11: this match case is unused.
 - if [ "X" = "X" ]; then \
 - 		ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -a -o nethttpd.cmxa  nethttpd_types.cmx nethttpd_util.cmx nethttpd_kernel.cmx nethttpd_reactor.cmx nethttpd_engine.cmx nethttpd_services.cmx nethttpd_plex.cmx; \
 - 	else \
@@ -3120,83 +3119,6 @@ The following actions will be performed:
 - make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netunidata'
 - make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netunidata'
 - make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/equeue'
-- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/equeue'
-- files=`../../tools/collect_files *.mli *.cmi *.cma *.cmxa *.a dll* META unixqueue_mt.cmo unixqueue_mt.cmx unixqueue_mt.p.cmx unixqueue_mt.o unixqueue_mt.p.o` && \
-- 	ocamlfind install equeue $files
-- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/equeue'
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/equeue'
-- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/shell'
-- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/shell'
-- files=`../../tools/collect_files *.mli *.cmi *.cma *.cmxa *.a dll* META ` && \
-- 	ocamlfind install shell $files
-- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/shell'
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/shell'
-- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc-generator'
-- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc-generator'
-- files=`../../tools/collect_files *.mli *.cmi *.cma *.cmxa *.a dll* META rpcgen-packlist` && \
-- 	ocamlfind install rpc-generator $files
-- mkdir -p "/home/opam/.opam/4.02.1/bin"
-- cp ocamlrpcgen "/home/opam/.opam/4.02.1/bin"
-- Installed ocamlrpcgen into /home/opam/.opam/4.02.1/bin
-- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc-generator'
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc-generator'
-- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc'
-- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc'
-- files=`../../tools/collect_files *.mli *.cmi *.cma *.cmxa *.a dll* META ` && \
-- 	ocamlfind install rpc $files
-- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc'
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc'
-- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc-auth-local'
-- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc-auth-local'
-- files=`../../tools/collect_files *.mli *.cmi *.cma *.cmxa *.a dll* META ` && \
-- 	ocamlfind install rpc-auth-local $files
-- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc-auth-local'
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc-auth-local'
-- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netclient'
-- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netclient'
-- files=`../../tools/collect_files *.mli *.cmi *.cma *.cmxa *.a dll* META ` && \
-- 	ocamlfind install netclient $files
-- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netclient'
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netclient'
-- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netcgi2'
-- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netcgi2'
-- files=`../../tools/collect_files *.mli *.cmi *.cma *.cmxa *.a dll* META ` && \
-- 	ocamlfind install netcgi2 $files
-- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netcgi2'
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netcgi2'
-- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netplex'
-- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netplex'
-- files=`../../tools/collect_files *.mli *.cmi *.cma *.cmxa *.a dll* META netplex-packlist netplex_mt.cmo netplex_mt.cmx netplex_mt.o netplex_mt.p.cmx netplex_mt.p.o` && \
-- 	ocamlfind install netplex $files
-- mkdir -p "/home/opam/.opam/4.02.1/bin"
-- cp netplex-admin "/home/opam/.opam/4.02.1/bin"
-- Installed netplex-admin into /home/opam/.opam/4.02.1/bin
-- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netplex'
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netplex'
-- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netcgi2-plex'
-- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netcgi2-plex'
-- files=`../../tools/collect_files *.mli *.cmi *.cma *.cmxa *.a dll* META ` && \
-- 	ocamlfind install netcgi2-plex $files
-- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netcgi2-plex'
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netcgi2-plex'
-- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netcamlbox'
-- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netcamlbox'
-- files=`../../tools/collect_files *.mli *.cmi *.cma *.cmxa *.a dll* META ` && \
-- 	ocamlfind install netcamlbox $files
-- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netcamlbox'
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netcamlbox'
-- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netmulticore'
-- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netmulticore'
-- files=`../../tools/collect_files *.mli *.cmi *.cma *.cmxa *.a dll* META ` && \
-- 	ocamlfind install netmulticore $files
-- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netmulticore'
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netmulticore'
-- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/nethttpd'
-- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/nethttpd'
-- files=`../../tools/collect_files *.mli *.cmi *.cma *.cmxa *.a dll* META LICENSE` && \
-- 	ocamlfind install nethttpd $files
-- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/nethttpd'
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/nethttpd'
 - Installed /home/opam/.opam/4.02.1/lib/netsys/netsys_c_outofheap.o
 - Installed /home/opam/.opam/4.02.1/lib/netsys/netsys_c_event.h
 - Installed /home/opam/.opam/4.02.1/lib/netsys/netsys_c_gprof.o
@@ -3465,6 +3387,83 @@ The following actions will be performed:
 - Installed /home/opam/.opam/4.02.1/lib/netunidata/netmappings_iso.cmi
 - Installed /home/opam/.opam/4.02.1/lib/netunidata/netunidata.mli
 - Installed /home/opam/.opam/4.02.1/lib/netunidata/META
+- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/equeue'
+- files=`../../tools/collect_files *.mli *.cmi *.cma *.cmxa *.a dll* META unixqueue_mt.cmo unixqueue_mt.cmx unixqueue_mt.p.cmx unixqueue_mt.o unixqueue_mt.p.o` && \
+- 	ocamlfind install equeue $files
+- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/equeue'
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/equeue'
+- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/shell'
+- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/shell'
+- files=`../../tools/collect_files *.mli *.cmi *.cma *.cmxa *.a dll* META ` && \
+- 	ocamlfind install shell $files
+- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/shell'
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/shell'
+- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc-generator'
+- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc-generator'
+- files=`../../tools/collect_files *.mli *.cmi *.cma *.cmxa *.a dll* META rpcgen-packlist` && \
+- 	ocamlfind install rpc-generator $files
+- mkdir -p "/home/opam/.opam/4.02.1/bin"
+- cp ocamlrpcgen "/home/opam/.opam/4.02.1/bin"
+- Installed ocamlrpcgen into /home/opam/.opam/4.02.1/bin
+- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc-generator'
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc-generator'
+- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc'
+- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc'
+- files=`../../tools/collect_files *.mli *.cmi *.cma *.cmxa *.a dll* META ` && \
+- 	ocamlfind install rpc $files
+- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc'
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc'
+- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc-auth-local'
+- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc-auth-local'
+- files=`../../tools/collect_files *.mli *.cmi *.cma *.cmxa *.a dll* META ` && \
+- 	ocamlfind install rpc-auth-local $files
+- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc-auth-local'
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/rpc-auth-local'
+- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netclient'
+- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netclient'
+- files=`../../tools/collect_files *.mli *.cmi *.cma *.cmxa *.a dll* META ` && \
+- 	ocamlfind install netclient $files
+- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netclient'
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netclient'
+- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netcgi2'
+- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netcgi2'
+- files=`../../tools/collect_files *.mli *.cmi *.cma *.cmxa *.a dll* META ` && \
+- 	ocamlfind install netcgi2 $files
+- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netcgi2'
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netcgi2'
+- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netplex'
+- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netplex'
+- files=`../../tools/collect_files *.mli *.cmi *.cma *.cmxa *.a dll* META netplex-packlist netplex_mt.cmo netplex_mt.cmx netplex_mt.o netplex_mt.p.cmx netplex_mt.p.o` && \
+- 	ocamlfind install netplex $files
+- mkdir -p "/home/opam/.opam/4.02.1/bin"
+- cp netplex-admin "/home/opam/.opam/4.02.1/bin"
+- Installed netplex-admin into /home/opam/.opam/4.02.1/bin
+- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netplex'
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netplex'
+- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netcgi2-plex'
+- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netcgi2-plex'
+- files=`../../tools/collect_files *.mli *.cmi *.cma *.cmxa *.a dll* META ` && \
+- 	ocamlfind install netcgi2-plex $files
+- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netcgi2-plex'
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netcgi2-plex'
+- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netcamlbox'
+- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netcamlbox'
+- files=`../../tools/collect_files *.mli *.cmi *.cma *.cmxa *.a dll* META ` && \
+- 	ocamlfind install netcamlbox $files
+- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netcamlbox'
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netcamlbox'
+- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netmulticore'
+- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netmulticore'
+- files=`../../tools/collect_files *.mli *.cmi *.cma *.cmxa *.a dll* META ` && \
+- 	ocamlfind install netmulticore $files
+- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netmulticore'
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/netmulticore'
+- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/nethttpd'
+- make[2]: Entering directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/nethttpd'
+- files=`../../tools/collect_files *.mli *.cmi *.cma *.cmxa *.a dll* META LICENSE` && \
+- 	ocamlfind install nethttpd $files
+- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/nethttpd'
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ocamlnet.4.0.2/src/nethttpd'
 - Installed /home/opam/.opam/4.02.1/lib/equeue/equeue.p.a
 - Installed /home/opam/.opam/4.02.1/lib/equeue/equeue.a
 - Installed /home/opam/.opam/4.02.1/lib/equeue/equeue.p.cmxa
@@ -3921,6 +3920,15 @@ The following actions will be performed:
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
+- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_reader.ml
+- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_dfa.mli
+- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_dfa.ml
+- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_entity.ml
+- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_dtd.mli
+- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_dtd.ml
+- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_entity_manager.ml
+- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_types.mli
+- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_types.ml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 - File "pxp_aux.ml", line 28, characters 32-34:
 - Warning 3: deprecated: Pervasives.or
@@ -3949,18 +3957,6 @@ The following actions will be performed:
 - File "pxp_aux.ml", line 29, characters 52-53:
 - Warning 3: deprecated: Pervasives.&
 - Use (&&) instead.
-- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_reader.ml
-- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_dfa.mli
-- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_dfa.ml
-- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_entity.ml
-- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_dtd.mli
-- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_dtd.ml
-- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_entity_manager.ml
-- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_types.mli
-- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_types.ml
-- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_event.mli
-- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_event.ml
-- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_document.mli
 - File "pxp_aux.ml", line 369, characters 10-23:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -4012,6 +4008,9 @@ The following actions will be performed:
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
+- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_event.mli
+- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_event.ml
+- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_document.mli
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
@@ -4039,23 +4038,33 @@ The following actions will be performed:
 - Warning 21: this statement never returns (or has an unsound type.)
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
+- File "pxp_tree_parser.ml", line 183, characters 13-26:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_ev_parser.mli
 - ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_ev_parser.ml
 - ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_dtd_parser.mli
 - ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_dtd_parser.ml
 - ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_yacc.mli
-- File "pxp_tree_parser.ml", line 183, characters 13-26:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 - ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_yacc.ml
 - ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_marshal.mli
-- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_marshal.ml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
+- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_marshal.ml
+- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_codewriter.mli
+- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_codewriter.ml
+- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -o pxp_engine.cma -a pxp_lexing.cmo pxp_core_types.cmo pxp_lexer_types.cmo pxp_lex_aux.cmo pxp_lexers.cmo pxp_lib.cmo pxp_aux.cmo pxp_reader.cmo pxp_dfa.cmo pxp_entity.cmo pxp_dtd.cmo pxp_entity_manager.cmo pxp_types.cmo pxp_event.cmo pxp_document.cmo pxp_core_parser.cmo pxp_tree_parser.cmo pxp_ev_parser.cmo pxp_dtd_parser.cmo pxp_yacc.cmo pxp_marshal.cmo pxp_codewriter.cmo
+- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_top.mli
+- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_top.ml
+- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/pxp.1.2.3/src/pxp-engine'
+- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/pxp.1.2.3/src/pxp-engine'
+- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/pxp.1.2.3/src/pxp-pp'
+- cp pxp_pp.ml.310 pxp_pp.ml
+- ocamlfind ocamlc -g -syntax camlp4o -ppopt -DOCAML_NEW_LOC -ppopt -loc -ppopt loc -package "netstring,ulex,camlp4.quotations,camlp4.macro" -c pxp_pp.ml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 - File "pxp_marshal.ml", line 136, characters 22-34:
@@ -4073,16 +4082,6 @@ The following actions will be performed:
 - File "pxp_marshal.ml", line 478, characters 29-41:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
-- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_codewriter.mli
-- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_codewriter.ml
-- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -o pxp_engine.cma -a pxp_lexing.cmo pxp_core_types.cmo pxp_lexer_types.cmo pxp_lex_aux.cmo pxp_lexers.cmo pxp_lib.cmo pxp_aux.cmo pxp_reader.cmo pxp_dfa.cmo pxp_entity.cmo pxp_dtd.cmo pxp_entity_manager.cmo pxp_types.cmo pxp_event.cmo pxp_document.cmo pxp_core_parser.cmo pxp_tree_parser.cmo pxp_ev_parser.cmo pxp_dtd_parser.cmo pxp_yacc.cmo pxp_marshal.cmo pxp_codewriter.cmo
-- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_top.mli
-- ocamlfind ocamlc -g -I +compiler-libs -package "netstring" -c pxp_top.ml
-- make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/pxp.1.2.3/src/pxp-engine'
-- make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/pxp.1.2.3/src/pxp-engine'
-- make[1]: Entering directory `/home/opam/.opam/4.02.1/build/pxp.1.2.3/src/pxp-pp'
-- cp pxp_pp.ml.310 pxp_pp.ml
-- ocamlfind ocamlc -g -syntax camlp4o -ppopt -DOCAML_NEW_LOC -ppopt -loc -ppopt loc -package "netstring,ulex,camlp4.quotations,camlp4.macro" -c pxp_pp.ml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
@@ -4260,16 +4259,13 @@ The following actions will be performed:
 - make[2]: Entering directory `/home/opam/.opam/4.02.1/build/pxp.1.2.3/src/pxp-engine'
 - ocamlfind ocamlopt  -package "netstring" -c pxp_lexing.ml
 - ocamlfind ocamlopt  -package "netstring" -c pxp_core_types.ml
-- ocamlfind ocamlopt  -package "netstring" -c pxp_lib.ml
 - File "pxp_lexing.mlp", line 75, characters 10-23:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- ocamlfind ocamlopt  -package "netstring" -c pxp_lib.ml
 - ocamlfind ocamlopt  -package "netstring" -c pxp_lexers.ml
 - ocamlfind ocamlopt  -package "netstring" -c pxp_aux.ml
 - ocamlfind ocamlopt  -package "netstring" -c pxp_reader.ml
-- ocamlfind ocamlopt  -package "netstring" -c pxp_lexer_types.ml
-- ocamlfind ocamlopt  -package "netstring" -c pxp_lex_aux.ml
-- ocamlfind ocamlopt  -package "netstring" -c pxp_dfa.ml
 - File "pxp_lib.ml", line 13, characters 18-20:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
@@ -4331,10 +4327,12 @@ The following actions will be performed:
 - File "pxp_reader.ml", line 407, characters 4-14:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlfind ocamlopt  -package "netstring" -c pxp_lexer_types.ml
+- ocamlfind ocamlopt  -package "netstring" -c pxp_lex_aux.ml
+- ocamlfind ocamlopt  -package "netstring" -c pxp_dfa.ml
 - ocamlfind ocamlopt  -package "netstring" -c pxp_entity.ml
 - ocamlfind ocamlopt  -package "netstring" -c pxp_dtd.ml
 - ocamlfind ocamlopt  -package "netstring" -c pxp_entity_manager.ml
-- ocamlfind ocamlopt  -package "netstring" -c pxp_types.ml
 - File "pxp_entity.ml", line 1177, characters 36-38:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
@@ -4356,6 +4354,7 @@ The following actions will be performed:
 - File "pxp_dtd.ml", line 1102, characters 30-31:
 - Warning 3: deprecated: Pervasives.&
 - Use (&&) instead.
+- ocamlfind ocamlopt  -package "netstring" -c pxp_types.ml
 - ocamlfind ocamlopt  -package "netstring" -c pxp_event.ml
 - ocamlfind ocamlopt  -package "netstring" -c pxp_document.ml
 - File "pxp_document.ml", line 1315, characters 10-12:
@@ -4374,13 +4373,15 @@ The following actions will be performed:
 - Use Array.make instead.
 - File "pxp_core_parser.m2y", line 1418, characters 7-22:
 - Warning 21: this statement never returns (or has an unsound type.)
-- File "pxp_tree_parser.ml", line 183, characters 13-26:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlfind ocamlopt  -package "netstring" -c pxp_ev_parser.ml
 - ocamlfind ocamlopt  -package "netstring" -c pxp_dtd_parser.ml
 - ocamlfind ocamlopt  -package "netstring" -c pxp_yacc.ml
+- File "pxp_tree_parser.ml", line 183, characters 13-26:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlfind ocamlopt  -package "netstring" -c pxp_marshal.ml
+- ocamlfind ocamlopt  -package "netstring" -c pxp_codewriter.ml
+- ocamlfind ocamlopt  -package "netstring" -o pxp_engine.cmxa -a pxp_lexing.cmx pxp_core_types.cmx pxp_lexer_types.cmx pxp_lex_aux.cmx pxp_lexers.cmx pxp_lib.cmx pxp_aux.cmx pxp_reader.cmx pxp_dfa.cmx pxp_entity.cmx pxp_dtd.cmx pxp_entity_manager.cmx pxp_types.cmx pxp_event.cmx pxp_document.cmx pxp_core_parser.cmx pxp_tree_parser.cmx pxp_ev_parser.cmx pxp_dtd_parser.cmx pxp_yacc.cmx pxp_marshal.cmx pxp_codewriter.cmx
 - File "pxp_marshal.ml", line 136, characters 22-34:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
@@ -4396,8 +4397,6 @@ The following actions will be performed:
 - File "pxp_marshal.ml", line 478, characters 29-41:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
-- ocamlfind ocamlopt  -package "netstring" -c pxp_codewriter.ml
-- ocamlfind ocamlopt  -package "netstring" -o pxp_engine.cmxa -a pxp_lexing.cmx pxp_core_types.cmx pxp_lexer_types.cmx pxp_lex_aux.cmx pxp_lexers.cmx pxp_lib.cmx pxp_aux.cmx pxp_reader.cmx pxp_dfa.cmx pxp_entity.cmx pxp_dtd.cmx pxp_entity_manager.cmx pxp_types.cmx pxp_event.cmx pxp_document.cmx pxp_core_parser.cmx pxp_tree_parser.cmx pxp_ev_parser.cmx pxp_dtd_parser.cmx pxp_yacc.cmx pxp_marshal.cmx pxp_codewriter.cmx
 - make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/pxp.1.2.3/src/pxp-engine'
 - make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/pxp.1.2.3/src/pxp-engine'
 - make[1]: Entering directory `/home/opam/.opam/4.02.1/build/pxp.1.2.3/src/pxp-pp'
@@ -4576,21 +4575,21 @@ The following actions will be performed:
 - make lib -C src/unicodeconverter
 - make[1]: Entering directory `/home/opam/.opam/4.02.1/build/blahcaml.2.1/src/unicodeconverter'
 - g++ -Wall -O2 -fno-defer-pop -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -o UnicodeConverter.o -c UnicodeConverter.cpp
-- UnicodeConverter.cpp: In member function 'std::wstring UnicodeConverter::ConvertIn(const string&)':
-- UnicodeConverter.cpp:147:11: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
-- UnicodeConverter.cpp: In member function 'std::string UnicodeConverter::ConvertOut(const wstring&)':
-- UnicodeConverter.cpp:199:11: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
 - make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/blahcaml.2.1/src/unicodeconverter'
 - make lib -C src/messages
 - make[1]: Entering directory `/home/opam/.opam/4.02.1/build/blahcaml.2.1/src/messages'
 - g++ -Wall -O2 -fno-defer-pop -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -o Messages.o -c Messages.cpp
+- UnicodeConverter.cpp: In member function 'std::wstring UnicodeConverter::ConvertIn(const string&)':
+- UnicodeConverter.cpp:147:11: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+- UnicodeConverter.cpp: In member function 'std::string UnicodeConverter::ConvertOut(const wstring&)':
+- UnicodeConverter.cpp:199:11: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+- Messages.cpp: In function 'std::wstring GetErrorMessage(const blahtex::Exception&)':
+- Messages.cpp:296:48: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
 - make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/blahcaml.2.1/src/messages'
 - make lib -C src/mathml2dtd
 - make[1]: Entering directory `/home/opam/.opam/4.02.1/build/blahcaml.2.1/src/mathml2dtd'
 - ocamlfind ocamlc -package pxp-engine,pxp-ulex-utf8 -o mathml2dtd.cmi -c mathml2dtd.mli
 - ocamlfind ocamlc -package xstrp4,pxp-engine,pxp-ulex-utf8 -syntax camlp4o -o mathml2dtd.cmo -c mathml2dtd.ml
-- Messages.cpp: In function 'std::wstring GetErrorMessage(const blahtex::Exception&)':
-- Messages.cpp:296:48: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
 - ocamlfind ocamlc -o mathml2dtd.cma -a mathml2dtd.cmo
 - ocamlfind ocamlopt -package xstrp4,pxp-engine,pxp-ulex-utf8 -syntax camlp4o -o mathml2dtd.cmx -c mathml2dtd.ml
 - ocamlfind ocamlopt -o mathml2dtd.cmxa -a mathml2dtd.cmx
