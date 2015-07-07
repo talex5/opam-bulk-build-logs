@@ -3,12 +3,12 @@
 + lsb_release -i -s
 # Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=schoca
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=schoca
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=schoca
-+ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
++ sudo apt-get update
 Ign http://download.opensuse.org  InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
@@ -40,12 +40,11 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [28.0 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [341 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [133 kB]
-Fetched 2187 kB in 6s (358 kB/s)
+Fetched 2187 kB in 5s (416 kB/s)
 Reading package lists...
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 654143 654279# OS package update successful
-
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages.gz is not what the server reported 364827 364937
+W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages.gz is not what the server reported 364800 364827
 + sudo apt-get install -qq -yy m4
+# OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
 # OS packages installation successful
@@ -60,8 +59,8 @@ The following actions will be performed:
 [schoca: from default] Command started
 [schoca: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/schoca.0.2.3+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/schoca.0.2.3+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlp4: sh] Command started
@@ -98,8 +97,7 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) 
-- ok
+- Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib/ocaml
@@ -146,10 +144,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_meta.ml
 - ocamlc -I +compiler-libs -c fl_metascanner.mli
 - ocamlc -I +compiler-libs -g -c fl_metascanner.ml
-- ocamlc -I +compiler-libs -c fl_topo.mli
-- ocamlc -I +compiler-libs -g -c fl_topo.ml
-- ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -195,6 +189,10 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -c fl_topo.mli
+- ocamlc -I +compiler-libs -g -c fl_topo.ml
+- ocamlc -I +compiler-libs -c fl_package_base.mli
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
@@ -206,9 +204,6 @@ The following actions will be performed:
 - File "frontend.ml", line 34, characters 24-36:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
@@ -226,6 +221,9 @@ The following actions will be performed:
 - 		../../tools/patch '@SITELIB@' '/home/opam/.opam/system/lib' \
 - 	    	    >topfind
 - ocamlc -I +compiler-libs -c num_top_printers.mli
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
 - ocamlc -I +compiler-libs -c num_top.mli
 - ocamlc -I +compiler-libs -g -c num_top.ml
@@ -407,6 +405,7 @@ The following actions will be performed:
 - ocamlfind ocamlopt  -package camlp4     -syntax camlp4o  -c scmConfig.ml
 - ocamlfind ocamlopt  -package camlp4     -syntax camlp4o  -c scmUtil.ml
 - ocamlfind ocamlopt  -package camlp4     -syntax camlp4o  -c scmDynnum.ml
+- ocamlfind ocamlopt  -package camlp4     -syntax camlp4o  -c scmTypes.ml
 - File "scmEval.ml", line 778, characters 12-25:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -431,16 +430,28 @@ The following actions will be performed:
 - Warning 26: unused variable ks.
 - File "scmDynnum.ml", line 321, characters 7-17:
 - Warning 26: unused variable i.
-- ocamlfind ocamlopt  -package camlp4     -syntax camlp4o  -c scmTypes.ml
 - ocamlfind ocamlopt  -package camlp4     -syntax camlp4o  -c scmParser.ml
 - ocamlfind ocamlopt  -package camlp4     -syntax camlp4o  -c scmLexer.ml
+- ocamlfind ocamlopt  -package camlp4     -syntax camlp4o  -c scmEval.ml
 - File "scmTypes.ml", line 505, characters 10-22:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
-- ocamlfind ocamlopt  -package camlp4     -syntax camlp4o  -c scmEval.ml
-- ocamlfind ocamlopt  -package camlp4     -syntax camlp4o  -c scmSchoca.ml
 - File "scmLexer.mll", line 36, characters 7-24:
 - Warning 3: deprecated: String.unsafe_set
+- ocamlfind ocamlopt  -package camlp4     -syntax camlp4o  -c scmSchoca.ml
+- ocamlfind ocamlc -a -linkpkg -o schoca.cma -package camlp4   \
+- 		    \
+- 		scmConfig.cmo scmUtil.cmo scmDynnum.cmo scmTypes.cmo scmParser.cmo scmLexer.cmo scmEval.cmo scmSchoca.cmo -g  
+- ocamlfind ocamlopt -a -o schoca.cmxa -package camlp4   \
+- 		      \
+- 		scmConfig.cmx scmUtil.cmx scmDynnum.cmx scmTypes.cmx scmParser.cmx scmLexer.cmx scmEval.cmx scmSchoca.cmx  
+- make[1]: Leaving directory `/home/opam/.opam/system/build/schoca.0.2.3/lib'
+- make[1]: Entering directory `/home/opam/.opam/system/build/schoca.0.2.3/shell'
+- ocamlfind ocamldep  -I ../lib -package camlp4  -syntax camlp4o \
+- 	   scmMain.ml > .depend
+- make[1]: Leaving directory `/home/opam/.opam/system/build/schoca.0.2.3/shell'
+- make[1]: Entering directory `/home/opam/.opam/system/build/schoca.0.2.3/shell'
+- ocamlfind ocamlc -I ../lib -package camlp4  -I ../lib -g  -syntax camlp4o -c scmMain.ml
 - File "scmEval.ml", line 778, characters 12-25:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -463,19 +474,6 @@ The following actions will be performed:
 - Warning 26: unused variable vs.
 - File "scmEval.ml", line 1312, characters 6-8:
 - Warning 26: unused variable ks.
-- ocamlfind ocamlc -a -linkpkg -o schoca.cma -package camlp4   \
-- 		    \
-- 		scmConfig.cmo scmUtil.cmo scmDynnum.cmo scmTypes.cmo scmParser.cmo scmLexer.cmo scmEval.cmo scmSchoca.cmo -g  
-- ocamlfind ocamlopt -a -o schoca.cmxa -package camlp4   \
-- 		      \
-- 		scmConfig.cmx scmUtil.cmx scmDynnum.cmx scmTypes.cmx scmParser.cmx scmLexer.cmx scmEval.cmx scmSchoca.cmx  
-- make[1]: Leaving directory `/home/opam/.opam/system/build/schoca.0.2.3/lib'
-- make[1]: Entering directory `/home/opam/.opam/system/build/schoca.0.2.3/shell'
-- ocamlfind ocamldep  -I ../lib -package camlp4  -syntax camlp4o \
-- 	   scmMain.ml > .depend
-- make[1]: Leaving directory `/home/opam/.opam/system/build/schoca.0.2.3/shell'
-- make[1]: Entering directory `/home/opam/.opam/system/build/schoca.0.2.3/shell'
-- ocamlfind ocamlc -I ../lib -package camlp4  -I ../lib -g  -syntax camlp4o -c scmMain.ml
 - ocamlfind ocamlopt -I ../lib -package camlp4     -syntax camlp4o  -c scmMain.ml
 - ocamlfind ocamlc -linkpkg -o schoca -package camlp4 -I ../lib  \
 - 		   schoca.cma  \
