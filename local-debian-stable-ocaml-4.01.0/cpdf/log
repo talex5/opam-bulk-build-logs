@@ -1,28 +1,32 @@
+# Detecting depexts using flags: x86_64 linux debian
 + uname -m
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=cpdf
-# Detecting depexts using flags: x86_64 linux debian
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=cpdf
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=cpdf
 + sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-Get:1 http://security.debian.org stable/updates Release.gpg [836 B]
-Get:2 http://security.debian.org stable/updates Release [102 kB]
-Hit http://httpredir.debian.org stable Release.gpg
-+ sudo apt-get install -qq -yy m4
-Get:3 http://httpredir.debian.org stable-updates Release.gpg [836 B]
-Get:4 http://security.debian.org stable/updates/main amd64 Packages [382 kB]
-Hit http://httpredir.debian.org stable Release
-Get:5 http://httpredir.debian.org stable-updates Release [124 kB]
-Hit http://httpredir.debian.org stable/main amd64 Packages
-Get:6 http://httpredir.debian.org stable-updates/main amd64 Packages [4369 B]
-Fetched 614 kB in 1s (391 kB/s)
+Hit http://security.debian.org stable/updates Release.gpg
+Hit http://security.debian.org stable/updates Release
+Hit http://security.debian.org stable/updates/main amd64 Packages
+Get:1 http://httpredir.debian.org stable-updates Release.gpg [1571 B]
+Get:2 http://httpredir.debian.org stable-updates Release [117 kB]
+Hit http://httpredir.debian.org stable-updates/main amd64 Packages
+Err http://httpredir.debian.org stable Release.gpg
+  Could not connect to debian.med.univ-tours.fr:80 (193.52.213.46), connection timed out
+Fetched 118 kB in 2min 0s (981 B/s)
 Reading package lists...
+W: Failed to fetch http://httpredir.debian.org/debian/dists/stable/Release.gpg  Could not connect to debian.med.univ-tours.fr:80 (193.52.213.46), connection timed out
+
+W: Failed to fetch http://httpredir.debian.org/debian/dists/stable-updates/main/binary-amd64/Packages  Hash Sum mismatch
+
+W: Some index files failed to download. They have been ignored, or old ones used instead.
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
++ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind 1.5.5                                     [required by cpdf]
@@ -35,11 +39,11 @@ The following actions will be performed:
 [cpdf: from default] Command started
 [ocamlfind: from default] Command started
 [ocamlfind: from default] Command started
-[cpdf: from default] Command started
-[camlpdf: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/cpdf.2.1.1+opam.tar.gz downloaded
+[camlpdf: from default] Command started
+[cpdf: from default] Command started
 [default] http://opam-archive:8080/archives/camlpdf.2.1.1+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/cpdf.2.1.1+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -71,10 +75,7 @@ The following actions will be performed:
 - Configuration for camlp4 written to site-lib-src/camlp4/META
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
-- Detecting compiler arguments: (extractor built) 
-- File "itest-aux/ppx.ml", line 1, characters 0-25:
-- Error: Unbound value Toploop.preprocess_phrase
-- ok
+- Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /home/opam/.opam/4.01.0/lib/ocaml
@@ -98,6 +99,8 @@ The following actions will be performed:
 - Configuration has been written to Makefile.config
 - 
 - You can now do 'make all', and optionally 'make opt', to build ocamlfind.
+- File "itest-aux/ppx.ml", line 1, characters 0-25:
+- Error: Unbound value Toploop.preprocess_phrase
 [ocamlfind: make all] Command started
 + make "all" (CWD=/home/opam/.opam/4.01.0/build/ocamlfind.1.5.5)
 - for p in findlib bytes; do ( cd src/$p; make all ) || exit; done
@@ -346,6 +349,10 @@ The following actions will be performed:
 - ocamlc -c -cc "cc" -ccopt "-fPIC  \
 - 				-DPIC -DNATIVE_CODE   \
 - 				    -o flatestubs.o " flatestubs.c
+- In file included from flatestubs.c:20:0:
+- miniz.c:2440:28: warning: always_inline function might not be inlinable [-Wattributes]
+- miniz.c:2432:28: warning: always_inline function might not be inlinable [-Wattributes]
+- miniz.c:2230:28: warning: always_inline function might not be inlinable [-Wattributes]
 - ocamlc -c -cc "cc" -ccopt "-fPIC  \
 - 				-DPIC -DNATIVE_CODE   \
 - 				    -o rijndael-alg-fst.o " rijndael-alg-fst.c
@@ -355,10 +362,6 @@ The following actions will be performed:
 - ocamlc -c -cc "cc" -ccopt "-fPIC  \
 - 				-DPIC -DNATIVE_CODE   \
 - 				    -o sha2.o " sha2.c
-- In file included from flatestubs.c:20:0:
-- miniz.c:2440:28: warning: always_inline function might not be inlinable [-Wattributes]
-- miniz.c:2432:28: warning: always_inline function might not be inlinable [-Wattributes]
-- miniz.c:2230:28: warning: always_inline function might not be inlinable [-Wattributes]
 - ocamlc -c -cc "cc" -ccopt "-fPIC  \
 - 				-DPIC -DNATIVE_CODE   \
 - 				    -o stubs-sha2.o " stubs-sha2.c
