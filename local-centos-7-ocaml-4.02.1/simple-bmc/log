@@ -1,6 +1,6 @@
 + uname -m
-+ uname -s
 # Detecting depexts using flags: x86_64 linux centos
++ uname -s
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=simple-bmc
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=simple-bmc
 # No extra OS packages requirements found.
@@ -14,12 +14,12 @@ The following actions will be performed:
 [batteries: from default] Command started
 [ocamlfind: from default] Command started
 [simple-bmc: from default] Command started
+[simple-bmc: from default] Command started
 [ocamlfind: from default] Command started
 [batteries: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/batteries.2.3.1+opam.tar.gz downloaded
-[simple-bmc: from default] Command started
 [default] http://opam-archive:8080/archives/simple-bmc.0.0.1+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/batteries.2.3.1+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -156,13 +156,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
-- if [ "true" = "true" ]; then                 \
-- 	cp topfind.ml.in topfind.ml;                             \
-- else                                                             \
-- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 		> topfind.ml ;                                   \
-- fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -171,6 +164,13 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- if [ "true" = "true" ]; then                 \
+- 	cp topfind.ml.in topfind.ml;                             \
+- else                                                             \
+- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 		> topfind.ml ;                                   \
+- fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -216,6 +216,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -260,7 +261,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -429,6 +429,7 @@ The following actions will be performed:
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batRef.mli > src/batRef.mli.depends
 - ocamlfind ocamlc -c -g -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batOption.cmi src/batOption.mli
 - ocamlfind ocamlc -c -g -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batRef.cmi src/batRef.mli
+- ocamlfind: Package `bisect' not found
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batArray.mli > src/batArray.mli.depends
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batIO.mli > src/batIO.mli.depends
 - ocamlfind ocamlc -c -g -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batIO.cmi src/batIO.mli
@@ -436,7 +437,6 @@ The following actions will be performed:
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batArray.ml > src/batArray.ml.depends
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batBitSet.mli > src/batBitSet.mli.depends
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batInt.mli > src/batInt.mli.depends
-- ocamlfind: Package `bisect' not found
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batNumber.mli > src/batNumber.mli.depends
 - ocamlfind ocamlc -c -g -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batNumber.cmi src/batNumber.mli
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batList.mli > src/batList.mli.depends
@@ -1407,9 +1407,9 @@ The following actions will be performed:
 - File "_tags", line 2, characters 32-42:
 - Warning: the tag "warn_Ae-29" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
 - ocamlfind remove batteries
-- ocamlfind: Package `bisect' not found
 - ocamlfind install batteries _build/META _build/src/*.cma battop.ml _build/src/*.cmi _build/src/*.mli _build/src/batteriesHelp.cmo _build/src/batteriesConfig.cmo _build/src/batteriesPrint.cmo ocamlinit build/ocaml \
 - 	-optional _build/src/*.cmx _build/src/*.a _build/src/*.cmxa _build/src/*.cmxs _build/src/*.lib
+- ocamlfind: Package `bisect' not found
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/batteries
 - Installed /home/opam/.opam/system/lib/batteries/batteriesThread.cmxs
 - Installed /home/opam/.opam/system/lib/batteries/batteries.cmxs
