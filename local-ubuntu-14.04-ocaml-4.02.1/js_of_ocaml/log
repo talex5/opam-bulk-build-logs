@@ -7,22 +7,20 @@
 # The following system packages are needed:
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=js_of_ocaml
-Not running as root, system installation will be done through "sudo"
 + sudo apt-get update
-Ign http://download.opensuse.org  InRelease
-Hit http://download.opensuse.org  Release.gpg
-Hit http://download.opensuse.org  Release
+Not running as root, system installation will be done through "sudo"
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
-Hit http://download.opensuse.org  Packages
-+ sudo apt-get install -qq -yy m4
 Hit http://archive.ubuntu.com trusty Release.gpg
+Ign http://download.opensuse.org  InRelease
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
 Hit http://archive.ubuntu.com trusty Release
 Get:3 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
+Hit http://download.opensuse.org  Release.gpg
 Get:4 http://archive.ubuntu.com trusty-security Release [63.5 kB]
+Hit http://download.opensuse.org  Release
 Hit http://archive.ubuntu.com trusty/main Sources
 Hit http://archive.ubuntu.com trusty/restricted Sources
 Hit http://archive.ubuntu.com trusty/universe Sources
@@ -30,6 +28,7 @@ Hit http://archive.ubuntu.com trusty/main amd64 Packages
 Hit http://archive.ubuntu.com trusty/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty/universe amd64 Packages
 Get:5 http://archive.ubuntu.com trusty-updates/main Sources [242 kB]
+Hit http://download.opensuse.org  Packages
 Get:6 http://archive.ubuntu.com trusty-updates/restricted Sources [2310 B]
 Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [135 kB]
 Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [621 kB]
@@ -41,8 +40,9 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [21.0 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [320 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [118 kB]
-Fetched 2057 kB in 5s (351 kB/s)
+Fetched 2057 kB in 4s (498 kB/s)
 Reading package lists...
++ sudo apt-get install -qq -yy m4
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
 # OS packages installation successful
@@ -59,13 +59,13 @@ The following actions will be performed:
 [lwt: from default] Command started
 [menhir: from default] Command started
 [lwt: from default] Command started
+[default] http://opam-archive:8080/archives/lwt.2.4.5+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [menhir: from default] Command started
+[js_of_ocaml: from default] Command started
 [default] http://opam-archive:8080/archives/menhir.20141215+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
-[js_of_ocaml: from default] Command started
-[default] http://opam-archive:8080/archives/lwt.2.4.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/js_of_ocaml.2.5+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -154,6 +154,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -199,12 +201,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -213,8 +215,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -2164,17 +2164,23 @@ The following actions will be performed:
 - ocamlfind ocamlopt -c -g -safe-string \
 - 	-package compiler-libs.common,findlib \
 - 	-I ../compiler/ jsoo_common.ml
-- findlib: [WARNING] Interface subst.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface primitive.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface deadcode.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface compile.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
 - ocamlfind ocamlopt -c -g -safe-string \
 - 	-package compiler-libs.common,findlib \
 - 	-I ../compiler/ jsoo_mktop.ml
 - ocamlfind ocamlopt -linkpkg -g -safe-string \
 - 	-package compiler-libs.common,findlib \
 - 	../compiler/compiler.cmxa jsoo_common.cmx jsoo_mktop.cmx -o jsoo_mktop.opt
+- findlib: [WARNING] Interface subst.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface primitive.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface deadcode.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface compile.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface subst.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface primitive.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface deadcode.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface compile.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
 - cp jsoo_mktop.opt jsoo_mktop
 - ocamlfind ocamlopt -c -g -safe-string \
 - 	-package compiler-libs.common,findlib \
@@ -2192,12 +2198,6 @@ The following actions will be performed:
 - 		-ppopt syntax/pa_js.cmo \
 - 		-I toplevel -I ../compiler -I +compiler-libs \
 - 		-c toplevel/jsooTop.ml -o toplevel/jsooTop.cmo
-- findlib: [WARNING] Interface subst.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface primitive.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface deadcode.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface compile.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
 - findlib: [WARNING] Interface subst.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
 - findlib: [WARNING] Interface primitive.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
 - findlib: [WARNING] Interface deadcode.cmi occurs in several directories: ../compiler, /usr/lib/ocaml/compiler-libs
