@@ -1,30 +1,30 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-+ opam list --safe --recursive --external=x86_64,linux,debian --required-by=treeprint
 # Detecting depexts using flags: x86_64 linux debian
++ opam list --safe --recursive --external=x86_64,linux,debian --required-by=treeprint
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=treeprint
 # The following system packages are needed:
 #  - libpcre3-dev
 #  - m4
 #  - pkg-config
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=treeprint
-+ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
++ sudo apt-get update
 Hit http://security.debian.org stable/updates InRelease
 Ign http://download.opensuse.org  InRelease
 Hit http://httpredir.debian.org stable InRelease
-Hit http://httpredir.debian.org stable-updates InRelease
+Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Get:1 http://security.debian.org stable/updates/main amd64 Packages [121 kB]
-Get:2 http://httpredir.debian.org stable/main amd64 Packages [9038 kB]
-Get:3 http://download.opensuse.org  Packages [5783 B]
-Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9168 kB in 3s (2329 kB/s)
+Get:2 http://security.debian.org stable/updates/main amd64 Packages [121 kB]
+Get:3 http://httpredir.debian.org stable/main amd64 Packages [9038 kB]
+Get:4 http://download.opensuse.org  Packages [5783 B]
+Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
+Fetched 9293 kB in 6s (1365 kB/s)
 Reading package lists...
-# OS package update successful
 + sudo apt-get install -qq -yy libpcre3-dev m4 pkg-config
+# OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libpcre3-dev m4 pkg-config
 debconf: unable to initialize frontend: Dialog
@@ -76,19 +76,19 @@ The following actions will be performed:
 [ppx_test: from default] Command started
 [default] http://opam-archive:8080/archives/ppx_meta_conv.2.0.1+opam.tar.gz downloaded
 [re: from default] Command started
+[ppx_tools: from default] Command started
 [default] http://opam-archive:8080/archives/ppx_test.1.1.0+opam.tar.gz downloaded
 [spotlib: from default] Command started
-[ppx_tools: from default] Command started
+[re: from default] Command started
 [default] http://opam-archive:8080/archives/ppx_tools.0.99.2+opam.tar.gz downloaded
 [tiny_json: from default] Command started
-[re: from default] Command started
 [spotlib: from default] Command started
-[default] http://opam-archive:8080/archives/spotlib.2.5.2+opam.tar.gz downloaded
-[treeprint: from default] Command started
 [default] http://opam-archive:8080/archives/re.1.4.1+opam.tar.gz downloaded
-[tiny_json: from default] Command started
 [treeprint: from default] Command started
+[default] http://opam-archive:8080/archives/spotlib.2.5.2+opam.tar.gz downloaded
+[tiny_json: from default] Command started
 [default] http://opam-archive:8080/archives/tiny_json.1.1.2+opam.tar.gz downloaded
+[treeprint: from default] Command started
 [default] http://opam-archive:8080/archives/treeprint.2.0.0+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -171,6 +171,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -216,12 +218,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -230,8 +232,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -281,6 +281,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -325,7 +326,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -1492,14 +1492,14 @@ The following actions will be performed:
 - ocamlc -g -c omake_exec_notify.mli
 - ocamlc -g -c omake_exec_notify.ml
 - ocamlc -g -c omake_exec.ml
+- ocamlc -g  -a -o exec.cma omake_exec_id.cmo omake_exec_type.cmo omake_exec_print.cmo omake_exec_util.cmo omake_exec_local.cmo omake_exec_remote.cmo omake_exec_notify.cmo omake_exec.cmo
+- ocamlc -g -c omake_eval.ml
 - File "omake_exec_local.ml", line 209, characters 33-46:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
 - File "omake_exec_local.ml", line 209, characters 53-66:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -g  -a -o exec.cma omake_exec_id.cmo omake_exec_type.cmo omake_exec_print.cmo omake_exec_util.cmo omake_exec_local.cmo omake_exec_remote.cmo omake_exec_notify.cmo omake_exec.cmo
-- ocamlc -g -c omake_eval.ml
 - ocamlc -g -c omake_value.ml
 - ocamlc -g  -a -o eval.cma omake_eval.cmo omake_value.cmo
 - ocamlc -g -c omake_shell_parse.mli
@@ -1515,25 +1515,28 @@ The following actions will be performed:
 - ocamlc -g -c omake_build_util.ml
 - ocamlc -g -c omake_builtin_util.mli
 - ocamlc -g -c omake_builtin_util.ml
-- File "omake_rule.ml", line 1279, characters 20-33:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -g -c omake_target.mli
 - ocamlc -g -c omake_target.ml
 - ocamlc -g -c omake_builtin.ml
+- File "omake_rule.ml", line 1279, characters 20-33:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -g -c omake_build_tee.mli
 - ocamlc -g -c omake_build_tee.ml
 - ocamlc -g -c omake_build.ml
 - File "omake_build_tee.ml", line 70, characters 13-26:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- File "omake_build.ml", line 2789, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -g  -a -o build.cma omake_rule.cmo omake_build_type.cmo omake_build_util.cmo omake_builtin_type.cmo omake_builtin_util.cmo omake_target.cmo omake_builtin.cmo omake_build_tee.cmo omake_build.cmo
 - ocamlc -g -c omake_builtin_base.mli
 - ocamlc -g -c omake_builtin_base.ml
 - ocamlc -g -c omake_builtin_arith.mli
-- File "omake_build.ml", line 2789, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
+- ocamlc -g -c omake_builtin_arith.ml
+- ocamlc -g -c omake_builtin_file.mli
+- ocamlc -g -c omake_builtin_file.ml
 - File "omake_builtin_base.ml", line 1004, characters 13-24:
 - Warning 3: deprecated: String.copy
 - File "omake_builtin_base.ml", line 1008, characters 12-27:
@@ -1560,9 +1563,6 @@ The following actions will be performed:
 - File "omake_builtin_base.ml", line 1652, characters 3-49:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc -g -c omake_builtin_arith.ml
-- ocamlc -g -c omake_builtin_file.mli
-- ocamlc -g -c omake_builtin_file.ml
 - ocamlc -g -c omake_builtin_fun.mli
 - ocamlc -g -c omake_builtin_fun.ml
 - ocamlc -g -c omake_builtin_io.mli
@@ -1586,13 +1586,6 @@ The following actions will be performed:
 - ocamlc -g -linkall -a -o builtin.cma omake_builtin_base.cmo omake_builtin_arith.cmo omake_builtin_file.cmo omake_builtin_fun.cmo omake_builtin_io.cmo omake_builtin_io_fun.cmo omake_builtin_sys.cmo omake_builtin_target.cmo omake_builtin_shell.cmo omake_builtin_rule.cmo omake_builtin_test.cmo omake_builtin_object.cmo
 - cc  -I"`ocamlc -where`" -c lm_heap.c
 - cc  -I"`ocamlc -where`" -c lm_channel.c
-- cc  -I"`ocamlc -where`" -c lm_printf.c
-- cc  -I"`ocamlc -where`" -c lm_ctype.c
-- cc  -I"`ocamlc -where`" -c lm_uname_ext.c
-- cc  -I"`ocamlc -where`" -c lm_unix_cutil.c
-- cc  -I"`ocamlc -where`" -c lm_compat_win32.c
-- cc  -I"`ocamlc -where`" -c readline.c
-- cc  -I"`ocamlc -where`" -c omake_shell_sys.c
 - File "omake_builtin_object.ml", line 761, characters 31-44:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -1611,6 +1604,13 @@ The following actions will be performed:
 - File "omake_builtin_object.ml", line 779, characters 28-54:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- cc  -I"`ocamlc -where`" -c lm_printf.c
+- cc  -I"`ocamlc -where`" -c lm_ctype.c
+- cc  -I"`ocamlc -where`" -c lm_uname_ext.c
+- cc  -I"`ocamlc -where`" -c lm_unix_cutil.c
+- cc  -I"`ocamlc -where`" -c lm_compat_win32.c
+- cc  -I"`ocamlc -where`" -c readline.c
+- cc  -I"`ocamlc -where`" -c omake_shell_sys.c
 - cc  -I"`ocamlc -where`" -c fam_win32.c
 - cc  -I"`ocamlc -where`" -c fam_kqueue.c
 - cc  -I"`ocamlc -where`" -c fam_inotify.c
@@ -1640,9 +1640,9 @@ The following actions will be performed:
 - --- Checking for ocamlopt.opt... (found /home/opam/.opam/4.02.1/bin/ocamlopt.opt)
 - --- Checking whether ocamlc understands the "z" warnings... (yes)
 - --- Checking for ncurses... (found)
-- --- Checking for readline... (NOT found)
-- --- Checking for FAM... 
+- --- Checking for readline... 
 - (NOT found)
+- --- Checking for FAM... (NOT found)
 - --- Checking if ocamldep understands -modules... (yes)
 - --- Checking for ocamlfind... (found /home/opam/.opam/4.02.1/bin/ocamlfind)
 - --- Checking for ocamlc.opt... (found /home/opam/.opam/4.02.1/bin/ocamlc.opt)
@@ -1652,26 +1652,25 @@ The following actions will be performed:
 - --- Checking for ncurses... (found)
 - --- Checking for readline... (NOT found)
 - --- Checking for FAM... (NOT found)
-- --- Checking for function snprintf... 
 - Updating the .config file.
-- (found)
+- --- Checking for function snprintf... (found)
 - --- Checking for optimal filesystem case-sensitivity test... (Generic)
 - --- Checking if ocamldep understands -modules... (yes)
 - --- Checking for hevea... (FAILED - no hevea found)
 - --- Checking for date... (found /bin/date)
 - --- Checking for date... (found /bin/date)
-- *** omake: finished reading OMakefiles (2.78 sec)
+- *** omake: finished reading OMakefiles (2.88 sec)
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
 - *** omake: saved .omakedb
 - *** omake: saved .omakedb
-- *** omake: done (39.94 sec, 234/234 scans, 343/505 rules, 788/2321 digests)
+- *** omake: done (39.77 sec, 234/234 scans, 343/505 rules, 788/2320 digests)
 - OMAKEFLAGS= OMAKEPATH=lib src/main/omake --dotomake .omake --force-dotomake -j2 all
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.09 sec)
+- *** omake: finished reading OMakefiles (0.08 sec)
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
-- *** omake: done (8.29 sec, 219/235 scans, 27/534 rules, 39/1843 digests)
+- *** omake: done (9.37 sec, 219/235 scans, 27/534 rules, 39/1843 digests)
 [omake: make install] Command started
 + make "install" "PREFIX=/home/opam/.opam/4.02.1" (CWD=/home/opam/.opam/4.02.1/build/omake.0.9.8.6-0.rc1)
 - make[1]: Entering directory '/home/opam/.opam/4.02.1/build/omake.0.9.8.6-0.rc1/boot'
@@ -1683,18 +1682,18 @@ The following actions will be performed:
 - touch .config
 - OMAKEFLAGS= OMAKEPATH=lib ./omake-boot --dotomake .omake --force-dotomake -j2 main
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.42 sec)
+- *** omake: finished reading OMakefiles (0.41 sec)
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
-- *** omake: done (4.77 sec, 0/234 scans, 0/505 rules, 1/1762 digests)
+- *** omake: done (4.85 sec, 0/234 scans, 0/505 rules, 1/1762 digests)
 - OMAKEFLAGS= OMAKEPATH=lib src/main/omake --dotomake .omake --force-dotomake -j2 all
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.07 sec)
-- *** omake: done (0.57 sec, 0/235 scans, 0/534 rules, 0/1821 digests)
+- *** omake: finished reading OMakefiles (0.06 sec)
+- *** omake: done (0.56 sec, 0/235 scans, 0/534 rules, 0/1821 digests)
 - OMAKEFLAGS= OMAKEPATH=lib src/main/omake --dotomake .omake --force-dotomake -j2 install
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.07 sec)
-- *** omake: done (0.63 sec, 0/235 scans, 2/536 rules, 0/1821 digests)
+- *** omake: finished reading OMakefiles (0.06 sec)
+- *** omake: done (0.69 sec, 0/235 scans, 2/536 rules, 0/1821 digests)
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
 -> installed omake.0.9.8.6-0.rc1
@@ -1832,7 +1831,7 @@ The following actions will be performed:
 - + ocamlfind ocamlc -annot -bin-annot -for-pack Tiny_json -g -w A-4-9-27-34 -warn-error a -g -I . -c json.ml
 - - build lib json.o
 - + ocamlfind ocamlopt -annot -bin-annot -for-pack Tiny_json -g -w A-4-9-27-34 -warn-error a -I . -c json.ml
-- *** omake: done (1.46 sec, 12/12 scans, 21/29 rules, 52/170 digests)
+- *** omake: done (1.48 sec, 12/12 scans, 21/29 rules, 52/170 digests)
 - File "setup.ml", line 213, characters 8-26:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
@@ -1864,7 +1863,7 @@ The following actions will be performed:
 - --- Checking for ocamlc.opt... (found /home/opam/.opam/4.02.1/bin/ocamlc.opt)
 - --- Checking for ocamlopt.opt... (found /home/opam/.opam/4.02.1/bin/ocamlopt.opt)
 - --- Checking whether ocamlc understands the "z" warnings... (yes)
-- *** omake: finished reading OMakefiles (0.07 sec)
+- *** omake: finished reading OMakefiles (0.08 sec)
 - --- Checking if ocamldep understands -modules... (yes)
 - - build ppx ppx_test.o
 - + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c ppx_test.ml
@@ -1884,7 +1883,7 @@ The following actions will be performed:
 - + ocamlfind ocamlc -package re,re.pcre -g -g -I . -I ../lib -o test.run ../lib/ppx_test.cmo pTest.cmo with_location.cmo module_path.cmo test.cmo -linkpkg -linkall
 - - build test test.opt
 - + ocamlfind ocamlopt -package re,re.pcre -g -I . -I ../lib -o test.opt ../lib/ppx_test.cmx pTest.cmx with_location.cmx module_path.cmx test.cmx -linkpkg -linkall
-- *** omake: done (2.21 sec, 11/11 scans, 24/43 rules, 68/205 digests)
+- *** omake: done (2.46 sec, 11/11 scans, 24/43 rules, 68/205 digests)
 - File OMyMakefile: line 195, characters 3-26:
 -    Warning: old-style foreach expression.
 -    This expression should use a => binding.
@@ -1937,12 +1936,12 @@ The following actions will be performed:
 -> installed tiny_json.1.1.2
 + ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/4.02.1/build/ppx_test.1.1.0)
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.03 sec)
+- *** omake: finished reading OMakefiles (0.04 sec)
 - - build lib <install>
 - + ocamlfind remove ppx_test
 - - build lib <install>
 - + ocamlfind install ppx_test META test.mli location.mli longident.mli ppx_test.cmi ppx_test.cmo ppx_test.cmx ppx_test.cma ppx_test.cmxa ppx_test.cmxs ppx_test.o ppx_test.a ../ppx/ppx_test.run ../ppx/ppx_test.opt ../ppx/ppx_test ppx_test.cmt
-- *** omake: done (0.27 sec, 0/7 scans, 4/29 rules, 10/138 digests)
+- *** omake: done (0.33 sec, 0/7 scans, 4/29 rules, 10/138 digests)
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/4.02.1/lib/ppx_test
 - Installed /home/opam/.opam/4.02.1/lib/ppx_test/ppx_test.cmt
 - Installed /home/opam/.opam/4.02.1/lib/ppx_test/ppx_test
@@ -2023,7 +2022,7 @@ The following actions will be performed:
 - --- Checking for ocamlc.opt... (found /home/opam/.opam/4.02.1/bin/ocamlc.opt)
 - --- Checking for ocamlopt.opt... (found /home/opam/.opam/4.02.1/bin/ocamlopt.opt)
 - --- Checking whether ocamlc understands the "z" warnings... (yes)
-- *** omake: finished reading OMakefiles (0.07 sec)
+- *** omake: finished reading OMakefiles (0.06 sec)
 - --- Checking if ocamldep understands -modules... (yes)
 - File OMyMakefile: line 204, characters 3-26:
 -    Warning: old-style foreach expression.
@@ -2033,16 +2032,16 @@ The following actions will be performed:
 -    This expression should use a => binding.
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
-- *** omake: done (10.10 sec, 82/82 scans, 126/197 rules, 290/714 digests)
+- *** omake: done (11.19 sec, 82/82 scans, 126/197 rules, 292/714 digests)
 [spotlib: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/4.02.1/build/spotlib.2.5.2)
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.05 sec)
+- *** omake: finished reading OMakefiles (0.04 sec)
 - - build lib <install>
 - + ocamlfind remove spotlib
 - - build lib <install>
 - + ocamlfind install spotlib META at.mli URL.mli xgc.mli exn.mli xobj.mli xset.mli xsys.mli base.mli once.mli file.mli xlazy.mli xlist.mli xunix.mli monad.mli freem.mli shell.mli tuple.mli xarray.mli dllist.mli option.mli result.mli comopt.mli xstring.mli xprintf.mli backref.mli xlexing.mli xformat.mli hashset.mli command.mli channel.mli xhashtbl.mli uniqueID.mli filepath.mli temporal.mli xprintexc.mli xfilename.mli spotStream.mli spotlib.cmi spotlib.cmo spotlib.cmx spotlib.cma spotlib.cmxa spotlib.cmxs spotlib.o spotlib.a spotlib.cmt
-- *** omake: done (0.39 sec, 0/81 scans, 3/191 rules, 7/513 digests)
+- *** omake: done (0.42 sec, 0/81 scans, 3/191 rules, 7/513 digests)
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/4.02.1/lib/spotlib
 - Installed /home/opam/.opam/4.02.1/lib/spotlib/spotlib.cmt
 - Installed /home/opam/.opam/4.02.1/lib/spotlib/spotlib.a
@@ -2154,12 +2153,10 @@ The following actions will be performed:
 - --- Checking for ocamlc.opt... (found /home/opam/.opam/4.02.1/bin/ocamlc.opt)
 - --- Checking for ocamlopt.opt... (found /home/opam/.opam/4.02.1/bin/ocamlopt.opt)
 - --- Checking whether ocamlc understands the "z" warnings... (yes)
-- *** omake: finished reading OMakefiles (0.09 sec)
+- *** omake: finished reading OMakefiles (0.15 sec)
 - --- Checking if ocamldep understands -modules... (yes)
 - - build src ppx_meta_conv.cmo
 - + ocamlfind ocamlc -annot -bin-annot -package ppx_deriving.api,compiler-libs.common,spotlib -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -package ppx_tools.metaquot -I . -c ppx_meta_conv.ml
-- - build src ppx_meta_conv.cmo
-- + ocamlfind ocamlopt -annot -bin-annot -package ppx_deriving.api,compiler-libs.common,spotlib -g -w A-3-4-9-40-42-44-45-48 -warn-error a -package ppx_tools.metaquot -I . -c ppx_meta_conv.ml
 - File OMyMakefile: line 204, characters 3-26:
 -    Warning: old-style foreach expression.
 -    This expression should use a => binding.
@@ -2167,15 +2164,13 @@ The following actions will be performed:
 -    Warning: old-style foreach expression.
 -    This expression should use a => binding.
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
+- - build src ppx_meta_conv.cmo
+- + ocamlfind ocamlopt -annot -bin-annot -package ppx_deriving.api,compiler-libs.common,spotlib -g -w A-3-4-9-40-42-44-45-48 -warn-error a -package ppx_tools.metaquot -I . -c ppx_meta_conv.ml
 - - build src ppx_meta_conv_main.cmi
 - + ocamlfind ocamlc -annot -bin-annot -package ppx_deriving.api,compiler-libs.common,spotlib -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -package ppx_tools.metaquot -I . -c ppx_meta_conv_main.ml
 - - build src ppx_meta_conv_main.cmi
 - + ocamlfind ocamlopt -annot -bin-annot -package ppx_deriving.api,compiler-libs.common,spotlib -g -w A-3-4-9-40-42-44-45-48 -warn-error a -package ppx_tools.metaquot -I . -c ppx_meta_conv_main.ml
-- - build src ppx_meta_conv.run
-- + ocamlfind ocamlc -package ppx_deriving.api,compiler-libs.common,spotlib -g -g -I . -o ppx_meta_conv.run ppx_meta_conv.cmo ppx_meta_conv_main.cmo -linkpkg
-- - build src ppx_meta_conv.opt
-- + ocamlfind ocamlopt -package ppx_deriving.api,compiler-libs.common,spotlib -g -I . -o ppx_meta_conv.opt ppx_meta_conv.cmx ppx_meta_conv_main.cmx -linkpkg
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
@@ -2192,6 +2187,10 @@ The following actions will be performed:
 - File "ppx_meta_conv_main.ml", line 161, characters 8-16:
 - Warning 27: unused variable psig_loc.
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
+- - build src ppx_meta_conv.run
+- + ocamlfind ocamlc -package ppx_deriving.api,compiler-libs.common,spotlib -g -g -I . -o ppx_meta_conv.run ppx_meta_conv.cmo ppx_meta_conv_main.cmo -linkpkg
+- - build src ppx_meta_conv.opt
+- + ocamlfind ocamlopt -package ppx_deriving.api,compiler-libs.common,spotlib -g -I . -o ppx_meta_conv.opt ppx_meta_conv.cmx ppx_meta_conv_main.cmx -linkpkg
 - File "ppx_meta_conv_main.ml", line 1, characters 0-14:
 - Warning 33: unused open Longident.
 - File "ppx_meta_conv_main.ml", line 2, characters 0-13:
@@ -2214,6 +2213,14 @@ The following actions will be performed:
 - + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common -g -w A-3-4-9-40-42-44-45-48-44 -warn-error a -g -I . -I ../lib -c ocaml_conv.ml
 - - build ocaml ocaml.cmo
 - + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common -g -w A-3-4-9-40-42-44-45-48-44 -warn-error a -g -I . -I ../lib -c ocaml.ml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - - build ocaml ocaml_conv.cma
 - + ocamlfind ocamlc -package compiler-libs.common -g -g -a -o ocaml_conv.cma ocaml.cmo ocaml_conv.cmo
 - - build ocaml ocaml.cmx
@@ -2224,21 +2231,6 @@ The following actions will be performed:
 - + ocamlfind ocamlopt -package compiler-libs.common -g -a -o ocaml_conv.cmxa ocaml.cmx ocaml_conv.cmx
 - - build ocaml ocaml_conv.cmxs
 - + ocamlfind ocamlopt -package compiler-libs.common -g -shared -o ocaml_conv.cmxs ocaml.cmx ocaml_conv.cmx
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - - build test ignore_unknown_fields.out.o
 - + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -I ../lib -I ../ocaml -c ignore_unknown_fields.out.ml
 - - build test ignore_unknown_fields.out.o
@@ -2251,6 +2243,25 @@ The following actions will be performed:
 - + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -I ../lib -I ../ocaml -c of_ocaml.out.ml
 - - build test of_ocaml.out.cmi
 - + ocamlfind ocamlopt -annot -bin-annot -package compiler-libs.common -g -w A-3-4-9-40-42-44-45-48 -warn-error a -I . -I ../lib -I ../ocaml -c of_ocaml.out.ml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - - build test test.o
 - + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -I ../lib -I ../ocaml -c test.ml
 - - build test test.o
@@ -2261,32 +2272,24 @@ The following actions will be performed:
 - + ocamlfind ocamlopt -package compiler-libs.common -g -I . -I ../lib -I ../ocaml -o ocaml_of.opt ../lib/meta_conv.cmx ../ocaml/ocaml.cmx ../ocaml/ocaml_conv.cmx test.cmx ocaml_of.out.cmx -linkpkg -linkall
 - - build test of_ocaml.opt
 - + ocamlfind ocamlopt -package compiler-libs.common -g -I . -I ../lib -I ../ocaml -o of_ocaml.opt ../lib/meta_conv.cmx ../ocaml/ocaml.cmx ../ocaml/ocaml_conv.cmx test.cmx of_ocaml.out.cmx -linkpkg -linkall
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - - build test of_ocaml.run
 - + ocamlfind ocamlc -package compiler-libs.common -g -g -I . -I ../lib -I ../ocaml -o of_ocaml.run ../lib/meta_conv.cmo ../ocaml/ocaml.cmo ../ocaml/ocaml_conv.cmo test.cmo of_ocaml.out.cmo -linkpkg -linkall
 - - build test ignore_unknown_fields.opt
 - + ocamlfind ocamlopt -package compiler-libs.common -g -I . -I ../lib -I ../ocaml -o ignore_unknown_fields.opt ../lib/meta_conv.cmx ../ocaml/ocaml.cmx ../ocaml/ocaml_conv.cmx test.cmx ignore_unknown_fields.out.cmx -linkpkg -linkall
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - - build test ignore_unknown_fields.run
 - + ocamlfind ocamlc -package compiler-libs.common -g -g -I . -I ../lib -I ../ocaml -o ignore_unknown_fields.run ../lib/meta_conv.cmo ../ocaml/ocaml.cmo ../ocaml/ocaml_conv.cmo test.cmo ignore_unknown_fields.out.cmo -linkpkg -linkall
 - - build test variant.out.o
@@ -2295,20 +2298,18 @@ The following actions will be performed:
 - + ocamlfind ocamlopt -annot -bin-annot -package compiler-libs.common -g -w A-3-4-9-40-42-44-45-48 -warn-error a -I . -I ../lib -I ../ocaml -c variant.out.ml
 - - build test variant.opt
 - + ocamlfind ocamlopt -package compiler-libs.common -g -I . -I ../lib -I ../ocaml -o variant.opt ../lib/meta_conv.cmx ../ocaml/ocaml.cmx ../ocaml/ocaml_conv.cmx test.cmx variant.out.cmx -linkpkg -linkall
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - - build test variant.run
 - + ocamlfind ocamlc -package compiler-libs.common -g -g -I . -I ../lib -I ../ocaml -o variant.run ../lib/meta_conv.cmo ../ocaml/ocaml.cmo ../ocaml/ocaml_conv.cmo test.cmo variant.out.cmo -linkpkg -linkall
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - - build test polyvar.out.o
 - + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -I ../lib -I ../ocaml -c polyvar.out.ml
 - - build test polyvar.out.o
@@ -2337,8 +2338,6 @@ The following actions will be performed:
 - findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - - build test embeded.run
 - + ocamlfind ocamlc -package compiler-libs.common -g -g -I . -I ../lib -I ../ocaml -o embeded.run ../lib/meta_conv.cmo ../ocaml/ocaml.cmo ../ocaml/ocaml_conv.cmo test.cmo embeded.out.cmo -linkpkg -linkall
 - - build test object.out.o
@@ -2353,22 +2352,24 @@ The following actions will be performed:
 - + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -I ../lib -I ../ocaml -c record.out.ml
 - - build test record.out.o
 - + ocamlfind ocamlopt -annot -bin-annot -package compiler-libs.common -g -w A-3-4-9-40-42-44-45-48 -warn-error a -I . -I ../lib -I ../ocaml -c record.out.ml
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - - build test record.opt
 - + ocamlfind ocamlopt -package compiler-libs.common -g -I . -I ../lib -I ../ocaml -o record.opt ../lib/meta_conv.cmx ../ocaml/ocaml.cmx ../ocaml/ocaml_conv.cmx test.cmx record.out.cmx -linkpkg -linkall
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - - build test record.run
 - + ocamlfind ocamlc -package compiler-libs.common -g -g -I . -I ../lib -I ../ocaml -o record.run ../lib/meta_conv.cmo ../ocaml/ocaml.cmo ../ocaml/ocaml_conv.cmo test.cmo record.out.cmo -linkpkg -linkall
 - - build test alias.out.o
@@ -2379,22 +2380,24 @@ The following actions will be performed:
 - + ocamlfind ocamlc -package compiler-libs.common -g -g -I . -I ../lib -I ../ocaml -o alias.run ../lib/meta_conv.cmo ../ocaml/ocaml.cmo ../ocaml/ocaml_conv.cmo test.cmo alias.out.cmo -linkpkg -linkall
 - - build test alias.opt
 - + ocamlfind ocamlopt -package compiler-libs.common -g -I . -I ../lib -I ../ocaml -o alias.opt ../lib/meta_conv.cmx ../ocaml/ocaml.cmx ../ocaml/ocaml_conv.cmx test.cmx alias.out.cmx -linkpkg -linkall
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - - build test tuple.out.o
 - + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -I ../lib -I ../ocaml -c tuple.out.ml
 - - build test tuple.out.o
 - + ocamlfind ocamlopt -annot -bin-annot -package compiler-libs.common -g -w A-3-4-9-40-42-44-45-48 -warn-error a -I . -I ../lib -I ../ocaml -c tuple.out.ml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - - build test tuple.run
 - + ocamlfind ocamlc -package compiler-libs.common -g -g -I . -I ../lib -I ../ocaml -o tuple.run ../lib/meta_conv.cmo ../ocaml/ocaml.cmo ../ocaml/ocaml_conv.cmo test.cmo tuple.out.cmo -linkpkg -linkall
 - - build test tuple.opt
@@ -2407,10 +2410,6 @@ The following actions will be performed:
 - + ocamlfind ocamlc -package compiler-libs.common -g -g -I . -I ../lib -I ../ocaml -o rec.run ../lib/meta_conv.cmo ../ocaml/ocaml.cmo ../ocaml/ocaml_conv.cmo test.cmo rec.out.cmo -linkpkg -linkall
 - - build test rec.opt
 - + ocamlfind ocamlopt -package compiler-libs.common -g -I . -I ../lib -I ../ocaml -o rec.opt ../lib/meta_conv.cmx ../ocaml/ocaml.cmx ../ocaml/ocaml_conv.cmx test.cmx rec.out.cmx -linkpkg -linkall
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
@@ -2437,22 +2436,24 @@ The following actions will be performed:
 - + ocamlfind ocamlopt -annot -bin-annot -package compiler-libs.common -g -w A-3-4-9-40-42-44-45-48 -warn-error a -I . -I ../lib -I ../ocaml -c leftovers.out.ml
 - - build test leftovers.run
 - + ocamlfind ocamlc -package compiler-libs.common -g -g -I . -I ../lib -I ../ocaml -o leftovers.run ../lib/meta_conv.cmo ../ocaml/ocaml.cmo ../ocaml/ocaml_conv.cmo test.cmo leftovers.out.cmo -linkpkg -linkall
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - - build test leftovers.opt
 - + ocamlfind ocamlopt -package compiler-libs.common -g -I . -I ../lib -I ../ocaml -o leftovers.opt ../lib/meta_conv.cmx ../ocaml/ocaml.cmx ../ocaml/ocaml_conv.cmx test.cmx leftovers.out.cmx -linkpkg -linkall
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - - build test as_record.out.cmo
 - + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -I ../lib -I ../ocaml -c as_record.out.ml
 - - build test as_record.out.cmo
@@ -2461,16 +2462,6 @@ The following actions will be performed:
 - + ocamlfind ocamlc -package compiler-libs.common -g -g -I . -I ../lib -I ../ocaml -o as_record.run ../lib/meta_conv.cmo ../ocaml/ocaml.cmo ../ocaml/ocaml_conv.cmo test.cmo as_record.out.cmo -linkpkg -linkall
 - - build test as_record.opt
 - + ocamlfind ocamlopt -package compiler-libs.common -g -I . -I ../lib -I ../ocaml -o as_record.opt ../lib/meta_conv.cmx ../ocaml/ocaml.cmx ../ocaml/ocaml_conv.cmx test.cmx as_record.out.cmx -linkpkg -linkall
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - - build test mc_option.out.cmo
 - + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -I ../lib -I ../ocaml -c mc_option.out.ml
 - - build test mc_option.out.cmo
@@ -2479,6 +2470,22 @@ The following actions will be performed:
 - + ocamlfind ocamlc -package compiler-libs.common -g -g -I . -I ../lib -I ../ocaml -o mc_option.run ../lib/meta_conv.cmo ../ocaml/ocaml.cmo ../ocaml/ocaml_conv.cmo test.cmo mc_option.out.cmo -linkpkg -linkall
 - - build test mc_option.opt
 - + ocamlfind ocamlopt -package compiler-libs.common -g -I . -I ../lib -I ../ocaml -o mc_option.opt ../lib/meta_conv.cmx ../ocaml/ocaml.cmx ../ocaml/ocaml_conv.cmx test.cmx mc_option.out.cmx -linkpkg -linkall
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - - build test embeded_opt.out.cmx
 - + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -I ../lib -I ../ocaml -c embeded_opt.out.ml
 - - build test embeded_opt.out.cmx
@@ -2487,22 +2494,6 @@ The following actions will be performed:
 - + ocamlfind ocamlc -package compiler-libs.common -g -g -I . -I ../lib -I ../ocaml -o embeded_opt.run ../lib/meta_conv.cmo ../ocaml/ocaml.cmo ../ocaml/ocaml_conv.cmo test.cmo embeded_opt.out.cmo -linkpkg -linkall
 - - build test embeded_opt.opt
 - + ocamlfind ocamlopt -package compiler-libs.common -g -I . -I ../lib -I ../ocaml -o embeded_opt.opt ../lib/meta_conv.cmx ../ocaml/ocaml.cmx ../ocaml/ocaml_conv.cmx test.cmx embeded_opt.out.cmx -linkpkg -linkall
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - - build tiny_json json_conv.cmi
 - + ocamlfind ocamlc -annot -bin-annot -package 'compiler-libs.common tiny_json' -g -w A-3-4-9-40-42-44-45-48-44 -warn-error a -g -I . -I ../lib -c json_conv.mli
 - - build tiny_json json_conv.cmx
@@ -2513,17 +2504,25 @@ The following actions will be performed:
 - + ocamlfind ocamlc -package 'compiler-libs.common tiny_json' -g -g -a -o tiny_json_conv.cma json_conv.cmo
 - - build tiny_json tiny_json_conv.cmxs
 - + ocamlfind ocamlopt -package 'compiler-libs.common tiny_json' -g -shared -o tiny_json_conv.cmxs json_conv.cmx
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - - build tiny_json tiny_json_conv.cmxa
 - + ocamlfind ocamlopt -package 'compiler-libs.common tiny_json' -g -a -o tiny_json_conv.cmxa json_conv.cmx
-- *** omake: done (13.58 sec, 35/35 scans, 118/192 rules, 244/585 digests)
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface types.cmi occurs in several directories: ../lib, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- *** omake: done (14.76 sec, 35/35 scans, 118/192 rules, 244/585 digests)
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 [ppx_meta_conv: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/4.02.1/build/ppx_meta_conv.2.0.1)
@@ -2541,7 +2540,7 @@ The following actions will be performed:
 - + ocamlfind remove ppx_tiny_json_conv
 - - build tiny_json <install>
 - + ocamlfind install ppx_tiny_json_conv tiny_json_conv.cmxa tiny_json_conv.a tiny_json_conv.cmxs tiny_json_conv.cma json_conv.cmi json_conv.mli META json_conv.cmt json_conv.cmti
-- *** omake: done (0.36 sec, 0/18 scans, 6/67 rules, 13/277 digests)
+- *** omake: done (0.40 sec, 0/18 scans, 6/67 rules, 13/277 digests)
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/4.02.1/lib/ppx_ocaml_conv
 - Installed /home/opam/.opam/4.02.1/lib/ppx_ocaml_conv/ocaml_conv.cmti
 - Installed /home/opam/.opam/4.02.1/lib/ppx_ocaml_conv/ocaml.cmti
@@ -2648,7 +2647,7 @@ The following actions will be performed:
 - --- Checking for ocamlc.opt... (found /home/opam/.opam/4.02.1/bin/ocamlc.opt)
 - --- Checking for ocamlopt.opt... (found /home/opam/.opam/4.02.1/bin/ocamlopt.opt)
 - --- Checking whether ocamlc understands the "z" warnings... (yes)
-- *** omake: finished reading OMakefiles (0.07 sec)
+- *** omake: finished reading OMakefiles (0.06 sec)
 - --- Checking if ocamldep understands -modules... (yes)
 - - build lib aprinter.cmi
 - + ocamlfind ocamlc -annot -bin-annot -for-pack Treeprint -package spotlib,ppx_ocaml_conv -g -w A-3-4-9-40-42-44-45 -warn-error a -g -package ppx_meta_conv -I . -c aprinter.mli
@@ -2665,6 +2664,8 @@ The following actions will be performed:
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
+- *** omake: warning: stdout is not a tty, disabling the progress bar
+-    (use --progress to override).
 - - build lib printer.cmi
 - + ocamlfind ocamlc -annot -bin-annot -for-pack Treeprint -package spotlib,ppx_ocaml_conv -g -w A-3-4-9-40-42-44-45 -warn-error a -g -package ppx_meta_conv -I . -c printer.mli
 - - build lib printer.cmo
@@ -2685,8 +2686,6 @@ The following actions will be performed:
 - + ocamlfind ocamlc -package spotlib,ppx_ocaml_conv -g -g -I . -o test.run printer.cmo test.cmo -linkpkg
 - - build lib test.opt
 - + ocamlfind ocamlopt -package spotlib,ppx_ocaml_conv -g -I . -o test.opt printer.cmx test.cmx -linkpkg
-- *** omake: warning: stdout is not a tty, disabling the progress bar
--    (use --progress to override).
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
@@ -2697,11 +2696,11 @@ The following actions will be performed:
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
-- *** omake: done (1.92 sec, 5/5 scans, 13/20 rules, 36/127 digests)
+- *** omake: done (1.96 sec, 5/5 scans, 13/20 rules, 36/127 digests)
 [treeprint: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/4.02.1/build/treeprint.2.0.0)
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.08 sec)
+- *** omake: finished reading OMakefiles (0.04 sec)
 - - build lib treeprint.cmi
 - + ocamlfind ocamlopt -package spotlib,ppx_ocaml_conv -g -pack -o treeprint.cmx printer.cmx aprinter.cmx
 - - build lib treeprint.cmt
@@ -2714,7 +2713,7 @@ The following actions will be performed:
 - + ocamlfind remove treeprint
 - - build lib <install>
 - + ocamlfind install treeprint META printer.mli aprinter.mli treeprint.cmi treeprint.cmo treeprint.cmx treeprint.cma treeprint.cmxa treeprint.cmxs treeprint.o treeprint.a treeprint.cmt
-- *** omake: done (0.36 sec, 0/4 scans, 5/18 rules, 13/114 digests)
+- *** omake: done (0.32 sec, 0/4 scans, 5/18 rules, 13/114 digests)
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs, /home/opam/.opam/4.02.1/lib/ocaml
