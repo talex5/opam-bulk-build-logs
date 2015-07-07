@@ -1,8 +1,8 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-# Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=why3
+# Detecting depexts using flags: x86_64 linux debian
 # The following system packages are needed:
 #  - libexpat1-dev
 #  - libgmp-dev
@@ -16,20 +16,20 @@ Not running as root, the following command will be run through "sudo":
 + sudo apt-get update
 Hit http://security.debian.org stable/updates InRelease
 Ign http://download.opensuse.org  InRelease
-Hit http://httpredir.debian.org stable InRelease
-Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Get:2 http://security.debian.org stable/updates/main amd64 Packages [59.5 kB]
-Get:3 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
-Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Get:5 http://download.opensuse.org  Packages [5783 B]
-Fetched 9214 kB in 4s (1947 kB/s)
+Get:1 http://security.debian.org stable/updates/main amd64 Packages [59.5 kB]
+Get:2 http://download.opensuse.org  Packages [5783 B]
+Get:3 http://httpredir.debian.org stable InRelease [128 kB]
+Get:4 http://httpredir.debian.org stable-updates InRelease [126 kB]
+Get:5 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
+Get:6 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
+Fetched 9342 kB in 4s (1978 kB/s)
 Reading package lists...
 # OS package update successful
++ sudo apt-get install -qq -yy libexpat1-dev libgmp-dev libgtk2.0-dev libgtksourceview2.0-dev m4 zlib1g-dev
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libexpat1-dev libgmp-dev libgtk2.0-dev libgtksourceview2.0-dev m4 zlib1g-dev
-+ sudo apt-get install -qq -yy libexpat1-dev libgmp-dev libgtk2.0-dev libgtksourceview2.0-dev m4 zlib1g-dev
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
@@ -507,14 +507,15 @@ The following actions will be performed:
   - install conf-gmp           1                                [required by zarith]
   - install ocamlfind          1.5.5                            [required by ocamlgraph, camlzip, lablgtk, why3-base]
   - install zarith             1.3                              [required by why3]
+  - install menhir             20141215                         [required by why3-base]
   - install camlzip            1.05                             [required by why3]
   - install camlp4             4.02.1+2                         [required by lablgtk]
   - install lablgtk            2.18.3                           [required by why3]
   - install ocamlgraph         1.8.6                            [required by why3]
-  - install why3-base          0.85                             [required by why3]
-  - install why3               0.85    
-       Coq realization of why3 theories will not be available without coq
-===== 10 to install =====
+  - install why3-base          0.86                             [required by why3]
+  - install why3               0.86    
+       Coq realizations of Why3 theories are only available if Coq is installed
+===== 11 to install =====
 
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlp4: from default] Command started
@@ -522,22 +523,25 @@ The following actions will be performed:
 [lablgtk: from default] Command started
 [camlzip: from default] Command started
 [default] http://opam-archive:8080/archives/camlzip.1.05+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
+[menhir: from default] Command started
 [camlp4: from default] Command started
 [lablgtk: from default] Command started
+[default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
+[menhir: from default] Command started
 [default] http://opam-archive:8080/archives/lablgtk.2.18.3+opam.tar.gz downloaded
 [ocamlgraph: from default] Command started
-[ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/camlp4.4.02.1+2+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/menhir.20141215+opam.tar.gz downloaded
 [why3-base: from default] Command started
-[ocamlgraph: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [zarith: from default] Command started
+[ocamlgraph: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlgraph.1.8.6+opam.tar.gz downloaded
 [zarith: from default] Command started
 [default] http://opam-archive:8080/archives/zarith.1.3+opam.tar.gz downloaded
 [why3-base: from default] Command started
-[default] http://opam-archive:8080/archives/why3-base.0.85+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/why3-base.0.86+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [conf-gmp: sh cc -c $CFLAGS test.c] Command started
@@ -627,7 +631,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -673,18 +676,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
-- if [ "true" = "true" ]; then                 \
-- 	cp topfind.ml.in topfind.ml;                             \
-- else                                                             \
-- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 		> topfind.ml ;                                   \
-- fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -693,6 +690,13 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- if [ "true" = "true" ]; then                 \
+- 	cp topfind.ml.in topfind.ml;                             \
+- else                                                             \
+- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 		> topfind.ml ;                                   \
+- fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -736,7 +740,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -781,6 +784,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -976,6 +980,803 @@ The following actions will be performed:
 - ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/4.02.1/lib/stublibs is not mentioned in ld.conf
 - Installed /home/opam/.opam/4.02.1/lib/camlzip/META
 -> installed camlzip.1.05
+[menhir: make] Command started
++ make "PREFIX=/home/opam/.opam/4.02.1" "docdir=/home/opam/.opam/4.02.1/doc/menhir" "libdir=/home/opam/.opam/4.02.1/lib/menhir" "mandir=/home/opam/.opam/4.02.1/man/man1" (CWD=/home/opam/.opam/4.02.1/build/menhir.20141215)
+- rm -f src/installation.ml
+- echo "let libdir = \"/home/opam/.opam/4.02.1/lib/menhir\"" > src/installation.ml
+- if ocamlfind ocamlc -v >/dev/null 2>&1 ; then \
+-   echo "let ocamlfind = true" >> src/installation.ml ; \
+- else \
+-   echo "let ocamlfind = false" >> src/installation.ml ; \
+- fi
+- make -C src library bootstrap
+- make[1]: Entering directory '/home/opam/.opam/4.02.1/build/menhir.20141215/src'
+- ocamlbuild -classic-display -j 0 -cflags "-safe-string" menhirLib.cmo menhirLib.cmx
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt unix.cmxa -I /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules infiniteArray.mli > infiniteArray.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o infiniteArray.cmi infiniteArray.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules infiniteArray.ml > infiniteArray.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules packedIntArray.mli > packedIntArray.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o packedIntArray.cmi packedIntArray.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules packedIntArray.ml > packedIntArray.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules rowDisplacement.mli > rowDisplacement.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o rowDisplacement.cmi rowDisplacement.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules rowDisplacement.ml > rowDisplacement.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules IncrementalEngine.ml > IncrementalEngine.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules engineTypes.ml > engineTypes.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o IncrementalEngine.cmo IncrementalEngine.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules engine.mli > engine.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o engineTypes.cmo engineTypes.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o engine.cmi engine.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules engine.ml > engine.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules tableFormat.ml > tableFormat.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules tableInterpreter.mli > tableInterpreter.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o tableFormat.cmo tableFormat.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o tableInterpreter.cmi tableInterpreter.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules tableInterpreter.ml > tableInterpreter.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules convert.mli > convert.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o convert.cmi convert.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules convert.ml > convert.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o infiniteArray.cmo infiniteArray.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o packedIntArray.cmo packedIntArray.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o rowDisplacement.cmo rowDisplacement.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o engine.cmo engine.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o tableInterpreter.cmo tableInterpreter.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o convert.cmo convert.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -pack -g infiniteArray.cmo packedIntArray.cmo rowDisplacement.cmo IncrementalEngine.cmo engineTypes.cmo engine.cmo tableFormat.cmo tableInterpreter.cmo convert.cmo -o menhirLib.cmo
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -for-pack MenhirLib -o infiniteArray.cmx infiniteArray.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -for-pack MenhirLib -o IncrementalEngine.cmx IncrementalEngine.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -for-pack MenhirLib -o engineTypes.cmx engineTypes.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -for-pack MenhirLib -o packedIntArray.cmx packedIntArray.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -for-pack MenhirLib -o engine.cmx engine.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -for-pack MenhirLib -o rowDisplacement.cmx rowDisplacement.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -for-pack MenhirLib -o tableFormat.cmx tableFormat.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -for-pack MenhirLib -o tableInterpreter.cmx tableInterpreter.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -for-pack MenhirLib -o convert.cmx convert.ml
+- touch menhirLib.mli  ; if  /home/opam/.opam/4.02.1/bin/ocamlopt.opt -pack -g infiniteArray.cmx packedIntArray.cmx rowDisplacement.cmx IncrementalEngine.cmx engineTypes.cmx engine.cmx tableFormat.cmx tableInterpreter.cmx convert.cmx -o menhirLib.cmx  ; then  rm -f menhirLib.mli  ; else  rm -f menhirLib.mli  ; exit 1; fi
+- # Parallel statistics: { count(total): 2(36), max: 6, min: 2, average(total): 4.000(1.167) }
+- Checking that Objective Caml is recent enough...
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt unix.cmxa -I /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules checkOCamlVersion.ml > checkOCamlVersion.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o checkOCamlVersion.cmo checkOCamlVersion.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt str.cma -g checkOCamlVersion.cmo -o checkOCamlVersion.byte
+- # No parallelism done
+- Version 4.02.1 is OK.
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules menhir.ml > menhir.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules back.mli > back.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o back.cmi back.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o menhir.cmo menhir.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules back.ml > back.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules codeBackend.ml > codeBackend.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules codeBackend.mli > codeBackend.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules IL.mli > IL.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules stretch.mli > stretch.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules keyword.mli > keyword.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules positions.mli > positions.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o keyword.cmi keyword.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o positions.cmi positions.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o stretch.cmi stretch.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o IL.cmi IL.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o codeBackend.cmi codeBackend.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules action.ml > action.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules action.mli > action.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o action.cmi action.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules keyword.ml > keyword.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules positions.ml > positions.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules printer.ml > printer.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules printer.mli > printer.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o printer.cmi printer.mli
+- /home/opam/.opam/4.02.1/bin/ocamllex.opt -q lineCount.mll
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules lineCount.ml > lineCount.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o lineCount.cmo lineCount.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules settings.ml > settings.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules settings.mli > settings.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o settings.cmi settings.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules installation.ml > installation.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules installation.mli > installation.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o installation.cmi installation.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules stringSet.ml > stringSet.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules stringSet.mli > stringSet.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o stringSet.cmi stringSet.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules version.ml > version.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o version.cmo version.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o installation.cmx installation.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o stringSet.cmx stringSet.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o version.cmx version.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o lineCount.cmx lineCount.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o settings.cmx settings.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o keyword.cmx keyword.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o positions.cmx positions.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o printer.cmx printer.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules codeBits.ml > codeBits.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules codeBits.mli > codeBits.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o codeBits.cmi codeBits.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules codePieces.ml > codePieces.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules codePieces.mli > codePieces.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules grammar.mli > grammar.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules gMap.ml > gMap.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules gSet.ml > gSet.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o gSet.cmo gSet.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules syntax.mli > syntax.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules mark.mli > mark.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o mark.cmi mark.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o gMap.cmo gMap.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o syntax.cmi syntax.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o grammar.cmi grammar.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o codePieces.cmi codePieces.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o action.cmx action.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o codeBits.cmx codeBits.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules grammar.ml > grammar.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules compressedBitSet.ml > compressedBitSet.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules compressedBitSet.mli > compressedBitSet.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o compressedBitSet.cmi compressedBitSet.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o gSet.cmx gSet.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules dot.ml > dot.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules dot.mli > dot.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o dot.cmi dot.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules option.ml > option.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules option.mli > option.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o option.cmi option.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o option.cmx option.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules error.ml > error.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules error.mli > error.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o error.cmi error.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules mark.ml > mark.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o mark.cmx mark.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules front.ml > front.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules front.mli > front.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules unparameterizedSyntax.mli > unparameterizedSyntax.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules stringMap.mli > stringMap.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o stringMap.cmi stringMap.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o unparameterizedSyntax.cmi unparameterizedSyntax.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o front.cmi front.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o error.cmx error.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules infer.ml > infer.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules infer.mli > infer.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o infer.cmi infer.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules IO.ml > IO.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules IO.mli > IO.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o IO.cmi IO.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules interface.ml > interface.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules interface.mli > interface.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o interface.cmi interface.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules misc.ml > misc.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules misc.mli > misc.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o misc.cmi misc.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules stringMap.ml > stringMap.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o stringMap.cmx stringMap.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules preFront.ml > preFront.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules preFront.mli > preFront.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o preFront.cmi preFront.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules concreteSyntax.mli > concreteSyntax.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o IO.cmx IO.ml
+- /home/opam/.opam/4.02.1/bin/ocamllex.opt -q lexer.mll
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules lexer.ml > lexer.ml.depends
+- cp yacc-parser.mly parser.mly
+- /home/opam/.opam/4.02.1/bin/ocamlyacc parser.mly
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules parser.mli > parser.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o concreteSyntax.cmi concreteSyntax.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o parser.cmi parser.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o lexer.cmo lexer.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules parser.ml > parser.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o misc.cmx misc.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules parameters.ml > parameters.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o parameters.cmo parameters.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules parserAux.ml > parserAux.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules parserAux.mli > parserAux.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o parserAux.cmi parserAux.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o parameters.cmx parameters.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o parserAux.cmx parserAux.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o parser.cmx parser.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules parameterizedGrammar.ml > parameterizedGrammar.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules parameterizedGrammar.mli > parameterizedGrammar.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules internalSyntax.mli > internalSyntax.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o internalSyntax.cmi internalSyntax.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o parameterizedGrammar.cmi parameterizedGrammar.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules tarjan.ml > tarjan.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules tarjan.mli > tarjan.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o tarjan.cmi tarjan.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules unionFind.ml > unionFind.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules unionFind.mli > unionFind.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o unionFind.cmi unionFind.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o tarjan.cmx tarjan.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o unionFind.cmx unionFind.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules partialGrammar.ml > partialGrammar.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules partialGrammar.mli > partialGrammar.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o partialGrammar.cmi partialGrammar.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules time.ml > time.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules time.mli > time.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o time.cmi time.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o lexer.cmx lexer.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o parameterizedGrammar.cmx parameterizedGrammar.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o partialGrammar.cmx partialGrammar.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o time.cmx time.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules tokenType.ml > tokenType.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules tokenType.mli > tokenType.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o tokenType.cmi tokenType.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o preFront.cmx preFront.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o tokenType.cmx tokenType.ml
+- /home/opam/.opam/4.02.1/bin/ocamllex.opt -q lexdep.mll
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules lexdep.ml > lexdep.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o lexdep.cmo lexdep.ml
+- /home/opam/.opam/4.02.1/bin/ocamllex.opt -q lexmli.mll
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules lexmli.ml > lexmli.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o lexmli.cmo lexmli.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o interface.cmx interface.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o lexdep.cmx lexdep.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o lexmli.cmx lexmli.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules nonTerminalDefinitionInlining.ml > nonTerminalDefinitionInlining.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules nonTerminalDefinitionInlining.mli > nonTerminalDefinitionInlining.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o nonTerminalDefinitionInlining.cmi nonTerminalDefinitionInlining.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules listMonad.ml > listMonad.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules listMonad.mli > listMonad.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o listMonad.cmi listMonad.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o listMonad.cmx listMonad.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules reachability.ml > reachability.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules reachability.mli > reachability.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o reachability.cmi reachability.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules unparameterizedPrinter.ml > unparameterizedPrinter.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules unparameterizedPrinter.mli > unparameterizedPrinter.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o unparameterizedPrinter.cmi unparameterizedPrinter.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o infer.cmx infer.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o nonTerminalDefinitionInlining.cmx nonTerminalDefinitionInlining.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o reachability.cmx reachability.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o unparameterizedPrinter.cmx unparameterizedPrinter.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules patricia.ml > patricia.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules patricia.mli > patricia.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o patricia.cmi patricia.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o gMap.cmx gMap.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o compressedBitSet.cmx compressedBitSet.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o dot.cmx dot.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o front.cmx front.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o patricia.cmx patricia.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o grammar.cmx grammar.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules invariant.ml > invariant.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules invariant.mli > invariant.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules lr1.mli > lr1.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules Fix.mli > Fix.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules item.mli > item.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules lookahead.mli > lookahead.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o lookahead.cmi lookahead.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules lr0.mli > lr0.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o item.cmi item.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o Fix.cmi Fix.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o lr0.cmi lr0.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o lr1.cmi lr1.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o invariant.cmi invariant.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules conflict.ml > conflict.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules conflict.mli > conflict.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o conflict.cmi conflict.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules derivation.ml > derivation.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules derivation.mli > derivation.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o derivation.cmi derivation.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules item.ml > item.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o item.cmx item.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules lr0.ml > lr0.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules infiniteArray.mli > infiniteArray.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o infiniteArray.cmi infiniteArray.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules infiniteArray.ml > infiniteArray.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules packedIntArray.mli > packedIntArray.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o packedIntArray.cmi packedIntArray.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules packedIntArray.ml > packedIntArray.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules rowDisplacement.mli > rowDisplacement.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o rowDisplacement.cmi rowDisplacement.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules rowDisplacement.ml > rowDisplacement.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules IncrementalEngine.ml > IncrementalEngine.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules engineTypes.ml > engineTypes.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o IncrementalEngine.cmo IncrementalEngine.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules engine.mli > engine.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o engineTypes.cmo engineTypes.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o engine.cmi engine.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules engine.ml > engine.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules tableFormat.ml > tableFormat.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules tableInterpreter.mli > tableInterpreter.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o tableFormat.cmo tableFormat.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o tableInterpreter.cmi tableInterpreter.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules tableInterpreter.ml > tableInterpreter.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules convert.mli > convert.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o convert.cmi convert.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules convert.ml > convert.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o infiniteArray.cmo infiniteArray.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o packedIntArray.cmo packedIntArray.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o rowDisplacement.cmo rowDisplacement.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o engine.cmo engine.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o tableInterpreter.cmo tableInterpreter.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o convert.cmo convert.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -pack -g infiniteArray.cmo packedIntArray.cmo rowDisplacement.cmo IncrementalEngine.cmo engineTypes.cmo engine.cmo tableFormat.cmo tableInterpreter.cmo convert.cmo -o menhirLib.cmo
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -for-pack MenhirLib -o infiniteArray.cmx infiniteArray.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -for-pack MenhirLib -o IncrementalEngine.cmx IncrementalEngine.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -for-pack MenhirLib -o engineTypes.cmx engineTypes.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -for-pack MenhirLib -o packedIntArray.cmx packedIntArray.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -for-pack MenhirLib -o engine.cmx engine.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -for-pack MenhirLib -o rowDisplacement.cmx rowDisplacement.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -for-pack MenhirLib -o tableFormat.cmx tableFormat.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -for-pack MenhirLib -o tableInterpreter.cmx tableInterpreter.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -for-pack MenhirLib -o convert.cmx convert.ml
+- touch menhirLib.mli  ; if  /home/opam/.opam/4.02.1/bin/ocamlopt.opt -pack -g infiniteArray.cmx packedIntArray.cmx rowDisplacement.cmx IncrementalEngine.cmx engineTypes.cmx engine.cmx tableFormat.cmx tableInterpreter.cmx convert.cmx -o menhirLib.cmx  ; then  rm -f menhirLib.mli  ; else  rm -f menhirLib.mli  ; exit 1; fi
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules lr1.ml > lr1.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules breadth.ml > breadth.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules breadth.mli > breadth.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o breadth.cmi breadth.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o lr0.cmx lr0.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules slr.ml > slr.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules slr.mli > slr.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o slr.cmi slr.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules Fix.ml > Fix.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o breadth.cmx breadth.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o slr.cmx slr.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o Fix.cmx Fix.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules lr1partial.ml > lr1partial.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules lr1partial.mli > lr1partial.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o lr1partial.cmi lr1partial.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o lr1.cmx lr1.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o derivation.cmx derivation.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o lr1partial.cmx lr1partial.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o conflict.cmx conflict.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o codePieces.cmx codePieces.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o invariant.cmx invariant.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules coqBackend.ml > coqBackend.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules coqBackend.mli > coqBackend.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o coqBackend.cmi coqBackend.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules inliner.ml > inliner.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules inliner.mli > inliner.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o inliner.cmi inliner.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules traverse.ml > traverse.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o traverse.cmo traverse.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o traverse.cmx traverse.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules interpret.ml > interpret.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules interpret.mli > interpret.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o interpret.cmi interpret.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules cst.ml > cst.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules cst.mli > cst.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o cst.cmi cst.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules pprint.ml > pprint.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules pprint.mli > pprint.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o pprint.cmi pprint.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o pprint.cmx pprint.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules referenceInterpreter.ml > referenceInterpreter.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules referenceInterpreter.mli > referenceInterpreter.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o referenceInterpreter.cmi referenceInterpreter.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o cst.cmx cst.ml
+- /home/opam/.opam/4.02.1/bin/ocamllex.opt -q sentenceLexer.mll
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules sentenceLexer.ml > sentenceLexer.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlyacc sentenceParser.mly
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules sentenceParser.mli > sentenceParser.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o sentenceParser.cmi sentenceParser.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o sentenceLexer.cmo sentenceLexer.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules sentenceParser.ml > sentenceParser.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o sentenceParser.cmx sentenceParser.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o referenceInterpreter.cmx referenceInterpreter.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o sentenceLexer.cmx sentenceLexer.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules tableBackend.ml > tableBackend.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules tableBackend.mli > tableBackend.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o tableBackend.cmi tableBackend.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o codeBackend.cmx codeBackend.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o coqBackend.cmx coqBackend.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o inliner.cmx inliner.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o interpret.cmx interpret.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o tableBackend.cmx tableBackend.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o back.cmx back.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o menhir.cmx menhir.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt unix.cmxa -g Fix.cmx IO.cmx installation.cmx keyword.cmx lineCount.cmx positions.cmx stringSet.cmx version.cmx settings.cmx printer.cmx action.cmx mark.cmx stringMap.cmx misc.cmx breadth.cmx codeBits.cmx gSet.cmx compressedBitSet.cmx option.cmx dot.cmx error.cmx parameters.cmx parserAux.cmx parser.cmx lexer.cmx tarjan.cmx unionFind.cmx parameterizedGrammar.cmx partialGrammar.cmx time.cmx preFront.cmx tokenType.cmx interface.cmx lexdep.cmx lexmli.cmx infer.cmx listMonad.cmx nonTerminalDefinitionInlining.cmx reachability.cmx unparameterizedPrinter.cmx front.cmx gMap.cmx patricia.cmx grammar.cmx codePieces.cmx item.cmx derivation.cmx menhirLib.cmx lr0.cmx slr.cmx lr1.cmx lr1partial.cmx conflict.cmx invariant.cmx codeBackend.cmx coqBackend.cmx pprint.cmx cst.cmx traverse.cmx inliner.cmx referenceInterpreter.cmx sentenceParser.cmx sentenceLexer.cmx interpret.cmx tableBackend.cmx back.cmx menhir.cmx -o menhir.native
+- # Parallel statistics: { count(total): 18(284), max: 6, min: 2, average(total): 2.889(1.120) }
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt unix.cmxa -I /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules menhir.ml > menhir.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules back.mli > back.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o back.cmi back.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o menhir.cmo menhir.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules back.ml > back.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules codeBackend.ml > codeBackend.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules codeBackend.mli > codeBackend.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules IL.mli > IL.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules stretch.mli > stretch.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules keyword.mli > keyword.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules positions.mli > positions.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o keyword.cmi keyword.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o positions.cmi positions.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o stretch.cmi stretch.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o IL.cmi IL.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o codeBackend.cmi codeBackend.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules action.ml > action.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules action.mli > action.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o action.cmi action.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules keyword.ml > keyword.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules positions.ml > positions.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules printer.ml > printer.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules printer.mli > printer.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o printer.cmi printer.mli
+- /home/opam/.opam/4.02.1/bin/ocamllex.opt -q lineCount.mll
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules lineCount.ml > lineCount.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o lineCount.cmo lineCount.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules settings.ml > settings.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules settings.mli > settings.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o settings.cmi settings.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules installation.ml > installation.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules installation.mli > installation.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o installation.cmi installation.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules stringSet.ml > stringSet.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules stringSet.mli > stringSet.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o stringSet.cmi stringSet.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules version.ml > version.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o version.cmo version.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o installation.cmx installation.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o stringSet.cmx stringSet.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o version.cmx version.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o lineCount.cmx lineCount.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o settings.cmx settings.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o keyword.cmx keyword.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o positions.cmx positions.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o printer.cmx printer.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules codeBits.ml > codeBits.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules codeBits.mli > codeBits.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o codeBits.cmi codeBits.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules codePieces.ml > codePieces.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules codePieces.mli > codePieces.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules grammar.mli > grammar.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules gMap.ml > gMap.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules gSet.ml > gSet.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o gSet.cmo gSet.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules syntax.mli > syntax.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules mark.mli > mark.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o mark.cmi mark.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o gMap.cmo gMap.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o syntax.cmi syntax.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o grammar.cmi grammar.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o codePieces.cmi codePieces.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o action.cmx action.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o codeBits.cmx codeBits.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules grammar.ml > grammar.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules compressedBitSet.ml > compressedBitSet.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules compressedBitSet.mli > compressedBitSet.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o compressedBitSet.cmi compressedBitSet.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o gSet.cmx gSet.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules dot.ml > dot.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules dot.mli > dot.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o dot.cmi dot.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules option.ml > option.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules option.mli > option.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o option.cmi option.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o option.cmx option.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules error.ml > error.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules error.mli > error.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o error.cmi error.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules mark.ml > mark.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o mark.cmx mark.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules front.ml > front.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules front.mli > front.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules unparameterizedSyntax.mli > unparameterizedSyntax.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules stringMap.mli > stringMap.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o stringMap.cmi stringMap.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o unparameterizedSyntax.cmi unparameterizedSyntax.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o front.cmi front.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o error.cmx error.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules infer.ml > infer.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules infer.mli > infer.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o infer.cmi infer.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules IO.ml > IO.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules IO.mli > IO.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o IO.cmi IO.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules interface.ml > interface.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules interface.mli > interface.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o interface.cmi interface.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules misc.ml > misc.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules misc.mli > misc.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o misc.cmi misc.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules stringMap.ml > stringMap.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o stringMap.cmx stringMap.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules preFront.ml > preFront.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules preFront.mli > preFront.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o preFront.cmi preFront.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules concreteSyntax.mli > concreteSyntax.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o IO.cmx IO.ml
+- /home/opam/.opam/4.02.1/bin/ocamllex.opt -q lexer.mll
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules lexer.ml > lexer.ml.depends
+- cp fancy-parser.mly parser.mly
+- /home/opam/.opam/4.02.1/build/menhir.20141215/src/_stage1/menhir.native -v -lg 1 -la 1 -lc 1 --comment --infer --stdlib . --strict --fixed-exception --raw-depend --ocamldep '/home/opam/.opam/4.02.1/bin/ocamldep.opt -modules' parser.mly > parser.mly.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o concreteSyntax.cmi concreteSyntax.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules parameters.ml > parameters.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules parserAux.mli > parserAux.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o parameters.cmo parameters.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o parserAux.cmi parserAux.mli
+- /home/opam/.opam/4.02.1/build/menhir.20141215/src/_stage1/menhir.native -v -lg 1 -la 1 -lc 1 --comment --infer --stdlib . --strict --fixed-exception --ocamlc '/home/opam/.opam/4.02.1/bin/ocamlc.opt -safe-string' --infer parser.mly
+- + /home/opam/.opam/4.02.1/build/menhir.20141215/src/_stage1/menhir.native -v -lg 1 -la 1 -lc 1 --comment --infer --stdlib . --strict --fixed-exception --ocamlc '/home/opam/.opam/4.02.1/bin/ocamlc.opt -safe-string' --infer parser.mly
+- Grammar has 31 nonterminal symbols, among which 1 start symbols.
+- Grammar has 26 terminal symbols.
+- Grammar has 83 productions.
+- Built an LR(0) automaton with 115 states.
+- The grammar is not SLR(1) -- 5 states have a conflict.
+- Built an LR(1) automaton with 129 states.
+- 5 shift/reduce conflicts were silently solved.
+- 38 out of 129 states are represented.
+- 25 out of 60 symbols keep track of their start position.
+- 20 out of 60 symbols keep track of their end position.
+- 68 out of 129 states have a default reduction.
+- 45 out of 84 productions exploit shiftreduce optimization.
+- 20 out of 129 states can peek at an error.
+- 379 functions before inlining, 91 functions after inlining.
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules parser.mli > parser.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o parser.cmi parser.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o lexer.cmo lexer.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules parser.ml > parser.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o misc.cmx misc.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules parserAux.ml > parserAux.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o parameters.cmx parameters.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o parserAux.cmx parserAux.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o parser.cmx parser.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules parameterizedGrammar.ml > parameterizedGrammar.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules parameterizedGrammar.mli > parameterizedGrammar.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules internalSyntax.mli > internalSyntax.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o internalSyntax.cmi internalSyntax.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o parameterizedGrammar.cmi parameterizedGrammar.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules tarjan.ml > tarjan.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules tarjan.mli > tarjan.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o tarjan.cmi tarjan.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules unionFind.ml > unionFind.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules unionFind.mli > unionFind.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o unionFind.cmi unionFind.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o tarjan.cmx tarjan.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o unionFind.cmx unionFind.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules partialGrammar.ml > partialGrammar.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules partialGrammar.mli > partialGrammar.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o partialGrammar.cmi partialGrammar.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules time.ml > time.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules time.mli > time.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o time.cmi time.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o lexer.cmx lexer.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o parameterizedGrammar.cmx parameterizedGrammar.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o partialGrammar.cmx partialGrammar.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o time.cmx time.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules tokenType.ml > tokenType.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules tokenType.mli > tokenType.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o tokenType.cmi tokenType.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o preFront.cmx preFront.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o tokenType.cmx tokenType.ml
+- /home/opam/.opam/4.02.1/bin/ocamllex.opt -q lexdep.mll
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules lexdep.ml > lexdep.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o lexdep.cmo lexdep.ml
+- /home/opam/.opam/4.02.1/bin/ocamllex.opt -q lexmli.mll
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules lexmli.ml > lexmli.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o lexmli.cmo lexmli.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o interface.cmx interface.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o lexdep.cmx lexdep.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o lexmli.cmx lexmli.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules nonTerminalDefinitionInlining.ml > nonTerminalDefinitionInlining.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules nonTerminalDefinitionInlining.mli > nonTerminalDefinitionInlining.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o nonTerminalDefinitionInlining.cmi nonTerminalDefinitionInlining.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules listMonad.ml > listMonad.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules listMonad.mli > listMonad.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o listMonad.cmi listMonad.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o listMonad.cmx listMonad.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules reachability.ml > reachability.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules reachability.mli > reachability.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o reachability.cmi reachability.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules unparameterizedPrinter.ml > unparameterizedPrinter.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules unparameterizedPrinter.mli > unparameterizedPrinter.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o unparameterizedPrinter.cmi unparameterizedPrinter.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o infer.cmx infer.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o nonTerminalDefinitionInlining.cmx nonTerminalDefinitionInlining.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o reachability.cmx reachability.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o unparameterizedPrinter.cmx unparameterizedPrinter.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules patricia.ml > patricia.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules patricia.mli > patricia.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o patricia.cmi patricia.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o gMap.cmx gMap.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o compressedBitSet.cmx compressedBitSet.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o dot.cmx dot.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o front.cmx front.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o patricia.cmx patricia.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o grammar.cmx grammar.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules invariant.ml > invariant.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules invariant.mli > invariant.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules lr1.mli > lr1.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules Fix.mli > Fix.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules item.mli > item.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules lookahead.mli > lookahead.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o lookahead.cmi lookahead.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules lr0.mli > lr0.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o item.cmi item.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o Fix.cmi Fix.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o lr0.cmi lr0.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o lr1.cmi lr1.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o invariant.cmi invariant.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules conflict.ml > conflict.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules conflict.mli > conflict.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o conflict.cmi conflict.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules derivation.ml > derivation.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules derivation.mli > derivation.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o derivation.cmi derivation.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules item.ml > item.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o item.cmx item.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules lr0.ml > lr0.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules infiniteArray.mli > infiniteArray.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o infiniteArray.cmi infiniteArray.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules infiniteArray.ml > infiniteArray.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules packedIntArray.mli > packedIntArray.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o packedIntArray.cmi packedIntArray.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules packedIntArray.ml > packedIntArray.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules rowDisplacement.mli > rowDisplacement.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o rowDisplacement.cmi rowDisplacement.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules rowDisplacement.ml > rowDisplacement.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules IncrementalEngine.ml > IncrementalEngine.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules engineTypes.ml > engineTypes.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o IncrementalEngine.cmo IncrementalEngine.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules engine.mli > engine.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o engineTypes.cmo engineTypes.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o engine.cmi engine.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules engine.ml > engine.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules tableFormat.ml > tableFormat.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules tableInterpreter.mli > tableInterpreter.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o tableFormat.cmo tableFormat.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o tableInterpreter.cmi tableInterpreter.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules tableInterpreter.ml > tableInterpreter.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules convert.mli > convert.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o convert.cmi convert.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules convert.ml > convert.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o infiniteArray.cmo infiniteArray.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o packedIntArray.cmo packedIntArray.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o rowDisplacement.cmo rowDisplacement.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o engine.cmo engine.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o tableInterpreter.cmo tableInterpreter.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o convert.cmo convert.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -pack -g infiniteArray.cmo packedIntArray.cmo rowDisplacement.cmo IncrementalEngine.cmo engineTypes.cmo engine.cmo tableFormat.cmo tableInterpreter.cmo convert.cmo -o menhirLib.cmo
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -for-pack MenhirLib -o infiniteArray.cmx infiniteArray.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -for-pack MenhirLib -o IncrementalEngine.cmx IncrementalEngine.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -for-pack MenhirLib -o engineTypes.cmx engineTypes.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -for-pack MenhirLib -o packedIntArray.cmx packedIntArray.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -for-pack MenhirLib -o engine.cmx engine.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -for-pack MenhirLib -o rowDisplacement.cmx rowDisplacement.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -for-pack MenhirLib -o tableFormat.cmx tableFormat.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -for-pack MenhirLib -o tableInterpreter.cmx tableInterpreter.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -for-pack MenhirLib -o convert.cmx convert.ml
+- touch menhirLib.mli  ; if  /home/opam/.opam/4.02.1/bin/ocamlopt.opt -pack -g infiniteArray.cmx packedIntArray.cmx rowDisplacement.cmx IncrementalEngine.cmx engineTypes.cmx engine.cmx tableFormat.cmx tableInterpreter.cmx convert.cmx -o menhirLib.cmx  ; then  rm -f menhirLib.mli  ; else  rm -f menhirLib.mli  ; exit 1; fi
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules lr1.ml > lr1.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules breadth.ml > breadth.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules breadth.mli > breadth.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o breadth.cmi breadth.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o lr0.cmx lr0.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules slr.ml > slr.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules slr.mli > slr.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o slr.cmi slr.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules Fix.ml > Fix.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o breadth.cmx breadth.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o slr.cmx slr.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o Fix.cmx Fix.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules lr1partial.ml > lr1partial.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules lr1partial.mli > lr1partial.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o lr1partial.cmi lr1partial.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o lr1.cmx lr1.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o derivation.cmx derivation.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o lr1partial.cmx lr1partial.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o conflict.cmx conflict.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o codePieces.cmx codePieces.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o invariant.cmx invariant.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules coqBackend.ml > coqBackend.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules coqBackend.mli > coqBackend.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o coqBackend.cmi coqBackend.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules inliner.ml > inliner.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules inliner.mli > inliner.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o inliner.cmi inliner.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules traverse.ml > traverse.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o traverse.cmo traverse.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o traverse.cmx traverse.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules interpret.ml > interpret.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules interpret.mli > interpret.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o interpret.cmi interpret.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules cst.ml > cst.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules cst.mli > cst.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o cst.cmi cst.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules pprint.ml > pprint.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules pprint.mli > pprint.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o pprint.cmi pprint.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o pprint.cmx pprint.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules referenceInterpreter.ml > referenceInterpreter.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules referenceInterpreter.mli > referenceInterpreter.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o referenceInterpreter.cmi referenceInterpreter.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o cst.cmx cst.ml
+- /home/opam/.opam/4.02.1/bin/ocamllex.opt -q sentenceLexer.mll
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules sentenceLexer.ml > sentenceLexer.ml.depends
+- /home/opam/.opam/4.02.1/build/menhir.20141215/src/_stage1/menhir.native -v -lg 1 -la 1 -lc 1 --comment --infer --stdlib . --strict --fixed-exception --raw-depend --ocamldep '/home/opam/.opam/4.02.1/bin/ocamldep.opt -modules' sentenceParser.mly > sentenceParser.mly.depends
+- /home/opam/.opam/4.02.1/build/menhir.20141215/src/_stage1/menhir.native -v -lg 1 -la 1 -lc 1 --comment --infer --stdlib . --strict --fixed-exception --ocamlc '/home/opam/.opam/4.02.1/bin/ocamlc.opt -safe-string' --infer sentenceParser.mly
+- + /home/opam/.opam/4.02.1/build/menhir.20141215/src/_stage1/menhir.native -v -lg 1 -la 1 -lc 1 --comment --infer --stdlib . --strict --fixed-exception --ocamlc '/home/opam/.opam/4.02.1/bin/ocamlc.opt -safe-string' --infer sentenceParser.mly
+- Grammar has 2 nonterminal symbols, among which 1 start symbols.
+- Grammar has 5 terminal symbols.
+- Grammar has 5 productions.
+- Built an LR(0) automaton with 11 states.
+- The grammar is SLR(1).
+- Built an LR(1) automaton with 11 states.
+- 3 out of 11 states are represented.
+- 0 out of 10 symbols keep track of their start position.
+- 0 out of 10 symbols keep track of their end position.
+- 5 out of 11 states have a default reduction.
+- 4 out of 6 productions exploit shiftreduce optimization.
+- 0 out of 11 states can peek at an error.
+- 36 functions before inlining, 7 functions after inlining.
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules sentenceParser.mli > sentenceParser.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o sentenceParser.cmi sentenceParser.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o sentenceLexer.cmo sentenceLexer.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules sentenceParser.ml > sentenceParser.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o sentenceParser.cmx sentenceParser.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o referenceInterpreter.cmx referenceInterpreter.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o sentenceLexer.cmx sentenceLexer.ml
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules tableBackend.ml > tableBackend.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules tableBackend.mli > tableBackend.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o tableBackend.cmi tableBackend.mli
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o codeBackend.cmx codeBackend.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o coqBackend.cmx coqBackend.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o inliner.cmx inliner.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o interpret.cmx interpret.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o tableBackend.cmx tableBackend.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o back.cmx back.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -safe-string -g -inline 1000 -o menhir.cmx menhir.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt unix.cmxa -g Fix.cmx IO.cmx installation.cmx keyword.cmx lineCount.cmx positions.cmx stringSet.cmx version.cmx settings.cmx printer.cmx action.cmx mark.cmx stringMap.cmx misc.cmx breadth.cmx codeBits.cmx gSet.cmx compressedBitSet.cmx option.cmx dot.cmx error.cmx parameters.cmx parserAux.cmx parser.cmx lexer.cmx tarjan.cmx unionFind.cmx parameterizedGrammar.cmx partialGrammar.cmx time.cmx preFront.cmx tokenType.cmx interface.cmx lexdep.cmx lexmli.cmx infer.cmx listMonad.cmx nonTerminalDefinitionInlining.cmx reachability.cmx unparameterizedPrinter.cmx front.cmx gMap.cmx patricia.cmx grammar.cmx codePieces.cmx item.cmx derivation.cmx menhirLib.cmx lr0.cmx slr.cmx lr1.cmx lr1partial.cmx conflict.cmx invariant.cmx codeBackend.cmx coqBackend.cmx pprint.cmx cst.cmx traverse.cmx inliner.cmx referenceInterpreter.cmx sentenceParser.cmx sentenceLexer.cmx interpret.cmx tableBackend.cmx back.cmx menhir.cmx -o menhir.native
+- # Parallel statistics: { count(total): 19(285), max: 6, min: 2, average(total): 2.842(1.123) }
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt unix.cmxa -I /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /home/opam/.opam/4.02.1/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
+- cp fancy-parser.mly parser.mly
+- /home/opam/.opam/4.02.1/build/menhir.20141215/src/_stage2/menhir.native -v -lg 1 -la 1 -lc 1 --comment --infer --stdlib . --strict --fixed-exception --raw-depend --ocamldep '/home/opam/.opam/4.02.1/bin/ocamldep.opt -modules' parser.mly > parser.mly.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules action.mli > action.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules IL.mli > IL.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules stretch.mli > stretch.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules keyword.mli > keyword.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules positions.mli > positions.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o keyword.cmi keyword.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o positions.cmi positions.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o stretch.cmi stretch.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o IL.cmi IL.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules concreteSyntax.mli > concreteSyntax.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules syntax.mli > syntax.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o action.cmi action.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules mark.mli > mark.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o mark.cmi mark.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o syntax.cmi syntax.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules error.mli > error.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules misc.mli > misc.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules stringMap.mli > stringMap.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules stringSet.mli > stringSet.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o stringSet.cmi stringSet.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o stringMap.cmi stringMap.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules parameters.ml > parameters.ml.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o misc.cmi misc.mli
+- /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules parserAux.mli > parserAux.mli.depends
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o concreteSyntax.cmi concreteSyntax.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o error.cmi error.mli
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -g -o parameters.cmo parameters.ml
+- /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -safe-string -o parserAux.cmi parserAux.mli
+- /home/opam/.opam/4.02.1/build/menhir.20141215/src/_stage2/menhir.native -v -lg 1 -la 1 -lc 1 --comment --infer --stdlib . --strict --fixed-exception --ocamlc '/home/opam/.opam/4.02.1/bin/ocamlc.opt -safe-string' --infer parser.mly
+- + /home/opam/.opam/4.02.1/build/menhir.20141215/src/_stage2/menhir.native -v -lg 1 -la 1 -lc 1 --comment --infer --stdlib . --strict --fixed-exception --ocamlc '/home/opam/.opam/4.02.1/bin/ocamlc.opt -safe-string' --infer parser.mly
+- Grammar has 31 nonterminal symbols, among which 1 start symbols.
+- Grammar has 26 terminal symbols.
+- Grammar has 83 productions.
+- Built an LR(0) automaton with 115 states.
+- The grammar is not SLR(1) -- 5 states have a conflict.
+- Built an LR(1) automaton with 129 states.
+- 5 shift/reduce conflicts were silently solved.
+- 38 out of 129 states are represented.
+- 25 out of 60 symbols keep track of their start position.
+- 20 out of 60 symbols keep track of their end position.
+- 68 out of 129 states have a default reduction.
+- 45 out of 84 productions exploit shiftreduce optimization.
+- 20 out of 129 states can peek at an error.
+- 379 functions before inlining, 91 functions after inlining.
+- # Parallel statistics: { count(total): 2(28), max: 4, min: 2, average(total): 3.000(1.143) }
+- Bootstrap successful.
+- make[1]: Leaving directory '/home/opam/.opam/4.02.1/build/menhir.20141215/src'
+[menhir: make install] Command started
++ make "install" "PREFIX=/home/opam/.opam/4.02.1" "docdir=/home/opam/.opam/4.02.1/doc/menhir" "libdir=/home/opam/.opam/4.02.1/lib/menhir" "mandir=/home/opam/.opam/4.02.1/man/man1" (CWD=/home/opam/.opam/4.02.1/build/menhir.20141215)
+- mkdir -p /home/opam/.opam/4.02.1/bin
+- mkdir -p /home/opam/.opam/4.02.1/lib/menhir
+- mkdir -p /home/opam/.opam/4.02.1/doc/menhir
+- mkdir -p /home/opam/.opam/4.02.1/man/man1
+- install src/_stage2/menhir.native /home/opam/.opam/4.02.1/bin/menhir
+- install -m 644 src/standard.mly /home/opam/.opam/4.02.1/lib/menhir
+- cp -r manual.pdf demos /home/opam/.opam/4.02.1/doc/menhir
+- cp -r menhir.1 /home/opam/.opam/4.02.1/man/man1
+- Installing MenhirLib via ocamlfind.
+- Installed /home/opam/.opam/4.02.1/lib/menhirLib/menhirLib.o
+- Installed /home/opam/.opam/4.02.1/lib/menhirLib/menhirLib.cmx
+- Installed /home/opam/.opam/4.02.1/lib/menhirLib/menhirLib.cmo
+- Installed /home/opam/.opam/4.02.1/lib/menhirLib/menhirLib.cmi
+- Installed /home/opam/.opam/4.02.1/lib/menhirLib/META
+-> installed menhir.20141215
 [zarith: ./configure] Command started
 + ./configure  (CWD=/home/opam/.opam/4.02.1/build/zarith.1.3)
 - binary ocaml: found in /home/opam/.opam/4.02.1/bin
@@ -1086,7 +1887,6 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -I camlp4/config -I camlp4 -o camlp4/config/Camlp4_config.cmi camlp4/config/Camlp4_config.mli
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w a -I camlp4/import -warn-error A-3 -I camlp4/config -I camlp4/boot -o camlp4/boot/Camlp4.cmo camlp4/boot/Camlp4.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w a -I camlp4/import -warn-error A-3 -I camlp4/config -I camlp4/boot -o camlp4/boot/camlp4boot.cmo camlp4/boot/camlp4boot.ml
-- + echo camlp4/Camlp4.cmo camlp4/Camlp4Top.cmo camlp4/camlp4prof.byte camlp4/mkcamlp4.byte camlp4/camlp4.byte camlp4/camlp4fulllib.cma camlp4/camlp4boot.byte camlp4/camlp4boot.cma camlp4/camlp4r.byte camlp4/camlp4r.cma camlp4/camlp4rf.byte camlp4/camlp4rf.cma camlp4/camlp4o.byte camlp4/camlp4o.cma camlp4/camlp4of.byte camlp4/camlp4of.cma camlp4/camlp4oof.byte camlp4/camlp4oof.cma camlp4/camlp4orf.byte camlp4/camlp4orf.cma camlp4/Camlp4Parsers/Camlp4AstLoader.cmo camlp4/Camlp4Parsers/Camlp4DebugParser.cmo camlp4/Camlp4Parsers/Camlp4GrammarParser.cmo camlp4/Camlp4Parsers/Camlp4ListComprehension.cmo camlp4/Camlp4Parsers/Camlp4MacroParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4OCamlParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmo camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmo camlp4/Camlp4Printers/Camlp4AstDumper.cmo camlp4/Camlp4Printers/Camlp4AutoPrinter.cmo camlp4/Camlp4Printers/Camlp4NullDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlPrinter.cmo camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.cmo camlp4/Camlp4Filters/Camlp4AstLifter.cmo camlp4/Camlp4Filters/Camlp4ExceptionTracer.cmo camlp4/Camlp4Filters/Camlp4FoldGenerator.cmo camlp4/Camlp4Filters/Camlp4LocationStripper.cmo camlp4/Camlp4Filters/Camlp4MapGenerator.cmo camlp4/Camlp4Filters/Camlp4MetaGenerator.cmo camlp4/Camlp4Filters/Camlp4Profiler.cmo camlp4/Camlp4Filters/Camlp4TrashRemover.cmo
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules camlp4/config/Camlp4_config.ml > camlp4/config/Camlp4_config.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -modules camlp4/config/gen_import.ml > camlp4/config/gen_import.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I +compiler-libs -I camlp4/import -warn-error A-3 -I camlp4/config -I camlp4 -o camlp4/config/gen_import.cmo camlp4/config/gen_import.ml
@@ -1126,6 +1926,7 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4/Struct/AstFilters.ml > camlp4/Camlp4/Struct/AstFilters.ml.depends
 - cp -p camlp4/boot/Camlp4Ast.ml camlp4/Camlp4/Struct/Camlp4Ast.ml
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4/Struct/Camlp4Ast.ml > camlp4/Camlp4/Struct/Camlp4Ast.ml.depends
+- + echo camlp4/Camlp4.cmo camlp4/Camlp4Top.cmo camlp4/camlp4prof.byte camlp4/mkcamlp4.byte camlp4/camlp4.byte camlp4/camlp4fulllib.cma camlp4/camlp4boot.byte camlp4/camlp4boot.cma camlp4/camlp4r.byte camlp4/camlp4r.cma camlp4/camlp4rf.byte camlp4/camlp4rf.cma camlp4/camlp4o.byte camlp4/camlp4o.cma camlp4/camlp4of.byte camlp4/camlp4of.cma camlp4/camlp4oof.byte camlp4/camlp4oof.cma camlp4/camlp4orf.byte camlp4/camlp4orf.cma camlp4/Camlp4Parsers/Camlp4AstLoader.cmo camlp4/Camlp4Parsers/Camlp4DebugParser.cmo camlp4/Camlp4Parsers/Camlp4GrammarParser.cmo camlp4/Camlp4Parsers/Camlp4ListComprehension.cmo camlp4/Camlp4Parsers/Camlp4MacroParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4OCamlParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmo camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmo camlp4/Camlp4Printers/Camlp4AstDumper.cmo camlp4/Camlp4Printers/Camlp4AutoPrinter.cmo camlp4/Camlp4Printers/Camlp4NullDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlPrinter.cmo camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.cmo camlp4/Camlp4Filters/Camlp4AstLifter.cmo camlp4/Camlp4Filters/Camlp4ExceptionTracer.cmo camlp4/Camlp4Filters/Camlp4FoldGenerator.cmo camlp4/Camlp4Filters/Camlp4LocationStripper.cmo camlp4/Camlp4Filters/Camlp4MapGenerator.cmo camlp4/Camlp4Filters/Camlp4MetaGenerator.cmo camlp4/Camlp4Filters/Camlp4Profiler.cmo camlp4/Camlp4Filters/Camlp4TrashRemover.cmo
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4/Struct/Camlp4Ast2OCamlAst.mli > camlp4/Camlp4/Struct/Camlp4Ast2OCamlAst.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4/Struct -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Struct/Camlp4Ast2OCamlAst.cmi camlp4/Camlp4/Struct/Camlp4Ast2OCamlAst.mli
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4/Struct/Camlp4Ast2OCamlAst.ml > camlp4/Camlp4/Struct/Camlp4Ast2OCamlAst.ml.depends
@@ -1344,8 +2145,8 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamldep.opt -pp 'camlp4/boot/camlp4boot.native -D OPT' -modules camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.ml > camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.ml.depends
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -c -g -w Z -I camlp4/import -warn-error A-3 -pp camlp4/boot/camlp4boot.native -I camlp4/Camlp4Parsers -I camlp4 -I camlp4/config -o camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.ml
 - ocamlbuild -classic-display -no-ocamlfind  `./build/camlp4-native-only.sh`
-- + echo camlp4/Camlp4.cmx camlp4/Camlp4Top.cmx camlp4/camlp4prof.native camlp4/mkcamlp4.native camlp4/camlp4.native camlp4/camlp4fulllib.cmxa camlp4/camlp4boot.native camlp4/camlp4r.native camlp4/camlp4rf.native camlp4/camlp4o.native camlp4/camlp4of.native camlp4/camlp4oof.native camlp4/camlp4orf.native camlp4/Camlp4Parsers/Camlp4AstLoader.cmx camlp4/Camlp4Parsers/Camlp4AstLoader.o camlp4/Camlp4Parsers/Camlp4DebugParser.cmx camlp4/Camlp4Parsers/Camlp4DebugParser.o camlp4/Camlp4Parsers/Camlp4GrammarParser.cmx camlp4/Camlp4Parsers/Camlp4GrammarParser.o camlp4/Camlp4Parsers/Camlp4ListComprehension.cmx camlp4/Camlp4Parsers/Camlp4ListComprehension.o camlp4/Camlp4Parsers/Camlp4MacroParser.cmx camlp4/Camlp4Parsers/Camlp4MacroParser.o camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmx camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.o camlp4/Camlp4Parsers/Camlp4OCamlParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlParser.o camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlParserParser.o camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.o camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.o camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.o camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmx camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.o camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmx camlp4/Camlp4Parsers/Camlp4QuotationCommon.o camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmx camlp4/Camlp4Parsers/Camlp4QuotationExpander.o camlp4/Camlp4Printers/Camlp4AstDumper.cmx camlp4/Camlp4Printers/Camlp4AstDumper.o camlp4/Camlp4Printers/Camlp4AutoPrinter.cmx camlp4/Camlp4Printers/Camlp4AutoPrinter.o camlp4/Camlp4Printers/Camlp4NullDumper.cmx camlp4/Camlp4Printers/Camlp4NullDumper.o camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmx camlp4/Camlp4Printers/Camlp4OCamlAstDumper.o camlp4/Camlp4Printers/Camlp4OCamlPrinter.cmx camlp4/Camlp4Printers/Camlp4OCamlPrinter.o camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.cmx camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.o camlp4/Camlp4Filters/Camlp4AstLifter.cmx camlp4/Camlp4Filters/Camlp4AstLifter.o camlp4/Camlp4Filters/Camlp4ExceptionTracer.cmx camlp4/Camlp4Filters/Camlp4ExceptionTracer.o camlp4/Camlp4Filters/Camlp4FoldGenerator.cmx camlp4/Camlp4Filters/Camlp4FoldGenerator.o camlp4/Camlp4Filters/Camlp4LocationStripper.cmx camlp4/Camlp4Filters/Camlp4LocationStripper.o camlp4/Camlp4Filters/Camlp4MapGenerator.cmx camlp4/Camlp4Filters/Camlp4MapGenerator.o camlp4/Camlp4Filters/Camlp4MetaGenerator.cmx camlp4/Camlp4Filters/Camlp4MetaGenerator.o camlp4/Camlp4Filters/Camlp4Profiler.cmx camlp4/Camlp4Filters/Camlp4Profiler.o camlp4/Camlp4Filters/Camlp4TrashRemover.cmx camlp4/Camlp4Filters/Camlp4TrashRemover.o
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -for-pack Camlp4 -g -w Z -I camlp4/import -warn-error A-3 -pp 'camlp4/boot/camlp4boot.native -D OPT' -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Sig.cmx camlp4/Camlp4/Sig.ml
+- + echo camlp4/Camlp4.cmx camlp4/Camlp4Top.cmx camlp4/camlp4prof.native camlp4/mkcamlp4.native camlp4/camlp4.native camlp4/camlp4fulllib.cmxa camlp4/camlp4boot.native camlp4/camlp4r.native camlp4/camlp4rf.native camlp4/camlp4o.native camlp4/camlp4of.native camlp4/camlp4oof.native camlp4/camlp4orf.native camlp4/Camlp4Parsers/Camlp4AstLoader.cmx camlp4/Camlp4Parsers/Camlp4AstLoader.o camlp4/Camlp4Parsers/Camlp4DebugParser.cmx camlp4/Camlp4Parsers/Camlp4DebugParser.o camlp4/Camlp4Parsers/Camlp4GrammarParser.cmx camlp4/Camlp4Parsers/Camlp4GrammarParser.o camlp4/Camlp4Parsers/Camlp4ListComprehension.cmx camlp4/Camlp4Parsers/Camlp4ListComprehension.o camlp4/Camlp4Parsers/Camlp4MacroParser.cmx camlp4/Camlp4Parsers/Camlp4MacroParser.o camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmx camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.o camlp4/Camlp4Parsers/Camlp4OCamlParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlParser.o camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlParserParser.o camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.o camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.o camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmx camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.o camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmx camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.o camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmx camlp4/Camlp4Parsers/Camlp4QuotationCommon.o camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmx camlp4/Camlp4Parsers/Camlp4QuotationExpander.o camlp4/Camlp4Printers/Camlp4AstDumper.cmx camlp4/Camlp4Printers/Camlp4AstDumper.o camlp4/Camlp4Printers/Camlp4AutoPrinter.cmx camlp4/Camlp4Printers/Camlp4AutoPrinter.o camlp4/Camlp4Printers/Camlp4NullDumper.cmx camlp4/Camlp4Printers/Camlp4NullDumper.o camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmx camlp4/Camlp4Printers/Camlp4OCamlAstDumper.o camlp4/Camlp4Printers/Camlp4OCamlPrinter.cmx camlp4/Camlp4Printers/Camlp4OCamlPrinter.o camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.cmx camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.o camlp4/Camlp4Filters/Camlp4AstLifter.cmx camlp4/Camlp4Filters/Camlp4AstLifter.o camlp4/Camlp4Filters/Camlp4ExceptionTracer.cmx camlp4/Camlp4Filters/Camlp4ExceptionTracer.o camlp4/Camlp4Filters/Camlp4FoldGenerator.cmx camlp4/Camlp4Filters/Camlp4FoldGenerator.o camlp4/Camlp4Filters/Camlp4LocationStripper.cmx camlp4/Camlp4Filters/Camlp4LocationStripper.o camlp4/Camlp4Filters/Camlp4MapGenerator.cmx camlp4/Camlp4Filters/Camlp4MapGenerator.o camlp4/Camlp4Filters/Camlp4MetaGenerator.cmx camlp4/Camlp4Filters/Camlp4MetaGenerator.o camlp4/Camlp4Filters/Camlp4Profiler.cmx camlp4/Camlp4Filters/Camlp4Profiler.o camlp4/Camlp4Filters/Camlp4TrashRemover.cmx camlp4/Camlp4Filters/Camlp4TrashRemover.o
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -for-pack Camlp4 -g -w Z -I camlp4/import -warn-error A-3 -pp 'camlp4/boot/camlp4boot.native -D OPT' -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/Utils.cmx camlp4/Camlp4/Utils.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -for-pack Camlp4 -g -w Z -I camlp4/import -warn-error A-3 -pp 'camlp4/boot/camlp4boot.native -D OPT' -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/OCamlInitSyntax.cmx camlp4/Camlp4/OCamlInitSyntax.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -c -for-pack Camlp4 -g -w Z -I camlp4/import -warn-error A-3 -pp 'camlp4/boot/camlp4boot.native -D OPT' -I camlp4/Camlp4 -I camlp4/config -I camlp4 -o camlp4/Camlp4/ErrorHandler.cmx camlp4/Camlp4/ErrorHandler.ml
@@ -1668,7 +2469,8 @@ The following actions will be performed:
 - checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
-- checking for gcc option to accept ISO C89... none needed
+- checking for gcc option to accept ISO C89... 
+- none needed
 - checking platform... Unix
 - checking native dynlink... checking for pkg-config... /usr/bin/pkg-config
 - checking for GTK+ - version >= 2.0.0... yes (version 2.24.25)
@@ -1727,15 +2529,15 @@ The following actions will be performed:
 -    switch (g_io_channel_read(GIOChannel_val(io), 
 -    ^
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gobject.c'
+- ml_gobject.c: In function 'ml_g_type_init':
+- ml_gobject.c:103:1: warning: 'g_type_init' is deprecated (declared at /usr/include/glib-2.0/gobject/gtype.h:679) [-Wdeprecated-declarations]
+-  ML_0 (g_type_init, Unit)
+-  ^
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O' -verbose ml_gpointer.c
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O' -verbose ml_gvaluecaml.c
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O' -verbose wrappers.c
 - ./varcc gtk_tags.var
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O' -verbose ml_gtk.c
-- ml_gobject.c: In function 'ml_g_type_init':
-- ml_gobject.c:103:1: warning: 'g_type_init' is deprecated (declared at /usr/include/glib-2.0/gobject/gtype.h:679) [-Wdeprecated-declarations]
--  ML_0 (g_type_init, Unit)
--  ^
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gpointer.c'
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gvaluecaml.c'
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'wrappers.c'
@@ -1758,12 +2560,12 @@ The following actions will be performed:
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gtkfile.c'
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O' -verbose ml_gtklist.c
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O' -verbose ml_gtkmenu.c
+- ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O' -verbose ml_gtkmisc.c
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gtklist.c'
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gtkmenu.c'
-- ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O' -verbose ml_gtkmisc.c
+- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gtkmisc.c'
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O' -verbose ml_gtkpack.c
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O' -verbose ml_gtkrange.c
-- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gtkmisc.c'
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gtkpack.c'
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gtkrange.c'
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O' -verbose ml_gtkstock.c
@@ -1771,8 +2573,8 @@ The following actions will be performed:
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gtkstock.c'
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gtktext.c'
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O' -verbose ml_gtktree.c
-- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gtktree.c'
 - ocamlc.opt   -w s -c  gaux.ml
+- + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gtktree.c'
 - ocamlc.opt   -w s -c gpointer.mli
 - ocamlc.opt   -w s -c  gpointer.ml
 - ocamlc.opt   -w s -c gutf8.mli
@@ -1793,6 +2595,11 @@ The following actions will be performed:
 - ocamlc.opt   -w s -c  gdkPixbuf.ml
 - ocamlc.opt   -w s -c  gtk.ml
 - camlp4o pa_macro.cmo -D HAS_PRINTEXC_BACKTRACE -impl gtkSignal.ml4 -o gtkSignal.ml
+- ocamlc.opt   -w s -c gtkSignal.mli
+- ocamlc.opt   -w s -c  gtkSignal.ml
+- ocamlc.opt   -w s -c  gtkStock.ml
+- ocamlc.opt   -w s -c  gtkObject.ml
+- ocamlc.opt -c -pp "camlp4o -impl" -impl propcc.ml4
 - File "gpointer.ml", line 144, characters 10-23:
 - Warning 3: deprecated: StdLabels.String.create
 - Use BytesLabels.create instead.
@@ -1811,11 +2618,6 @@ The following actions will be performed:
 - File "gutf8.ml", line 145, characters 11-23:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
-- ocamlc.opt   -w s -c gtkSignal.mli
-- ocamlc.opt   -w s -c  gtkSignal.ml
-- ocamlc.opt   -w s -c  gtkStock.ml
-- ocamlc.opt   -w s -c  gtkObject.ml
-- ocamlc.opt -c -pp "camlp4o -impl" -impl propcc.ml4
 - ocamlc.opt   -o propcc propcc.cmo
 - ./propcc gtkBase.props
 - ocamlc.opt   -w s -c  gtkBaseProps.ml
@@ -1839,6 +2641,11 @@ The following actions will be performed:
 - ocamlc.opt   -w s -c  gtkTextProps.ml
 - ./propcc gtkTree.props
 - ocamlc.opt   -w s -c  gtkTreeProps.ml
+- Warning: no conversion for type PangoAttrList in class GtkLabel
+- Warning: no conversion for type GdkPixbufAnimation in class GtkImage
+- Warning: no conversion for type PangoTabArray in class GtkTextView
+- Warning: no conversion for type PangoTabArray in class GtkTextTag
+- Warning: no conversion for type PangoAttrList in class GtkCellRendererText
 - ./propcc gtkFile.props
 - ocamlc.opt   -w s -c  gtkFileProps.ml
 - ./propcc gtkAction.props
@@ -1863,14 +2670,6 @@ The following actions will be performed:
 - ocamlc.opt   -w s -c  gtkTree.ml
 - ocamlc.opt   -w s -c  gtkFile.ml
 - ocamlc.opt   -w s -c  gtkMain.ml
-- Warning: no conversion for type PangoAttrList in class GtkLabel
-- Warning: no conversion for type GdkPixbufAnimation in class GtkImage
-- Warning: no conversion for type PangoTabArray in class GtkTextView
-- Warning: no conversion for type PangoTabArray in class GtkTextTag
-- Warning: no conversion for type PangoAttrList in class GtkCellRendererText
-- File "gtkList.ml", line 188, characters 14-26:
-- Warning 3: deprecated: StdLabels.Array.create
-- Use ArrayLabels.make instead.
 - ocamlc.opt   -w s -c  gtkBroken.ml
 - ocamlc.opt   -w s -c  gPango.ml
 - ocamlc.opt   -w s -c gDraw.mli
@@ -1882,6 +2681,9 @@ The following actions will be performed:
 - ocamlc.opt   -w s -c  gData.ml
 - ocamlc.opt   -w s -c  ogtkBinProps.ml
 - ocamlc.opt   -w s -c  ogtkButtonProps.ml
+- File "gtkList.ml", line 188, characters 14-26:
+- Warning 3: deprecated: StdLabels.Array.create
+- Use ArrayLabels.make instead.
 - ocamlc.opt   -w s -c  ogtkEditProps.ml
 - ocamlc.opt   -w s -c  ogtkListProps.ml
 - ocamlc.opt   -w s -c  ogtkMenuProps.ml
@@ -1939,14 +2741,6 @@ The following actions will be performed:
 - ./varcc sourceView2_tags.var
 - ocamlc.opt -c -ccopt '-DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O' -verbose ml_gtksourceview2.c
 - + gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS -pthread -I/usr/include/libxml2 -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng12 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/gtksourceview-2.0  -imacros ml_domain.h -O  -I'/home/opam/.opam/4.02.1/lib/ocaml' 'ml_gtksourceview2.c'
-- ml_gtksourceview2.c: In function 'ml_gtk_source_view_set_mark_category_pixbuf':
-- ml_gtksourceview2.c:749:1: warning: 'gtk_source_view_set_mark_category_pixbuf' is deprecated (declared at /usr/include/gtksourceview-2.0/gtksourceview/gtksourceview.h:194) [-Wdeprecated-declarations]
--  ML_3 (gtk_source_view_set_mark_category_pixbuf, GtkSourceView_val,
--  ^
-- ml_gtksourceview2.c: In function 'ml_gtk_source_view_get_mark_category_pixbuf':
-- ml_gtksourceview2.c:751:1: warning: 'gtk_source_view_get_mark_category_pixbuf' is deprecated (declared at /usr/include/gtksourceview-2.0/gtksourceview/gtksourceview.h:216) [-Wdeprecated-declarations]
--  ML_2 (gtk_source_view_get_mark_category_pixbuf, GtkSourceView_val,
--  ^
 - ocamlc.opt   -w s -c  sourceView2Enums.ml
 - ./propcc gtkSourceView2.props
 - ocamlc.opt   -w s -c gtkSourceView2_types.mli
@@ -1955,6 +2749,14 @@ The following actions will be performed:
 - ocamlc.opt   -w s -c  gtkSourceView2.ml
 - ocamlc.opt   -w s -c gSourceView2.mli
 - ocamlc.opt   -w s -c  gSourceView2.ml
+- ml_gtksourceview2.c: In function 'ml_gtk_source_view_set_mark_category_pixbuf':
+- ml_gtksourceview2.c:749:1: warning: 'gtk_source_view_set_mark_category_pixbuf' is deprecated (declared at /usr/include/gtksourceview-2.0/gtksourceview/gtksourceview.h:194) [-Wdeprecated-declarations]
+-  ML_3 (gtk_source_view_set_mark_category_pixbuf, GtkSourceView_val,
+-  ^
+- ml_gtksourceview2.c: In function 'ml_gtk_source_view_get_mark_category_pixbuf':
+- ml_gtksourceview2.c:751:1: warning: 'gtk_source_view_get_mark_category_pixbuf' is deprecated (declared at /usr/include/gtksourceview-2.0/gtksourceview/gtksourceview.h:216) [-Wdeprecated-declarations]
+-  ML_2 (gtk_source_view_get_mark_category_pixbuf, GtkSourceView_val,
+-  ^
 - ocamlmklib -verbose -ocamlc "ocamlc.opt" -ocamlopt "ocamlopt.opt" -o lablgtksourceview2 ml_gtksourceview2.o sourceView2Enums.cmo gtkSourceView2Props.cmo ogtkSourceView2Props.cmo gtkSourceView2.cmo gSourceView2.cmo -lgtksourceview-2.0 -lgtk-x11-2.0 -lgdk-x11-2.0 -lpangocairo-1.0 -latk-1.0 -lcairo -lgdk_pixbuf-2.0 -lgio-2.0 -lpangoft2-1.0 -lpango-1.0 -lgobject-2.0 -lglib-2.0 -lfontconfig -lfreetype
 - + gcc -shared -o ./dlllablgtksourceview2.so ml_gtksourceview2.o    -lgtksourceview-2.0 -lgtk-x11-2.0 -lgdk-x11-2.0 -lpangocairo-1.0 -latk-1.0 -lcairo -lgdk_pixbuf-2.0 -lgio-2.0 -lpangoft2-1.0 -lpango-1.0 -lgobject-2.0 -lglib-2.0 -lfontconfig -lfreetype
 - + ar rc ./liblablgtksourceview2.a  ml_gtksourceview2.o; ranlib ./liblablgtksourceview2.a
@@ -2001,11 +2803,6 @@ The following actions will be performed:
 - ocamlopt.opt  -w s -c pango.ml
 - ocamlopt.opt  -w s -c gdk.ml
 - ocamlopt.opt  -w s -c gdkEvent.ml
-- ocamlopt.opt  -w s -c gdkKeysyms.ml
-- ocamlopt.opt  -w s -c gdkPixbuf.ml
-- ocamlopt.opt  -w s -c gtk.ml
-- ocamlopt.opt  -w s -c gtkSignal.ml
-- ocamlopt.opt  -w s -c gtkStock.ml
 - File "gpointer.ml", line 144, characters 10-23:
 - Warning 3: deprecated: StdLabels.String.create
 - Use BytesLabels.create instead.
@@ -2024,6 +2821,11 @@ The following actions will be performed:
 - File "gutf8.ml", line 145, characters 11-23:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
+- ocamlopt.opt  -w s -c gdkKeysyms.ml
+- ocamlopt.opt  -w s -c gdkPixbuf.ml
+- ocamlopt.opt  -w s -c gtk.ml
+- ocamlopt.opt  -w s -c gtkSignal.ml
+- ocamlopt.opt  -w s -c gtkStock.ml
 - ocamlopt.opt  -w s -c gtkObject.ml
 - ocamlopt.opt  -w s -c gtkBaseProps.ml
 - ocamlopt.opt  -w s -c gtkBinProps.ml
@@ -2059,12 +2861,12 @@ The following actions will be performed:
 - ocamlopt.opt  -w s -c gtkBroken.ml
 - ocamlopt.opt  -w s -c gPango.ml
 - ocamlopt.opt  -w s -c gDraw.ml
-- File "gtkList.ml", line 188, characters 14-26:
-- Warning 3: deprecated: StdLabels.Array.create
-- Use ArrayLabels.make instead.
 - ocamlopt.opt  -w s -c gObj.ml
 - ocamlopt.opt  -w s -c ogtkBaseProps.ml
 - ocamlopt.opt  -w s -c gData.ml
+- File "gtkList.ml", line 188, characters 14-26:
+- Warning 3: deprecated: StdLabels.Array.create
+- Use ArrayLabels.make instead.
 - ocamlopt.opt  -w s -c ogtkBinProps.ml
 - ocamlopt.opt  -w s -c ogtkButtonProps.ml
 - ocamlopt.opt  -w s -c ogtkEditProps.ml
@@ -2117,10 +2919,10 @@ The following actions will be performed:
 -         -ccopt '' lablgtk.cmxa
 - ocamlopt.opt -verbose -o lablgtksourceview2.cmxs -shared -linkall -I . \
 -         -ccopt '' lablgtksourceview2.cmxa
-- + as -o 'lablgtk.cmxs.startup.o' '/tmp/camlstartup85142f.s'
-- + gcc -shared -o 'lablgtk.cmxs'   '-L.' '-L/home/opam/.opam/4.02.1/lib/ocaml'  'lablgtk.cmxs.startup.o' 'lablgtk.a' '-llablgtk2' '-lgtk-x11-2.0' '-lgdk-x11-2.0' '-lpangocairo-1.0' '-latk-1.0' '-lcairo' '-lgdk_pixbuf-2.0' '-lgio-2.0' '-lpangoft2-1.0' '-lpango-1.0' '-lgobject-2.0' '-lglib-2.0' '-lfontconfig' '-lfreetype' 
 - make[1]: Leaving directory '/home/opam/.opam/4.02.1/build/lablgtk.2.18.3/src'
-- + as -o 'lablgtksourceview2.cmxs.startup.o' '/tmp/camlstartupe1b061.s'
+- + as -o 'lablgtk.cmxs.startup.o' '/tmp/camlstartup861e55.s'
+- + gcc -shared -o 'lablgtk.cmxs'   '-L.' '-L/home/opam/.opam/4.02.1/lib/ocaml'  'lablgtk.cmxs.startup.o' 'lablgtk.a' '-llablgtk2' '-lgtk-x11-2.0' '-lgdk-x11-2.0' '-lpangocairo-1.0' '-latk-1.0' '-lcairo' '-lgdk_pixbuf-2.0' '-lgio-2.0' '-lpangoft2-1.0' '-lpango-1.0' '-lgobject-2.0' '-lglib-2.0' '-lfontconfig' '-lfreetype' 
+- + as -o 'lablgtksourceview2.cmxs.startup.o' '/tmp/camlstartup5cd629.s'
 - + gcc -shared -o 'lablgtksourceview2.cmxs'   '-L.' '-L/home/opam/.opam/4.02.1/lib/ocaml'  'lablgtksourceview2.cmxs.startup.o' 'lablgtksourceview2.a' '-llablgtksourceview2' '-lgtksourceview-2.0' '-lgtk-x11-2.0' '-lgdk-x11-2.0' '-lpangocairo-1.0' '-latk-1.0' '-lcairo' '-lgdk_pixbuf-2.0' '-lgio-2.0' '-lpangoft2-1.0' '-lpango-1.0' '-lgobject-2.0' '-lglib-2.0' '-lfontconfig' '-lfreetype' 
 [lablgtk: make install] Command started
 + make "install" (CWD=/home/opam/.opam/4.02.1/build/lablgtk.2.18.3)
@@ -2582,7 +3384,8 @@ The following actions will be performed:
 - OCamlfind detected and enabled
 - checking for /home/opam/.opam/4.02.1/lib/lablgtk2/lablgtk.cmxa... yes
 - checking for /home/opam/.opam/4.02.1/lib/lablgtk2/lablgnomecanvas.cmxa... no
-- checking Win32 platform... no
+- checking Win32 platform... 
+- no
 - configure: creating ./config.status
 - config.status: creating Makefile
 - configure: WARNING: lablgnomecanvas not found: the graph editor and view_graph will not be compiled
@@ -2613,15 +3416,15 @@ The following actions will be performed:
 - ocamlc.opt -c -I src -I lib -g -dtypes src/util.mli
 - ocamlc.opt -c -I src -I lib -g -dtypes src/util.ml
 - ocamlc.opt -c -I src -I lib -g -dtypes src/blocks.ml
-- File "lib/bitv.ml", line 464, characters 27-39:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 - ocamlc.opt -c -I src -I lib -g -dtypes src/persistent.mli
 - ocamlc.opt -c -I src -I lib -g -dtypes src/persistent.ml
 - ocamlc.opt -c -I src -I lib -g -dtypes src/imperative.mli
 - ocamlc.opt -c -I src -I lib -g -dtypes src/imperative.ml
 - ocamlc.opt -c -I src -I lib -g -dtypes src/delaunay.mli
 - ocamlc.opt -c -I src -I lib -g -dtypes src/delaunay.ml
+- File "lib/bitv.ml", line 464, characters 27-39:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 - ocamlc.opt -c -I src -I lib -g -dtypes src/builder.mli
 - ocamlc.opt -c -I src -I lib -g -dtypes src/builder.ml
 - ocamlc.opt -c -I src -I lib -g -dtypes src/classic.mli
@@ -2727,12 +3530,6 @@ The following actions will be performed:
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/dot_lexer.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/dot.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/pack.ml
-- File "src/gml.ml", line 418, characters 27-39:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
-- File "src/gml.ml", line 455, characters 27-39:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/gmap.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/minsep.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/cliquetree.ml
@@ -2743,6 +3540,12 @@ The following actions will be performed:
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/leaderlist.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/contraction.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/graphml.ml
+- File "src/gml.ml", line 418, characters 27-39:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
+- File "src/gml.ml", line 455, characters 27-39:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/merge.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/mincut.ml
 - ocamlopt.opt -c -I src -I lib -for-pack Graph src/clique.ml
@@ -2815,7 +3618,7 @@ The following actions will be performed:
 - Installed /home/opam/.opam/4.02.1/lib/ocamlgraph/META
 -> installed ocamlgraph.1.8.6
 [why3-base: ./configure] Command started
-+ ./configure "--prefix" "/home/opam/.opam/4.02.1" "--disable-bench" "--disable-frama-c" (CWD=/home/opam/.opam/4.02.1/build/why3-base.0.85)
++ ./configure "--prefix" "/home/opam/.opam/4.02.1" "--disable-frama-c" (CWD=/home/opam/.opam/4.02.1/build/why3-base.0.86)
 - checking executable suffix... <none>
 - checking for gcc... gcc
 - checking whether the C compiler works... yes
@@ -2842,23 +3645,25 @@ The following actions will be performed:
 - checking for ocamlyacc... ocamlyacc
 - checking for ocamldoc... ocamldoc
 - checking for ocamldoc.opt... ocamldoc.opt
-- checking for camlp5o... no
+- checking for menhir... menhir
 - checking for ocamlfind... yes
 - checking for rubber... no
 - checking for emacs... no
 - ocamlfind found zarith in /home/opam/.opam/4.02.1/lib/zarith
 - ocamlfind found camlzip in /home/opam/.opam/4.02.1/lib/zip
+- ocamlfind found menhirLib in /home/opam/.opam/4.02.1/lib/menhirLib
 - ocamlfind found lablgtk2 in /home/opam/.opam/4.02.1/lib/lablgtk2
 - ocamlfind found lablgtksourceview2 in /home/opam/.opam/4.02.1/lib/lablgtk2
 - checking for coqc... no
+- checking for coqdep... no
 - checking for pvs... no
 - checking for isabelle... no
-- ocamlfind found ocamlgraph in /home/opam/.opam/4.02.1/lib/ocamlgraph
-- configure: WARNING: unrecognized options: --disable-bench
 - configure: WARNING: Cannot find rubber, documentation disabled.
 - configure: WARNING: Cannot find coqc.
+- configure: WARNING: Cannot find coqdep.
 - configure: WARNING: Cannot find pvs.
 - configure: WARNING: Cannot find isabelle.
+- ocamlfind found ocamlgraph in /home/opam/.opam/4.02.1/lib/ocamlgraph
 - configure: creating ./config.status
 - config.status: creating Makefile
 - config.status: creating src/config.sh
@@ -2880,11 +3685,12 @@ The following actions will be performed:
 -     IDE command             : yes
 -     GMP arithmetic          : yes
 -     Compressed sessions     : yes
+-     MenhirLib support       : yes
 -     Hypothesis selection    : yes
 -     Frama-C support         : no
 - Documentation               : no (rubber not found)
 - Support for interactive proof assistants
--     Coq                     : no (coqc not found)
+-     Coq                     : no (coqdep not found)
 -     PVS                     : no (pvs not found)
 -     Isabelle                : no (isabelle not found)
 - Installable                 : yes
@@ -2893,12 +3699,11 @@ The following actions will be performed:
 -     Data path               : ${prefix}/share/why3
 -     Ocaml Library           : /home/opam/.opam/4.02.1/lib/why3
 -     Relocatable             : no
-- configure: WARNING: unrecognized options: --disable-bench
 [why3-base: make opt] Command started
-+ make "opt" "byte" (CWD=/home/opam/.opam/4.02.1/build/why3-base.0.85)
++ make "opt" "byte" (CWD=/home/opam/.opam/4.02.1/build/why3-base.0.86)
 - Ocamllex src/why3doc/doc_lexer.mll
-- 108 states, 991 transitions, table size 4612 bytes
-- 1683 additional bytes used for bindings
+- 112 states, 1119 transitions, table size 5148 bytes
+- 1707 additional bytes used for bindings
 - Ocamldep src/why3doc/doc_main.ml
 - Ocamldep src/why3doc/doc_lexer.ml
 - Ocamldep src/why3doc/doc_def.ml
@@ -2933,7 +3738,7 @@ The following actions will be performed:
 - Ocamllex plugins/tptp/tptp_lexer.mll
 - 101 states, 1563 transitions, table size 6858 bytes
 - 3126 additional bytes used for bindings
-- Ocamlyacc plugins/tptp/tptp_parser.mly
+- Menhir plugins/tptp/tptp_parser.mly
 - Ocamllex plugins/parser/dimacs.mll
 - 34 states, 434 transitions, table size 1940 bytes
 - 1293 additional bytes used for bindings
@@ -2952,10 +3757,173 @@ The following actions will be performed:
 - Ocamllex src/util/lexlib.mll
 - 16 states, 260 transitions, table size 1136 bytes
 - Ocamllex src/parser/lexer.mll
-- 127 states, 3137 transitions, table size 13310 bytes
-- 7452 additional bytes used for bindings
-- Ocamlyacc src/parser/parser.mly
-- Ocamlyacc src/driver/driver_parser.mly
+- 128 states, 3177 transitions, table size 13476 bytes
+- 7458 additional bytes used for bindings
+- Menhir src/parser/parser.mly
+- Makefile:245: src/util/config.dep: No such file or directory
+- Makefile:245: src/util/bigInt.dep: No such file or directory
+- Makefile:245: src/util/util.dep: No such file or directory
+- Makefile:245: src/util/opt.dep: No such file or directory
+- Makefile:245: src/util/lists.dep: No such file or directory
+- Makefile:245: src/util/strings.dep: No such file or directory
+- Makefile:245: src/util/extmap.dep: No such file or directory
+- Makefile:245: src/util/extset.dep: No such file or directory
+- Makefile:245: src/util/exthtbl.dep: No such file or directory
+- Makefile:245: src/util/weakhtbl.dep: No such file or directory
+- Makefile:245: src/util/hashcons.dep: No such file or directory
+- Makefile:245: src/util/stdlib.dep: No such file or directory
+- Makefile:245: src/util/exn_printer.dep: No such file or directory
+- Makefile:245: src/util/pp.dep: No such file or directory
+- Makefile:245: src/util/debug.dep: No such file or directory
+- Makefile:245: src/util/loc.dep: No such file or directory
+- Makefile:245: src/util/lexlib.dep: No such file or directory
+- Makefile:245: src/util/print_tree.dep: No such file or directory
+- Makefile:245: src/util/cmdline.dep: No such file or directory
+- Makefile:245: src/util/warning.dep: No such file or directory
+- Makefile:245: src/util/sysutil.dep: No such file or directory
+- Makefile:245: src/util/rc.dep: No such file or directory
+- Makefile:245: src/util/plugin.dep: No such file or directory
+- Makefile:245: src/util/bigInt.dep: No such file or directory
+- Makefile:245: src/util/number.dep: No such file or directory
+- Makefile:245: src/util/pqueue.dep: No such file or directory
+- Makefile:245: src/core/ident.dep: No such file or directory
+- Makefile:245: src/core/ty.dep: No such file or directory
+- Makefile:245: src/core/term.dep: No such file or directory
+- Makefile:245: src/core/pattern.dep: No such file or directory
+- Makefile:245: src/core/decl.dep: No such file or directory
+- Makefile:245: src/core/theory.dep: No such file or directory
+- Makefile:245: src/core/task.dep: No such file or directory
+- Makefile:245: src/core/pretty.dep: No such file or directory
+- Makefile:245: src/core/dterm.dep: No such file or directory
+- Makefile:245: src/core/env.dep: No such file or directory
+- Makefile:245: src/core/trans.dep: No such file or directory
+- Makefile:245: src/core/printer.dep: No such file or directory
+- Makefile:245: src/core/model_parser.dep: No such file or directory
+- Makefile:245: src/driver/call_provers.dep: No such file or directory
+- Makefile:245: src/driver/driver_ast.dep: No such file or directory
+- Makefile:245: src/driver/driver_parser.dep: No such file or directory
+- Makefile:245: src/driver/driver_lexer.dep: No such file or directory
+- Makefile:245: src/driver/driver.dep: No such file or directory
+- Makefile:245: src/driver/whyconf.dep: No such file or directory
+- Makefile:245: src/driver/autodetection.dep: No such file or directory
+- Makefile:245: src/driver/parse_cvc4_z3_model.dep: No such file or directory
+- Makefile:245: src/mlw/ity.dep: No such file or directory
+- Makefile:245: src/mlw/expr.dep: No such file or directory
+- Makefile:245: src/mlw/dexpr.dep: No such file or directory
+- Makefile:245: src/parser/ptree.dep: No such file or directory
+- Makefile:245: src/parser/glob.dep: No such file or directory
+- Makefile:245: src/parser/parser.dep: No such file or directory
+- Makefile:245: src/parser/typing.dep: No such file or directory
+- Makefile:245: src/parser/lexer.dep: No such file or directory
+- Makefile:245: src/transform/simplify_formula.dep: No such file or directory
+- Makefile:245: src/transform/inlining.dep: No such file or directory
+- Makefile:245: src/transform/split_goal.dep: No such file or directory
+- Makefile:245: src/transform/induction.dep: No such file or directory
+- Makefile:245: src/transform/detect_polymorphism.dep: No such file or directory
+- Makefile:245: src/transform/eliminate_definition.dep: No such file or directory
+- Makefile:245: src/transform/eliminate_algebraic.dep: No such file or directory
+- Makefile:245: src/transform/eliminate_inductive.dep: No such file or directory
+- Makefile:245: src/transform/eliminate_let.dep: No such file or directory
+- Makefile:245: src/transform/eliminate_if.dep: No such file or directory
+- Makefile:245: src/transform/libencoding.dep: No such file or directory
+- Makefile:245: src/transform/discriminate.dep: No such file or directory
+- Makefile:245: src/transform/encoding.dep: No such file or directory
+- Makefile:245: src/transform/encoding_select.dep: No such file or directory
+- Makefile:245: src/transform/encoding_guards_full.dep: No such file or directory
+- Makefile:245: src/transform/encoding_tags_full.dep: No such file or directory
+- Makefile:245: src/transform/encoding_guards.dep: No such file or directory
+- Makefile:245: src/transform/encoding_tags.dep: No such file or directory
+- Makefile:245: src/transform/encoding_twin.dep: No such file or directory
+- Makefile:245: src/transform/encoding_sort.dep: No such file or directory
+- Makefile:245: src/transform/simplify_array.dep: No such file or directory
+- Makefile:245: src/transform/filter_trigger.dep: No such file or directory
+- Makefile:245: src/transform/introduction.dep: No such file or directory
+- Makefile:245: src/transform/abstraction.dep: No such file or directory
+- Makefile:245: src/transform/close_epsilon.dep: No such file or directory
+- Makefile:245: src/transform/lift_epsilon.dep: No such file or directory
+- Makefile:245: src/transform/eliminate_epsilon.dep: No such file or directory
+- Makefile:245: src/transform/intro_projections_counterexmp.dep: No such file or directory
+- Makefile:245: src/transform/eval_match.dep: No such file or directory
+- Makefile:245: src/transform/instantiate_predicate.dep: No such file or directory
+- Makefile:245: src/transform/smoke_detector.dep: No such file or directory
+- Makefile:245: src/transform/reduction_engine.dep: No such file or directory
+- Makefile:245: src/transform/compute.dep: No such file or directory
+- Makefile:245: src/transform/induction_pr.dep: No such file or directory
+- Makefile:245: src/transform/prop_curry.dep: No such file or directory
+- Makefile:245: src/printer/alt_ergo.dep: No such file or directory
+- Makefile:245: src/printer/why3printer.dep: No such file or directory
+- Makefile:245: src/printer/smtv1.dep: No such file or directory
+- Makefile:245: src/printer/smtv2.dep: No such file or directory
+- Makefile:245: src/printer/coq.dep: No such file or directory
+- Makefile:245: src/printer/pvs.dep: No such file or directory
+- Makefile:245: src/printer/isabelle.dep: No such file or directory
+- Makefile:245: src/printer/simplify.dep: No such file or directory
+- Makefile:245: src/printer/gappa.dep: No such file or directory
+- Makefile:245: src/printer/cvc3.dep: No such file or directory
+- Makefile:245: src/printer/yices.dep: No such file or directory
+- Makefile:245: src/printer/mathematica.dep: No such file or directory
+- Makefile:245: src/whyml/mlw_ty.dep: No such file or directory
+- Makefile:245: src/whyml/mlw_expr.dep: No such file or directory
+- Makefile:245: src/whyml/mlw_decl.dep: No such file or directory
+- Makefile:245: src/whyml/mlw_pretty.dep: No such file or directory
+- Makefile:245: src/whyml/mlw_wp.dep: No such file or directory
+- Makefile:245: src/whyml/mlw_module.dep: No such file or directory
+- Makefile:245: src/whyml/mlw_dexpr.dep: No such file or directory
+- Makefile:245: src/whyml/mlw_typing.dep: No such file or directory
+- Makefile:245: src/whyml/mlw_driver.dep: No such file or directory
+- Makefile:245: src/whyml/mlw_exec.dep: No such file or directory
+- Makefile:245: src/whyml/mlw_ocaml.dep: No such file or directory
+- Makefile:245: src/whyml/mlw_main.dep: No such file or directory
+- Makefile:245: src/whyml/mlw_interp.dep: No such file or directory
+- Makefile:245: src/session/compress.dep: No such file or directory
+- Makefile:245: src/session/xml.dep: No such file or directory
+- Makefile:245: src/session/termcode.dep: No such file or directory
+- Makefile:245: src/session/session.dep: No such file or directory
+- Makefile:245: src/session/session_tools.dep: No such file or directory
+- Makefile:245: src/session/strategy.dep: No such file or directory
+- Makefile:245: src/session/strategy_parser.dep: No such file or directory
+- Makefile:245: src/session/session_scheduler.dep: No such file or directory
+- Makefile:428: plugins/parser/genequlin.dep: No such file or directory
+- Makefile:428: plugins/parser/dimacs.dep: No such file or directory
+- Makefile:428: plugins/transform/hypothesis_selection.dep: No such file or directory
+- Makefile:428: plugins/tptp/tptp_ast.dep: No such file or directory
+- Makefile:428: plugins/tptp/tptp_parser.dep: No such file or directory
+- Makefile:428: plugins/tptp/tptp_typing.dep: No such file or directory
+- Makefile:428: plugins/tptp/tptp_lexer.dep: No such file or directory
+- Makefile:428: plugins/tptp/tptp_printer.dep: No such file or directory
+- Makefile:549: src/tools/main.dep: No such file or directory
+- Makefile:549: src/tools/why3config.dep: No such file or directory
+- Makefile:549: src/tools/why3execute.dep: No such file or directory
+- Makefile:549: src/tools/why3extract.dep: No such file or directory
+- Makefile:549: src/tools/why3prove.dep: No such file or directory
+- Makefile:549: src/tools/why3realize.dep: No such file or directory
+- Makefile:549: src/tools/why3replay.dep: No such file or directory
+- Makefile:549: src/tools/why3wc.dep: No such file or directory
+- Makefile:689: src/ide/gconfig.dep: No such file or directory
+- Makefile:689: src/ide/gmain.dep: No such file or directory
+- Makefile:740: src/why3session/why3session_lib.dep: No such file or directory
+- Makefile:740: src/why3session/why3session_copy.dep: No such file or directory
+- Makefile:740: src/why3session/why3session_info.dep: No such file or directory
+- Makefile:740: src/why3session/why3session_latex.dep: No such file or directory
+- Makefile:740: src/why3session/why3session_html.dep: No such file or directory
+- Makefile:740: src/why3session/why3session_rm.dep: No such file or directory
+- Makefile:740: src/why3session/why3session_output.dep: No such file or directory
+- Makefile:740: src/why3session/why3session_run.dep: No such file or directory
+- Makefile:740: src/why3session/why3session_csv.dep: No such file or directory
+- Makefile:740: src/why3session/why3session_main.dep: No such file or directory
+- Makefile:1276: lib/ocaml/why3__BigInt_compat.dep: No such file or directory
+- Makefile:1276: lib/ocaml/why3__BigInt.dep: No such file or directory
+- Makefile:1276: lib/ocaml/why3__IntAux.dep: No such file or directory
+- Makefile:1276: lib/ocaml/why3__Array.dep: No such file or directory
+- Makefile:1364: src/why3doc/doc_html.dep: No such file or directory
+- Makefile:1364: src/why3doc/doc_def.dep: No such file or directory
+- Makefile:1364: src/why3doc/doc_lexer.dep: No such file or directory
+- Makefile:1364: src/why3doc/doc_main.dep: No such file or directory
+- Warning: you are using the standard library and/or the %inline keyword. We
+- recommend switching on --infer in order to avoid obscure type error messages.
+- Warning: you are using the standard library and/or the %inline keyword. We
+- recommend switching on --infer in order to avoid obscure type error messages.
+- Menhir src/driver/driver_parser.mly
 - Ocamllex src/driver/driver_lexer.mll
 - 29 states, 1101 transitions, table size 4578 bytes
 - cp src/session/compress_z.ml src/session/compress.ml
@@ -2976,6 +3944,7 @@ The following actions will be performed:
 - Ocamldep src/whyml/mlw_interp.ml
 - Ocamldep src/whyml/mlw_main.ml
 - Ocamldep src/whyml/mlw_ocaml.ml
+- Ocamldep src/whyml/mlw_exec.ml
 - Ocamldep src/whyml/mlw_driver.ml
 - Ocamldep src/whyml/mlw_typing.ml
 - Ocamldep src/whyml/mlw_dexpr.ml
@@ -2985,156 +3954,6 @@ The following actions will be performed:
 - Ocamldep src/whyml/mlw_decl.ml
 - Ocamldep src/whyml/mlw_expr.ml
 - Ocamldep src/whyml/mlw_ty.ml
-- Makefile:232: src/util/config.dep: No such file or directory
-- Makefile:232: src/util/bigInt.dep: No such file or directory
-- Makefile:232: src/util/util.dep: No such file or directory
-- Makefile:232: src/util/opt.dep: No such file or directory
-- Makefile:232: src/util/lists.dep: No such file or directory
-- Makefile:232: src/util/strings.dep: No such file or directory
-- Makefile:232: src/util/extmap.dep: No such file or directory
-- Makefile:232: src/util/extset.dep: No such file or directory
-- Makefile:232: src/util/exthtbl.dep: No such file or directory
-- Makefile:232: src/util/weakhtbl.dep: No such file or directory
-- Makefile:232: src/util/hashcons.dep: No such file or directory
-- Makefile:232: src/util/stdlib.dep: No such file or directory
-- Makefile:232: src/util/exn_printer.dep: No such file or directory
-- Makefile:232: src/util/pp.dep: No such file or directory
-- Makefile:232: src/util/debug.dep: No such file or directory
-- Makefile:232: src/util/loc.dep: No such file or directory
-- Makefile:232: src/util/lexlib.dep: No such file or directory
-- Makefile:232: src/util/print_tree.dep: No such file or directory
-- Makefile:232: src/util/cmdline.dep: No such file or directory
-- Makefile:232: src/util/warning.dep: No such file or directory
-- Makefile:232: src/util/sysutil.dep: No such file or directory
-- Makefile:232: src/util/rc.dep: No such file or directory
-- Makefile:232: src/util/plugin.dep: No such file or directory
-- Makefile:232: src/util/bigInt.dep: No such file or directory
-- Makefile:232: src/util/number.dep: No such file or directory
-- Makefile:232: src/util/pqueue.dep: No such file or directory
-- Makefile:232: src/core/ident.dep: No such file or directory
-- Makefile:232: src/core/ty.dep: No such file or directory
-- Makefile:232: src/core/term.dep: No such file or directory
-- Makefile:232: src/core/pattern.dep: No such file or directory
-- Makefile:232: src/core/decl.dep: No such file or directory
-- Makefile:232: src/core/theory.dep: No such file or directory
-- Makefile:232: src/core/task.dep: No such file or directory
-- Makefile:232: src/core/pretty.dep: No such file or directory
-- Makefile:232: src/core/dterm.dep: No such file or directory
-- Makefile:232: src/core/env.dep: No such file or directory
-- Makefile:232: src/core/trans.dep: No such file or directory
-- Makefile:232: src/core/printer.dep: No such file or directory
-- Makefile:232: src/driver/call_provers.dep: No such file or directory
-- Makefile:232: src/driver/driver_ast.dep: No such file or directory
-- Makefile:232: src/driver/driver_parser.dep: No such file or directory
-- Makefile:232: src/driver/driver_lexer.dep: No such file or directory
-- Makefile:232: src/driver/driver.dep: No such file or directory
-- Makefile:232: src/driver/whyconf.dep: No such file or directory
-- Makefile:232: src/driver/autodetection.dep: No such file or directory
-- Makefile:232: src/mlw/ity.dep: No such file or directory
-- Makefile:232: src/parser/ptree.dep: No such file or directory
-- Makefile:232: src/parser/glob.dep: No such file or directory
-- Makefile:232: src/parser/parser.dep: No such file or directory
-- Makefile:232: src/parser/typing.dep: No such file or directory
-- Makefile:232: src/parser/lexer.dep: No such file or directory
-- Makefile:232: src/transform/simplify_formula.dep: No such file or directory
-- Makefile:232: src/transform/inlining.dep: No such file or directory
-- Makefile:232: src/transform/split_goal.dep: No such file or directory
-- Makefile:232: src/transform/induction.dep: No such file or directory
-- Makefile:232: src/transform/eliminate_definition.dep: No such file or directory
-- Makefile:232: src/transform/eliminate_algebraic.dep: No such file or directory
-- Makefile:232: src/transform/eliminate_inductive.dep: No such file or directory
-- Makefile:232: src/transform/eliminate_let.dep: No such file or directory
-- Makefile:232: src/transform/eliminate_if.dep: No such file or directory
-- Makefile:232: src/transform/libencoding.dep: No such file or directory
-- Makefile:232: src/transform/discriminate.dep: No such file or directory
-- Makefile:232: src/transform/encoding.dep: No such file or directory
-- Makefile:232: src/transform/encoding_select.dep: No such file or directory
-- Makefile:232: src/transform/encoding_guards_full.dep: No such file or directory
-- Makefile:232: src/transform/encoding_tags_full.dep: No such file or directory
-- Makefile:232: src/transform/encoding_guards.dep: No such file or directory
-- Makefile:232: src/transform/encoding_tags.dep: No such file or directory
-- Makefile:232: src/transform/encoding_twin.dep: No such file or directory
-- Makefile:232: src/transform/encoding_sort.dep: No such file or directory
-- Makefile:232: src/transform/simplify_array.dep: No such file or directory
-- Makefile:232: src/transform/filter_trigger.dep: No such file or directory
-- Makefile:232: src/transform/introduction.dep: No such file or directory
-- Makefile:232: src/transform/abstraction.dep: No such file or directory
-- Makefile:232: src/transform/close_epsilon.dep: No such file or directory
-- Makefile:232: src/transform/lift_epsilon.dep: No such file or directory
-- Makefile:232: src/transform/eliminate_epsilon.dep: No such file or directory
-- Makefile:232: src/transform/eval_match.dep: No such file or directory
-- Makefile:232: src/transform/instantiate_predicate.dep: No such file or directory
-- Makefile:232: src/transform/smoke_detector.dep: No such file or directory
-- Makefile:232: src/transform/reduction_engine.dep: No such file or directory
-- Makefile:232: src/transform/compute.dep: No such file or directory
-- Makefile:232: src/printer/alt_ergo.dep: No such file or directory
-- Makefile:232: src/printer/why3printer.dep: No such file or directory
-- Makefile:232: src/printer/smtv1.dep: No such file or directory
-- Makefile:232: src/printer/smtv2.dep: No such file or directory
-- Makefile:232: src/printer/coq.dep: No such file or directory
-- Makefile:232: src/printer/pvs.dep: No such file or directory
-- Makefile:232: src/printer/isabelle.dep: No such file or directory
-- Makefile:232: src/printer/simplify.dep: No such file or directory
-- Makefile:232: src/printer/gappa.dep: No such file or directory
-- Makefile:232: src/printer/cvc3.dep: No such file or directory
-- Makefile:232: src/printer/yices.dep: No such file or directory
-- Makefile:232: src/printer/mathematica.dep: No such file or directory
-- Makefile:232: src/whyml/mlw_ty.dep: No such file or directory
-- Makefile:232: src/whyml/mlw_expr.dep: No such file or directory
-- Makefile:232: src/whyml/mlw_decl.dep: No such file or directory
-- Makefile:232: src/whyml/mlw_pretty.dep: No such file or directory
-- Makefile:232: src/whyml/mlw_wp.dep: No such file or directory
-- Makefile:232: src/whyml/mlw_module.dep: No such file or directory
-- Makefile:232: src/whyml/mlw_dexpr.dep: No such file or directory
-- Makefile:232: src/whyml/mlw_typing.dep: No such file or directory
-- Makefile:232: src/whyml/mlw_driver.dep: No such file or directory
-- Makefile:232: src/whyml/mlw_ocaml.dep: No such file or directory
-- Makefile:232: src/whyml/mlw_main.dep: No such file or directory
-- Makefile:232: src/whyml/mlw_interp.dep: No such file or directory
-- Makefile:232: src/session/compress.dep: No such file or directory
-- Makefile:232: src/session/xml.dep: No such file or directory
-- Makefile:232: src/session/termcode.dep: No such file or directory
-- Makefile:232: src/session/session.dep: No such file or directory
-- Makefile:232: src/session/session_tools.dep: No such file or directory
-- Makefile:232: src/session/strategy.dep: No such file or directory
-- Makefile:232: src/session/strategy_parser.dep: No such file or directory
-- Makefile:232: src/session/session_scheduler.dep: No such file or directory
-- Makefile:413: plugins/parser/genequlin.dep: No such file or directory
-- Makefile:413: plugins/parser/dimacs.dep: No such file or directory
-- Makefile:413: plugins/transform/hypothesis_selection.dep: No such file or directory
-- Makefile:413: plugins/tptp/tptp_ast.dep: No such file or directory
-- Makefile:413: plugins/tptp/tptp_parser.dep: No such file or directory
-- Makefile:413: plugins/tptp/tptp_typing.dep: No such file or directory
-- Makefile:413: plugins/tptp/tptp_lexer.dep: No such file or directory
-- Makefile:413: plugins/tptp/tptp_printer.dep: No such file or directory
-- Makefile:534: src/tools/main.dep: No such file or directory
-- Makefile:534: src/tools/why3config.dep: No such file or directory
-- Makefile:534: src/tools/why3execute.dep: No such file or directory
-- Makefile:534: src/tools/why3extract.dep: No such file or directory
-- Makefile:534: src/tools/why3prove.dep: No such file or directory
-- Makefile:534: src/tools/why3realize.dep: No such file or directory
-- Makefile:534: src/tools/why3replay.dep: No such file or directory
-- Makefile:534: src/tools/why3wc.dep: No such file or directory
-- Makefile:674: src/ide/gconfig.dep: No such file or directory
-- Makefile:674: src/ide/gmain.dep: No such file or directory
-- Makefile:725: src/why3session/why3session_lib.dep: No such file or directory
-- Makefile:725: src/why3session/why3session_copy.dep: No such file or directory
-- Makefile:725: src/why3session/why3session_info.dep: No such file or directory
-- Makefile:725: src/why3session/why3session_latex.dep: No such file or directory
-- Makefile:725: src/why3session/why3session_html.dep: No such file or directory
-- Makefile:725: src/why3session/why3session_rm.dep: No such file or directory
-- Makefile:725: src/why3session/why3session_output.dep: No such file or directory
-- Makefile:725: src/why3session/why3session_run.dep: No such file or directory
-- Makefile:725: src/why3session/why3session_csv.dep: No such file or directory
-- Makefile:725: src/why3session/why3session_main.dep: No such file or directory
-- Makefile:1233: lib/ocaml/why3__BigInt_compat.dep: No such file or directory
-- Makefile:1233: lib/ocaml/why3__BigInt.dep: No such file or directory
-- Makefile:1233: lib/ocaml/why3__IntAux.dep: No such file or directory
-- Makefile:1233: lib/ocaml/why3__Array.dep: No such file or directory
-- Makefile:1321: src/why3doc/doc_html.dep: No such file or directory
-- Makefile:1321: src/why3doc/doc_def.dep: No such file or directory
-- Makefile:1321: src/why3doc/doc_lexer.dep: No such file or directory
-- Makefile:1321: src/why3doc/doc_main.dep: No such file or directory
 - Ocamldep src/printer/mathematica.ml
 - Ocamldep src/printer/yices.ml
 - Ocamldep src/printer/cvc3.ml
@@ -3147,11 +3966,14 @@ The following actions will be performed:
 - Ocamldep src/printer/smtv1.ml
 - Ocamldep src/printer/why3printer.ml
 - Ocamldep src/printer/alt_ergo.ml
+- Ocamldep src/transform/prop_curry.ml
+- Ocamldep src/transform/induction_pr.ml
 - Ocamldep src/transform/compute.ml
 - Ocamldep src/transform/reduction_engine.ml
 - Ocamldep src/transform/smoke_detector.ml
 - Ocamldep src/transform/instantiate_predicate.ml
 - Ocamldep src/transform/eval_match.ml
+- Ocamldep src/transform/intro_projections_counterexmp.ml
 - Ocamldep src/transform/eliminate_epsilon.ml
 - Ocamldep src/transform/lift_epsilon.ml
 - Ocamldep src/transform/close_epsilon.ml
@@ -3174,6 +3996,7 @@ The following actions will be performed:
 - Ocamldep src/transform/eliminate_inductive.ml
 - Ocamldep src/transform/eliminate_algebraic.ml
 - Ocamldep src/transform/eliminate_definition.ml
+- Ocamldep src/transform/detect_polymorphism.ml
 - Ocamldep src/transform/induction.ml
 - Ocamldep src/transform/split_goal.ml
 - Ocamldep src/transform/inlining.ml
@@ -3183,7 +4006,10 @@ The following actions will be performed:
 - Ocamldep src/parser/parser.ml
 - Ocamldep src/parser/glob.ml
 - Ocamldep src/parser/ptree.ml
+- Ocamldep src/mlw/dexpr.ml
+- Ocamldep src/mlw/expr.ml
 - Ocamldep src/mlw/ity.ml
+- Ocamldep src/driver/parse_cvc4_z3_model.ml
 - Ocamldep src/driver/autodetection.ml
 - Ocamldep src/driver/whyconf.ml
 - Ocamldep src/driver/driver.ml
@@ -3191,6 +4017,7 @@ The following actions will be performed:
 - Ocamldep src/driver/driver_parser.ml
 - Ocamldep src/driver/driver_ast.ml
 - Ocamldep src/driver/call_provers.ml
+- Ocamldep src/core/model_parser.ml
 - Ocamldep src/core/printer.ml
 - Ocamldep src/core/trans.ml
 - Ocamldep src/core/env.ml
@@ -3245,18 +4072,18 @@ The following actions will be performed:
 - Ocamlopt src/util/extset.ml
 - Ocamlc   src/util/exthtbl.mli
 - Ocamlopt src/util/exthtbl.ml
-- Ocamlc   src/util/weakhtbl.mli
-- Ocamlopt src/util/weakhtbl.ml
-- Ocamlc   src/util/hashcons.mli
-- Ocamlopt src/util/hashcons.ml
-- Ocamlc   src/util/stdlib.mli
-- Ocamlopt src/util/stdlib.ml
 - File "src/util/strings.ml", line 36, characters 12-25:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
 - File "src/util/strings.ml", line 38, characters 4-15:
 - Warning 3: deprecated: String.fill
 - Use Bytes.fill instead.
+- Ocamlc   src/util/weakhtbl.mli
+- Ocamlopt src/util/weakhtbl.ml
+- Ocamlc   src/util/hashcons.mli
+- Ocamlopt src/util/hashcons.ml
+- Ocamlc   src/util/stdlib.mli
+- Ocamlopt src/util/stdlib.ml
 - Ocamlc   src/util/exn_printer.mli
 - Ocamlopt src/util/exn_printer.ml
 - Ocamlc   src/util/pp.mli
@@ -3271,25 +4098,6 @@ The following actions will be performed:
 - Ocamlopt src/util/print_tree.ml
 - Ocamlc   src/util/cmdline.mli
 - Ocamlopt src/util/cmdline.ml
-- Ocamlc   src/util/warning.mli
-- Ocamlopt src/util/warning.ml
-- Ocamlc   src/util/sysutil.mli
-- Ocamlopt src/util/sysutil.ml
-- Ocamlc   src/util/rc.mli
-- Ocamlopt src/util/rc.ml
-- Ocamlc   src/util/plugin.mli
-- File "src/util/pp.ml", line 180, characters 4-41:
-- Warning 3: deprecated: Format.pp_get_all_formatter_output_functions
-- Use Format.pp_get_formatter_out_functions instead.
-- File "src/util/pp.ml", line 181, characters 2-39:
-- Warning 3: deprecated: Format.pp_set_all_formatter_output_functions
-- Use Format.pp_set_formatter_out_functions instead.
-- File "src/util/debug.ml", line 69, characters 4-48:
-- Warning 3: deprecated: Format.pp_get_all_formatter_output_functions
-- Use Format.pp_get_formatter_out_functions instead.
-- File "src/util/debug.ml", line 70, characters 2-46:
-- Warning 3: deprecated: Format.pp_set_all_formatter_output_functions
-- Use Format.pp_set_formatter_out_functions instead.
 - File "src/util/lexlib.mll", line 101, characters 14-27:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -3302,13 +4110,13 @@ The following actions will be performed:
 - File "src/util/cmdline.ml", line 48, characters 10-20:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- File "src/util/rc.mll", line 67, characters 13-26:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "src/util/rc.mll", line 73, characters 10-27:
-- Warning 3: deprecated: String.unsafe_set
-- File "src/util/rc.mll", line 76, characters 6-23:
-- Warning 3: deprecated: String.unsafe_set
+- Ocamlc   src/util/warning.mli
+- Ocamlopt src/util/warning.ml
+- Ocamlc   src/util/sysutil.mli
+- Ocamlopt src/util/sysutil.ml
+- Ocamlc   src/util/rc.mli
+- Ocamlopt src/util/rc.ml
+- Ocamlc   src/util/plugin.mli
 - Ocamlopt src/util/plugin.ml
 - Ocamlc   src/util/number.mli
 - Ocamlopt src/util/number.ml
@@ -3320,6 +4128,13 @@ The following actions will be performed:
 - Ocamlopt src/core/ty.ml
 - Ocamlc   src/core/term.mli
 - Ocamlopt src/core/term.ml
+- File "src/util/rc.mll", line 67, characters 13-26:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "src/util/rc.mll", line 73, characters 10-27:
+- Warning 3: deprecated: String.unsafe_set
+- File "src/util/rc.mll", line 76, characters 6-23:
+- Warning 3: deprecated: String.unsafe_set
 - File "src/util/number.ml", line 161, characters 14-25:
 - Warning 3: deprecated: String.copy
 - File "src/util/number.ml", line 161, characters 31-44:
@@ -3343,6 +4158,8 @@ The following actions will be performed:
 - Ocamlopt src/core/trans.ml
 - Ocamlc   src/core/printer.mli
 - Ocamlopt src/core/printer.ml
+- Ocamlc   src/core/model_parser.mli
+- Ocamlopt src/core/model_parser.ml
 - Ocamlc   src/driver/call_provers.mli
 - Ocamlopt src/driver/call_provers.ml
 - Ocamlopt src/driver/driver_ast.ml
@@ -3354,12 +4171,17 @@ The following actions will be performed:
 - Ocamlopt src/driver/driver.ml
 - Ocamlc   src/driver/whyconf.mli
 - Ocamlopt src/driver/whyconf.ml
-- File "src/driver/whyconf.ml", line 559, characters 4-18:
-- Warning 3: deprecated: Format.bprintf
 - Ocamlc   src/driver/autodetection.mli
 - Ocamlopt src/driver/autodetection.ml
+- Ocamlopt src/driver/parse_cvc4_z3_model.ml
 - Ocamlc   src/mlw/ity.mli
 - Ocamlopt src/mlw/ity.ml
+- Ocamlc   src/mlw/expr.mli
+- Ocamlopt src/mlw/expr.ml
+- Ocamlc   src/mlw/dexpr.mli
+- Ocamlopt src/mlw/dexpr.ml
+- File "src/mlw/expr.ml", line 440, characters 34-46:
+- Warning 48: implicit elimination of optional argument ?loc
 - Ocamlopt src/parser/ptree.ml
 - Ocamlc   src/parser/glob.mli
 - Ocamlopt src/parser/glob.ml
@@ -3377,6 +4199,8 @@ The following actions will be performed:
 - Ocamlopt src/transform/split_goal.ml
 - Ocamlc   src/transform/induction.mli
 - Ocamlopt src/transform/induction.ml
+- Ocamlc   src/transform/detect_polymorphism.mli
+- Ocamlopt src/transform/detect_polymorphism.ml
 - Ocamlc   src/transform/eliminate_definition.mli
 - Ocamlopt src/transform/eliminate_definition.ml
 - Ocamlc   src/transform/eliminate_algebraic.mli
@@ -3385,9 +4209,6 @@ The following actions will be performed:
 - Ocamlopt src/transform/eliminate_inductive.ml
 - Ocamlc   src/transform/eliminate_let.mli
 - Ocamlopt src/transform/eliminate_let.ml
-- File "src/transform/eliminate_definition.ml", line 281, characters 10-22:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
 - Ocamlc   src/transform/eliminate_if.mli
 - Ocamlopt src/transform/eliminate_if.ml
 - Ocamlc   src/transform/libencoding.mli
@@ -3424,6 +4245,8 @@ The following actions will be performed:
 - Ocamlopt src/transform/lift_epsilon.ml
 - Ocamlc   src/transform/eliminate_epsilon.mli
 - Ocamlopt src/transform/eliminate_epsilon.ml
+- Ocamlc   src/transform/intro_projections_counterexmp.mli
+- Ocamlopt src/transform/intro_projections_counterexmp.ml
 - Ocamlc   src/transform/eval_match.mli
 - Ocamlopt src/transform/eval_match.ml
 - Ocamlc   src/transform/instantiate_predicate.mli
@@ -3434,6 +4257,9 @@ The following actions will be performed:
 - Ocamlopt src/transform/reduction_engine.ml
 - Ocamlc   src/transform/compute.mli
 - Ocamlopt src/transform/compute.ml
+- Ocamlc   src/transform/induction_pr.mli
+- Ocamlopt src/transform/induction_pr.ml
+- Ocamlopt src/transform/prop_curry.ml
 - Ocamlc   src/printer/alt_ergo.mli
 - Ocamlopt src/printer/alt_ergo.ml
 - Ocamlc   src/printer/why3printer.mli
@@ -3444,18 +4270,10 @@ The following actions will be performed:
 - Ocamlopt src/printer/smtv2.ml
 - Ocamlc   src/printer/coq.mli
 - Ocamlopt src/printer/coq.ml
-- Ocamlopt src/printer/pvs.ml
-- File "src/printer/coq.ml", line 136, characters 22-30:
-- Warning 48: implicit elimination of optional argument ?whytypes
-- File "src/printer/coq.ml", line 371, characters 38-46:
-- Warning 48: implicit elimination of optional argument ?whytypes
-- File "src/printer/coq.ml", line 467, characters 14-27:
+- File "src/printer/coq.ml", line 481, characters 14-27:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- File "src/printer/coq.ml", line 674, characters 42-57:
-- Warning 48: implicit elimination of optional arguments ?whytypes, ?implicit
-- File "src/printer/coq.ml", line 687, characters 31-46:
-- Warning 48: implicit elimination of optional arguments ?whytypes, ?implicit
+- Ocamlopt src/printer/pvs.ml
 - Ocamlopt src/printer/isabelle.ml
 - Ocamlc   src/printer/simplify.mli
 - Ocamlopt src/printer/simplify.ml
@@ -3483,6 +4301,8 @@ The following actions will be performed:
 - Ocamlopt src/whyml/mlw_typing.ml
 - Ocamlc   src/whyml/mlw_driver.mli
 - Ocamlopt src/whyml/mlw_driver.ml
+- Ocamlc   src/whyml/mlw_exec.mli
+- Ocamlopt src/whyml/mlw_exec.ml
 - Ocamlc   src/whyml/mlw_ocaml.mli
 - Ocamlopt src/whyml/mlw_ocaml.ml
 - Ocamlc   src/whyml/mlw_main.mli
@@ -3496,10 +4316,6 @@ The following actions will be performed:
 - Ocamlc   src/session/termcode.mli
 - Ocamlopt src/session/termcode.ml
 - Ocamlc   src/session/session.mli
-- File "src/session/termcode.ml", line 259, characters 2-16:
-- Warning 3: deprecated: Format.bprintf
-- File "src/session/termcode.ml", line 437, characters 6-20:
-- Warning 3: deprecated: Format.bprintf
 - Ocamlopt src/session/session.ml
 - File "src/session/session.ml", line 1517, characters 10-23:
 - Warning 3: deprecated: String.create
@@ -3515,9 +4331,6 @@ The following actions will be performed:
 - Ocamlc   src/session/session_scheduler.mli
 - Ocamlopt src/session/session_scheduler.ml
 - Linking  lib/why3/why3.cmx
-- File "src/session/strategy_parser.mll", line 146, characters 16-28:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
 - Ocamlopt plugins/parser/genequlin.ml
 - Linking  lib/plugins/genequlin.cmxs
 - Ocamlopt plugins/parser/dimacs.ml
@@ -3534,10 +4347,6 @@ The following actions will be performed:
 - Linking  lib/plugins/tptp.cmxs
 - Ocamlopt plugins/transform/hypothesis_selection.ml
 - Linking  lib/plugins/hypothesis_selection.cmxs
-- File "plugins/transform/hypothesis_selection.ml", line 52, characters 4-18:
-- Warning 3: deprecated: Format.bprintf
-- File "plugins/transform/hypothesis_selection.ml", line 365, characters 22-35:
-- Warning 48: implicit elimination of optional argument ?pos
 - Linking  lib/why3/why3.cmxa
 - Ocamlopt src/tools/main.ml
 - Linking  bin/why3.opt
@@ -3559,93 +4368,16 @@ The following actions will be performed:
 - Ocamlc   src/ide/gconfig.mli
 - Ocamlopt src/ide/gconfig.ml
 - Ocamlopt src/ide/gmain.ml
-- File "src/ide/gconfig.ml", line 609, characters 15-24:
-- Warning 48: implicit elimination of optional arguments ?from, ?expand, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 619, characters 13-36:
-- Warning 48: implicit elimination of optional arguments ?from, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 631, characters 13-36:
-- Warning 48: implicit elimination of optional arguments ?from, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 643, characters 13-36:
-- Warning 48: implicit elimination of optional arguments ?from, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 667, characters 15-24:
-- Warning 48: implicit elimination of optional arguments ?from, ?expand, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 722, characters 15-24:
-- Warning 48: implicit elimination of optional arguments ?from, ?expand, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 733, characters 15-37:
-- Warning 48: implicit elimination of optional arguments ?from, ?expand, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 739, characters 15-37:
-- Warning 48: implicit elimination of optional arguments ?from, ?expand, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 745, characters 15-37:
-- Warning 48: implicit elimination of optional arguments ?from, ?expand, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 757, characters 24-48:
-- Warning 48: implicit elimination of optional arguments ?from, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 769, characters 33-68:
-- Warning 48: implicit elimination of optional arguments ?from, ?padding
-- File "src/ide/gconfig.ml", line 773, characters 15-50:
-- Warning 48: implicit elimination of optional arguments ?from, ?padding
-- File "src/ide/gconfig.ml", line 777, characters 33-68:
-- Warning 48: implicit elimination of optional arguments ?from, ?padding
-- File "src/ide/gconfig.ml", line 781, characters 15-50:
-- Warning 48: implicit elimination of optional arguments ?from, ?padding
-- File "src/ide/gconfig.ml", line 807, characters 15-50:
-- Warning 48: implicit elimination of optional arguments ?from, ?padding
-- File "src/ide/gconfig.ml", line 838, characters 15-24:
-- Warning 48: implicit elimination of optional arguments ?from, ?expand, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 864, characters 24-48:
-- Warning 48: implicit elimination of optional arguments ?from, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 874, characters 33-68:
-- Warning 48: implicit elimination of optional arguments ?from, ?padding
-- File "src/ide/gconfig.ml", line 877, characters 15-50:
-- Warning 48: implicit elimination of optional arguments ?from, ?padding
-- File "src/ide/gconfig.ml", line 881, characters 48-57:
-- Warning 48: implicit elimination of optional arguments ?from, ?expand, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 892, characters 15-24:
-- Warning 48: implicit elimination of optional arguments ?from, ?expand, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 906, characters 52-60:
-- Warning 48: implicit elimination of optional arguments ?from, ?expand, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 908, characters 15-48:
-- Warning 48: implicit elimination of optional arguments ?from, ?padding
-- File "src/ide/gconfig.ml", line 910, characters 36-43:
-- Warning 48: implicit elimination of optional arguments ?from, ?expand, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 1046, characters 21-56:
-- Warning 48: implicit elimination of optional arguments ?from, ?padding
-- File "src/ide/gmain.ml", line 115, characters 14-27:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "src/ide/gmain.ml", line 146, characters 38-47:
-- Warning 48: implicit elimination of optional arguments ?from, ?expand, ?fill, ?padding
-- File "src/ide/gmain.ml", line 157, characters 15-38:
-- Warning 48: implicit elimination of optional arguments ?from, ?fill, ?padding
-- File "src/ide/gmain.ml", line 169, characters 13-51:
-- Warning 48: implicit elimination of optional arguments ?from, ?fill, ?padding
-- File "src/ide/gmain.ml", line 200, characters 13-51:
-- Warning 48: implicit elimination of optional arguments ?from, ?fill, ?padding
-- File "src/ide/gmain.ml", line 208, characters 13-51:
-- Warning 48: implicit elimination of optional arguments ?from, ?fill, ?padding
-- File "src/ide/gmain.ml", line 219, characters 13-51:
-- Warning 48: implicit elimination of optional arguments ?from, ?fill, ?padding
-- File "src/ide/gmain.ml", line 227, characters 13-51:
-- Warning 48: implicit elimination of optional arguments ?from, ?fill, ?padding
-- File "src/ide/gmain.ml", line 335, characters 35-64:
-- Warning 48: implicit elimination of optional arguments ?from, ?fill, ?padding
-- File "src/ide/gmain.ml", line 527, characters 14-21:
-- Warning 3: deprecated: Format.bprintf
-- File "src/ide/gmain.ml", line 543, characters 14-21:
-- Warning 3: deprecated: Format.bprintf
-- File "src/ide/gmain.ml", line 767, characters 11-37:
-- Warning 48: implicit elimination of optional arguments ?from, ?expand, ?padding
 - Linking  bin/why3ide.opt
-- File "src/ide/gmain.ml", line 2028, characters 14-27:
-- Warning 48: implicit elimination of optional argument ?destroy
 - Ocamlc   src/why3session/why3session_lib.mli
 - Ocamlopt src/why3session/why3session_lib.ml
 - Ocamlopt src/why3session/why3session_copy.ml
 - Ocamlopt src/why3session/why3session_info.ml
 - Ocamlopt src/why3session/why3session_latex.ml
-- File "src/why3session/why3session_lib.ml", line 253, characters 10-23:
+- Ocamlopt src/why3session/why3session_html.ml
+- File "src/why3session/why3session_lib.ml", line 252, characters 10-23:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- Ocamlopt src/why3session/why3session_html.ml
 - Ocamlopt src/why3session/why3session_rm.ml
 - Ocamlopt src/why3session/why3session_output.ml
 - Ocamlopt src/why3session/why3session_run.ml
@@ -3669,27 +4401,6 @@ The following actions will be performed:
 - Ocamlopt src/why3doc/doc_lexer.ml
 - Ocamlopt src/why3doc/doc_main.ml
 - Linking  bin/why3doc.opt
-- File "src/why3doc/doc_def.ml", line 54, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "src/why3doc/doc_def.ml", line 59, characters 8-19:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "src/why3doc/doc_def.ml", line 63, characters 8-21:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "src/why3doc/doc_def.ml", line 64, characters 8-34:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "src/why3doc/doc_def.ml", line 65, characters 8-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "src/why3doc/doc_lexer.mll", line 64, characters 14-27:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "src/why3doc/doc_lexer.mll", line 75, characters 15-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 - Ocamlc   plugins/parser/genequlin.ml
 - Linking  lib/plugins/genequlin.cmo
 - Ocamlc   plugins/parser/dimacs.ml
@@ -3702,10 +4413,6 @@ The following actions will be performed:
 - Linking  lib/plugins/tptp.cmo
 - Ocamlc   plugins/transform/hypothesis_selection.ml
 - Linking  lib/plugins/hypothesis_selection.cmo
-- File "plugins/transform/hypothesis_selection.ml", line 52, characters 4-18:
-- Warning 3: deprecated: Format.bprintf
-- File "plugins/transform/hypothesis_selection.ml", line 365, characters 22-35:
-- Warning 48: implicit elimination of optional argument ?pos
 - Ocamlc   src/util/config.ml
 - Ocamlc   src/util/bigInt.ml
 - Ocamlc   src/util/util.ml
@@ -3718,12 +4425,6 @@ The following actions will be performed:
 - Ocamlc   src/util/weakhtbl.ml
 - Ocamlc   src/util/hashcons.ml
 - Ocamlc   src/util/stdlib.ml
-- File "src/util/strings.ml", line 36, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "src/util/strings.ml", line 38, characters 4-15:
-- Warning 3: deprecated: String.fill
-- Use Bytes.fill instead.
 - Ocamlc   src/util/exn_printer.ml
 - Ocamlc   src/util/pp.ml
 - Ocamlc   src/util/debug.ml
@@ -3731,6 +4432,18 @@ The following actions will be performed:
 - Ocamlc   src/util/lexlib.ml
 - Ocamlc   src/util/print_tree.ml
 - Ocamlc   src/util/cmdline.ml
+- File "src/util/strings.ml", line 36, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "src/util/strings.ml", line 38, characters 4-15:
+- Warning 3: deprecated: String.fill
+- Use Bytes.fill instead.
+- File "src/util/lexlib.mll", line 101, characters 14-27:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "src/util/lexlib.mll", line 103, characters 46-56:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 - Ocamlc   src/util/warning.ml
 - Ocamlc   src/util/sysutil.ml
 - Ocamlc   src/util/rc.ml
@@ -3740,24 +4453,7 @@ The following actions will be performed:
 - Ocamlc   src/core/ident.ml
 - Ocamlc   src/core/ty.ml
 - Ocamlc   src/core/term.ml
-- File "src/util/pp.ml", line 180, characters 4-41:
-- Warning 3: deprecated: Format.pp_get_all_formatter_output_functions
-- Use Format.pp_get_formatter_out_functions instead.
-- File "src/util/pp.ml", line 181, characters 2-39:
-- Warning 3: deprecated: Format.pp_set_all_formatter_output_functions
-- Use Format.pp_set_formatter_out_functions instead.
-- File "src/util/debug.ml", line 69, characters 4-48:
-- Warning 3: deprecated: Format.pp_get_all_formatter_output_functions
-- Use Format.pp_get_formatter_out_functions instead.
-- File "src/util/debug.ml", line 70, characters 2-46:
-- Warning 3: deprecated: Format.pp_set_all_formatter_output_functions
-- Use Format.pp_set_formatter_out_functions instead.
-- File "src/util/lexlib.mll", line 101, characters 14-27:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "src/util/lexlib.mll", line 103, characters 46-56:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
+- Ocamlc   src/core/pattern.ml
 - File "src/util/cmdline.ml", line 46, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -3776,7 +4472,6 @@ The following actions will be performed:
 - File "src/util/number.ml", line 161, characters 31-44:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- Ocamlc   src/core/pattern.ml
 - Ocamlc   src/core/decl.ml
 - Ocamlc   src/core/theory.ml
 - Ocamlc   src/core/task.ml
@@ -3785,6 +4480,7 @@ The following actions will be performed:
 - Ocamlc   src/core/env.ml
 - Ocamlc   src/core/trans.ml
 - Ocamlc   src/core/printer.ml
+- Ocamlc   src/core/model_parser.ml
 - Ocamlc   src/driver/call_provers.ml
 - Ocamlc   src/driver/driver_ast.ml
 - Ocamlc   src/driver/driver_parser.ml
@@ -3792,9 +4488,12 @@ The following actions will be performed:
 - Ocamlc   src/driver/driver.ml
 - Ocamlc   src/driver/whyconf.ml
 - Ocamlc   src/driver/autodetection.ml
+- Ocamlc   src/driver/parse_cvc4_z3_model.ml
 - Ocamlc   src/mlw/ity.ml
-- File "src/driver/whyconf.ml", line 559, characters 4-18:
-- Warning 3: deprecated: Format.bprintf
+- Ocamlc   src/mlw/expr.ml
+- File "src/mlw/expr.ml", line 440, characters 34-46:
+- Warning 48: implicit elimination of optional argument ?loc
+- Ocamlc   src/mlw/dexpr.ml
 - Ocamlc   src/parser/ptree.ml
 - Ocamlc   src/parser/glob.ml
 - Ocamlc   src/parser/parser.ml
@@ -3804,15 +4503,13 @@ The following actions will be performed:
 - Ocamlc   src/transform/inlining.ml
 - Ocamlc   src/transform/split_goal.ml
 - Ocamlc   src/transform/induction.ml
+- Ocamlc   src/transform/detect_polymorphism.ml
 - Ocamlc   src/transform/eliminate_definition.ml
 - Ocamlc   src/transform/eliminate_algebraic.ml
 - Ocamlc   src/transform/eliminate_inductive.ml
 - Ocamlc   src/transform/eliminate_let.ml
 - Ocamlc   src/transform/eliminate_if.ml
 - Ocamlc   src/transform/libencoding.ml
-- File "src/transform/eliminate_definition.ml", line 281, characters 10-22:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
 - Ocamlc   src/transform/discriminate.ml
 - Ocamlc   src/transform/encoding.ml
 - Ocamlc   src/transform/encoding_select.ml
@@ -3829,11 +4526,14 @@ The following actions will be performed:
 - Ocamlc   src/transform/close_epsilon.ml
 - Ocamlc   src/transform/lift_epsilon.ml
 - Ocamlc   src/transform/eliminate_epsilon.ml
+- Ocamlc   src/transform/intro_projections_counterexmp.ml
 - Ocamlc   src/transform/eval_match.ml
 - Ocamlc   src/transform/instantiate_predicate.ml
 - Ocamlc   src/transform/smoke_detector.ml
 - Ocamlc   src/transform/reduction_engine.ml
 - Ocamlc   src/transform/compute.ml
+- Ocamlc   src/transform/induction_pr.ml
+- Ocamlc   src/transform/prop_curry.ml
 - Ocamlc   src/printer/alt_ergo.ml
 - Ocamlc   src/printer/why3printer.ml
 - Ocamlc   src/printer/smtv1.ml
@@ -3842,18 +4542,10 @@ The following actions will be performed:
 - Ocamlc   src/printer/pvs.ml
 - Ocamlc   src/printer/isabelle.ml
 - Ocamlc   src/printer/simplify.ml
-- File "src/printer/coq.ml", line 136, characters 22-30:
-- Warning 48: implicit elimination of optional argument ?whytypes
-- File "src/printer/coq.ml", line 371, characters 38-46:
-- Warning 48: implicit elimination of optional argument ?whytypes
-- File "src/printer/coq.ml", line 467, characters 14-27:
+- Ocamlc   src/printer/gappa.ml
+- File "src/printer/coq.ml", line 481, characters 14-27:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- File "src/printer/coq.ml", line 674, characters 42-57:
-- Warning 48: implicit elimination of optional arguments ?whytypes, ?implicit
-- File "src/printer/coq.ml", line 687, characters 31-46:
-- Warning 48: implicit elimination of optional arguments ?whytypes, ?implicit
-- Ocamlc   src/printer/gappa.ml
 - Ocamlc   src/printer/cvc3.ml
 - Ocamlc   src/printer/yices.ml
 - Ocamlc   src/printer/mathematica.ml
@@ -3866,30 +4558,24 @@ The following actions will be performed:
 - Ocamlc   src/whyml/mlw_dexpr.ml
 - Ocamlc   src/whyml/mlw_typing.ml
 - Ocamlc   src/whyml/mlw_driver.ml
+- Ocamlc   src/whyml/mlw_exec.ml
 - Ocamlc   src/whyml/mlw_ocaml.ml
 - Ocamlc   src/whyml/mlw_main.ml
 - Ocamlc   src/whyml/mlw_interp.ml
 - Ocamlc   src/session/compress.ml
 - Ocamlc   src/session/xml.ml
 - Ocamlc   src/session/termcode.ml
-- File "src/session/termcode.ml", line 259, characters 2-16:
-- Warning 3: deprecated: Format.bprintf
-- File "src/session/termcode.ml", line 437, characters 6-20:
-- Warning 3: deprecated: Format.bprintf
 - Ocamlc   src/session/session.ml
 - Ocamlc   src/session/session_tools.ml
 - Ocamlc   src/session/strategy.ml
 - Ocamlc   src/session/strategy_parser.ml
 - Ocamlc   src/session/session_scheduler.ml
-- Linking  lib/why3/why3.cmo
 - File "src/session/session.ml", line 1517, characters 10-23:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
 - File "src/session/session.ml", line 1546, characters 16-27:
 - Warning 3: deprecated: String.copy
-- File "src/session/strategy_parser.mll", line 146, characters 16-28:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
+- Linking  lib/why3/why3.cmo
 - Linking  lib/why3/why3.cma
 - Ocamlc   src/tools/main.ml
 - Linking  bin/why3.byte
@@ -3909,90 +4595,13 @@ The following actions will be performed:
 - Linking  bin/why3wc.byte
 - Ocamlc   src/ide/gconfig.ml
 - Ocamlc   src/ide/gmain.ml
-- File "src/ide/gconfig.ml", line 609, characters 15-24:
-- Warning 48: implicit elimination of optional arguments ?from, ?expand, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 619, characters 13-36:
-- Warning 48: implicit elimination of optional arguments ?from, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 631, characters 13-36:
-- Warning 48: implicit elimination of optional arguments ?from, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 643, characters 13-36:
-- Warning 48: implicit elimination of optional arguments ?from, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 667, characters 15-24:
-- Warning 48: implicit elimination of optional arguments ?from, ?expand, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 722, characters 15-24:
-- Warning 48: implicit elimination of optional arguments ?from, ?expand, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 733, characters 15-37:
-- Warning 48: implicit elimination of optional arguments ?from, ?expand, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 739, characters 15-37:
-- Warning 48: implicit elimination of optional arguments ?from, ?expand, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 745, characters 15-37:
-- Warning 48: implicit elimination of optional arguments ?from, ?expand, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 757, characters 24-48:
-- Warning 48: implicit elimination of optional arguments ?from, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 769, characters 33-68:
-- Warning 48: implicit elimination of optional arguments ?from, ?padding
-- File "src/ide/gconfig.ml", line 773, characters 15-50:
-- Warning 48: implicit elimination of optional arguments ?from, ?padding
-- File "src/ide/gconfig.ml", line 777, characters 33-68:
-- Warning 48: implicit elimination of optional arguments ?from, ?padding
-- File "src/ide/gconfig.ml", line 781, characters 15-50:
-- Warning 48: implicit elimination of optional arguments ?from, ?padding
-- File "src/ide/gconfig.ml", line 807, characters 15-50:
-- Warning 48: implicit elimination of optional arguments ?from, ?padding
-- File "src/ide/gconfig.ml", line 838, characters 15-24:
-- Warning 48: implicit elimination of optional arguments ?from, ?expand, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 864, characters 24-48:
-- Warning 48: implicit elimination of optional arguments ?from, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 874, characters 33-68:
-- Warning 48: implicit elimination of optional arguments ?from, ?padding
-- File "src/ide/gconfig.ml", line 877, characters 15-50:
-- Warning 48: implicit elimination of optional arguments ?from, ?padding
-- File "src/ide/gconfig.ml", line 881, characters 48-57:
-- Warning 48: implicit elimination of optional arguments ?from, ?expand, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 892, characters 15-24:
-- Warning 48: implicit elimination of optional arguments ?from, ?expand, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 906, characters 52-60:
-- Warning 48: implicit elimination of optional arguments ?from, ?expand, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 908, characters 15-48:
-- Warning 48: implicit elimination of optional arguments ?from, ?padding
-- File "src/ide/gconfig.ml", line 910, characters 36-43:
-- Warning 48: implicit elimination of optional arguments ?from, ?expand, ?fill, ?padding
-- File "src/ide/gconfig.ml", line 1046, characters 21-56:
-- Warning 48: implicit elimination of optional arguments ?from, ?padding
-- File "src/ide/gmain.ml", line 115, characters 14-27:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "src/ide/gmain.ml", line 146, characters 38-47:
-- Warning 48: implicit elimination of optional arguments ?from, ?expand, ?fill, ?padding
-- File "src/ide/gmain.ml", line 157, characters 15-38:
-- Warning 48: implicit elimination of optional arguments ?from, ?fill, ?padding
-- File "src/ide/gmain.ml", line 169, characters 13-51:
-- Warning 48: implicit elimination of optional arguments ?from, ?fill, ?padding
-- File "src/ide/gmain.ml", line 200, characters 13-51:
-- Warning 48: implicit elimination of optional arguments ?from, ?fill, ?padding
-- File "src/ide/gmain.ml", line 208, characters 13-51:
-- Warning 48: implicit elimination of optional arguments ?from, ?fill, ?padding
-- File "src/ide/gmain.ml", line 219, characters 13-51:
-- Warning 48: implicit elimination of optional arguments ?from, ?fill, ?padding
-- File "src/ide/gmain.ml", line 227, characters 13-51:
-- Warning 48: implicit elimination of optional arguments ?from, ?fill, ?padding
-- File "src/ide/gmain.ml", line 335, characters 35-64:
-- Warning 48: implicit elimination of optional arguments ?from, ?fill, ?padding
-- File "src/ide/gmain.ml", line 527, characters 14-21:
-- Warning 3: deprecated: Format.bprintf
-- File "src/ide/gmain.ml", line 543, characters 14-21:
-- Warning 3: deprecated: Format.bprintf
-- File "src/ide/gmain.ml", line 767, characters 11-37:
-- Warning 48: implicit elimination of optional arguments ?from, ?expand, ?padding
-- File "src/ide/gmain.ml", line 2028, characters 14-27:
-- Warning 48: implicit elimination of optional argument ?destroy
 - Linking  bin/why3ide.byte
 - Ocamlc   src/why3session/why3session_lib.ml
 - Ocamlc   src/why3session/why3session_copy.ml
-- Ocamlc   src/why3session/why3session_info.ml
-- File "src/why3session/why3session_lib.ml", line 253, characters 10-23:
+- File "src/why3session/why3session_lib.ml", line 252, characters 10-23:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- Ocamlc   src/why3session/why3session_info.ml
 - Ocamlc   src/why3session/why3session_latex.ml
 - Ocamlc   src/why3session/why3session_html.ml
 - Ocamlc   src/why3session/why3session_rm.ml
@@ -4009,32 +4618,11 @@ The following actions will be performed:
 - Linking  lib/why3/why3extract.cma
 - Ocamlc   src/why3doc/doc_html.ml
 - Ocamlc   src/why3doc/doc_def.ml
-- File "src/why3doc/doc_def.ml", line 54, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "src/why3doc/doc_def.ml", line 59, characters 8-19:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "src/why3doc/doc_def.ml", line 63, characters 8-21:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "src/why3doc/doc_def.ml", line 64, characters 8-34:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "src/why3doc/doc_def.ml", line 65, characters 8-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 - Ocamlc   src/why3doc/doc_lexer.ml
 - Ocamlc   src/why3doc/doc_main.ml
 - Linking  bin/why3doc.byte
-- File "src/why3doc/doc_lexer.mll", line 64, characters 14-27:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "src/why3doc/doc_lexer.mll", line 75, characters 15-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
 [why3-base: make install] Command started
-+ make "install" "install-lib" (CWD=/home/opam/.opam/4.02.1/build/why3-base.0.85)
++ make "install" "install-lib" (CWD=/home/opam/.opam/4.02.1/build/why3-base.0.86)
 - rm -rf /home/opam/.opam/4.02.1/lib/why3
 - rm -rf /home/opam/.opam/4.02.1/share/why3
 - rm -rf /home/opam/.opam/4.02.1/lib/why3
@@ -4062,12 +4650,14 @@ The following actions will be performed:
 - cp -f modules/*.mlw /home/opam/.opam/4.02.1/share/why3/modules
 - cp -f modules/mach/*.mlw /home/opam/.opam/4.02.1/share/why3/modules/mach
 - cp -f drivers/*.drv drivers/*.gen /home/opam/.opam/4.02.1/share/why3/drivers
+- cp -f LICENSE /home/opam/.opam/4.02.1/share/why3/
 - cp -f share/provers-detection-data.conf /home/opam/.opam/4.02.1/share/why3/
 - cp -f share/images/icons.rc /home/opam/.opam/4.02.1/share/why3/images
 - cp -f share/images/*.png /home/opam/.opam/4.02.1/share/why3/images
-- cp -f share/images/boomy/*.png /home/opam/.opam/4.02.1/share/why3/images/boomy
-- cp -f share/images/fatcow/*.png /home/opam/.opam/4.02.1/share/why3/images/fatcow
+- cp -f share/images/boomy/* /home/opam/.opam/4.02.1/share/why3/images/boomy
+- cp -f share/images/fatcow/* /home/opam/.opam/4.02.1/share/why3/images/fatcow
 - cp -f share/why3session.dtd /home/opam/.opam/4.02.1/share/why3
+- cp -f share/Makefile.config /home/opam/.opam/4.02.1/share/why3
 - cp -rf share/javascript /home/opam/.opam/4.02.1/share/why3/javascript
 - cp -f share/vim/why3.vim /home/opam/.opam/4.02.1/share/why3/vim/why3.vim
 - cp -f share/lang/why3.lang /home/opam/.opam/4.02.1/share/why3/lang/why3.lang
@@ -4097,6 +4687,6 @@ The following actions will be performed:
 - mkdir -p /home/opam/.opam/4.02.1/lib/why3
 - cp -f lib/why3/why3extract.a lib/why3/why3extract.cma lib/why3/why3extract.cmx lib/why3/why3extract.cmi lib/why3/why3extract.cmxa \
 -   /home/opam/.opam/4.02.1/lib/why3
--> installed why3-base.0.85
--> installed why3.0.85
+-> installed why3-base.0.86
+-> installed why3.0.86
 Done.
