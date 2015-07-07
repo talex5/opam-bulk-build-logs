@@ -1,14 +1,14 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-# Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=mirari
+# Detecting depexts using flags: x86_64 linux ubuntu
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=mirari
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=mirari
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
 Ign http://download.opensuse.org  InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
@@ -19,8 +19,8 @@ Hit http://archive.ubuntu.com trusty Release.gpg
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
 Hit http://archive.ubuntu.com trusty Release
-Get:3 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
 Hit http://download.opensuse.org  Packages
+Get:3 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
 Get:4 http://archive.ubuntu.com trusty-security Release [63.5 kB]
 Hit http://archive.ubuntu.com trusty/main Sources
 Hit http://archive.ubuntu.com trusty/restricted Sources
@@ -35,19 +35,17 @@ Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [636 kB]
 Get:9 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [15.1 kB]
 Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [356 kB]
 Get:11 http://archive.ubuntu.com trusty-security/main Sources [97.7 kB]
++ sudo apt-get install -qq -yy m4
 Get:12 http://archive.ubuntu.com trusty-security/restricted Sources [1874 B]
 Get:13 http://archive.ubuntu.com trusty-security/universe Sources [23.3 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [329 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [128 kB]
-Fetched 2122 kB in 15s (141 kB/s)
+Fetched 2122 kB in 8s (243 kB/s)
 Reading package lists...
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 635587 635616
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_universe_binary-amd64_Packages.gz is not what the server reported 356350 356387
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4
-+ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install obuild 0.1.2                                        [required by mirari]
@@ -75,6 +73,11 @@ The following actions will be performed:
 - COMPILING dag
 - COMPILING libname
 - COMPILING pp
+- File "dag.ml", line 194, characters 23-34:
+- Warning 3: deprecated: String.copy
+- File "dag.ml", line 197, characters 39-62:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 - COMPILING expr
 - COMPILING utils
 - COMPILING modname
@@ -92,17 +95,12 @@ The following actions will be performed:
 - COMPILING target
 - COMPILING dist
 - COMPILING project
-- File "dag.ml", line 194, characters 23-34:
-- Warning 3: deprecated: String.copy
-- File "dag.ml", line 197, characters 39-62:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "process.ml", line 57, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - COMPILING analyze
 - COMPILING configure
 - COMPILING prepare
+- File "process.ml", line 57, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - COMPILING buildprogs
 - COMPILING build
 - COMPILING exception
@@ -125,6 +123,9 @@ The following actions will be performed:
 - [ 7 of 55] Linking library dist/build/lib-obuild.ext/obuild_ext.cmxa
 - [ 7 of 55] Linking library dist/build/lib-obuild.ext/obuild_ext.cmxs
 - [ 7 of 55] Linking library dist/build/lib-obuild.ext/obuild_ext.cma
+- [ 8 of 55] Checking dist/build/lib-obuild.ext
+- [ 9 of 55] Compiling Obuild.Dag                    
+- [10 of 55] Compiling Obuild.Filetype               
 - File "ext/filesystem.ml", line 18, characters 11-216:
 - Warning 4: this pattern-matching is fragile.
 - It will remain exhaustive when constructors are added to type Unix.file_kind.
@@ -132,9 +133,6 @@ The following actions will be performed:
 - Warning 4: this pattern-matching is fragile.
 - It will remain exhaustive when constructors are added to type Unix.file_kind.
 - 
-- [ 8 of 55] Checking dist/build/lib-obuild.ext
-- [ 9 of 55] Compiling Obuild.Dag                    
-- [10 of 55] Compiling Obuild.Filetype               
 - [11 of 55] Compiling Obuild.Expr                   
 - [12 of 55] Compiling Obuild.Gconf                  
 - [13 of 55] Compiling Obuild.Modname                
@@ -153,6 +151,8 @@ The following actions will be performed:
 - [26 of 55] Compiling Obuild.Dependencies           
 - [27 of 55] Compiling Obuild.Hier                   
 - [28 of 55] Compiling Obuild.Meta                   
+- [29 of 55] Compiling Obuild.Target                 
+- [30 of 55] Compiling Obuild.Project                
 - File "obuild/dag.ml", line 194, characters 23-34:
 - Warning 3: deprecated: String.copy
 - File "obuild/dag.ml", line 197, characters 39-62:
@@ -201,187 +201,142 @@ The following actions will be performed:
 - Warning 4: this pattern-matching is fragile.
 - It will remain exhaustive when constructors are added to type Filetype.t.
 - 
-- [29 of 55] Compiling Obuild.Target                 
-- [30 of 55] Compiling Obuild.Project                
 - [31 of 55] Compiling Obuild.Dist                   
+- File "obuild/meta.ml", line 125, characters 29-147:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Predicate.t.
+- File "obuild/meta.ml", line 125, characters 29-147:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Predicate.t.
+- File "obuild/meta.ml", line 301, characters 27-147:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type t.
+- File "obuild/meta.ml", line 301, characters 27-147:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type t.
+- File "obuild/meta.ml", line 305, characters 28-300:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type t.
+- File "obuild/meta.ml", line 305, characters 28-300:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type t.
+- File "obuild/meta.ml", line 314, characters 48-235:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type t.
+- File "obuild/meta.ml", line 314, characters 48-235:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type t.
+- File "obuild/meta.ml", line 320, characters 48-251:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type t.
+- File "obuild/meta.ml", line 320, characters 48-251:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type t.
+- File "obuild/meta.ml", line 311, characters 40-683:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type t.
+- File "obuild/meta.ml", line 311, characters 40-683:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type t.
+- File "obuild/meta.ml", line 327, characters 38-399:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type t.
+- File "obuild/meta.ml", line 327, characters 38-399:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type t.
+- File "obuild/meta.ml", line 348, characters 10-386:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type t.
+- File "obuild/meta.ml", line 348, characters 10-386:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type t.
+- File "obuild/meta.ml", line 344, characters 29-689:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type t.
+- File "obuild/meta.ml", line 344, characters 29-689:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type t.
+- File "obuild/meta.ml", line 364, characters 8-411:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type t.
+- File "obuild/meta.ml", line 364, characters 8-411:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type t.
+- File "obuild/meta.ml", line 377, characters 26-158:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type t.
+- File "obuild/meta.ml", line 377, characters 26-158:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type t.
+- File "obuild/meta.ml", line 382, characters 8-144:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type t.
+- File "obuild/meta.ml", line 382, characters 8-144:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type t.
+- File "obuild/meta.ml", line 388, characters 8-251:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type t.
+- File "obuild/meta.ml", line 388, characters 8-251:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type t.
+- File "obuild/meta.ml", line 336, characters 31-3144:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type t.
+- File "obuild/meta.ml", line 336, characters 31-3144:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type t.
+- 
 - [32 of 55] Compiling Obuild.Analyze                
 - [33 of 55] Compiling Obuild.Configure              
 - [34 of 55] Compiling Obuild.Prepare                
 - [35 of 55] Compiling Obuild.Buildprogs             
+- File "obuild/analyze.ml", line 74, characters 8-94:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Target.Name.t.
+- File "obuild/analyze.ml", line 74, characters 8-94:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Target.Name.t.
+- File "obuild/analyze.ml", line 200, characters 22-471:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Meta.Predicate.t.
+- File "obuild/analyze.ml", line 200, characters 22-471:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Meta.Predicate.t.
+- File "obuild/analyze.ml", line 224, characters 10-182:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Target.Name.t.
+- File "obuild/analyze.ml", line 224, characters 10-182:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Target.Name.t.
+- 
+- File "obuild/prepare.ml", line 167, characters 8-93:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Analyze.dependency_tag.
+- File "obuild/prepare.ml", line 167, characters 8-93:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Analyze.dependency_tag.
+- File "obuild/prepare.ml", line 214, characters 17-315:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Filetype.t.
+- File "obuild/prepare.ml", line 214, characters 17-315:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Filetype.t.
+- File "obuild/prepare.ml", line 416, characters 10-224:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type compile_step.
+- File "obuild/prepare.ml", line 416, characters 10-224:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type compile_step.
+- File "obuild/prepare.ml", line 479, characters 6-99:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Analyze.dep_type.
+- File "obuild/prepare.ml", line 479, characters 6-99:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Analyze.dep_type.
+- 
 - [36 of 55] Compiling Obuild.Build                  
 - [37 of 55] Compiling Obuild.Exception              
-- File "obuild/meta.ml", line 125, characters 29-147:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Predicate.t.
-- File "obuild/meta.ml", line 125, characters 29-147:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Predicate.t.
-- File "obuild/meta.ml", line 301, characters 27-147:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type t.
-- File "obuild/meta.ml", line 301, characters 27-147:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type t.
-- File "obuild/meta.ml", line 305, characters 28-300:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type t.
-- File "obuild/meta.ml", line 305, characters 28-300:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type t.
-- File "obuild/meta.ml", line 314, characters 48-235:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type t.
-- File "obuild/meta.ml", line 314, characters 48-235:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type t.
-- File "obuild/meta.ml", line 320, characters 48-251:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type t.
-- File "obuild/meta.ml", line 320, characters 48-251:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type t.
-- File "obuild/meta.ml", line 311, characters 40-683:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type t.
-- File "obuild/meta.ml", line 311, characters 40-683:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type t.
-- File "obuild/meta.ml", line 327, characters 38-399:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type t.
-- File "obuild/meta.ml", line 327, characters 38-399:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type t.
-- File "obuild/meta.ml", line 348, characters 10-386:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type t.
-- File "obuild/meta.ml", line 348, characters 10-386:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type t.
-- File "obuild/meta.ml", line 344, characters 29-689:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type t.
-- File "obuild/meta.ml", line 344, characters 29-689:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type t.
-- File "obuild/meta.ml", line 364, characters 8-411:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type t.
-- File "obuild/meta.ml", line 364, characters 8-411:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type t.
-- File "obuild/meta.ml", line 377, characters 26-158:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type t.
-- File "obuild/meta.ml", line 377, characters 26-158:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type t.
-- File "obuild/meta.ml", line 382, characters 8-144:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type t.
-- File "obuild/meta.ml", line 382, characters 8-144:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type t.
-- File "obuild/meta.ml", line 388, characters 8-251:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type t.
-- File "obuild/meta.ml", line 388, characters 8-251:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type t.
-- File "obuild/meta.ml", line 336, characters 31-3144:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type t.
-- File "obuild/meta.ml", line 336, characters 31-3144:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type t.
-- 
-- File "obuild/analyze.ml", line 74, characters 8-94:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Target.Name.t.
-- File "obuild/analyze.ml", line 74, characters 8-94:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Target.Name.t.
-- File "obuild/analyze.ml", line 200, characters 22-471:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Meta.Predicate.t.
-- File "obuild/analyze.ml", line 200, characters 22-471:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Meta.Predicate.t.
-- File "obuild/analyze.ml", line 224, characters 10-182:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Target.Name.t.
-- File "obuild/analyze.ml", line 224, characters 10-182:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Target.Name.t.
-- 
-- File "obuild/prepare.ml", line 167, characters 8-93:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Analyze.dependency_tag.
-- File "obuild/prepare.ml", line 167, characters 8-93:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Analyze.dependency_tag.
-- File "obuild/prepare.ml", line 214, characters 17-315:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Filetype.t.
-- File "obuild/prepare.ml", line 214, characters 17-315:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Filetype.t.
-- File "obuild/prepare.ml", line 416, characters 10-224:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type compile_step.
-- File "obuild/prepare.ml", line 416, characters 10-224:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type compile_step.
-- File "obuild/prepare.ml", line 479, characters 6-99:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Analyze.dep_type.
-- File "obuild/prepare.ml", line 479, characters 6-99:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Analyze.dep_type.
-- 
-- File "obuild/build.ml", line 60, characters 45-688:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Filetype.t.
-- File "obuild/build.ml", line 60, characters 45-688:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Filetype.t.
-- File "obuild/build.ml", line 59, characters 4-1138:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Filetype.t.
-- File "obuild/build.ml", line 59, characters 4-1138:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Filetype.t.
-- File "obuild/build.ml", line 89, characters 6-63:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Types.ocaml_compiled_type.
-- File "obuild/build.ml", line 89, characters 6-63:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Types.ocaml_compilation_option.
-- File "obuild/build.ml", line 89, characters 6-63:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Types.ocaml_compiled_type.
-- File "obuild/build.ml", line 89, characters 6-63:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Types.ocaml_compilation_option.
-- File "obuild/build.ml", line 327, characters 22-124:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Types.ocaml_compilation_option.
-- File "obuild/build.ml", line 327, characters 22-124:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Types.ocaml_compilation_option.
-- File "obuild/build.ml", line 338, characters 13-458:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Target.Name.t.
-- File "obuild/build.ml", line 338, characters 13-458:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Target.Name.t.
-- File "obuild/build.ml", line 455, characters 40-160:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Prepare.compile_step.
-- File "obuild/build.ml", line 455, characters 40-160:
-- Warning 4: this pattern-matching is fragile.
-- It will remain exhaustive when constructors are added to type Prepare.compile_step.
-- 
 - [38 of 55] Packing Obuild                        
 - [39 of 55] Linking library dist/build/lib-obuild/obuild.cmxa
 - [39 of 55] Linking library dist/build/lib-obuild/obuild.cmxs
@@ -401,7 +356,49 @@ The following actions will be performed:
 - [52 of 55] Checking dist/build/obuild-from-oasis
 - [53 of 55] Checking dist/build/obuild-simple
 - [54 of 55] Linking executable dist/build/obuild/obuild
-- [55 of 55] Checking dist/build/obuild
+- File "obuild/build.ml", line 60, characters 45-688:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Filetype.t.
+- File "obuild/build.ml", line 60, characters 45-688:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Filetype.t.
+- File "obuild/build.ml", line 59, characters 4-1138:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Filetype.t.
+- File "obuild/build.ml", line 59, characters 4-1138:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Filetype.t.
+- File "obuild/build.ml", line 89, characters 6-63:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Types.ocaml_compiled_type.
+- File "obuild/build.ml", line 89, characters 6-63:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Types.ocaml_compilation_option.
+- File "obuild/build.ml", line 89, characters 6-63:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Types.ocaml_compiled_type.
+- File "obuild/build.ml", line 89, characters 6-63:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Types.ocaml_compilation_option.
+- File "obuild/build.ml", line 327, characters 22-124:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Types.ocaml_compilation_option.
+- File "obuild/build.ml", line 327, characters 22-124:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Types.ocaml_compilation_option.
+- File "obuild/build.ml", line 338, characters 13-458:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Target.Name.t.
+- File "obuild/build.ml", line 338, characters 13-458:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Target.Name.t.
+- File "obuild/build.ml", line 455, characters 40-160:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Prepare.compile_step.
+- File "obuild/build.ml", line 455, characters 40-160:
+- Warning 4: this pattern-matching is fragile.
+- It will remain exhaustive when constructors are added to type Prepare.compile_step.
+- 
 - File "src/install.ml", line 21, characters 6-245:
 - Warning 4: this pattern-matching is fragile.
 - It will remain exhaustive when constructors are added to type Obuild.Filetype.t.
@@ -445,13 +442,32 @@ The following actions will be performed:
 - File "src/sdist.ml", line 9, characters 17-27:
 - Warning 27: unused variable isSnapshot.
 - 
+- [55 of 55] Checking dist/build/obuild
 - 
-- real	0m3.494s
-- user	0m2.241s
-- sys	0m1.623s
+- real	0m6.323s
+- user	0m2.320s
+- sys	0m1.675s
 -> installed obuild.0.1.2
-[ERROR] The compilation of mirari failed at "make".
 [mirari: make] Command started
++ make  (CWD=/home/opam/.opam/system/build/mirari.0.9.2)
+- make configure
+- make[1]: Entering directory `/home/opam/.opam/system/build/mirari.0.9.2'
+- obuild configure
+- Configuring mirari-0.9.2...
+- make[1]: Leaving directory `/home/opam/.opam/system/build/mirari.0.9.2'
+- warning: obuild META search paths and ocaml config mismatch
+- 
+-   The ocamlfind configuration file used doesn't list the ocaml standard library 
+-   as part of his search paths. something fishy is going on
+-   You can solve the issue by:
+-   * pointing OCAMLFIND_CONF environment to the right configuration file
+-   * making sure that the ocamlfind program in your path is the right one (ocamlfind printconf)
+- 
+-   this is likely to cause various compilation problems
+- error: missing dependency 'cmdliner'
+- make[1]: *** [configure] Error 9
+- make: *** [all] Error 2
+[ERROR] The compilation of mirari failed at "make".
 
 #=== ERROR while installing mirari.0.9.2 ======================================#
 # opam-version         1.2.2 (96efec2011c66532520b3222536e4ebc9f7a6032)
@@ -482,24 +498,6 @@ The following actions will be performed:
 # make[1]: *** [configure] Error 9
 # make: *** [all] Error 2
 
-+ make  (CWD=/home/opam/.opam/system/build/mirari.0.9.2)
-- make configure
-- make[1]: Entering directory `/home/opam/.opam/system/build/mirari.0.9.2'
-- obuild configure
-- Configuring mirari-0.9.2...
-- make[1]: Leaving directory `/home/opam/.opam/system/build/mirari.0.9.2'
-- warning: obuild META search paths and ocaml config mismatch
-- 
--   The ocamlfind configuration file used doesn't list the ocaml standard library 
--   as part of his search paths. something fishy is going on
--   You can solve the issue by:
--   * pointing OCAMLFIND_CONF environment to the right configuration file
--   * making sure that the ocamlfind program in your path is the right one (ocamlfind printconf)
-- 
--   this is likely to cause various compilation problems
-- error: missing dependency 'cmdliner'
-- make[1]: *** [configure] Error 9
-- make: *** [all] Error 2
 
 
 =-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -509,5 +507,5 @@ The following changes have been performed
   - install obuild 0.1.2
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150325062532.export"
+    opam switch import "~/.opam/system/backup/state-20150326071110.export"
 'opam install mirari' failed.
