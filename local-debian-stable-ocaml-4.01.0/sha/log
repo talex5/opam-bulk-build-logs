@@ -3,9 +3,9 @@
 + lsb_release -i -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=sha
 # Detecting depexts using flags: x86_64 linux debian
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=sha
 # The following system packages are needed:
 #  - m4
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=sha
 + sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
@@ -15,7 +15,7 @@ Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
 Get:2 http://security.debian.org stable/updates/main amd64 Packages [58.9 kB]
 Get:3 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
 Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9208 kB in 3s (2519 kB/s)
+Fetched 9208 kB in 4s (1848 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
@@ -263,6 +263,8 @@ The following actions will be performed:
 - ocamlmklib -o sha1 sha1.lib.o sha1_stubs.o sha1.cmo
 - ocamlopt  -c -o sha1.cmx sha1.ml
 - ocamlmklib -o sha1 sha1.lib.o sha1_stubs.o sha1.cmx
+- ocamlc -c -o sha256.cmi sha256.mli
+- ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha256.o sha256.c
 - sha1_stubs.c: In function 'stub_sha1_file':
 - sha1_stubs.c:118:2: warning: implicit declaration of function 'strcpy' [-Wimplicit-function-declaration]
 -   char *name_dup = strdupa(String_val(name));
@@ -290,8 +292,6 @@ The following actions will be performed:
 -   memcpy((sha1_digest *)result, &digest, sizeof(sha1_digest));
 -   ^
 - sha1_stubs.c:128:2: warning: incompatible implicit declaration of built-in function 'memcpy'
-- ocamlc -c -o sha256.cmi sha256.mli
-- ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha256.o sha256.c
 - mv sha256.o sha256.lib.o
 - ocamlc -ccopt "-Wall -O3 -funroll-loops -I/usr/include" -c -o sha256_stubs.o sha256_stubs.c
 - ocamlc -c -o sha256.cmo sha256.ml
@@ -334,6 +334,8 @@ The following actions will be performed:
 - ocamlopt  -c -o sha512.cmx sha512.ml
 - ocamlmklib -o sha512 sha512.lib.o sha512_stubs.o sha512.cmx
 - ocamlmklib -o sha  sha1.lib.o sha1_stubs.o sha1.cmo  sha256.lib.o sha256_stubs.o sha256.cmo  sha512.lib.o sha512_stubs.o sha512.cmo
+- ocamlmklib -o sha  sha1.lib.o sha1_stubs.o sha1.cmx  sha256.lib.o sha256_stubs.o sha256.cmx  sha512.lib.o sha512_stubs.o sha512.cmx
+- rm sha1.o sha256.o sha512.o
 - sha512_stubs.c: In function 'stub_sha512_file':
 - sha512_stubs.c:116:2: warning: implicit declaration of function 'strcpy' [-Wimplicit-function-declaration]
 -   char *name_dup = strdupa(String_val(name));
@@ -361,8 +363,6 @@ The following actions will be performed:
 -   memcpy((sha512_digest *)result, &digest, sizeof(sha512_digest));
 -   ^
 - sha512_stubs.c:126:2: warning: incompatible implicit declaration of built-in function 'memcpy'
-- ocamlmklib -o sha  sha1.lib.o sha1_stubs.o sha1.cmx  sha256.lib.o sha256_stubs.o sha256.cmx  sha512.lib.o sha512_stubs.o sha512.cmx
-- rm sha1.o sha256.o sha512.o
 [sha: make install] Command started
 + make "install" (CWD=/home/opam/.opam/4.01.0/build/sha.1.9)
 - ocamlfind install sha META *.cmx sha1.cmi sha1.cma sha1.cmxa sha256.cmi sha256.cma sha256.cmxa sha512.cmi sha512.cma sha512.cmxa sha.cma sha.cmxa *.a *.so
