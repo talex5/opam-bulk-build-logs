@@ -1,12 +1,12 @@
 + uname -m
 + uname -s
-+ lsb_release -i -s
 /usr/bin/lsb_release
-+ opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=sqlgg
++ lsb_release -i -s
 # Detecting depexts using flags: x86_64 linux ubuntu
++ opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=sqlgg
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=sqlgg
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=sqlgg
 + sudo apt-get update
 Not running as root, system installation will be done through "sudo"
 Ign http://download.opensuse.org  InRelease
@@ -40,11 +40,11 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [21.5 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [327 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [119 kB]
-Fetched 2080 kB in 5s (360 kB/s)
+Fetched 2080 kB in 6s (337 kB/s)
 Reading package lists...
++ sudo apt-get install -qq -yy m4
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
-+ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind  1.5.5                                    [required by sqlgg]
@@ -62,16 +62,16 @@ The following actions will be performed:
 [deriving: from default] Command started
 [extlib: from default] Command started
 [menhir: from default] Command started
-[deriving: from default] Command started
 [extlib: from default] Command started
-[default] http://opam-archive:8080/archives/deriving.0.7+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
+[deriving: from default] Command started
 [menhir: from default] Command started
 [default] http://opam-archive:8080/archives/extlib.1.6.1+opam.tar.gz downloaded
-[optcomp: from default] Command started
 [ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/deriving.0.7+opam.tar.gz downloaded
+[optcomp: from default] Command started
 [default] http://opam-archive:8080/archives/menhir.20141215+opam.tar.gz downloaded
 [ounit: from default] Command started
+[ocamlfind: from default] Command started
 [optcomp: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [sqlgg: from default] Command started
@@ -279,7 +279,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -324,6 +323,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -2118,6 +2118,8 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/functor_class.ml > syntax/classes/functor_class.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -modules syntax/classes/default_class.ml > syntax/classes/default_class.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/show_class.cmo syntax/classes/show_class.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/dump_class.cmo syntax/classes/dump_class.ml
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/enum_class.cmo syntax/classes/enum_class.ml
 - File "setup.ml", line 246, characters 8-26:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
@@ -2126,8 +2128,6 @@ The following actions will be performed:
 - Use Lazy.from_fun instead.
 - W: Cannot find source file matching module 'pa_deriving_common' in library pa_deriving_common
 - ocamlfind: Package `wikidoc' not found
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/dump_class.cmo syntax/classes/dump_class.ml
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/enum_class.cmo syntax/classes/enum_class.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/bounded_class.cmo syntax/classes/bounded_class.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/pickle_class.cmo syntax/classes/pickle_class.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -I syntax/common -I syntax/std -ppopt syntax/common/pa_deriving_common.cma -ppopt syntax/std/pa_deriving_std.cma -syntax camlp4o -package optcomp -package camlp4.quotations.o -package camlp4.extend -package camlp4 -package bytes -I syntax/classes -I syntax/std -o syntax/classes/functor_class.cmo syntax/classes/functor_class.ml
