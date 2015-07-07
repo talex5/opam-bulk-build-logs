@@ -5,14 +5,14 @@
 # The following system packages are needed:
 #  - pcre-devel
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=annexlib
++ sudo yum -y update
 Not running as root, the following command will be run through "sudo":
     yum -y update
-+ sudo yum -y update
 Loaded plugins: fastestmirror
-Loading mirror speeds from cached hostfile
- * base: mirror.vorboss.net
- * extras: mirror.as29550.net
- * updates: mirror.sov.uk.goscomb.net
+Determining fastest mirrors
+ * base: mirror.sov.uk.goscomb.net
+ * extras: mirror.econdc.com
+ * updates: centos.serverspace.co.uk
 Resolving Dependencies
 --> Running transaction check
 ---> Package binutils.x86_64 0:2.23.52.0.1-30.el7_1.1 will be updated
@@ -92,10 +92,8 @@ Upgrade  19 Packages
 Total download size: 28 M
 Downloading packages:
 Delta RPMs disabled because /usr/bin/applydeltarpm not installed.
-http://mirror.sov.uk.goscomb.net/centos/7.1.1503/updates/x86_64/Packages/kernel-devel-3.10.0-229.4.2.el7.x86_64.rpm: [Errno 14] HTTP Error 404 - Not Found
-Trying other mirror.
 --------------------------------------------------------------------------------
-Total                                              8.6 MB/s |  28 MB  00:03     
+Total                                              7.9 MB/s |  28 MB  00:03     
 Running transaction check
 Running transaction test
 Transaction test succeeded
@@ -205,16 +203,15 @@ Updated:
 
 Complete!
 # OS package update successful
++ sudo yum install -y pcre-devel
 Not running as root, the following command will be run through "sudo":
     yum install -y pcre-devel
 Not running as root, the following command will be run through "sudo":
     rpm -q pcre-devel
-+ sudo yum install -y pcre-devel
-+ sudo rpm -q pcre-devel
 Loaded plugins: fastestmirror
 Loading mirror speeds from cached hostfile
- * base: mirrors.melbourne.co.uk
- * extras: mirrors.melbourne.co.uk
+ * base: mirror.sov.uk.goscomb.net
+ * extras: mirror.econdc.com
  * updates: centos.serverspace.co.uk
 Resolving Dependencies
 --> Running transaction check
@@ -247,6 +244,7 @@ Installed:
   pcre-devel.x86_64 0:8.32-14.el7                                               
 
 Complete!
++ sudo rpm -q pcre-devel
 pcre-devel-8.32-14.el7.x86_64
 # OS packages installation successful
 The following actions will be performed:
@@ -261,11 +259,11 @@ The following actions will be performed:
 [annexlib: from default] Command started
 [ocamlfind: from default] Command started
 [pcre: from default] Command started
-[annexlib: from default] Command started
 [ocamlfind: from default] Command started
+[annexlib: from default] Command started
 [pcre: from default] Command started
-[default] http://opam-archive:8080/archives/annexlib.0.13.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/annexlib.0.13.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/pcre.7.1.3+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -341,8 +339,7 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) 
-- ok
+- Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib64/ocaml
@@ -393,6 +390,11 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -438,22 +440,9 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -470,6 +459,14 @@ The following actions will be performed:
 -     	    >topfind
 - ocamlc -I +compiler-libs -c num_top_printers.mli
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -c num_top.mli
 - ocamlc -I +compiler-libs -g -c num_top.ml
 - ocamlc -I +compiler-libs -a -o num_top.cma num_top_printers.cmo num_top.cmo
@@ -751,8 +748,7 @@ The following actions will be performed:
 - checking for string.h... yes
 - checking for memory.h... yes
 - checking for strings.h... yes
-- checking for inttypes.h... 
-- yes
+- checking for inttypes.h... yes
 - checking for stdint.h... yes
 - checking for unistd.h... yes
 - checking for unistd.h... (cached) yes
@@ -772,9 +768,9 @@ The following actions will be performed:
 - checking features.h usability... yes
 - checking features.h presence... yes
 - checking for features.h... yes
-- checking for setservent... 
+- checking for setservent... yes
+- checking for getservent... 
 - yes
-- checking for getservent... yes
 - checking for endservent... yes
 - checking for strptime... yes
 - checking for pread... yes
@@ -783,9 +779,9 @@ The following actions will be performed:
 - checking for getrusage... yes
 - checking for setrlimit... yes
 - checking for getrlimit... yes
-- checking for setpgid... 
+- checking for setpgid... yes
+- checking for getpgid... 
 - yes
-- checking for getpgid... yes
 - checking for setpgrp... yes
 - checking for getpgrp... yes
 - checking whether setpgrp takes no argument... yes
@@ -825,12 +821,6 @@ The following actions will be performed:
 - make[1]: Entering directory `/home/opam/.opam/system/build/annexlib.0.13.5'
 - ocamlc -c -cc "gcc" -ccopt "-fPIC -DPIC -g -O2 -fPIC -DPIC -Wall -Wno-unused \
 - 			    -o util_stubs.o " util_stubs.c 
-- ar rcs libannexlib_stubs.a  util_stubs.o
-- ocamlfind ocamlc -package pcre,unix -c arrayExtras.mli
-- ocamlfind ocamlc -package pcre,unix -c arrayExtras.ml
-- ocamlfind ocamlc -package pcre,unix -c listExtras.mli
-- ocamlfind ocamlc -package pcre,unix -c listExtras.ml
-- ocamlfind ocamlc -package pcre,unix -c option.mli
 - util_stubs.c: In function 'stew_strptime_tm':
 - util_stubs.c:400:3: warning: implicit declaration of function 'strptime' [-Wimplicit-function-declaration]
 -    s = strptime(String_val(time_str), String_val(fmt), &tm);
@@ -838,6 +828,12 @@ The following actions will be performed:
 - util_stubs.c:400:5: warning: assignment makes pointer from integer without a cast [enabled by default]
 -    s = strptime(String_val(time_str), String_val(fmt), &tm);
 -      ^
+- ar rcs libannexlib_stubs.a  util_stubs.o
+- ocamlfind ocamlc -package pcre,unix -c arrayExtras.mli
+- ocamlfind ocamlc -package pcre,unix -c arrayExtras.ml
+- ocamlfind ocamlc -package pcre,unix -c listExtras.mli
+- ocamlfind ocamlc -package pcre,unix -c listExtras.ml
+- ocamlfind ocamlc -package pcre,unix -c option.mli
 - ocamlfind ocamlc -package pcre,unix -c option.ml
 - ocamlfind ocamlc -package pcre,unix -c locale.mli
 - ocamlfind ocamlc -package pcre,unix -c locale.ml
@@ -858,13 +854,6 @@ The following actions will be performed:
 - ocamlfind ocamlc -package pcre,unix -c syslog.mli
 - ocamlfind ocamlc -package pcre,unix -c syslog.ml
 - ocamlfind ocamlc -package pcre,unix -c variant.mli
-- ocamlfind ocamlc -package pcre,unix -c variant.ml
-- ocamlmklib          \
-- 			-o annexlib_stubs  util_stubs.o  \
-- 			
-- ocamlfind ocamlc -a -dllib dllannexlib_stubs.so              \
-- 			-cclib -lannexlib_stubs   -o annexlib.cma  arrayExtras.cmo listExtras.cmo option.cmo locale.cmo charExtras.cmo strExtras.cmo iOExtras.cmo time.cmo unixExtras.cmo glob.cmo find.cmo syslog.cmo variant.cmo
-- make[1]: Leaving directory `/home/opam/.opam/system/build/annexlib.0.13.5'
 - File "charExtras.ml", line 31, characters 35-37:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
@@ -967,6 +956,13 @@ The following actions will be performed:
 - File "glob.ml", line 246, characters 8-23:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlfind ocamlc -package pcre,unix -c variant.ml
+- ocamlmklib          \
+- 			-o annexlib_stubs  util_stubs.o  \
+- 			
+- ocamlfind ocamlc -a -dllib dllannexlib_stubs.so              \
+- 			-cclib -lannexlib_stubs   -o annexlib.cma  arrayExtras.cmo listExtras.cmo option.cmo locale.cmo charExtras.cmo strExtras.cmo iOExtras.cmo time.cmo unixExtras.cmo glob.cmo find.cmo syslog.cmo variant.cmo
+- make[1]: Leaving directory `/home/opam/.opam/system/build/annexlib.0.13.5'
 [annexlib: make opt] Command started
 + make "opt" (CWD=/home/opam/.opam/system/build/annexlib.0.13.5)
 - make[1]: Entering directory `/home/opam/.opam/system/build/annexlib.0.13.5'
@@ -992,6 +988,15 @@ The following actions will be performed:
 - ocamlfind ocamlopt -package pcre,unix -c locale.ml
 - ocamlfind ocamlopt -package pcre,unix -c charExtras.ml
 - ocamlfind ocamlopt -package pcre,unix -c strExtras.ml
+- ocamlfind ocamlopt -package pcre,unix -c iOExtras.ml
+- ocamlfind ocamlopt -package pcre,unix -c time.ml
+- ocamlfind ocamlopt -package pcre,unix -c unixExtras.ml
+- ocamlfind ocamlopt -package pcre,unix -c glob.ml
+- ocamlfind ocamlopt -package pcre,unix -c find.ml
+- ocamlfind ocamlopt -package pcre,unix -c syslog.ml
+- ocamlfind ocamlopt -package pcre,unix -c variant.ml
+- ocamlfind ocamlopt -a              -cclib -lannexlib_stubs   \
+- 			 -o annexlib.cmxa arrayExtras.cmx listExtras.cmx option.cmx locale.cmx charExtras.cmx strExtras.cmx iOExtras.cmx time.cmx unixExtras.cmx glob.cmx find.cmx syslog.cmx variant.cmx
 - File "charExtras.ml", line 31, characters 35-37:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
@@ -1052,16 +1057,6 @@ The following actions will be performed:
 - File "strExtras.ml", line 457, characters 28-40:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlfind ocamlopt -package pcre,unix -c iOExtras.ml
-- ocamlfind ocamlopt -package pcre,unix -c time.ml
-- ocamlfind ocamlopt -package pcre,unix -c unixExtras.ml
-- ocamlfind ocamlopt -package pcre,unix -c glob.ml
-- ocamlfind ocamlopt -package pcre,unix -c find.ml
-- ocamlfind ocamlopt -package pcre,unix -c syslog.ml
-- ocamlfind ocamlopt -package pcre,unix -c variant.ml
-- ocamlfind ocamlopt -a              -cclib -lannexlib_stubs   \
-- 			 -o annexlib.cmxa arrayExtras.cmx listExtras.cmx option.cmx locale.cmx charExtras.cmx strExtras.cmx iOExtras.cmx time.cmx unixExtras.cmx glob.cmx find.cmx syslog.cmx variant.cmx
-- make[1]: Leaving directory `/home/opam/.opam/system/build/annexlib.0.13.5'
 - File "iOExtras.ml", line 77, characters 10-23:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -1104,6 +1099,7 @@ The following actions will be performed:
 - File "glob.ml", line 246, characters 8-23:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- make[1]: Leaving directory `/home/opam/.opam/system/build/annexlib.0.13.5'
 [annexlib: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/annexlib.0.13.5)
 - make[1]: Entering directory `/home/opam/.opam/system/build/annexlib.0.13.5'
