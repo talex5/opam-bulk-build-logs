@@ -1,27 +1,27 @@
 + uname -m
+# Detecting depexts using flags: x86_64 linux debian
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=speex
-# Detecting depexts using flags: x86_64 linux debian
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=speex
 # The following system packages are needed:
 #  - libogg-dev
 #  - libspeex-dev
 #  - m4
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=speex
 Not running as root, system installation will be done through "sudo"
 + sudo apt-get update
-Hit http://download.opensuse.org  Release.gpg
-Hit http://security.debian.org stable/updates Release.gpg
 Hit http://http.debian.net stable Release.gpg
+Hit http://security.debian.org stable/updates Release.gpg
+Hit http://download.opensuse.org  Release.gpg
 Get:1 http://http.debian.net stable-updates Release.gpg [836 B]
-Hit http://download.opensuse.org  Release
 Hit http://http.debian.net stable Release
 Hit http://security.debian.org stable/updates Release
 Get:2 http://http.debian.net stable-updates Release [124 kB]
-Hit http://download.opensuse.org  Packages
-Hit http://security.debian.org stable/updates/main amd64 Packages
+Hit http://download.opensuse.org  Release
 Hit http://http.debian.net stable/main amd64 Packages
+Hit http://security.debian.org stable/updates/main amd64 Packages
+Hit http://download.opensuse.org  Packages
 Get:3 http://http.debian.net stable-updates/main amd64 Packages [4437 B]
-Fetched 129 kB in 1s (111 kB/s)
+Fetched 129 kB in 2s (61.5 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
@@ -51,12 +51,12 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [ogg: from default] Command started
 [speex: from default] Command started
-[ocamlfind: from default] Command started
-[ogg: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [speex: from default] Command started
-[default] http://opam-archive:8080/archives/ogg.0.4.3+opam.tar.gz downloaded
+[ogg: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/speex.0.2.0+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ogg.0.4.3+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -141,6 +141,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -186,7 +187,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
@@ -251,7 +251,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_split.ml
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
-- ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -290,15 +289,16 @@ The following actions will be performed:
 - File "fl_meta.mll", line 62, characters 11-22:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
+- ocamlopt -I +compiler-libs -c findlib.ml
 - File "fl_metascanner.ml", line 111, characters 23-32:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
-- ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
 - if [ 1 -gt 0 ]; then \
@@ -368,7 +368,8 @@ The following actions will be performed:
 - checking whether the C compiler works... yes
 - checking for C compiler default output file name... a.out
 - checking for suffix of executables... 
-- checking whether we are cross compiling... no
+- checking whether we are cross compiling... 
+- no
 - checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
@@ -450,21 +451,21 @@ The following actions will be performed:
 - make[2]: `libogg_stubs.a' is up to date.
 - ocamlopt.opt -c ogg.ml
 - ocamlopt.opt -c ogg_demuxer.ml
-- File "ogg.ml", line 164, characters 24-37:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "ogg_demuxer.ml", line 310, characters 18-31:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "ogg.ml", line 164, characters 24-37:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "ogg_demuxer.ml", line 310, characters 18-31:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlopt.opt -a        -ccopt -L/home/opam/.opam/4.02.1/lib/lib  -ccopt -L/home/opam/.opam/4.02.1/lib/lib   -cclib -logg_stubs -cclib -logg   -o ogg.cmxa ogg.cmx ogg_demuxer.cmx
 - make[2]: Leaving directory `/home/opam/.opam/4.02.1/build/ogg.0.4.3/src'
 - make[1]: Leaving directory `/home/opam/.opam/4.02.1/build/ogg.0.4.3/src'
+- File "ogg.ml", line 164, characters 24-37:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "ogg_demuxer.ml", line 310, characters 18-31:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "ogg.ml", line 164, characters 24-37:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "ogg_demuxer.ml", line 310, characters 18-31:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 [ogg: make install] Command started
 + make "install" (CWD=/home/opam/.opam/4.02.1/build/ogg.0.4.3)
 - make -C src install
@@ -536,7 +537,8 @@ The following actions will be performed:
 - checking for camlp4r... camlp4r
 - checking for camlp4rf... camlp4rf
 - checking for ocamlfind... ocamlfind
-- checking for caml/threads.h... yes
+- checking for caml/threads.h... 
+- yes
 - checking for gcc... (cached) gcc
 - checking whether we are using the GNU C compiler... (cached) yes
 - checking whether gcc accepts -g... (cached) yes
