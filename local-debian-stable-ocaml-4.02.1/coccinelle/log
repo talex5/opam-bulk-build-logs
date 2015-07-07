@@ -1,8 +1,9 @@
 + uname -m
+# Detecting depexts using flags: x86_64 linux debian
 + uname -s
 + lsb_release -i -s
-# Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=coccinelle
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=coccinelle
 # The following system packages are needed:
 #  - autoconf
 #  - libpcre3-dev
@@ -10,26 +11,25 @@
 #  - pkg-config
 #  - python2.7
 #  - python2.7-dev
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=coccinelle
-+ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-Hit http://security.debian.org stable/updates InRelease
++ sudo apt-get update
 Ign http://download.opensuse.org  InRelease
-Hit http://httpredir.debian.org stable InRelease
-Hit http://httpredir.debian.org stable-updates InRelease
 Hit http://download.opensuse.org  Release.gpg
+Hit http://security.debian.org stable/updates InRelease
 Hit http://download.opensuse.org  Release
-Get:1 http://security.debian.org stable/updates/main amd64 Packages [84.4 kB]
-Get:2 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
-Get:3 http://download.opensuse.org  Packages [5783 B]
-Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9113 kB in 8s (1128 kB/s)
+Get:1 http://security.debian.org stable/updates/main amd64 Packages [87.6 kB]
+Get:2 http://download.opensuse.org  Packages [5783 B]
+Get:3 http://httpredir.debian.org stable InRelease [128 kB]
+Get:4 http://httpredir.debian.org stable-updates InRelease [126 kB]
+Get:5 http://httpredir.debian.org stable/main amd64 Packages [9019 kB]
+Get:6 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
+Fetched 9370 kB in 5s (1795 kB/s)
 Reading package lists...
-+ sudo apt-get install -qq -yy autoconf libpcre3-dev m4 pkg-config python2.7 python2.7-dev
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy autoconf libpcre3-dev m4 pkg-config python2.7 python2.7-dev
++ sudo apt-get install -qq -yy autoconf libpcre3-dev m4 pkg-config python2.7 python2.7-dev
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
@@ -89,18 +89,18 @@ The following actions will be performed:
 [coccinelle: from default] Command started
 [menhir: from default] Command started
 [ocamlfind: from default] Command started
-[ocamlfind: from default] Command started
 [menhir: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[parmap: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/menhir.20140422+opam.tar.gz downloaded
+[parmap: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [pcre: from default] Command started
+[coccinelle: from default] Command started
+[default] http://opam-archive:8080/archives/coccinelle.1.0.0.1+opam.tar.gz downloaded
 [parmap: from default] Command started
 [default] http://opam-archive:8080/archives/parmap.1.0-rc6+opam.tar.gz downloaded
 [pcre: from default] Command started
 [default] http://opam-archive:8080/archives/pcre.7.1.1+opam.tar.gz downloaded
-[coccinelle: from default] Command started
-[default] http://opam-archive:8080/archives/coccinelle.1.0.0.1+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [conf-pkg-config: pkg-config] Command started
@@ -144,12 +144,12 @@ The following actions will be performed:
 - 
 -> installed conf-pkg-config.1.0
 [conf-libpcre: pkg-config libpcre] Command started
++ pkg-config "libpcre" (CWD=/home/opam/.opam/4.02.1/build/conf-libpcre.1)
+-> installed conf-libpcre.1
+[conf-python-2-7-dev: cc test.c] Command started
 + python2.7 "-c" "print 'python2.7 is installed'" (CWD=/home/opam/.opam/4.02.1/build/conf-python-2-7.1.0)
 - python2.7 is installed
 -> installed conf-python-2-7.1.0
-[conf-python-2-7-dev: cc test.c] Command started
-+ pkg-config "libpcre" (CWD=/home/opam/.opam/4.02.1/build/conf-libpcre.1)
--> installed conf-libpcre.1
 [ocamlfind: ./configure] Command started
 + cc "test.c" (CWD=/home/opam/.opam/4.02.1/build/conf-python-2-7-dev.1.0)
 -> installed conf-python-2-7-dev.1.0
@@ -229,6 +229,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_metascanner.ml
 - ocamlc -I +compiler-libs -c fl_topo.mli
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
+- ocamlc -I +compiler-libs -c fl_package_base.mli
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -274,8 +276,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
@@ -342,7 +342,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -387,6 +386,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -1859,7 +1859,7 @@ The following actions will be performed:
 - checking whether make supports nested variables... yes
 - configure: determining version suffix
 - checking for date... /bin/date
-- configure: version suffix set to Fri, 22 May 2015 13:43:56 +0000
+- configure: version suffix set to Sat, 23 May 2015 04:32:14 +0000
 - configure: this configure program uses pkg-config m4 macros
 - configure: this configure program uses ocaml m4 macros (see setup/ocaml.m4)
 - configure: this configure program uses custom m4 macros (see setup/cocci.m4)
@@ -1870,18 +1870,18 @@ The following actions will be performed:
 - checking whether the C compiler works... yes
 - checking for C compiler default output file name... a.out
 - checking for suffix of executables... 
-- checking whether we are cross compiling... 
-- /home/opam/.opam/4.02.1/build/coccinelle.1.0.0.1/setup/missing: Unknown '--is-lightweight' option
-- Try '/home/opam/.opam/4.02.1/build/coccinelle.1.0.0.1/setup/missing --help' for more information
-- configure: WARNING: 'missing' script is too old or missing
-- no
+- checking whether we are cross compiling... no
 - checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
 - checking for gcc option to accept ISO C89... none needed
 - checking whether gcc understands -c and -o together... yes
 - checking dependency style of gcc... none
-- checking how to run the C preprocessor... gcc -E
+- checking how to run the C preprocessor... 
+- /home/opam/.opam/4.02.1/build/coccinelle.1.0.0.1/setup/missing: Unknown '--is-lightweight' option
+- Try '/home/opam/.opam/4.02.1/build/coccinelle.1.0.0.1/setup/missing --help' for more information
+- configure: WARNING: 'missing' script is too old or missing
+- gcc -E
 - checking for bash... /bin/bash
 - checking for tar... /bin/tar
 - checking for patch... /usr/bin/patch
@@ -2237,11 +2237,11 @@ The following actions will be performed:
 - make[5]: Entering directory '/home/opam/.opam/4.02.1/build/coccinelle.1.0.0.1/bundles/pycaml'
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -unsafe -pp "camlp4o -parser Camlp4MacroParser -D PYMAJOR2" -g -ccopt -I/usr/include/python2.7 -ccopt -I/usr/include/x86_64-linux-gnu/python2.7 -cclib -lpython2.7 -cc "gcc -g -O2" -I chemoelectric-pycaml-8614105 -i chemoelectric-pycaml-8614105/pycaml.ml > chemoelectric-pycaml-8614105/pycaml.mli
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -unsafe -pp "camlp4o -parser Camlp4MacroParser -D PYMAJOR2" -g -ccopt -I/usr/include/python2.7 -ccopt -I/usr/include/x86_64-linux-gnu/python2.7 -cclib -lpython2.7 -cc "gcc -g -O2" -I chemoelectric-pycaml-8614105 -c chemoelectric-pycaml-8614105/pycaml.mli -o chemoelectric-pycaml-8614105/pycaml.cmi
+- Warning: option -unsafe used with a preprocessor returning a syntax tree
 - cp -f chemoelectric-pycaml-8614105/pycaml.cmi pycaml.cmi
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -pp "camlp4o -parser Camlp4MacroParser -D PYMAJOR2" -g -ccopt -I/usr/include/python2.7 -ccopt -I/usr/include/x86_64-linux-gnu/python2.7 -cclib -lpython2.7  -I chemoelectric-pycaml-8614105 -c chemoelectric-pycaml-8614105/pycaml.ml
-- Warning: option -unsafe used with a preprocessor returning a syntax tree
-- Warning: option -unsafe used with a preprocessor returning a syntax tree
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -unsafe -pp "camlp4o -parser Camlp4MacroParser -D PYMAJOR2" -g -ccopt -I/usr/include/python2.7 -ccopt -I/usr/include/x86_64-linux-gnu/python2.7 -cclib -lpython2.7 -cc "gcc -g -O2" -I chemoelectric-pycaml-8614105 -ccopt -shared -ccopt -fPIC chemoelectric-pycaml-8614105/pycaml_stubs.c -o pycaml_stubs.o
+- Warning: option -unsafe used with a preprocessor returning a syntax tree
 - Warning: option -unsafe used with a preprocessor returning a syntax tree
 - /home/opam/.opam/4.02.1/bin/ocamlmklib -linkall -ldopt -lpython2.7 -o pycaml_stubs pycaml_stubs.o
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -pp "camlp4o -parser Camlp4MacroParser -D PYMAJOR2" -g -ccopt -I/usr/include/python2.7 -ccopt -I/usr/include/x86_64-linux-gnu/python2.7 -cclib -lpython2.7  -I chemoelectric-pycaml-8614105 -I chemoelectric-pycaml-8614105 -a -o pycaml.cmxa chemoelectric-pycaml-8614105/pycaml.cmx
@@ -2421,10 +2421,10 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c parser_cocci_menhir.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c lexer_cocci.ml
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c lexer_cli.ml
+- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c lexer_script.ml
 - File "lexer_cocci.ml", line 2691, characters 27-39:
 - Warning 3: deprecated: Array.create
 - Use Array.make instead.
-- /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c lexer_script.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c cocci_grep.mli
 - /home/opam/.opam/4.02.1/bin/ocamlopt.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c cocci_grep.ml
 - /home/opam/.opam/4.02.1/bin/ocamlc.opt -unsafe -I ../commons -I ../commons/ocamlextra -I ../globals -I /home/opam/.opam/4.02.1/lib/menhirLib -c dpll.mli
