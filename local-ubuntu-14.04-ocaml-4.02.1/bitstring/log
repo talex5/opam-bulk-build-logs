@@ -1,27 +1,28 @@
 + uname -m
 + uname -s
 + lsb_release -i -s
-+ opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=bitstring
 # Detecting depexts using flags: x86_64 linux ubuntu
++ opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=bitstring
 # The following system packages are needed:
 #  - m4
 #  - time
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=bitstring
-+ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
++ sudo apt-get update
+Ign http://download.opensuse.org  InRelease
+Hit http://download.opensuse.org  Release.gpg
+Hit http://download.opensuse.org  Release
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
-Ign http://download.opensuse.org  InRelease
 Hit http://archive.ubuntu.com trusty Release.gpg
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
 Hit http://archive.ubuntu.com trusty Release
+Hit http://download.opensuse.org  Packages
 Get:3 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
-Hit http://download.opensuse.org  Release.gpg
 Get:4 http://archive.ubuntu.com trusty-security Release [63.5 kB]
-Hit http://download.opensuse.org  Release
 Hit http://archive.ubuntu.com trusty/main Sources
 Hit http://archive.ubuntu.com trusty/restricted Sources
 Hit http://archive.ubuntu.com trusty/universe Sources
@@ -32,21 +33,20 @@ Get:5 http://archive.ubuntu.com trusty-updates/main Sources [248 kB]
 Get:6 http://archive.ubuntu.com trusty-updates/restricted Sources [2310 B]
 Get:7 http://archive.ubuntu.com trusty-updates/universe Sources [141 kB]
 Get:8 http://archive.ubuntu.com trusty-updates/main amd64 Packages [636 kB]
-Hit http://download.opensuse.org  Packages
 Get:9 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [15.1 kB]
 Get:10 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [356 kB]
-Get:11 http://archive.ubuntu.com trusty-security/main Sources [97.2 kB]
+Get:11 http://archive.ubuntu.com trusty-security/main Sources [97.7 kB]
 Get:12 http://archive.ubuntu.com trusty-security/restricted Sources [1874 B]
 Get:13 http://archive.ubuntu.com trusty-security/universe Sources [23.3 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [329 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [128 kB]
-Fetched 2120 kB in 8s (250 kB/s)
+Fetched 2122 kB in 14s (147 kB/s)
 Reading package lists...
-+ sudo apt-get install -qq -yy m4 time
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy m4 time
++ sudo apt-get install -qq -yy m4 time
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
@@ -69,9 +69,9 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [bitstring: from default] Command started
 [ocamlfind: from default] Command started
+[ocamlfind: from default] Command started
 [bitstring: from default] Command started
 [default] http://opam-archive:8080/archives/bitstring.2.0.4+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -109,9 +109,7 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: 
-- (extractor built) 
-- ok
+- Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib/ocaml
@@ -468,6 +466,8 @@ The following actions will be performed:
 - ocamlfind ocamlc -g  -c bitstring.ml
 - ocamlfind ocamlc -g  -c bitmatch.ml
 - ocamlmklib -o bitstring bitstring_types.cmo bitstring_config.cmo bitstring_c.o bitstring.cmo bitmatch.cmo
+- ocamlfind ocamlc -g  \
+- 	  -I +camlp4 -pp camlp4of -c bitstring_persistent.mli
 - File "bitstring.ml", line 64, characters 12-25:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -496,13 +496,15 @@ The following actions will be performed:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
 - ocamlfind ocamlc -g  \
-- 	  -I +camlp4 -pp camlp4of -c bitstring_persistent.mli
-- ocamlfind ocamlc -g  \
 - 	  -I +camlp4 -pp camlp4of -c bitstring_persistent.ml
 - ocamlfind ocamlc -a -o bitstring_persistent.cma bitstring_persistent.cmo
 - ocamlfind ocamlopt   -c bitstring_types.ml
 - ocamlfind ocamlopt   -c bitstring_config.ml
 - ocamlfind ocamlopt   -c bitstring.ml
+- ocamlfind ocamlopt   -c bitmatch.ml
+- ocamlmklib -o bitstring bitstring_types.cmx bitstring_config.cmx bitstring_c.o bitstring.cmx bitmatch.cmx
+- ocamlfind ocamlopt   \
+- 	  -I +camlp4 -pp camlp4of -c bitstring_persistent.ml
 - File "bitstring.ml", line 64, characters 12-25:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -515,10 +517,6 @@ The following actions will be performed:
 - File "bitstring.ml", line 103, characters 12-25:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlfind ocamlopt   -c bitmatch.ml
-- ocamlmklib -o bitstring bitstring_types.cmx bitstring_config.cmx bitstring_c.o bitstring.cmx bitmatch.cmx
-- ocamlfind ocamlopt   \
-- 	  -I +camlp4 -pp camlp4of -c bitstring_persistent.ml
 - File "bitstring.ml", line 1033, characters 1-22:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
