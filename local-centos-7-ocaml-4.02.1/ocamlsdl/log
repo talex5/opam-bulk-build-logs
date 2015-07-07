@@ -1,7 +1,7 @@
 + uname -m
 + uname -s
-# Detecting depexts using flags: x86_64 linux centos
 + opam list --safe --recursive --external=x86_64,linux,centos --required-by=ocamlsdl
+# Detecting depexts using flags: x86_64 linux centos
 + opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=ocamlsdl
 # No extra OS packages requirements found.
 The following actions will be performed:
@@ -12,10 +12,10 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: from default] Command started
 [ocamlsdl: from default] Command started
-[ocamlfind: from default] Command started
 [ocamlsdl: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlsdl.0.9.1+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -152,6 +152,14 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -168,14 +176,6 @@ The following actions will be performed:
 -     	    >topfind
 - ocamlc -I +compiler-libs -c num_top_printers.mli
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -c num_top.mli
 - ocamlc -I +compiler-libs -g -c num_top.ml
 - ocamlc -I +compiler-libs -a -o num_top.cma num_top_printers.cmo num_top.cmo
@@ -212,7 +212,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -257,6 +256,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -337,11 +337,11 @@ The following actions will be performed:
 - checking for ocamlfind... ocamlfind
 - checking OCaml Sys.os_type... Unix
 - checking for gcc... gcc
-- checking whether the C compiler works... yes
+- checking whether the C compiler works... 
+- yes
 - checking for C compiler default output file name... a.out
 - checking for suffix of executables... 
-- checking whether we are cross compiling... 
-- no
+- checking whether we are cross compiling... no
 - checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
@@ -360,9 +360,9 @@ The following actions will be performed:
 - checking for strings.h... yes
 - checking for inttypes.h... yes
 - checking for stdint.h... yes
-- checking for unistd.h... yes
-- checking for size_t... 
+- checking for unistd.h... 
 - yes
+- checking for size_t... yes
 - checking for working alloca.h... yes
 - checking for alloca... yes
 - checking for inline... inline
@@ -375,23 +375,11 @@ The following actions will be performed:
 - *** your path, or set the SDL_CONFIG environment variable to the
 - *** full path to sdl-config.
 - configure: error: *** SDL version 1.2.0 not found!
+[ocamlsdl: ocamlfind remove] Command started
 [ERROR] The compilation of ocamlsdl failed at "./configure
         --with-installdir=/home/opam/.opam/system/lib/ocamlsdl".
-[ocamlsdl: ocamlfind remove] Command started
 + ocamlfind "remove" "sdl" (CWD=/home/opam/.opam/system/build/ocamlsdl.0.9.1)
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/sdl
-
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions failed
-  - install ocamlsdl 0.9.1
-The following changes have been performed
-  - install ocamlfind 1.5.5
-
-=-=- ocamlsdl.0.9.1 troobleshooting -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-=> This package relies on external (system) dependencies that may be missing.
-   `opam depext ocamlsdl.0.9.1' may help you find the correct installation for
-   your system.
 
 #=== ERROR while installing ocamlsdl.0.9.1 ====================================#
 # opam-version         1.2.2 (96efec2011c66532520b3222536e4ebc9f7a6032)
@@ -419,6 +407,18 @@ The following changes have been performed
 # configure: error: *** SDL version 1.2.0 not found!
 
 
+
+=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+The following actions failed
+  - install ocamlsdl 0.9.1
+The following changes have been performed
+  - install ocamlfind 1.5.5
+
+=-=- ocamlsdl.0.9.1 troobleshooting -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+=> This package relies on external (system) dependencies that may be missing.
+   `opam depext ocamlsdl.0.9.1' may help you find the correct installation for
+   your system.
+
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150323165131.export"
+    opam switch import "~/.opam/system/backup/state-20150324124201.export"
 'opam install ocamlsdl' failed.
