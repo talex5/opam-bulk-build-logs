@@ -1,7 +1,7 @@
 + uname -m
 + uname -s
-+ lsb_release -i -s
 /usr/bin/lsb_release
++ lsb_release -i -s
 # Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=gettext
 # The following system packages are needed:
@@ -9,20 +9,20 @@
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=gettext
 + sudo apt-get update
 Not running as root, system installation will be done through "sudo"
-Ign http://download.opensuse.org  InRelease
-Hit http://download.opensuse.org  Release.gpg
-Hit http://download.opensuse.org  Release
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
+Ign http://download.opensuse.org  InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
 Hit http://archive.ubuntu.com trusty Release.gpg
-Hit http://download.opensuse.org  Packages
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Get:2 http://archive.ubuntu.com trusty-security Release.gpg [933 B]
+Hit http://download.opensuse.org  Release.gpg
 Hit http://archive.ubuntu.com trusty Release
+Hit http://download.opensuse.org  Release
 Get:3 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
 Get:4 http://archive.ubuntu.com trusty-security Release [63.5 kB]
 Hit http://archive.ubuntu.com trusty/main Sources
+Hit http://download.opensuse.org  Packages
 Hit http://archive.ubuntu.com trusty/restricted Sources
 Hit http://archive.ubuntu.com trusty/universe Sources
 Hit http://archive.ubuntu.com trusty/main amd64 Packages
@@ -40,11 +40,11 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [21.0 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [320 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [118 kB]
-Fetched 2057 kB in 8s (236 kB/s)
+Fetched 2057 kB in 5s (410 kB/s)
 Reading package lists...
-+ sudo apt-get install -qq -yy m4
 # OS package update successful
 Not running as root, system installation will be done through "sudo"
++ sudo apt-get install -qq -yy m4
 # OS packages installation successful
 The following actions will be performed:
   - install ocamlfind 1.5.5                                     [required by gettext]
@@ -58,15 +58,15 @@ The following actions will be performed:
 [camomile: from default] Command started
 [fileutils: from default] Command started
 [gettext: from default] Command started
-[gettext: from default] Command started
 [fileutils: from default] Command started
+[gettext: from default] Command started
 [default] http://opam-archive:8080/archives/gettext.0.3.5+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [camomile: from default] Command started
 [default] http://opam-archive:8080/archives/fileutils.0.4.4+opam.tar.gz downloaded
 [ounit: from default] Command started
-[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/camomile.0.8.5+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [ounit: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ounit.2.0.0+opam.tar.gz downloaded
@@ -153,6 +153,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -198,12 +200,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -212,8 +214,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -1487,6 +1487,7 @@ The following actions will be performed:
 - tools/camomilecharmap.opt -d charmaps charmaps/ISO_11548-1 || true
 - tools/camomilecharmap.opt -d charmaps charmaps/ISO_2033-1983 || true
 - tools/camomilecharmap.opt -d charmaps charmaps/ISO_5427 || true
+- Fatal error: exception Failure("Broken entry: <NUL>	/x00/x00	NULL (NUL)")
 - tools/camomilecharmap.opt -d charmaps charmaps/ISO_5427-EXT || true
 - tools/camomilecharmap.opt -d charmaps charmaps/ISO_5428 || true
 - tools/camomilecharmap.opt -d charmaps charmaps/ISO_646.BASIC || true
@@ -1553,7 +1554,6 @@ The following actions will be performed:
 - tools/camomilecharmap.opt -d charmaps charmaps/TIS-620 || true
 - tools/camomilecharmap.opt -d charmaps charmaps/TSCII || true
 - tools/camomilecharmap.opt -d charmaps charmaps/UTF-8 || true
-- Fatal error: exception Failure("Broken entry: <NUL>	/x00/x00	NULL (NUL)")
 - Fatal error: exception Failure("Broken entry: <NUL>                   \d000   NULL")
 - Fatal error: exception Failure("Broken entry: <NU>                   /x00   <U0000> NULL (NUL)")
 - Fatal error: exception Failure("Broken entry: <NU>                   /x00   <U0000> NULL (NUL)")
@@ -1581,10 +1581,6 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/ar_EG.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar_IN.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar_IQ.txt locales 
-- tools/camomilelocaledef.opt --file locales/ar_JO.txt locales 
-- tools/camomilelocaledef.opt --file locales/ar_KW.txt locales 
-- tools/camomilelocaledef.opt --file locales/ar_LB.txt locales 
-- tools/camomilelocaledef.opt --file locales/ar_LY.txt locales 
 - File "tools/camomilelocaledef.ml", line 303, characters 10-23:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -1594,6 +1590,10 @@ The following actions will be performed:
 - File "tools/camomilelocaledef.ml", line 162, characters 9-37:
 - Warning 26: unused variable data.
 - Warning : normalization option is not supported
+- tools/camomilelocaledef.opt --file locales/ar_JO.txt locales 
+- tools/camomilelocaledef.opt --file locales/ar_KW.txt locales 
+- tools/camomilelocaledef.opt --file locales/ar_LB.txt locales 
+- tools/camomilelocaledef.opt --file locales/ar_LY.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar_MA.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar_OM.txt locales 
 - tools/camomilelocaledef.opt --file locales/ar_QA.txt locales 
@@ -1611,9 +1611,9 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/bn.txt locales 
 - tools/camomilelocaledef.opt --file locales/bn_IN.txt locales 
 - tools/camomilelocaledef.opt --file locales/ca.txt locales 
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/ca_ES.txt locales 
 - tools/camomilelocaledef.opt --file locales/ca_ES_PREEURO.txt locales 
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/cs.txt locales 
 - tools/camomilelocaledef.opt --file locales/cs_CZ.txt locales 
 - tools/camomilelocaledef.opt --file locales/da.txt locales 
@@ -1630,6 +1630,7 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/de_LU_PREEURO.txt locales 
 - tools/camomilelocaledef.opt --file locales/de__PHONEBOOK.txt locales 
 - tools/camomilelocaledef.opt --file locales/div.txt locales 
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/div_MV.txt locales 
 - tools/camomilelocaledef.opt --file locales/el.txt locales 
 - tools/camomilelocaledef.opt --file locales/el_GR.txt locales 
@@ -1647,10 +1648,9 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/en_GU.txt locales 
 - tools/camomilelocaledef.opt --file locales/en_HK.txt locales 
 - tools/camomilelocaledef.opt --file locales/en_IE.txt locales 
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/en_IE_PREEURO.txt locales 
 - tools/camomilelocaledef.opt --file locales/en_IN.txt locales 
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/en_JM.txt locales 
 - tools/camomilelocaledef.opt --file locales/en_MH.txt locales 
 - tools/camomilelocaledef.opt --file locales/en_MP.txt locales 
@@ -1696,6 +1696,7 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/eu_ES_PREEURO.txt locales 
 - tools/camomilelocaledef.opt --file locales/fa.txt locales 
 - tools/camomilelocaledef.opt --file locales/fa_IN.txt locales 
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/fa_IR.txt locales 
 - tools/camomilelocaledef.opt --file locales/fi.txt locales 
 - tools/camomilelocaledef.opt --file locales/fi_FI.txt locales 
@@ -1704,7 +1705,6 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/fo_FO.txt locales 
 - tools/camomilelocaledef.opt --file locales/fr.txt locales 
 - tools/camomilelocaledef.opt --file locales/fr_BE.txt locales 
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/fr_BE_PREEURO.txt locales 
 - tools/camomilelocaledef.opt --file locales/fr_CA.txt locales 
 - tools/camomilelocaledef.opt --file locales/fr_CH.txt locales 
@@ -1724,14 +1724,16 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/gv.txt locales 
 - tools/camomilelocaledef.opt --file locales/gv_GB.txt locales 
 - tools/camomilelocaledef.opt --file locales/he.txt locales 
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/he_IL.txt locales 
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/hi.txt locales 
 - tools/camomilelocaledef.opt --file locales/hi_IN.txt locales 
 - tools/camomilelocaledef.opt --file locales/hi__DIRECT.txt locales 
 - tools/camomilelocaledef.opt --file locales/hr.txt locales 
 - tools/camomilelocaledef.opt --file locales/hr_HR.txt locales 
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/hu.txt locales 
 - tools/camomilelocaledef.opt --file locales/hu_HU.txt locales 
 - tools/camomilelocaledef.opt --file locales/hy.txt locales 
@@ -1741,8 +1743,6 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/id_ID.txt locales 
 - tools/camomilelocaledef.opt --file locales/index.txt locales 
 - tools/camomilelocaledef.opt --file locales/is.txt locales 
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/is_IS.txt locales 
 - tools/camomilelocaledef.opt --file locales/it.txt locales 
 - tools/camomilelocaledef.opt --file locales/it_CH.txt locales 
@@ -1751,21 +1751,21 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/iw.txt locales 
 - tools/camomilelocaledef.opt --file locales/iw_IL.txt locales 
 - tools/camomilelocaledef.opt --file locales/ja.txt locales 
-- Warning : strength option is not supported
 - tools/camomilelocaledef.opt --file locales/ja_JP.txt locales 
 - tools/camomilelocaledef.opt --file locales/ka.txt locales 
 - tools/camomilelocaledef.opt --file locales/ka_GE.txt locales 
 - tools/camomilelocaledef.opt --file locales/kk.txt locales 
 - tools/camomilelocaledef.opt --file locales/kk_KZ.txt locales 
+- Warning : strength option is not supported
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/kl.txt locales 
 - tools/camomilelocaledef.opt --file locales/kl_GL.txt locales 
 - tools/camomilelocaledef.opt --file locales/kn.txt locales 
 - tools/camomilelocaledef.opt --file locales/kn_IN.txt locales 
 - tools/camomilelocaledef.opt --file locales/ko.txt locales 
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/ko_KR.txt locales 
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/kok.txt locales 
 - tools/camomilelocaledef.opt --file locales/kok_IN.txt locales 
 - tools/camomilelocaledef.opt --file locales/kw.txt locales 
@@ -1780,6 +1780,7 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/mk_MK.txt locales 
 - tools/camomilelocaledef.opt --file locales/mn.txt locales 
 - Warning : normalization option is not supported
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/mn_MN.txt locales 
 - tools/camomilelocaledef.opt --file locales/mr.txt locales 
 - tools/camomilelocaledef.opt --file locales/mr_IN.txt locales 
@@ -1789,12 +1790,11 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/mt.txt locales 
 - tools/camomilelocaledef.opt --file locales/mt_MT.txt locales 
 - tools/camomilelocaledef.opt --file locales/nb.txt locales 
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/nb_NO.txt locales 
 - tools/camomilelocaledef.opt --file locales/nl.txt locales 
 - tools/camomilelocaledef.opt --file locales/nl_BE.txt locales 
 - tools/camomilelocaledef.opt --file locales/nl_BE_PREEURO.txt locales 
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/nl_NL.txt locales 
 - tools/camomilelocaledef.opt --file locales/nl_NL_PREEURO.txt locales 
 - tools/camomilelocaledef.opt --file locales/nn.txt locales 
@@ -1814,18 +1814,17 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/pt_PT.txt locales 
 - tools/camomilelocaledef.opt --file locales/pt_PT_PREEURO.txt locales 
 - tools/camomilelocaledef.opt --file locales/ro.txt locales 
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/ro_RO.txt locales 
 - tools/camomilelocaledef.opt --file locales/root.txt locales 
 - tools/camomilelocaledef.opt --file locales/ru.txt locales 
 - tools/camomilelocaledef.opt --file locales/ru_RU.txt locales 
 - tools/camomilelocaledef.opt --file locales/ru_UA.txt locales 
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/sa.txt locales 
 - tools/camomilelocaledef.opt --file locales/sa_IN.txt locales 
 - tools/camomilelocaledef.opt --file locales/sh.txt locales 
 - tools/camomilelocaledef.opt --file locales/sh_YU.txt locales 
 - tools/camomilelocaledef.opt --file locales/sk.txt locales 
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/sk_SK.txt locales 
 - tools/camomilelocaledef.opt --file locales/sl.txt locales 
 - tools/camomilelocaledef.opt --file locales/sl_SI.txt locales 
@@ -1835,6 +1834,7 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/so_KE.txt locales 
 - tools/camomilelocaledef.opt --file locales/so_SO.txt locales 
 - tools/camomilelocaledef.opt --file locales/sq.txt locales 
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/sq_AL.txt locales 
 - tools/camomilelocaledef.opt --file locales/sr.txt locales 
 - tools/camomilelocaledef.opt --file locales/sr_YU.txt locales 
@@ -1849,15 +1849,13 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/ta.txt locales 
 - tools/camomilelocaledef.opt --file locales/ta_IN.txt locales 
 - tools/camomilelocaledef.opt --file locales/te.txt locales 
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/te_IN.txt locales 
 - tools/camomilelocaledef.opt --file locales/test_1.txt locales 
 - tools/camomilelocaledef.opt --file locales/th.txt locales 
 - tools/camomilelocaledef.opt --file locales/th_TH.txt locales 
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
-- Warning : file loading is not supported.
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/ti.txt locales 
 - tools/camomilelocaledef.opt --file locales/ti_ER.txt locales 
 - tools/camomilelocaledef.opt --file locales/ti_ET.txt locales 
@@ -1865,21 +1863,23 @@ The following actions will be performed:
 - tools/camomilelocaledef.opt --file locales/tr_TR.txt locales 
 - tools/camomilelocaledef.opt --file locales/tt.txt locales 
 - tools/camomilelocaledef.opt --file locales/tt_RU.txt locales 
+- Warning : file loading is not supported.
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/uk.txt locales 
 - tools/camomilelocaledef.opt --file locales/uk_UA.txt locales 
 - tools/camomilelocaledef.opt --file locales/ur.txt locales 
 - tools/camomilelocaledef.opt --file locales/ur_PK.txt locales 
 - tools/camomilelocaledef.opt --file locales/uz.txt locales 
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/uz_UZ.txt locales 
 - tools/camomilelocaledef.opt --file locales/vi.txt locales 
 - tools/camomilelocaledef.opt --file locales/vi_VN.txt locales 
 - tools/camomilelocaledef.opt --file locales/zh.txt locales 
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
+- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/zh_CN.txt locales 
 - tools/camomilelocaledef.opt --file locales/zh_HK.txt locales 
-- Warning : normalization option is not supported
 - tools/camomilelocaledef.opt --file locales/zh_MO.txt locales 
 - tools/camomilelocaledef.opt --file locales/zh_SG.txt locales 
 - tools/camomilelocaledef.opt --file locales/zh_TW.txt locales 
@@ -1991,9 +1991,9 @@ The following actions will be performed:
 - ocamlfind ocamlopt  -package "fileutils"   -c gettext.ml
 - ocamlfind ocamlopt  -package "fileutils"   -c gettextFormat_parser.ml
 - ocamlfind ocamlopt  -package "fileutils"   -c gettextFormat_lexer.ml
-- 14 shift/reduce conflicts.
-- 14 shift/reduce conflicts.
 - ocamlfind ocamlopt  -package "fileutils"   -c gettextFormat.ml
+- 14 shift/reduce conflicts.
+- 14 shift/reduce conflicts.
 - ocamlfind ocamlopt  -package "fileutils"   -c gettextMo_int32.ml
 - ocamlfind ocamlopt  -package "fileutils"   -c gettextMo_parser.ml
 - ocamlfind ocamlopt  -package "fileutils"   -c gettextMo_lexer.ml
@@ -2024,8 +2024,8 @@ The following actions will be performed:
 - 70 states, 524 transitions, table size 2516 bytes
 - ocamlfind ocamlc   -package "fileutils"   -c gettextPo_lexer.ml
 - ocamlfind ocamlc   -package "fileutils"   -c gettextPo_parser.ml
-- ocamlfind ocamlc   -package "fileutils"   -c gettextPo.ml
 - 12 shift/reduce conflicts.
+- ocamlfind ocamlc   -package "fileutils"   -c gettextPo.ml
 - ocamlfind ocamlc   -package "fileutils"   -c gettextCompile.ml
 - ocamlfind ocamlc   -a -o gettextExtension.cma gettextLocale_types.cmo gettextLocale_parser.cmo gettextLocale_lexer.cmo gettextLocale.cmo gettextDomain.cmo gettextCharset.cmo gettextTranslate.cmo gettextRealize.cmo gettextPo_utils.cmo gettextPoComment_parser.cmo gettextPo_lexer.cmo gettextPo_parser.cmo gettextPo.cmo gettextCompile.cmo 
 - ocamlfind ocamlopt  -package "fileutils"   -c gettextLocale_types.ml
@@ -2060,12 +2060,6 @@ The following actions will be performed:
 - cd libgettext-stub-ocaml     && make all
 - make[1]: Entering directory `/home/opam/.opam/system/build/gettext.0.3.5/libgettext-stub-ocaml'
 - ocamlfind ocamlc   -c gettextStubCompat_stubs.c	
-- ocamlfind ocamlopt  -package "gettext.extension"   -c gettextStubCompat.ml
-- ocamlfind ocamlopt  -package "gettext.extension"   -c gettextStub.ml
-- ocamlmklib  -o gettextStub gettextStubCompat_stubs.o gettextStubCompat.cmx gettextStub.cmx 
-- ocamlfind ocamlc   -package "gettext.extension"   -c gettextStubCompat.ml
-- ocamlfind ocamlc   -package "gettext.extension"   -c gettextStub.ml
-- ocamlmklib -o gettextStub gettextStubCompat_stubs.o gettextStubCompat.cmo gettextStub.cmo 
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext
 - Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext/gettextCompile.ml
 - Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext/gettextCompat.mli
@@ -2138,6 +2132,12 @@ The following actions will be performed:
 - Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext/gettextBase.cmxa
 - Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext/gettextBase.cma
 - Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext/META
+- ocamlfind ocamlopt  -package "gettext.extension"   -c gettextStubCompat.ml
+- ocamlfind ocamlopt  -package "gettext.extension"   -c gettextStub.ml
+- ocamlmklib  -o gettextStub gettextStubCompat_stubs.o gettextStubCompat.cmx gettextStub.cmx 
+- ocamlfind ocamlc   -package "gettext.extension"   -c gettextStubCompat.ml
+- ocamlfind ocamlc   -package "gettext.extension"   -c gettextStub.ml
+- ocamlmklib -o gettextStub gettextStubCompat_stubs.o gettextStubCompat.cmo gettextStub.cmo 
 - /usr/bin/install -c -d /home/opam/.opam/system/build/gettext.0.3.5/_build/lib
 - ocamlfind remove -destdir /home/opam/.opam/system/build/gettext.0.3.5/_build/lib gettext-stub 
 - ocamlfind  install -ldconf ignore -destdir /home/opam/.opam/system/build/gettext.0.3.5/_build/lib -patch-version 0.3.5 gettext-stub \
@@ -2160,6 +2160,28 @@ The following actions will be performed:
 - ocamlfind ocamlopt -pp 'camlp4o -I +camlp4 pa_macro.cmo -DCAMOMILE' -package "gettext.extension fileutils gettext-camomile"   -c OCamlGettext.ml
 - ocamlfind ocamlopt -o ocaml-gettext -pp 'camlp4o -I +camlp4 pa_macro.cmo -DCAMOMILE' -package "gettext.extension fileutils gettext-camomile" -linkpkg \
 - 	-predicates ""  OCamlGettext.cmx
+- ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub
+- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub/gettextStubCompat.ml
+- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub/gettextStub.ml
+- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub/gettextStub.cmx
+- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub/gettextStubCompat.cmx
+- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub/gettextStubCompat_stubs.o
+- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub/gettextStubCompat.cmi
+- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub/gettextStub.cmi
+- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub/libgettextStub.a
+- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub/dllgettextStub.so
+- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub/gettextStub.a
+- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub/gettextStub.cma
+- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub/gettextStub.cmxa
+- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub/META
+- ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-camomile
+- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-camomile/gettextCamomile.mli
+- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-camomile/gettextCamomile.cmx
+- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-camomile/gettextCamomile.cmi
+- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-camomile/gettextCamomile.a
+- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-camomile/gettextCamomile.cmxa
+- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-camomile/gettextCamomile.cma
+- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-camomile/META
 - /usr/bin/install -c -d /home/opam/.opam/system/build/gettext.0.3.5/_build/bin 
 - /usr/bin/install -c -t /home/opam/.opam/system/build/gettext.0.3.5/_build/bin ocaml-gettext 
 - ocamlfind ocamlc                                                             \
@@ -2196,28 +2218,6 @@ The following actions will be performed:
 - make[2]: Nothing to be done for `all'.
 - make[2]: Leaving directory `/home/opam/.opam/system/build/gettext.0.3.5/test'
 - make[1]: Leaving directory `/home/opam/.opam/system/build/gettext.0.3.5/test'
-- ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub
-- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub/gettextStubCompat.ml
-- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub/gettextStub.ml
-- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub/gettextStub.cmx
-- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub/gettextStubCompat.cmx
-- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub/gettextStubCompat_stubs.o
-- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub/gettextStubCompat.cmi
-- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub/gettextStub.cmi
-- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub/libgettextStub.a
-- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub/dllgettextStub.so
-- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub/gettextStub.a
-- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub/gettextStub.cma
-- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub/gettextStub.cmxa
-- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-stub/META
-- ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-camomile
-- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-camomile/gettextCamomile.mli
-- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-camomile/gettextCamomile.cmx
-- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-camomile/gettextCamomile.cmi
-- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-camomile/gettextCamomile.a
-- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-camomile/gettextCamomile.cmxa
-- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-camomile/gettextCamomile.cma
-- Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-camomile/META
 - File "/usr/lib/ocaml/unix.cma(Unix)", line 1:
 - Warning 31: files /usr/lib/ocaml/unix.cma(Unix) and /usr/lib/ocaml/unix.cma(Unix) both define a module named Unix
 - File "/usr/lib/ocaml/unix.cma(UnixLabels)", line 1:
@@ -2289,14 +2289,6 @@ The following actions will be performed:
 - /home/opam/.opam/system/build/gettext.0.3.5/_build/bin/ocaml-gettext --action install     \
 - 	--install-textdomain ocaml-gettext                         \
 - 	--install-destdir /home/opam/.opam/system/build/gettext.0.3.5/_build/share/locale fr.mo
-- /home/opam/.opam/system/build/gettext.0.3.5/_build/bin/ocaml-gettext --action install     \
-- 	--install-textdomain ocaml-gettext                         \
-- 	--install-destdir /home/opam/.opam/system/lib/gettext/share/locale fr.mo
-- make[1]: Leaving directory `/home/opam/.opam/system/build/gettext.0.3.5/po'
-- cd doc                       && make install
-- make[1]: Entering directory `/home/opam/.opam/system/build/gettext.0.3.5/doc'
-- make[1]: Nothing to be done for `install'.
-- make[1]: Leaving directory `/home/opam/.opam/system/build/gettext.0.3.5/doc'
 - 12 shift/reduce conflicts.
 - Removed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext
 - Installed /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext/gettextCompile.ml
@@ -2501,5 +2493,13 @@ The following actions will be performed:
 - findlib: [WARNING] Package gettext has multiple definitions in /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext/META, /home/opam/.opam/system/lib/gettext/META
 - findlib: [WARNING] Package gettext-camomile has multiple definitions in /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext-camomile/META, /home/opam/.opam/system/lib/gettext-camomile/META
 - findlib: [WARNING] Package gettext has multiple definitions in /home/opam/.opam/system/build/gettext.0.3.5/_build/lib/gettext/META, /home/opam/.opam/system/lib/gettext/META
+- /home/opam/.opam/system/build/gettext.0.3.5/_build/bin/ocaml-gettext --action install     \
+- 	--install-textdomain ocaml-gettext                         \
+- 	--install-destdir /home/opam/.opam/system/lib/gettext/share/locale fr.mo
+- make[1]: Leaving directory `/home/opam/.opam/system/build/gettext.0.3.5/po'
+- cd doc                       && make install
+- make[1]: Entering directory `/home/opam/.opam/system/build/gettext.0.3.5/doc'
+- make[1]: Nothing to be done for `install'.
+- make[1]: Leaving directory `/home/opam/.opam/system/build/gettext.0.3.5/doc'
 -> installed gettext.0.3.5
 Done.
