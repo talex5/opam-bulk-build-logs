@@ -1,7 +1,7 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux "centos"
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,"centos" --required-by=dbforge
+# Detecting depexts using flags: x86_64 linux "centos"
 + opam list --safe --recursive --external=source,x86_64,linux,"centos" --required-by=dbforge
 # No extra OS packages requirements found.
 The following actions will be performed:
@@ -22,30 +22,30 @@ The following actions will be performed:
 [config-file: from default] Command started
 [dbforge: from default] Command started
 [lablgtk: from default] Command started
+[dbforge: from default] Command started
 [config-file: from default] Command started
+[lablgtk: from default] Command started
+[default] http://opam-archive:8080/archives/lablgtk.2.18.3+opam.tar.gz downloaded
+[lablgtk-extras: from default] Command started
+[default] http://opam-archive:8080/archives/dbforge.2.0.1+opam.tar.gz downloaded
+[mysql: from default] Command started
+[default] http://opam-archive:8080/archives/config-file.1.2+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
+[lablgtk-extras: from default] Command started
+[default] http://opam-archive:8080/archives/lablgtk-extras.1.5+opam.tar.gz downloaded
+[xml-light: from default] Command started
+[ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[xmlm: from default] Command started
+[xmlm: from default] Command started
+[default] http://opam-archive:8080/archives/xmlm.1.2.0+opam.tar.gz downloaded
+[mysql: from default] Command started
+[default] http://opam-archive:8080/archives/mysql.1.2.0+opam.tar.gz downloaded
+[xml-light: from default] Command started
 [ERROR] The compilation of conf-glade failed at "pkg-config libglade-2.0".
 [ERROR] The compilation of conf-gtksourceview failed at "pkg-config
         gtksourceview-2.0".
-[default] http://opam-archive:8080/archives/config-file.1.2+opam.tar.gz downloaded
-[lablgtk-extras: from default] Command started
-[lablgtk-extras: from default] Command started
-[default] http://opam-archive:8080/archives/lablgtk-extras.1.5+opam.tar.gz downloaded
-[mysql: from default] Command started
-[mysql: from default] Command started
-[default] http://opam-archive:8080/archives/mysql.1.2.0+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
-[ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[xml-light: from default] Command started
-[xml-light: from default] Command started
 [default] http://opam-archive:8080/archives/xml-light.2.4+opam.tar.gz downloaded
-[xmlm: from default] Command started
-[dbforge: from default] Command started
-[lablgtk: from default] Command started
-[default] http://opam-archive:8080/archives/dbforge.2.0.1+opam.tar.gz downloaded
-[xmlm: from default] Command started
-[default] http://opam-archive:8080/archives/lablgtk.2.18.3+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/xmlm.1.2.0+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlp4: sh] Command started
@@ -139,6 +139,9 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -184,12 +187,16 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c fl_args.ml
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 	cp topfind.ml.in topfind.ml;                             \
+- else                                                             \
+- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 		> topfind.ml ;                                   \
+- fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -198,13 +205,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 	cp topfind.ml.in topfind.ml;                             \
-- else                                                             \
-- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 		> topfind.ml ;                                   \
-- fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -371,6 +371,8 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc   -c config_file.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt   -c config_file.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -o config_file.cmxs -shared config_file.cmx
+[ERROR] The compilation of mysql failed at "./configure --prefix
+        /home/opam/.opam/system".
 [config-file: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/config-file.1.2)
 - Installed /home/opam/.opam/system/lib/config-file/config_file.cmxs
@@ -410,8 +412,6 @@ The following actions will be performed:
 - ./configure: line 3435: mysql_config: command not found
 - ./configure: line 3444: mysql_config: command not found
 - configure: error: MySQL client library not found
-[ERROR] The compilation of mysql failed at "./configure --prefix
-        /home/opam/.opam/system".
 [mysql: ocamlfind remove] Command started
 + ocamlfind "remove" "mysql" (CWD=/home/opam/.opam/system/build/mysql.1.2.0)
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/mysql
@@ -493,6 +493,37 @@ The following actions will be performed:
 
 -> installed xml-light.2.4
 
+
+=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+The following actions were aborted
+  - install dbforge        2.0.1 
+  - install lablgtk        2.18.3
+  - install lablgtk-extras 1.5   
+The following actions failed
+  - install conf-glade         2    
+  - install conf-gtksourceview 2    
+  - install mysql              1.2.0
+The following changes have been performed
+  - install camlp4      4.02+system
+  - install config-file 1.2        
+  - install ocamlfind   1.5.5      
+  - install xml-light   2.4        
+  - install xmlm        1.2.0      
+
+=-=- conf-glade.2 troobleshooting -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+=> This package relies on external (system) dependencies that may be missing.
+   `opam depext conf-glade.2' may help you find the correct installation for
+   your system.
+
+=-=- conf-gtksourceview.2 troubleshooting -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+=> This package requires gtksourceview 2.0 development packages installed on
+   your system
+
+=-=- mysql.1.2.0 troobleshooting =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+=> This package relies on external (system) dependencies that may be missing.
+   `opam depext mysql.1.2.0' may help you find the correct installation for
+   your system.
+
 #=== ERROR while installing conf-gtksourceview.2 ==============================#
 # opam-version         1.2.2 (c30ed46b7e70bcf0f872e482cbcbf6a1fa0c60b3)
 # os                   linux
@@ -534,36 +565,5 @@ The following actions will be performed:
 
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150603034316.export"
+    opam switch import "~/.opam/system/backup/state-20150603183845.export"
 'opam install dbforge' failed.
-
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions were aborted
-  - install dbforge        2.0.1 
-  - install lablgtk        2.18.3
-  - install lablgtk-extras 1.5   
-The following actions failed
-  - install conf-glade         2    
-  - install conf-gtksourceview 2    
-  - install mysql              1.2.0
-The following changes have been performed
-  - install camlp4      4.02+system
-  - install config-file 1.2        
-  - install ocamlfind   1.5.5      
-  - install xml-light   2.4        
-  - install xmlm        1.2.0      
-
-=-=- conf-glade.2 troobleshooting -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-=> This package relies on external (system) dependencies that may be missing.
-   `opam depext conf-glade.2' may help you find the correct installation for
-   your system.
-
-=-=- conf-gtksourceview.2 troubleshooting -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-=> This package requires gtksourceview 2.0 development packages installed on
-   your system
-
-=-=- mysql.1.2.0 troobleshooting =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-=> This package relies on external (system) dependencies that may be missing.
-   `opam depext mysql.1.2.0' may help you find the correct installation for
-   your system.
