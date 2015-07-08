@@ -1,12 +1,12 @@
 + uname -m
+# Detecting depexts using flags: x86_64 linux ubuntu
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=ocamlyices
-# Detecting depexts using flags: x86_64 linux ubuntu
 # The following system packages are needed:
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=ocamlyices
-# All required OS packages found.
 + dpkg-query -W -f '${Package} ${Status}\n' m4 2>/dev/null
+# All required OS packages found.
 The following actions will be performed:
   - install camlidl    1.05                                     [required by ocamlyices]
   - install ocamlfind  1.5.5                                    [required by ocamlyices]
@@ -17,12 +17,12 @@ The following actions will be performed:
 [camlidl: from default] Command started
 [ocamlfind: from default] Command started
 [ocamlyices: from default] Command started
+[camlidl: from default] Command started
 [ocamlyices: from default] Command started
 [ocamlfind: from default] Command started
-[camlidl: from default] Command started
+[default] http://opam-archive:8080/archives/camlidl.1.05+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlyices.0.7.1+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/camlidl.1.05+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlidl: mv] Command started
@@ -380,6 +380,11 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
+- ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
+- if [ 1 -gt 0 ]; then \
+- 	    ocamlopt -I +compiler-libs -shared -o findlib.cmxs findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx; \
+- 	fi
+- ocamlopt -I +compiler-libs -c ocaml_args.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -424,11 +429,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
-- if [ 1 -gt 0 ]; then \
-- 	    ocamlopt -I +compiler-libs -shared -o findlib.cmxs findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx; \
-- 	fi
-- ocamlopt -I +compiler-libs -c ocaml_args.ml
 - ocamlopt -I +compiler-libs -c frontend.ml
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
@@ -438,50 +438,10 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-[ERROR] The compilation of ocamlyices failed at "./configure".
-
-#=== ERROR while installing ocamlyices.0.7.1 ==================================#
-# opam-version         1.2.2 (c30ed46b7e70bcf0f872e482cbcbf6a1fa0c60b3)
-# os                   linux
-# command              ./configure
-# path                 /home/opam/.opam/system/build/ocamlyices.0.7.1
-# compiler             system (4.02.1)
-# exit-code            1
-# env-file             /home/opam/.opam/system/build/ocamlyices.0.7.1/ocamlyices-5-487c34.env
-# stdout-file          /home/opam/.opam/system/build/ocamlyices.0.7.1/ocamlyices-5-487c34.out
-# stderr-file          /home/opam/.opam/system/build/ocamlyices.0.7.1/ocamlyices-5-487c34.err
-### stdout ###
-# [...]
-# checking for memory.h... yes
-# checking for strings.h... yes
-# checking for inttypes.h... yes
-# checking for stdint.h... yes
-# checking for unistd.h... yes
-# checking caml/camlidlruntime.h usability... yes
-# checking caml/camlidlruntime.h presence... yes
-# checking for caml/camlidlruntime.h... yes
-# checking for __gmpz_init... no
-# checking for yices_version... no
-### stderr ###
-# [...]
-# (2) Install it on your system (libraries and headers).
-# You may use either the following command as root:
-#   wget -q -O- http://git.io/sWxMmg | sh -s yices-XYZ.tar.gz
-# or this one as a sudoer:
-#   wget -q -O- http://git.io/sWxMmg | sudo sh -s yices-XYZ.tar.gz
-# In both case, yices-XYZ.tar.gz should be replaced with the path to the
-# downloaded tarball. Also, additional parameters can be added to specify
-# installation directories (root and library path), e.g.:
-#   wget -q -O- http://git.io/sWxMmg | sh -s <yices-XYZ.tar.gz> /opt /opt/lib64
-#   
-
-
-The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150604174140.export"
-'opam install ocamlyices' failed.
 - ocamlopt -I +compiler-libs -o ocamlfind_opt findlib.cmxa unix.cmxa \
 - 		   ocaml_args.cmx frontend.cmx
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
+[ERROR] The compilation of ocamlyices failed at "./configure".
 [ocamlfind: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
 - mkdir -p "/home/opam/.opam/system/bin"
@@ -543,7 +503,8 @@ The former state can be restored with:
 - checking for ranlib... ranlib
 - checking for ocamlc... ocamlc
 - checking for Ocaml version... 4.02.1
-- checking for Ocaml stdlib path... /usr/lib/ocaml
+- checking for Ocaml stdlib path... 
+- /usr/lib/ocaml
 - checking for ocamlfind... ocamlfind
 - checking for ocamlopt... ocamlopt
 - checking for Ocaml version consistency... yes
@@ -563,10 +524,10 @@ The former state can be restored with:
 - checking for strings.h... yes
 - checking for inttypes.h... yes
 - checking for stdint.h... yes
-- checking for unistd.h... yes
-- checking caml/camlidlruntime.h usability... yes
-- checking caml/camlidlruntime.h presence... 
+- checking for unistd.h... 
 - yes
+- checking caml/camlidlruntime.h usability... yes
+- checking caml/camlidlruntime.h presence... yes
 - checking for caml/camlidlruntime.h... yes
 - checking for __gmpz_init... no
 - checking for yices_version... no
@@ -596,3 +557,43 @@ The following actions failed
 The following changes have been performed
   - install camlidl   1.05 
   - install ocamlfind 1.5.5
+
+#=== ERROR while installing ocamlyices.0.7.1 ==================================#
+# opam-version         1.2.2 (c30ed46b7e70bcf0f872e482cbcbf6a1fa0c60b3)
+# os                   linux
+# command              ./configure
+# path                 /home/opam/.opam/system/build/ocamlyices.0.7.1
+# compiler             system (4.02.1)
+# exit-code            1
+# env-file             /home/opam/.opam/system/build/ocamlyices.0.7.1/ocamlyices-5-487c34.env
+# stdout-file          /home/opam/.opam/system/build/ocamlyices.0.7.1/ocamlyices-5-487c34.out
+# stderr-file          /home/opam/.opam/system/build/ocamlyices.0.7.1/ocamlyices-5-487c34.err
+### stdout ###
+# [...]
+# checking for memory.h... yes
+# checking for strings.h... yes
+# checking for inttypes.h... yes
+# checking for stdint.h... yes
+# checking for unistd.h... yes
+# checking caml/camlidlruntime.h usability... yes
+# checking caml/camlidlruntime.h presence... yes
+# checking for caml/camlidlruntime.h... yes
+# checking for __gmpz_init... no
+# checking for yices_version... no
+### stderr ###
+# [...]
+# (2) Install it on your system (libraries and headers).
+# You may use either the following command as root:
+#   wget -q -O- http://git.io/sWxMmg | sh -s yices-XYZ.tar.gz
+# or this one as a sudoer:
+#   wget -q -O- http://git.io/sWxMmg | sudo sh -s yices-XYZ.tar.gz
+# In both case, yices-XYZ.tar.gz should be replaced with the path to the
+# downloaded tarball. Also, additional parameters can be added to specify
+# installation directories (root and library path), e.g.:
+#   wget -q -O- http://git.io/sWxMmg | sh -s <yices-XYZ.tar.gz> /opt /opt/lib64
+#   
+
+
+The former state can be restored with:
+    opam switch import "~/.opam/system/backup/state-20150604230006.export"
+'opam install ocamlyices' failed.
