@@ -12,10 +12,10 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [bsdowl: from default] Command started
 [ocamlfind: from default] Command started
-[bsdowl: from default] Command started
-[default] http://opam-archive:8080/archives/bsdowl.3.0.0-20150401+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
+[bsdowl: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/bsdowl.3.0.0-20150401+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -102,6 +102,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -147,11 +148,17 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 	cp topfind.ml.in topfind.ml;                             \
+- else                                                             \
+- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 		> topfind.ml ;                                   \
+- fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -160,13 +167,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 	cp topfind.ml.in topfind.ml;                             \
-- else                                                             \
-- 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 		> topfind.ml ;                                   \
-- fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -273,6 +273,8 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+[ERROR] The compilation of bsdowl failed at "./configure --prefix
+        /home/opam/.opam/system".
 - ocamlopt -I +compiler-libs -o ocamlfind_opt findlib.cmxa unix.cmxa \
 - 	   ocaml_args.cmx frontend.cmx
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
@@ -327,11 +329,21 @@ The following actions will be performed:
 - checking for a modern BSD Make program... no
 - which: no bmake in (/home/opam/.opam/system/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin)
 - configure: error: *** BSD Make not found.
-[ERROR] The compilation of bsdowl failed at "./configure --prefix
-        /home/opam/.opam/system".
 [bsdowl: sh] Command started
 + sh "/home/opam/.opam/system/build/bsdowl.3.0.0-20150401/opam/files/remove.sh" "/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/bsdowl.3.0.0-20150401)
 - sh: /home/opam/.opam/system/build/bsdowl.3.0.0-20150401/opam/files/remove.sh: No such file or directory
+
+
+=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+The following actions failed
+  - install bsdowl 3.0.0-20150401
+The following changes have been performed
+  - install ocamlfind 1.5.5
+
+=-=- bsdowl.3.0.0-20150401 troobleshooting =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+=> This package relies on external (system) dependencies that may be missing.
+   `opam depext bsdowl.3.0.0-20150401' may help you find the correct
+   installation for your system.
 
 #=== ERROR while installing bsdowl.3.0.0-20150401 =============================#
 # opam-version         1.2.2 (c30ed46b7e70bcf0f872e482cbcbf6a1fa0c60b3)
@@ -352,18 +364,6 @@ The following actions will be performed:
 # configure: error: *** BSD Make not found.
 
 
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions failed
-  - install bsdowl 3.0.0-20150401
-The following changes have been performed
-  - install ocamlfind 1.5.5
-
-=-=- bsdowl.3.0.0-20150401 troobleshooting =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-=> This package relies on external (system) dependencies that may be missing.
-   `opam depext bsdowl.3.0.0-20150401' may help you find the correct
-   installation for your system.
-
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150605000147.export"
+    opam switch import "~/.opam/system/backup/state-20150605222227.export"
 'opam install bsdowl' failed.
