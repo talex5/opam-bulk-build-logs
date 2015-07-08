@@ -1,30 +1,15 @@
 + uname -m
-+ uname -s
-+ lsb_release -i -s
 # Detecting depexts using flags: x86_64 linux debian
++ uname -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=uunf
 # The following system packages are needed:
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=uunf
-Not running as root, the following command will be run through "sudo":
-    apt-get update
-+ sudo apt-get update
-Hit http://security.debian.org stable/updates InRelease
-Hit http://httpredir.debian.org stable InRelease
-Get:1 http://httpredir.debian.org stable-updates InRelease [126 kB]
-Get:2 http://security.debian.org stable/updates/main amd64 Packages [121 kB]
-Get:3 http://httpredir.debian.org stable/main amd64 Packages [9038 kB]
-Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9288 kB in 5s (1581 kB/s)
-Reading package lists...
-# OS package update successful
-Not running as root, the following command will be run through "sudo":
-    apt-get install -qq -yy m4
-+ sudo apt-get install -qq -yy m4
-# OS packages installation successful
++ dpkg-query -W -f '${Package} ${Status}\n' m4 2>/dev/null
+# All required OS packages found.
 The following actions will be performed:
   - install ocamlfind 1.5.5                                     [required by uunf]
-  - install uunf      0.9.3
+  - install uunf      1.0.0
 ===== 2 to install =====
 
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -32,8 +17,8 @@ The following actions will be performed:
 [uunf: from default] Command started
 [uunf: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/uunf.0.9.3+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/uunf.1.0.0+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -253,17 +238,29 @@ The following actions will be performed:
 - cp doc/ref-man/META.5 doc/ref-man/site-lib.5 doc/ref-man/findlib.conf.5 /home/opam/.opam/4.01.0/man/man5
 - make[1]: Leaving directory '/home/opam/.opam/4.01.0/build/ocamlfind.1.5.5'
 -> installed ocamlfind.1.5.5
-[uunf: ./pkg/pkg-git] Command started
-+ ./pkg/pkg-git  (CWD=/home/opam/.opam/4.01.0/build/uunf.0.9.3)
-[uunf: ./pkg/build true] Command started
-+ ./pkg/build "true" "false" (CWD=/home/opam/.opam/4.01.0/build/uunf.0.9.3)
-- ocamlfind ocamldep -modules src/uunf.mli > src/uunf.mli.depends
-- ocamlfind ocamlc -c -annot -I src -I test -o src/uunf.cmi src/uunf.mli
-- ocamlfind ocamldep -modules src/uunf.ml > src/uunf.ml.depends
-- ocamlfind ocamlopt -c -annot -I src -I test -o src/uunf.cmx src/uunf.ml
-- ocamlfind ocamlc -c -annot -I src -I test -o src/uunf.cmo src/uunf.ml
-- ocamlfind ocamlc -a src/uunf.cmo -o src/uunf.cma
-- ocamlfind ocamlopt -a src/uunf.cmx -o src/uunf.cmxa
-- ocamlfind ocamlopt -shared src/uunf.cmx -o src/uunf.cmxs
--> installed uunf.0.9.3
+[uunf: ocaml] Command started
++ ocaml "pkg/git.ml" (CWD=/home/opam/.opam/4.01.0/build/uunf.1.0.0)
+[uunf: ocaml] Command started
++ ocaml "pkg/build.ml" "native=true" "native-dynlink=true" "uutf=false" "cmdliner=true" (CWD=/home/opam/.opam/4.01.0/build/uunf.1.0.0)
+- ocamlfind ocamldep -package bytes -modules src/uunf_tmapbool.ml > src/uunf_tmapbool.ml.depends
+- ocamlfind ocamlc -c -bin-annot -package bytes -I src -I test -I src/data -o src/uunf_tmapbool.cmo src/uunf_tmapbool.ml
+- ocamlfind ocamldep -package bytes -modules src/uunf_tmapbyte.ml > src/uunf_tmapbyte.ml.depends
+- ocamlfind ocamlc -c -bin-annot -package bytes -I src -I test -I src/data -o src/uunf_tmapbyte.cmo src/uunf_tmapbyte.ml
+- ocamlfind ocamldep -package bytes -modules src/data/uunf_data.ml > src/data/uunf_data.ml.depends
+- ocamlfind ocamldep -package bytes -modules src/uunf_tmap.ml > src/uunf_tmap.ml.depends
+- ocamlfind ocamlc -c -bin-annot -package bytes -I src -I test -I src/data -o src/uunf_tmap.cmo src/uunf_tmap.ml
+- ocamlfind ocamlc -c -bin-annot -package bytes -I src/data -I test -I src -o src/data/uunf_data.cmo src/data/uunf_data.ml
+- ocamlfind ocamlopt -c -bin-annot -package bytes -I src -I test -I src/data -o src/uunf_tmapbool.cmx src/uunf_tmapbool.ml
+- ocamlfind ocamlopt -c -bin-annot -package bytes -I src -I test -I src/data -o src/uunf_tmapbyte.cmx src/uunf_tmapbyte.ml
+- ocamlfind ocamlopt -c -bin-annot -package bytes -I src -I test -I src/data -o src/uunf_tmap.cmx src/uunf_tmap.ml
+- ocamlfind ocamldep -package bytes -modules src/uunf.ml > src/uunf.ml.depends
+- ocamlfind ocamldep -package bytes -modules src/uunf.mli > src/uunf.mli.depends
+- ocamlfind ocamlc -c -bin-annot -package bytes -I src -I test -I src/data -o src/uunf.cmi src/uunf.mli
+- ocamlfind ocamlopt -c -bin-annot -package bytes -I src/data -I test -I src -o src/data/uunf_data.cmx src/data/uunf_data.ml
+- ocamlfind ocamlopt -c -bin-annot -package bytes -I src -I test -I src/data -o src/uunf.cmx src/uunf.ml
+- ocamlfind ocamlopt -a -package bytes src/uunf_tmap.cmx src/uunf_tmapbool.cmx src/uunf_tmapbyte.cmx src/data/uunf_data.cmx src/uunf.cmx -o src/uunf.cmxa
+- ocamlfind ocamlc -c -bin-annot -package bytes -I src -I test -I src/data -o src/uunf.cmo src/uunf.ml
+- ocamlfind ocamlc -a -package bytes src/uunf_tmap.cmo src/uunf_tmapbool.cmo src/uunf_tmapbyte.cmo src/data/uunf_data.cmo src/uunf.cmo -o src/uunf.cma
+- ocamlfind ocamlopt -shared -package bytes src/uunf.cmx -o src/uunf.cmxs
+-> installed uunf.1.0.0
 Done.
