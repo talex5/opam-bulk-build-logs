@@ -2,19 +2,19 @@
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=avroc
 # Detecting depexts using flags: x86_64 linux ubuntu
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=avroc
 # The following system packages are needed:
 #  - libffi-dev
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=avroc
++ dpkg-query -W -f '${Package} ${Status}\n' libffi-dev m4 2>/dev/null
 # The following new OS packages need to be installed: libffi-dev
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ dpkg-query -W -f '${Package} ${Status}\n' libffi-dev m4 2>/dev/null
-+ sudo apt-get update
 Ign http://download.opensuse.org  InRelease
-Ign http://archive.ubuntu.com trusty InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
+Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
 Hit http://download.opensuse.org  Packages
@@ -35,7 +35,6 @@ Get:4 http://archive.ubuntu.com trusty-updates/restricted Sources [3158 B]
 Get:5 http://archive.ubuntu.com trusty-updates/universe Sources [154 kB]
 Get:6 http://archive.ubuntu.com trusty-updates/main amd64 Packages [714 kB]
 Get:7 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [18.1 kB]
-+ sudo apt-get install -qq -yy libffi-dev
 Get:8 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [382 kB]
 Hit http://archive.ubuntu.com trusty-security/main Sources
 Hit http://archive.ubuntu.com trusty-security/restricted Sources
@@ -43,19 +42,20 @@ Hit http://archive.ubuntu.com trusty-security/universe Sources
 Hit http://archive.ubuntu.com trusty-security/main amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/universe amd64 Packages
-Fetched 1603 kB in 6s (238 kB/s)
+Fetched 1603 kB in 4s (327 kB/s)
 Reading package lists...
 # OS package update successful
++ sudo apt-get install -qq -yy libffi-dev
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libffi-dev
 debconf: unable to initialize frontend: Dialog
+Selecting previously unselected package libffi-dev:amd64.
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
 debconf: unable to initialize frontend: Readline
 debconf: (This frontend requires a controlling tty.)
 debconf: falling back to frontend: Teletype
 dpkg-preconfigure: unable to re-open stdin: 
-Selecting previously unselected package libffi-dev:amd64.
 (Reading database ... 22870 files and directories currently installed.)
 Preparing to unpack .../libffi-dev_3.1~rc1+r3.0.13-12_amd64.deb ...
 Unpacking libffi-dev:amd64 (3.1~rc1+r3.0.13-12) ...
@@ -75,8 +75,8 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [avroc: from default] Command started
 [ctypes: from default] Command started
-[default] http://opam-archive:8080/archives/avroc.0.0.1+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/avroc.0.0.1+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ctypes.0.4.1+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
@@ -275,6 +275,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -319,7 +320,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -407,6 +407,8 @@ The following actions will be performed:
 - ocamlfind ocamlc -package str -package bigarray -package bytes     -c -o _build/src/ctypes/ctypes_common.cmo -I _build/src/ctypes  src/ctypes/ctypes_common.ml
 - ocamlfind ocamlc -c -o _build/src/ctypes/ctypes_path.cmi -package str -package bigarray -package bytes   -I _build/src/ctypes  src/ctypes/ctypes_path.mli
 - ocamlfind ocamlc -package str -package bigarray -package bytes     -c -o _build/src/ctypes/ctypes_path.cmo -I _build/src/ctypes  src/ctypes/ctypes_path.ml
+- make: Circular _build/src/ctypes/ctypes_primitive_types.cmx <- _build/src/ctypes/ctypes_primitive_types.cmx dependency dropped.
+- make: Circular _build/src/ctypes/ctypes_memory_stubs.cmx <- _build/src/ctypes/ctypes_memory_stubs.cmx dependency dropped.
 - ocamlfind ocamlc -c -o _build/src/ctypes/unsigned.cmi -package str -package bigarray -package bytes   -I _build/src/ctypes  src/ctypes/unsigned.mli
 - ocamlfind ocamlc -package str -package bigarray -package bytes     -c -o _build/src/ctypes/unsigned.cmo -I _build/src/ctypes  src/ctypes/unsigned.ml
 - ocamlfind ocamlc -c -o _build/src/ctypes/signed.cmi -package str -package bigarray -package bytes   -I _build/src/ctypes  src/ctypes/signed.mli
@@ -436,8 +438,6 @@ The following actions will be performed:
 - ocamlfind ocamlc -c -o _build/src/ctypes/ctypes_types.cmi -package str -package bigarray -package bytes   -I _build/src/ctypes  src/ctypes/ctypes_types.mli
 - ocamlfind ocamlc -c -o _build/src/ctypes/ctypes.cmi -package str -package bigarray -package bytes   -I _build/src/ctypes  src/ctypes/ctypes.mli
 - ocamlfind ocamlc -package str -package bigarray -package bytes     -c -o _build/src/ctypes/ctypes.cmo -I _build/src/ctypes  src/ctypes/ctypes.ml
-- make: Circular _build/src/ctypes/ctypes_primitive_types.cmx <- _build/src/ctypes/ctypes_primitive_types.cmx dependency dropped.
-- make: Circular _build/src/ctypes/ctypes_memory_stubs.cmx <- _build/src/ctypes/ctypes_memory_stubs.cmx dependency dropped.
 - ocamlfind ocamlc -c -o _build/src/ctypes/posixTypes.cmi -package str -package bigarray -package bytes   -I _build/src/ctypes  src/ctypes/posixTypes.mli
 - ocamlfind ocamlc -package str -package bigarray -package bytes     -c -o _build/src/ctypes/posixTypes.cmo -I _build/src/ctypes  src/ctypes/posixTypes.ml
 - ocamlfind ocamlc -a   -cclib -lctypes_stubs -dllib -lctypes_stubs -package str -package bigarray -package bytes  -o _build/ctypes.cma _build/src/ctypes/ctypes_common.cmo _build/src/ctypes/ctypes_path.cmo _build/src/ctypes/unsigned.cmo _build/src/ctypes/signed.cmo _build/src/ctypes/ctypes_ptr.cmo _build/src/ctypes/ctypes_primitive_types.cmo _build/src/ctypes/ctypes_memory_stubs.cmo _build/src/ctypes/ctypes_bigarray_stubs.cmo _build/src/ctypes/ctypes_primitives.cmo _build/src/ctypes/ctypes_value_printing_stubs.cmo _build/src/ctypes/ctypes_bigarray.cmo _build/src/ctypes/ctypes_static.cmo _build/src/ctypes/ctypes_std_view_stubs.cmo _build/src/ctypes/ctypes_structs.cmo _build/src/ctypes/ctypes_structs_computed.cmo _build/src/ctypes/ctypes_type_printing.cmo _build/src/ctypes/ctypes_memory.cmo _build/src/ctypes/ctypes_coerce.cmo _build/src/ctypes/ctypes_std_views.cmo _build/src/ctypes/ctypes_value_printing.cmo _build/src/ctypes/ctypes.cmo _build/src/ctypes/posixTypes.cmo -cclib -Wl,--no-as-needed
@@ -486,17 +486,17 @@ The following actions will be performed:
 - ocamlfind ocamlc -c -o _build/src/cstubs/cstubs_errors.cmi -package str -package bytes   -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_errors.mli
 - ocamlfind ocamlc -package str -package bytes     -c -o _build/src/cstubs/cstubs_errors.cmo -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_errors.ml
 - ocamlfind ocamlc -c -o _build/src/cstubs/cstubs_internals.cmi -package str -package bytes   -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_internals.mli
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
 - ocamlfind ocamlc -package str -package bytes     -c -o _build/src/cstubs/cstubs_internals.cmo -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_internals.ml
 - ocamlfind ocamlc -c -o _build/src/cstubs/cstubs_public_name.cmi -package str -package bytes   -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_public_name.mli
 - ocamlfind ocamlc -package str -package bytes     -c -o _build/src/cstubs/cstubs_public_name.cmo -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_public_name.ml
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
 - ocamlfind ocamlc -c -o _build/src/cstubs/cstubs_generate_ml.cmi -package str -package bytes   -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_generate_ml.mli
 - ocamlfind ocamlc -package str -package bytes     -c -o _build/src/cstubs/cstubs_generate_ml.cmo -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_generate_ml.ml
 - ocamlfind ocamlc -package str -package bytes     -c -o _build/src/cstubs/cstubs_c_language.cmo -I _build/src/cstubs  -I _build/src/ctypes src/cstubs/cstubs_c_language.ml
@@ -699,7 +699,8 @@ The following actions will be performed:
 - ./scripts/download_avroc.sh
 -   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
 -                                  Dload  Upload   Total   Spent    Left  Speed
--   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+-   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+-   1  561k    1  6951    0     0   5284      0  0:01:48  0:00:01  0:01:47  5285 39  561k   39  223k    0     0   119k      0  0:00:04  0:00:01  0:00:03  119k
 - /usr/bin/md5sum
 - 07a1034671c412de79e53a8f89528351  avro-c-dir/avro-c-1.7.7.tar.gz
 - tar xzf avro-c-dir/avro-c-1.7.7.tar.gz -C avro-c-dir
@@ -710,15 +711,15 @@ The following actions will be performed:
 - make[1]: Leaving directory `/home/opam/.opam/system/build/avroc.0.0.1/avro-c-dir/avro-c-1.7.7/build'
 - make[1]: Entering directory `/home/opam/.opam/system/build/avroc.0.0.1/avro-c-dir/avro-c-1.7.7/build'
 - make[1]: Leaving directory `/home/opam/.opam/system/build/avroc.0.0.1/avro-c-dir/avro-c-1.7.7/build'
-- 100  561k  100  561k    0     0   505k      0  0:00:01  0:00:01 --:--:--  506k
+- 100  561k  100  561k    0     0   243k      0  0:00:02  0:00:02 --:--:--  243k
 - ./cmake_avrolib.sh: line 22: cmake: command not found
 - make[1]: *** No targets specified and no makefile found.  Stop.
 - make[1]: *** No rule to make target `test'.  Stop.
 - make[1]: *** No rule to make target `install'.  Stop.
 - cp: cannot stat 'avrolib/lib/libavro.a': No such file or directory
 - make: *** [avro-c-dir/avro-c-1.7.7/build] Error 1
-[ERROR] The compilation of avroc failed at "make install".
 [avroc: ocamlfind remove] Command started
+[ERROR] The compilation of avroc failed at "make install".
 + ocamlfind "remove" "avroc" (CWD=/home/opam/.opam/system/build/avroc.0.0.1)
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/avroc
 
@@ -747,7 +748,7 @@ The following actions will be performed:
 ### stderr ###
 #   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
 #                                  Dload  Upload   Total   Spent    Left  Speed
-#   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  561k  100  561k    0     0   505k      0  0:00:01  0:00:01 --:--:--  506k
+#   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  1  561k    1  6951    0     0   5284      0  0:01:48  0:00:01  0:01:47  5285 39  561k   39  223k    0     0   119k      0  0:00:04  0:00:01  0:00:03  119k100  561k  100  561k    0     0   243k      0  0:00:02  0:00:02 --:--:--  243k
 # ./cmake_avrolib.sh: line 22: cmake: command not found
 # make[1]: *** No targets specified and no makefile found.  Stop.
 # make[1]: *** No rule to make target `test'.  Stop.
@@ -767,5 +768,5 @@ The following changes have been performed
   - install ocamlfind      1.5.5
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150605194605.export"
+    opam switch import "~/.opam/system/backup/state-20150606085721.export"
 'opam install avroc' failed.
