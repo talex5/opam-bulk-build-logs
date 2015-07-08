@@ -1,6 +1,6 @@
 + uname -m
-+ uname -s
 # Detecting depexts using flags: x86_64 linux ubuntu
++ uname -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=xapi-inventory
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=xapi-inventory
 # The following system packages are needed:
@@ -28,35 +28,35 @@ The following actions will be performed:
 [lwt: from default] Command started
 [ocamlfind: from default] Command started
 [fd-send-recv: from default] Command started
-[ocamlfind: from default] Command started
-[lwt: from default] Command started
 [default] http://opam-archive:8080/archives/fd-send-recv.1.0.1+opam.tar.gz downloaded
 [ppx_tools: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[rpc: from default] Command started
+[lwt: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/lwt.2.4.8+opam.tar.gz downloaded
-[sexplib: from default] Command started
+[rpc: from default] Command started
 [ppx_tools: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[sexplib: from default] Command started
+[default] http://opam-archive:8080/archives/ppx_tools.0.99.2+opam.tar.gz downloaded
+[type_conv: from default] Command started
 [rpc: from default] Command started
 [default] http://opam-archive:8080/archives/rpc.1.5.4+opam.tar.gz downloaded
-[type_conv: from default] Command started
-[default] http://opam-archive:8080/archives/ppx_tools.0.99.2+opam.tar.gz downloaded
 [uuidm: from default] Command started
 [sexplib: from default] Command started
 [type_conv: from default] Command started
 [default] http://opam-archive:8080/archives/sexplib.112.35.00+opam.tar.gz downloaded
 [xapi-backtrace: from default] Command started
-[uuidm: from default] Command started
 [default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
 [xapi-inventory: from default] Command started
+[uuidm: from default] Command started
 [default] http://opam-archive:8080/archives/uuidm.0.9.5+opam.tar.gz downloaded
 [xapi-stdext: from default] Command started
 [xapi-backtrace: from default] Command started
-[xapi-inventory: from default] Command started
 [default] http://opam-archive:8080/archives/xapi-backtrace.0.2+opam.tar.gz downloaded
 [xmlm: from default] Command started
-[xapi-stdext: from default] Command started
+[xapi-inventory: from default] Command started
 [default] http://opam-archive:8080/archives/xapi-inventory.0.9.1+opam.tar.gz downloaded
+[xapi-stdext: from default] Command started
 [default] http://opam-archive:8080/archives/xapi-stdext.0.13.0+opam.tar.gz downloaded
 [xmlm: from default] Command started
 [default] http://opam-archive:8080/archives/xmlm.1.2.0+opam.tar.gz downloaded
@@ -149,6 +149,9 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -194,20 +197,9 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c fl_args.ml
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -216,6 +208,14 @@ The following actions will be performed:
 - 	fi
 - ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
 - 	export USE_CYGPATH; \
@@ -1946,9 +1946,9 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -safe-string -I src/core -I src/logger -I src/unix -I syntax -syntax camlp4o -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -package unix -package bytes -package bigarray -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -I examples/unix -I src/unix -I syntax -o examples/unix/relay.cmo examples/unix/relay.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -safe-string -I src/core -I src/logger -I src/unix -I syntax -syntax camlp4o -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -package unix -package bytes -package bigarray -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -I examples/unix -I src/unix -I syntax -o examples/unix/relay.cmx examples/unix/relay.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -linkpkg -g -I src/unix -linkpkg -package unix -package bytes -package bigarray -package camlp4.quotations.o -package camlp4.extend -package camlp4 syntax/lwt-syntax.cmxa src/core/lwt.cmxa src/logger/lwt-log.cmxa src/unix/lwt-unix.cmxa examples/unix/relay.cmx -o examples/unix/relay.native
-- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -package unix -package bytes -package bigarray -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -modules examples/unix/parallelize.ml > examples/unix/parallelize.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -safe-string -I src/core -I src/logger -I src/unix -I syntax -syntax camlp4o -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -package unix -package bytes -package bigarray -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -I examples/unix -I src/unix -I syntax -o examples/unix/parallelize.cmo examples/unix/parallelize.ml
+- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -safe-string -I src/core -I src/logger -I src/unix -I syntax -syntax camlp4o -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -package unix -package bytes -package bigarray -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -I examples/unix -I src/unix -I syntax -o examples/unix/parallelize.cmx examples/unix/parallelize.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -linkpkg -g -I src/unix -linkpkg -package unix -package bytes -package bigarray -package camlp4.quotations.o -package camlp4.extend -package camlp4 syntax/lwt-syntax.cmxa src/core/lwt.cmxa src/logger/lwt-log.cmxa src/unix/lwt-unix.cmxa examples/unix/parallelize.cmx -o examples/unix/parallelize.native
 [lwt: make install] Command started
