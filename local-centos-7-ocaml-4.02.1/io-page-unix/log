@@ -1,18 +1,18 @@
 + uname -m
+# Detecting depexts using flags: x86_64 linux "centos"
 + uname -s
-+ opam list --safe --recursive --external=x86_64,linux,centos --required-by=io-page-unix
-# Detecting depexts using flags: x86_64 linux centos
-+ opam list --safe --recursive --external=source,x86_64,linux,centos --required-by=io-page-unix
++ opam list --safe --recursive --external=x86_64,linux,"centos" --required-by=io-page-unix
++ opam list --safe --recursive --external=source,x86_64,linux,"centos" --required-by=io-page-unix
 # No extra OS packages requirements found.
 The following actions will be performed:
-  - install camlp4        4.02.1+system                         [required by cstruct]
   - install ocamlfind     1.5.5                                 [required by io-page-unix]
+  - install camlp4        4.02+system                           [required by cstruct]
   - install type_conv     112.01.01                             [required by cstruct]
   - install optcomp       1.6                                   [required by ocplib-endian]
   - install sexplib       112.24.01                             [required by cstruct]
   - install ocplib-endian 0.4                                   [required by cstruct]
   - install cstruct       1.6.0                                 [required by io-page-unix]
-  - install io-page-unix  0.9.9        
+  - install io-page-unix  0.9.9      
 ===== 8 to install =====
 
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -29,21 +29,21 @@ The following actions will be performed:
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [sexplib: from default] Command started
 [ocplib-endian: from default] Command started
+[optcomp: from default] Command started
 [default] http://opam-archive:8080/archives/ocplib-endian.0.4+opam.tar.gz downloaded
 [type_conv: from default] Command started
-[sexplib: from default] Command started
-[default] http://opam-archive:8080/archives/sexplib.112.24.01+opam.tar.gz downloaded
-[optcomp: from default] Command started
 [default] http://opam-archive:8080/archives/optcomp.1.6+opam.tar.gz downloaded
 [type_conv: from default] Command started
 [default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
+[sexplib: from default] Command started
+[default] http://opam-archive:8080/archives/sexplib.112.24.01+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlp4: sh] Command started
 [ocamlfind: ./configure] Command started
-+ sh "./check-camlp4.sh" (CWD=/home/opam/.opam/system/build/camlp4.4.02.1+system)
++ sh "./check-camlp4.sh" (CWD=/home/opam/.opam/system/build/camlp4.4.02+system)
 - Camlp4 version 4.02.1
--> installed camlp4.4.02.1+system
+-> installed camlp4.4.02+system
 + ./configure "-bindir" "/home/opam/.opam/system/bin" "-sitelib" "/home/opam/.opam/system/lib" "-mandir" "/home/opam/.opam/system/man" "-config" "/home/opam/.opam/system/lib/findlib.conf" "-no-topfind" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
 - Welcome to findlib version 1.5.5
 - Configuring core...
@@ -127,6 +127,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -172,19 +174,9 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -199,6 +191,14 @@ The following actions will be performed:
 - cat topfind_rd1.p | \
 - 	../../tools/patch '@SITELIB@' '/home/opam/.opam/system/lib' \
 -     	    >topfind
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -c num_top_printers.mli
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
 - ocamlc -I +compiler-libs -c num_top.mli
@@ -1537,12 +1537,6 @@ The following actions will be performed:
 [io-page-unix: make unix-install] Command started
 + make "unix-install" (CWD=/home/opam/.opam/system/build/io-page-unix.0.9.9)
 - OS=unix ./build true
-- File "setup.ml", line 213, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "setup.ml", line 1793, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
 - 
 - Configuration: 
 - ocamlfind: ........................................... /home/opam/.opam/system/bin/ocamlfind
@@ -1609,6 +1603,12 @@ The following actions will be performed:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
 - /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib64/ocaml/ocamlbuild /usr/lib64/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib64/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
+- File "setup.ml", line 213, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "setup.ml", line 1793, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
 - File "_tags", line 27, characters 35-51:
 - Warning: the tag "pkg_mirage-types" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
 - File "_tags", line 28, characters 35-44:
