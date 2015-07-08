@@ -6,24 +6,24 @@
 #  - libgstreamer0.10-dev
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=gstreamer
-+ dpkg-query -W -f '${Package} ${Status}\n' libgstreamer0.10-dev m4 2>/dev/null
-+ sudo apt-get update
 # The following new OS packages need to be installed: libgstreamer0.10-dev
 Not running as root, the following command will be run through "sudo":
     apt-get update
-Hit http://security.debian.org stable/updates InRelease
++ dpkg-query -W -f '${Package} ${Status}\n' libgstreamer0.10-dev m4 2>/dev/null
++ sudo apt-get update
+Get:1 http://security.debian.org stable/updates InRelease [63.1 kB]
 Ign http://download.opensuse.org  InRelease
 Hit http://httpredir.debian.org stable InRelease
-Get:1 http://httpredir.debian.org stable-updates InRelease [133 kB]
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
 Get:2 http://security.debian.org stable/updates/main amd64 Packages [132 kB]
-Get:3 http://download.opensuse.org  Packages [5783 B]
+Get:3 http://httpredir.debian.org stable-updates InRelease [133 kB]
 Get:4 http://httpredir.debian.org stable/main amd64 Packages [9038 kB]
-Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3616 B]
-Fetched 9312 kB in 9s (1019 kB/s)
-Reading package lists...+ sudo apt-get install -qq -yy libgstreamer0.10-dev
-
+Get:5 http://download.opensuse.org  Packages [5783 B]
+Get:6 http://httpredir.debian.org stable-updates/main amd64 Packages [3616 B]
+Fetched 9375 kB in 3s (2386 kB/s)
+Reading package lists...
++ sudo apt-get install -qq -yy libgstreamer0.10-dev
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libgstreamer0.10-dev
@@ -183,6 +183,38 @@ Setting up libmail-sendmail-perl (0.79.16-1) ...
 Processing triggers for libc-bin (2.19-18) ...
 # OS packages installation successful
 The following actions will be performed:
+[ERROR] The compilation of gstreamer failed at "./configure --prefix
+        /home/opam/.opam/4.02.1".
+
+#=== ERROR while installing gstreamer.0.2.0 ===================================#
+# opam-version         1.2.2 (c30ed46b7e70bcf0f872e482cbcbf6a1fa0c60b3)
+# os                   linux
+# command              ./configure --prefix /home/opam/.opam/4.02.1
+# path                 /home/opam/.opam/4.02.1/build/gstreamer.0.2.0
+# compiler             4.02.1
+# exit-code            1
+# env-file             /home/opam/.opam/4.02.1/build/gstreamer.0.2.0/gstreamer-5-b76d46.env
+# stdout-file          /home/opam/.opam/4.02.1/build/gstreamer.0.2.0/gstreamer-5-b76d46.out
+# stderr-file          /home/opam/.opam/4.02.1/build/gstreamer.0.2.0/gstreamer-5-b76d46.err
+### stdout ###
+# [...]
+# checking for camlp4orf... camlp4orf
+# checking for camlp4prof... camlp4prof
+# checking for camlp4r... camlp4r
+# checking for camlp4rf... camlp4rf
+# checking for ocamlfind... ocamlfind
+# checking for caml/threads.h... yes
+# checking for gcc option to produce PIC... -fPIC
+# checking for pkg-config... /usr/bin/pkg-config
+# checking pkg-config is at least version 0.9.0... yes
+# checking whether pkg-config knows about gstreamer-1.0... 
+### stderr ###
+# configure: error: gstreamer-1.0.pc not found.. Do you need to set PKG_CONFIG_PATH?
+
+
+The former state can be restored with:
+    opam switch import "~/.opam/4.02.1/backup/state-20150604001814.export"
+'opam install gstreamer' failed.
   - install ocamlfind 1.5.5                                     [required by gstreamer]
   - install gstreamer 0.2.0
 ===== 2 to install =====
@@ -190,10 +222,10 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [gstreamer: from default] Command started
 [ocamlfind: from default] Command started
-[gstreamer: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/gstreamer.0.2.0+opam.tar.gz downloaded
+[gstreamer: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/gstreamer.0.2.0+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -386,6 +418,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -430,7 +463,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -508,8 +540,7 @@ The following actions will be performed:
 - checking for gcc option to accept ISO C89... none needed
 - checking build system type... x86_64-unknown-linux-gnu
 - checking host system type... x86_64-unknown-linux-gnu
-- checking for a BSD-compatible install... 
-- /usr/bin/install -c
+- checking for a BSD-compatible install... /usr/bin/install -c
 - checking that calling user is not root... ok
 - checking for gcc... (cached) gcc
 - checking whether we are using the GNU C compiler... (cached) yes
@@ -520,7 +551,8 @@ The following actions will be performed:
 - OCaml version is 4.02.1
 - checking if ocaml compiler supports first-class modules... yes
 - OCaml library path is /home/opam/.opam/4.02.1/lib/ocaml
-- checking for ocamlopt... ocamlopt
+- checking for ocamlopt... 
+- ocamlopt
 - checking for ocamlc.opt... ocamlc.opt
 - checking for ocamlopt.opt... ocamlopt.opt
 - checking for ocaml... ocaml
@@ -564,35 +596,3 @@ The following changes have been performed
 => This package relies on external (system) dependencies that may be missing.
    `opam depext gstreamer.0.2.0' may help you find the correct installation for
    your system.
-[ERROR] The compilation of gstreamer failed at "./configure --prefix
-        /home/opam/.opam/4.02.1".
-
-#=== ERROR while installing gstreamer.0.2.0 ===================================#
-# opam-version         1.2.2 (c30ed46b7e70bcf0f872e482cbcbf6a1fa0c60b3)
-# os                   linux
-# command              ./configure --prefix /home/opam/.opam/4.02.1
-# path                 /home/opam/.opam/4.02.1/build/gstreamer.0.2.0
-# compiler             4.02.1
-# exit-code            1
-# env-file             /home/opam/.opam/4.02.1/build/gstreamer.0.2.0/gstreamer-6-b76d46.env
-# stdout-file          /home/opam/.opam/4.02.1/build/gstreamer.0.2.0/gstreamer-6-b76d46.out
-# stderr-file          /home/opam/.opam/4.02.1/build/gstreamer.0.2.0/gstreamer-6-b76d46.err
-### stdout ###
-# [...]
-# checking for camlp4orf... camlp4orf
-# checking for camlp4prof... camlp4prof
-# checking for camlp4r... camlp4r
-# checking for camlp4rf... camlp4rf
-# checking for ocamlfind... ocamlfind
-# checking for caml/threads.h... yes
-# checking for gcc option to produce PIC... -fPIC
-# checking for pkg-config... /usr/bin/pkg-config
-# checking pkg-config is at least version 0.9.0... yes
-# checking whether pkg-config knows about gstreamer-1.0... 
-### stderr ###
-# configure: error: gstreamer-1.0.pc not found.. Do you need to set PKG_CONFIG_PATH?
-
-
-The former state can be restored with:
-    opam switch import "~/.opam/4.02.1/backup/state-20150603121015.export"
-'opam install gstreamer' failed.
