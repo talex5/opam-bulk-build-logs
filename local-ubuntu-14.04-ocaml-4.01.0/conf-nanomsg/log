@@ -2,11 +2,23 @@
 # Detecting depexts using flags: x86_64 linux ubuntu
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=conf-nanomsg
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=conf-nanomsg
 # The following system packages are needed:
 #  - pkg-config
-# The following scripts need to be run:
++ dpkg-query -W -f '${Package} ${Status}\n' pkg-config 2>/dev/null
++ curl -L "https://gist.githubusercontent.com/avsm/ce2ce785f27c9349d99d/raw" | bash -ex -
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   164  100   164    0     0    781      0 --:--:-- --:--:-- --:--:--   784
++ V=0.3-beta
++ curl -OL http://download.nanomsg.org/nanomsg-0.3-beta.tar.gz
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0# The following scripts need to be run:
 #  - https://gist.githubusercontent.com/avsm/ce2ce785f27c9349d99d/raw
 # All required OS packages found.
+100  559k  100  559k    0     0  1128k      0 --:--:-- --:--:-- --:--:-- 1128k
++ tar -zxvf nanomsg-0.3-beta.tar.gz
 nanomsg-0.3-beta/
 nanomsg-0.3-beta/m4/
 nanomsg-0.3-beta/m4/dolt.m4
@@ -330,6 +342,8 @@ nanomsg-0.3-beta/README
 nanomsg-0.3-beta/test-driver
 nanomsg-0.3-beta/ltmain.sh
 nanomsg-0.3-beta/configure
++ cd nanomsg-0.3-beta
++ ./configure
 nanomsg-0.3-beta/CMakeLists.txt
 nanomsg-0.3-beta/configure.ac
 nanomsg-0.3-beta/.version
@@ -369,25 +383,10 @@ checking for C compiler default output file name... a.out
 checking for suffix of executables... 
 checking whether we are cross compiling... no
 checking for suffix of object files... o
-checking whether we are using the GNU C compiler... + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=conf-nanomsg
-+ dpkg-query -W -f '${Package} ${Status}\n' pkg-config 2>/dev/null
-+ curl -L "https://gist.githubusercontent.com/avsm/ce2ce785f27c9349d99d/raw" | bash -ex -
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   164  100   164    0     0    641      0 --:--:-- --:--:-- --:--:--   640100   164  100   164    0     0    641      0 --:--:-- --:--:-- --:--:--   640
-+ V=0.3-beta
-+ curl -OL http://download.nanomsg.org/nanomsg-0.3-beta.tar.gz
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  559k  100  559k    0     0  1131k      0 --:--:-- --:--:-- --:--:-- 1132k
-+ tar -zxvf nanomsg-0.3-beta.tar.gz
-+ cd nanomsg-0.3-beta
-+ ./configure
-yes
+checking whether we are using the GNU C compiler... yes
 checking whether gcc accepts -g... yes
 checking for gcc option to accept ISO C89... none needed
 checking dependency style of gcc... gcc3
-+ make
 checking for gcc option to accept ISO C99... -std=gnu99
 checking whether gcc -std=gnu99 and cc understand -c and -o together... yes
 checking whether we are using ICC compiler... no
@@ -397,6 +396,7 @@ checking whether we are using HP aCC compiler... no
 checking whether ln -s works... yes
 checking for the pthreads library -lpthreads... no
 checking whether pthreads work without any flags... no
++ make
 checking whether pthreads work with -Kthread... no
 checking whether pthreads work with -kthread... no
 checking for the pthreads library -llthread... no
@@ -574,10 +574,10 @@ config.status: executing libtool commands
   CC       src/transports/ipc/cipc.lo
   CC       src/transports/ipc/ipc.lo
   CC       src/transports/ipc/sipc.lo
-+ sudo make install
   CC       src/transports/tcp/atcp.lo
   CC       src/transports/tcp/btcp.lo
   CC       src/transports/tcp/ctcp.lo
++ sudo make install
   CC       src/transports/tcp/stcp.lo
   CC       src/transports/tcp/tcp.lo
   CCLD     libnanomsg.la
