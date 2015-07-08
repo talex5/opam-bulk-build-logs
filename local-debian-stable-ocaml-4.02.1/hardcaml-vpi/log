@@ -1,7 +1,7 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux debian
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=hardcaml-vpi
+# Detecting depexts using flags: x86_64 linux debian
 # The following system packages are needed:
 #  - libffi-dev
 #  - m4
@@ -11,30 +11,31 @@
 Not running as root, the following command will be run through "sudo":
     apt-get update
 + sudo apt-get update
-Hit http://security.debian.org stable/updates InRelease
+Get:1 http://security.debian.org stable/updates InRelease [63.1 kB]
 Ign http://download.opensuse.org  InRelease
-Hit http://httpredir.debian.org stable InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Get:1 http://security.debian.org stable/updates/main amd64 Packages [132 kB]
+Hit http://httpredir.debian.org stable InRelease
 Get:2 http://httpredir.debian.org stable-updates InRelease [133 kB]
-Get:3 http://httpredir.debian.org stable/main amd64 Packages [9038 kB]
+Get:3 http://security.debian.org stable/updates/main amd64 Packages [132 kB]
 Get:4 http://download.opensuse.org  Packages [5783 B]
-Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3616 B]
-Fetched 9312 kB in 4s (2172 kB/s)
+Get:5 http://httpredir.debian.org stable/main amd64 Packages [9038 kB]
+Get:6 http://httpredir.debian.org stable-updates/main amd64 Packages [3616 B]
+Fetched 9375 kB in 3s (2782 kB/s)
 Reading package lists...
-# OS package update successful
+W# OS package update successful
+: Size of file /var/lib/apt/lists/security.debian.org_dists_stable_updates_main_binary-amd64_Packages.gz is not what the server reported 131856 131878
++ sudo apt-get install -qq -yy libffi-dev
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libffi-dev
-+ sudo apt-get install -qq -yy libffi-dev
 debconf: unable to initialize frontend: Dialog
+Selecting previously unselected package libffi-dev:amd64.
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
 debconf: unable to initialize frontend: Readline
 debconf: (This frontend requires a controlling tty.)
 debconf: falling back to frontend: Teletype
 dpkg-preconfigure: unable to re-open stdin: 
-Selecting previously unselected package libffi-dev:amd64.
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 22820 files and directories currently installed.)
 Preparing to unpack .../libffi-dev_3.1-2+b2_amd64.deb ...
 Unpacking libffi-dev:amd64 (3.1-2+b2) ...
@@ -55,14 +56,14 @@ The following actions will be performed:
 [ctypes: from default] Command started
 [hardcaml: from default] Command started
 [ctypes: from default] Command started
+[hardcaml: from default] Command started
 [default] http://opam-archive:8080/archives/ctypes.0.4.1+opam.tar.gz downloaded
 [hardcaml-vpi: from default] Command started
 [camlp4: from default] Command started
-[hardcaml: from default] Command started
-[default] http://opam-archive:8080/archives/camlp4.4.02+6+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
-[hardcaml-vpi: from default] Command started
 [default] http://opam-archive:8080/archives/hardcaml.1.1.1+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/camlp4.4.02+6+opam.tar.gz downloaded
+[hardcaml-vpi: from default] Command started
 [default] http://opam-archive:8080/archives/hardcaml-vpi.0.2+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
@@ -148,6 +149,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -193,12 +196,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -207,8 +210,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -1458,7 +1459,6 @@ The following actions will be performed:
 - W: Cannot find source file matching module 'HardCamlDynlink' in library HardCamlDynlink
 - W: Cannot find source file matching module 'HardCaml' in library HardCaml
 - ocaml setup.ml -install
-[ERROR] The compilation of hardcaml-vpi failed at "make all".
 - Installed /home/opam/.opam/4.02.1/lib/hardcaml/utils.mli
 - Installed /home/opam/.opam/4.02.1/lib/hardcaml/comb.mli
 - Installed /home/opam/.opam/4.02.1/lib/hardcaml/bits.mli
@@ -1586,6 +1586,7 @@ The following actions will be performed:
 -> installed hardcaml.1.1.1
 [hardcaml-vpi: make all] Command started
 + make "all" (CWD=/home/opam/.opam/4.02.1/build/hardcaml-vpi.0.2)
+[ERROR] The compilation of hardcaml-vpi failed at "make all".
 - ocamlbuild -use-ocamlfind  cosim_icarus.cmo vpi.cmo
 - ocamlfind ocamldep -package 'ctypes.foreign, hardcaml' -modules cosim_icarus.mli > cosim_icarus.mli.depends
 - ocamlfind ocamldep -package 'ctypes.foreign, hardcaml' -modules vpi.mli > vpi.mli.depends
@@ -1597,36 +1598,6 @@ The following actions will be performed:
 - ocamlfind ocamlc -c -package 'ctypes.foreign, hardcaml' -o vpi.cmo vpi.ml
 - ocamlfind c -output-obj -package bigarray,num,hardcaml,ctypes.foreign -linkpkg -o cosim_o.o \
 - 	_build/vpi.cmo _build/cosim_icarus.cmo
-- mv cosim_o.o _build/cosim_o.o
-- ocamlfind c -c -ccopt "`iverilog-vpi --cflags` -o _build/cosim_c.o" -g cosim_c.c 
-- Makefile:17: recipe for target 'vpi' failed
-- /bin/sh: 1: iverilog-vpi: not found
-- cosim_c.c:5:22: fatal error: vpi_user.h: No such file or directory
--  #include "vpi_user.h"
--                       ^
-- compilation terminated.
-- make: *** [vpi] Error 2
-[hardcaml-vpi: make uninstall] Command started
-+ make "uninstall" (CWD=/home/opam/.opam/4.02.1/build/hardcaml-vpi.0.2)
-- ocamlfind remove hardcaml-vpi
-- ocamlfind: [WARNING] No such directory: /home/opam/.opam/4.02.1/lib/hardcaml-vpi
-
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions failed
-  - install hardcaml-vpi 0.2
-The following changes have been performed
-  - install base-bytes     base  
-  - install camlp4         4.02+6
-  - install ctypes         0.4.1 
-  - install ctypes-foreign 0.4.0 
-  - install hardcaml       1.1.1 
-  - install ocamlfind      1.5.5 
-
-=-=- hardcaml-vpi.0.2 troobleshooting -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-=> This package relies on external (system) dependencies that may be missing.
-   `opam depext hardcaml-vpi.0.2' may help you find the correct installation
-   for your system.
 
 #=== ERROR while installing hardcaml-vpi.0.2 ==================================#
 # opam-version         1.2.2 (c30ed46b7e70bcf0f872e482cbcbf6a1fa0c60b3)
@@ -1658,7 +1629,37 @@ The following changes have been performed
 # compilation terminated.
 # make: *** [vpi] Error 2
 
+- mv cosim_o.o _build/cosim_o.o
+- ocamlfind c -c -ccopt "`iverilog-vpi --cflags` -o _build/cosim_c.o" -g cosim_c.c 
+- Makefile:17: recipe for target 'vpi' failed
+- /bin/sh: 1: iverilog-vpi: not found
+- cosim_c.c:5:22: fatal error: vpi_user.h: No such file or directory
+-  #include "vpi_user.h"
+-                       ^
+- compilation terminated.
+- make: *** [vpi] Error 2
+[hardcaml-vpi: make uninstall] Command started
++ make "uninstall" (CWD=/home/opam/.opam/4.02.1/build/hardcaml-vpi.0.2)
+- ocamlfind remove hardcaml-vpi
+- ocamlfind: [WARNING] No such directory: /home/opam/.opam/4.02.1/lib/hardcaml-vpi
+
+
+=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+The following actions failed
+  - install hardcaml-vpi 0.2
+The following changes have been performed
+  - install base-bytes     base  
+  - install camlp4         4.02+6
+  - install ctypes         0.4.1 
+  - install ctypes-foreign 0.4.0 
+  - install hardcaml       1.1.1 
+  - install ocamlfind      1.5.5 
+
+=-=- hardcaml-vpi.0.2 troobleshooting -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+=> This package relies on external (system) dependencies that may be missing.
+   `opam depext hardcaml-vpi.0.2' may help you find the correct installation
+   for your system.
 
 The former state can be restored with:
-    opam switch import "~/.opam/4.02.1/backup/state-20150603121206.export"
+    opam switch import "~/.opam/4.02.1/backup/state-20150604001958.export"
 'opam install hardcaml-vpi' failed.
