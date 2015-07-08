@@ -1,7 +1,7 @@
 + uname -m
+# Detecting depexts using flags: x86_64 linux ubuntu
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=bjack
-# Detecting depexts using flags: x86_64 linux ubuntu
 # The following system packages are needed:
 #  - libjack-dev
 #  - libsamplerate0-dev
@@ -9,9 +9,9 @@
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=bjack
 + dpkg-query -W -f '${Package} ${Status}\n' libjack-dev libsamplerate0-dev m4 2>/dev/null
 # The following new OS packages need to be installed: libjack-dev libsamplerate0-dev
-+ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
++ sudo apt-get update
 Ign http://download.opensuse.org  InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
@@ -43,7 +43,7 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [32.0 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [382 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [143 kB]
-Fetched 2350 kB in 6s (380 kB/s)
+Fetched 2350 kB in 6s (337 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
@@ -83,10 +83,10 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [bjack: from default] Command started
 [ocamlfind: from default] Command started
-[ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [bjack: from default] Command started
 [default] http://opam-archive:8080/archives/bjack.0.1.4+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -119,8 +119,7 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) 
-- ok
+- Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib/ocaml
@@ -170,7 +169,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_topo.mli
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -216,6 +214,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
@@ -229,6 +228,9 @@ The following actions will be performed:
 - Use Bytes.set instead.
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -244,9 +246,6 @@ The following actions will be performed:
 - 		../../tools/patch '@SITELIB@' '/home/opam/.opam/system/lib' \
 - 	    	    >topfind
 - ocamlc -I +compiler-libs -c num_top_printers.mli
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
 - ocamlc -I +compiler-libs -c num_top.mli
 - ocamlc -I +compiler-libs -g -c num_top.ml
@@ -399,13 +398,14 @@ The following actions will be performed:
 - checking whether the C compiler works... yes
 - checking for C compiler default output file name... a.out
 - checking for suffix of executables... 
+- 
 - checking whether we are cross compiling... no
 - checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
-- checking whether gcc accepts -g... 
-- yes
+- checking whether gcc accepts -g... yes
 - checking for gcc option to accept ISO C89... none needed
-- checking build system type... x86_64-unknown-linux-gnu
+- checking build system type... 
+- x86_64-unknown-linux-gnu
 - checking host system type... x86_64-unknown-linux-gnu
 - checking for a BSD-compatible install... /usr/bin/install -c
 - checking that calling user is not root... ok
@@ -466,9 +466,6 @@ The following actions will be performed:
 - ocamlc.opt -c -cc "gcc" -ccopt "-fPIC -g -O2 -I/home/opam/.opam/system/include     -Wall -DCAML_NAME_SPACE \
 - 				-DPIC -fPIC -I/home/opam/.opam/system/include      \
 - 				    -o jack_wrapper.o " jack_wrapper.c 
-- ar rcs libbjack_stubs.a  jack_stubs.o jack_wrapper.o
-- ocamlc.opt -c -thread bjack.mli
-- ocamlc.opt -c -thread bjack.ml
 - jack_wrapper.c: In function 'JACK_Open':
 - jack_wrapper.c:1172:5: warning: 'jack_port_get_total_latency' is deprecated (declared at /usr/include/jack/jack.h:1050) [-Wdeprecated-declarations]
 -      periods = jack_port_get_total_latency(drv->client,
@@ -488,6 +485,9 @@ The following actions will be performed:
 - jack_wrapper.c:1938:5: warning: 'jack_port_get_total_latency' is deprecated (declared at /usr/include/jack/jack.h:1050) [-Wdeprecated-declarations]
 -      return_val = jack_port_get_total_latency(drv->client, drv->input_port[0]);
 -      ^
+- ar rcs libbjack_stubs.a  jack_stubs.o jack_wrapper.o
+- ocamlc.opt -c -thread bjack.mli
+- ocamlc.opt -c -thread bjack.ml
 - ocamlmklib      -L/home/opam/.opam/system/lib    \
 - 				-o bjack_stubs  jack_stubs.o jack_wrapper.o -ljack -lpthread -lsamplerate \
 - 				
