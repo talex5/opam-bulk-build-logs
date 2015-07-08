@@ -1,10 +1,10 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux debian
 + uname -s
+# Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=xapi-inventory
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=xapi-inventory
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=xapi-inventory
 + dpkg-query -W -f '${Package} ${Status}\n' m4 2>/dev/null
 # All required OS packages found.
 The following actions will be performed:
@@ -29,29 +29,29 @@ The following actions will be performed:
 [lwt: from default] Command started
 [fd-send-recv: from default] Command started
 [lwt: from default] Command started
-[default] http://opam-archive:8080/archives/fd-send-recv.1.0.1+opam.tar.gz downloaded
-[ocamlfind: from default] Command started
 [camlp4: from default] Command started
-[default] http://opam-archive:8080/archives/lwt.2.4.8+opam.tar.gz downloaded
-[ppx_tools: from default] Command started
 [default] http://opam-archive:8080/archives/camlp4.4.02+6+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/fd-send-recv.1.0.1+opam.tar.gz downloaded
+[ppx_tools: from default] Command started
+[default] http://opam-archive:8080/archives/lwt.2.4.8+opam.tar.gz downloaded
 [rpc: from default] Command started
 [ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[sexplib: from default] Command started
 [ppx_tools: from default] Command started
 [default] http://opam-archive:8080/archives/ppx_tools.0.99.2+opam.tar.gz downloaded
-[sexplib: from default] Command started
-[rpc: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [type_conv: from default] Command started
+[rpc: from default] Command started
+[sexplib: from default] Command started
 [default] http://opam-archive:8080/archives/rpc.1.5.4+opam.tar.gz downloaded
 [uuidm: from default] Command started
-[sexplib: from default] Command started
+[type_conv: from default] Command started
 [default] http://opam-archive:8080/archives/sexplib.112.35.00+opam.tar.gz downloaded
 [xapi-backtrace: from default] Command started
-[type_conv: from default] Command started
+[uuidm: from default] Command started
 [default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
 [xapi-inventory: from default] Command started
-[uuidm: from default] Command started
 [default] http://opam-archive:8080/archives/uuidm.0.9.5+opam.tar.gz downloaded
 [xapi-stdext: from default] Command started
 [xapi-backtrace: from default] Command started
@@ -60,8 +60,8 @@ The following actions will be performed:
 [xmlm: from default] Command started
 [default] http://opam-archive:8080/archives/xapi-inventory.0.9.1+opam.tar.gz downloaded
 [xapi-stdext: from default] Command started
-[default] http://opam-archive:8080/archives/xapi-stdext.0.13.0+opam.tar.gz downloaded
 [xmlm: from default] Command started
+[default] http://opam-archive:8080/archives/xapi-stdext.0.13.0+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/xmlm.1.2.0+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -145,6 +145,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -190,11 +191,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -203,8 +205,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -255,6 +255,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -299,7 +300,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -2762,6 +2762,8 @@ The following actions will be performed:
 - ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o jsonrpc.o jsonrpc.ml
 - ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o rpc_client.cmi rpc_client.mli
 - ocamlfind ocamlc -annot -g -package xmlm,lwt -c -o rpc_client.cmo rpc_client.ml
+- ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o rpc_client.o rpc_client.ml
+- make[1]: Leaving directory '/home/opam/.opam/4.02.1/build/rpc.1.5.4/lib'
 - File "p4_idl.ml", line 132, characters 8-156:
 - Warning 8: this pattern-matching is not exhaustive.
 - Here is an example of a value that is not matched:
@@ -2786,8 +2788,6 @@ The following actions will be performed:
 - File "jsonrpc.ml", line 210, characters 8-18:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlfind ocamlopt -annot -g -package xmlm,lwt -c -o rpc_client.o rpc_client.ml
-- make[1]: Leaving directory '/home/opam/.opam/4.02.1/build/rpc.1.5.4/lib'
 [rpc: make install] Command started
 + make "install" (CWD=/home/opam/.opam/4.02.1/build/rpc.1.5.4)
 - cd lib && make install
