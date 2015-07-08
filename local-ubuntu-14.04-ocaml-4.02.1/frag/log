@@ -1,10 +1,10 @@
 + uname -m
+# Detecting depexts using flags: x86_64 linux ubuntu
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=frag
-# Detecting depexts using flags: x86_64 linux ubuntu
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=frag
 # The following system packages are needed:
 #  - m4
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=frag
 + dpkg-query -W -f '${Package} ${Status}\n' m4 2>/dev/null
 # All required OS packages found.
 The following actions will be performed:
@@ -40,10 +40,10 @@ The following actions will be performed:
 [core: from default] Command started
 [bin_prot: from default] Command started
 [comparelib: from default] Command started
-[default] http://opam-archive:8080/archives/bin_prot.112.35.00+opam.tar.gz downloaded
-[core_kernel: from default] Command started
 [core: from default] Command started
 [default] http://opam-archive:8080/archives/comparelib.109.60.00+opam.tar.gz downloaded
+[core_kernel: from default] Command started
+[default] http://opam-archive:8080/archives/bin_prot.112.35.00+opam.tar.gz downloaded
 [custom_printf: http] Command started
 [default] http://opam-archive:8080/archives/core.112.35.00+opam.tar.gz downloaded
 [enumerate: from default] Command started
@@ -89,11 +89,11 @@ The following actions will be performed:
 [sexplib: from default] Command started
 [default] http://opam-archive:8080/archives/sexplib.112.35.00+opam.tar.gz downloaded
 [type_conv: from default] Command started
-[pa_bench: http] Command started
-[pa_bench.112.06.00] https://ocaml.janestreet.com/ocaml-core/112.06.00/individual/pa_bench-112.06.00.tar.gz downloaded
-[typerep: from default] Command started
 [type_conv: from default] Command started
 [default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
+[typerep: from default] Command started
+[pa_bench: http] Command started
+[pa_bench.112.06.00] https://ocaml.janestreet.com/ocaml-core/112.06.00/individual/pa_bench-112.06.00.tar.gz downloaded
 [variantslib: from default] Command started
 [typerep: from default] Command started
 [default] http://opam-archive:8080/archives/typerep.112.35.00+opam.tar.gz downloaded
@@ -301,6 +301,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -345,7 +346,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -2643,6 +2643,9 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package bigarray -for-pack Sexplib -I lib -o lib/std.cmx lib/std.ml
 - touch lib/sexplib.mli  ; if  /home/opam/.opam/system/bin/ocamlfind ocamlopt -pack -g -annot -bin-annot -I lib lib/type.cmx lib/parser.cmx lib/src_pos.cmx lib/type_with_layout.cmx lib/parser_with_layout.cmx lib/lexer.cmx lib/pre_sexp.cmx lib/sexp_intf.cmx lib/sexp_with_layout.cmx lib/sexp.cmx lib/conv.cmx lib/conv_error.cmx lib/exn_magic.cmx lib/macro.cmx lib/path.cmx lib/std.cmx -o lib/sexplib.cmx  ; then  rm -f lib/sexplib.mli  ; else  rm -f lib/sexplib.mli  ; exit 1; fi
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -a lib/sexplib.cmx -o lib/sexplib.cmxa
+- W: Cannot find source file matching module 'sexplib_unix' in library sexplib_unix
+- W: Cannot find source file matching module 'sexplib_num' in library sexplib_num
+- W: Cannot find source file matching module 'sexplib' in library sexplib
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared lib/sexplib.cmxa lib/sexplib.cmx -o lib/sexplib.cmxs
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package num -package bigarray -modules num/lib/sexplib_num_conv.mli > num/lib/sexplib_num_conv.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -package num -package bigarray -I num/lib -I lib -o num/lib/sexplib_num_conv.cmi num/lib/sexplib_num_conv.mli
@@ -2656,9 +2659,6 @@ The following actions will be performed:
 - + /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -package num -package bigarray -for-pack Sexplib_num -I num/lib -I lib -o num/lib/sexplib_num_conv.cmx num/lib/sexplib_num_conv.ml
 - findlib: [WARNING] Interface std.cmi occurs in several directories: num/lib, lib
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -package num -package bigarray -for-pack Sexplib_num -I num/lib -I lib -o num/lib/std.cmx num/lib/std.ml
-- W: Cannot find source file matching module 'sexplib_unix' in library sexplib_unix
-- W: Cannot find source file matching module 'sexplib_num' in library sexplib_num
-- W: Cannot find source file matching module 'sexplib' in library sexplib
 - + /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -package num -package bigarray -for-pack Sexplib_num -I num/lib -I lib -o num/lib/std.cmx num/lib/std.ml
 - findlib: [WARNING] Interface std.cmi occurs in several directories: num/lib, lib
 - touch num/lib/sexplib_num.mli  ; if  /home/opam/.opam/system/bin/ocamlfind ocamlopt -pack -g -annot -bin-annot -I num/lib num/lib/sexplib_num_conv.cmx num/lib/std.cmx -o num/lib/sexplib_num.cmx  ; then  rm -f num/lib/sexplib_num.mli  ; else  rm -f num/lib/sexplib_num.mli  ; exit 1; fi
@@ -2898,6 +2898,31 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared src/pa_structural_sexp.cmxa src/pa_structural_sexp.cmx -o src/pa_structural_sexp.cmxs
 - W: Cannot find source file matching module 'pa_structural_sexp_lib' in library pa_structural_sexp_lib
 [pa_structural_sexp: make install] Command started
++ make "install" (CWD=/home/opam/.opam/system/build/pa_structural_sexp.112.35.00)
+- ./setup.exe -install 
+- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp_dummy.ml
+- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp_lib.cmt
+- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp_lib.cmi
+- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp_lib.cma
+- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp_lib.cmxa
+- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp_lib.a
+- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp_lib.cmxs
+- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp_dummy.cmt
+- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp_dummy.annot
+- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp_lib.cmx
+- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp.mli
+- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp.cma
+- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp.cmxa
+- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp.a
+- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp.cmxs
+- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp.cmi
+- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp.cmti
+- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp.cmt
+- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp.annot
+- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp.cmx
+- Installed /home/opam/.opam/system/lib/pa_structural_sexp/META
+-> installed pa_structural_sexp.112.35.00
+[pa_test: make] Command started
 + make  (CWD=/home/opam/.opam/system/build/custom_printf.112.24.00)
 - ocamlopt.opt -o setup.exe setup.ml || ocamlopt -o setup.exe setup.ml || ocamlc -o setup.exe setup.ml
 - rm -f setup.cmx setup.cmi setup.o setup.obj setup.cmo
@@ -2989,31 +3014,6 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -ppopt syntax/pa_custom_printf.cmo -syntax camlp4o -syntax camlp4o -syntax camlp4o -package sexplib.syntax -package sexplib -package pa_ounit.syntax -package pa_ounit -I sample -o sample/test.cmo sample/test.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -linkpkg -g -linkpkg -package sexplib.syntax -package sexplib -package pa_ounit.syntax -package pa_ounit sample/test.cmo -o sample/test.byte
 [custom_printf: make install] Command started
-+ make "install" (CWD=/home/opam/.opam/system/build/pa_structural_sexp.112.35.00)
-- ./setup.exe -install 
-- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp_dummy.ml
-- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp_lib.cmt
-- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp_lib.cmi
-- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp_lib.cma
-- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp_lib.cmxa
-- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp_lib.a
-- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp_lib.cmxs
-- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp_dummy.cmt
-- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp_dummy.annot
-- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp_lib.cmx
-- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp.mli
-- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp.cma
-- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp.cmxa
-- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp.a
-- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp.cmxs
-- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp.cmi
-- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp.cmti
-- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp.cmt
-- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp.annot
-- Installed /home/opam/.opam/system/lib/pa_structural_sexp/pa_structural_sexp.cmx
-- Installed /home/opam/.opam/system/lib/pa_structural_sexp/META
--> installed pa_structural_sexp.112.35.00
-[pa_test: make] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/custom_printf.112.24.00)
 - ./setup.exe -install 
 - Installed /home/opam/.opam/system/lib/custom_printf/custom_printf_dummy.ml
@@ -3320,6 +3320,7 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -o lib/type_abstract.cmo lib/type_abstract.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -o lib/type_equal.cmo lib/type_equal.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -o lib/type_generic.cmo lib/type_generic.ml
+- W: Cannot find source file matching module 'typerep_lib' in library typerep_lib
 - + /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I lib -o lib/type_generic.cmo lib/type_generic.ml
 - File "lib/type_generic.ml", line 331, characters 9-25:
 - Warning 3: deprecated: Lazy.lazy_is_val
@@ -3336,7 +3337,6 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -for-pack Typerep_lib -I lib -o lib/typename.cmx lib/typename.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -for-pack Typerep_lib -I lib -o lib/variant_and_record_intf.cmx lib/variant_and_record_intf.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -for-pack Typerep_lib -I lib -o lib/std_internal.cmx lib/std_internal.ml
-- W: Cannot find source file matching module 'typerep_lib' in library typerep_lib
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -for-pack Typerep_lib -I lib -o lib/make_typename.cmx lib/make_typename.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -for-pack Typerep_lib -I lib -o lib/typerepable.cmx lib/typerepable.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -for-pack Typerep_lib -I lib -o lib/type_generic_intf.cmx lib/type_generic_intf.ml
