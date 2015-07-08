@@ -7,23 +7,21 @@
 #  - libirrlicht-dev
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=irrlicht
++ dpkg-query -W -f '${Package} ${Status}\n' g++ libirrlicht-dev m4 2>/dev/null
 # The following new OS packages need to be installed: libirrlicht-dev
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ dpkg-query -W -f '${Package} ${Status}\n' g++ libirrlicht-dev m4 2>/dev/null
-+ sudo apt-get update
-Ign http://download.opensuse.org  InRelease
-Hit http://download.opensuse.org  Release.gpg
-Hit http://download.opensuse.org  Release
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
-Hit http://download.opensuse.org  Packages
 Hit http://archive.ubuntu.com trusty Release.gpg
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Hit http://archive.ubuntu.com trusty-security Release.gpg
+Ign http://download.opensuse.org  InRelease
 Hit http://archive.ubuntu.com trusty Release
 Get:2 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
+Hit http://download.opensuse.org  Release.gpg
 Hit http://archive.ubuntu.com trusty-security Release
 Hit http://archive.ubuntu.com trusty/main Sources
 Hit http://archive.ubuntu.com trusty/restricted Sources
@@ -31,9 +29,11 @@ Hit http://archive.ubuntu.com trusty/universe Sources
 Hit http://archive.ubuntu.com trusty/main amd64 Packages
 Hit http://archive.ubuntu.com trusty/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty/universe amd64 Packages
+Hit http://download.opensuse.org  Release
 Get:3 http://archive.ubuntu.com trusty-updates/main Sources [268 kB]
 Get:4 http://archive.ubuntu.com trusty-updates/restricted Sources [3158 B]
 Get:5 http://archive.ubuntu.com trusty-updates/universe Sources [154 kB]
+Hit http://download.opensuse.org  Packages
 Get:6 http://archive.ubuntu.com trusty-updates/main amd64 Packages [714 kB]
 Get:7 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [18.1 kB]
 Get:8 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [382 kB]
@@ -42,10 +42,10 @@ Hit http://archive.ubuntu.com trusty-security/restricted Sources
 Hit http://archive.ubuntu.com trusty-security/universe Sources
 Hit http://archive.ubuntu.com trusty-security/main amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/restricted amd64 Packages
-+ sudo apt-get install -qq -yy libirrlicht-dev
 Hit http://archive.ubuntu.com trusty-security/universe amd64 Packages
-Fetched 1603 kB in 4s (360 kB/s)
+Fetched 1603 kB in 6s (229 kB/s)
 Reading package lists...
++ sudo apt-get install -qq -yy libirrlicht-dev
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libirrlicht-dev
@@ -166,8 +166,8 @@ The following actions will be performed:
 [irrlicht: from default] Command started
 [ocamlfind: from default] Command started
 [irrlicht: from default] Command started
-[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/irrlicht.0.0.3+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -254,6 +254,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -299,12 +300,18 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 		cp topfind.ml.in topfind.ml;                             \
+- 	else                                                             \
+- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 			> topfind.ml ;                                   \
+- 	fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -313,13 +320,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 		cp topfind.ml.in topfind.ml;                             \
-- 	else                                                             \
-- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 			> topfind.ml ;                                   \
-- 	fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -573,14 +573,14 @@ The following actions will be performed:
 - ocamlfind ocamlc -c -g -I enums -o enums/expr.cmi enums/expr.mli
 - ocamlfind ocamlc -c -g -I enums -o enums/parser.cmi enums/parser.mli
 - ocamlfind ocamlc -c -g -I enums -o enums/lexer.cmo enums/lexer.ml
+- W: Cannot find source file matching module 'Irr_enums' in library irrlicht
+- W: Cannot find source file matching module 'Irr_enums' in library irrlicht
 - ocamlfind ocamlc -c -g -I enums -o enums/main.cmo enums/main.ml
 - + ocamlfind ocamlc -c -g -I enums -o enums/main.cmo enums/main.ml
 - File "enums/main.ml", line 12, characters 21-52:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
 - ocamlfind ocamldep -modules enums/parser.ml > enums/parser.ml.depends
-- W: Cannot find source file matching module 'Irr_enums' in library irrlicht
-- W: Cannot find source file matching module 'Irr_enums' in library irrlicht
 - ocamlfind ocamlc -c -g -I enums -o enums/parser.cmo enums/parser.ml
 - ocamlfind ocamlc -g -linkpkg enums/parser.cmo enums/lexer.cmo enums/main.cmo -o enums/main.byte
 - enums/main.byte irr_enums.txt
@@ -590,6 +590,7 @@ The following actions will be performed:
 - g++ -fPIC -I `ocamlc -where` -I /usr/include/irrlicht -c irr_enums_wrap.cpp
 - g++ -fPIC -I `ocamlc -where` -I /usr/include/irrlicht -c irr_core_wrap.cpp
 - g++ -fPIC -I `ocamlc -where` -I /usr/include/irrlicht -c irr_video_wrap.cpp
+[ERROR] The compilation of irrlicht failed at "ocaml setup.ml -build".
 - g++ -fPIC -I `ocamlc -where` -I /usr/include/irrlicht -c irr_scene_wrap.cpp
 - + g++ -fPIC -I `ocamlc -where` -I /usr/include/irrlicht -c irr_scene_wrap.cpp
 - irr_scene_wrap.cpp: In function 'value ml_ISceneNode_getAutomaticCulling(value)':
@@ -604,10 +605,21 @@ The following actions will be performed:
 -        ^
 - Command exited with code 1.
 - E: Failure("Command ''/usr/bin/ocamlbuild' hash_values/main.byte enums/main.byte libirrlicht_stubs.a dllirrlicht_stubs.so irrlicht.cma irrlicht.cmxa irrlicht.a irrlicht.cmxs -tag debug' terminated with error code 10")
-[ERROR] The compilation of irrlicht failed at "ocaml setup.ml -build".
 [irrlicht: ocamlfind remove] Command started
 + ocamlfind "remove" "irrlicht" (CWD=/home/opam/.opam/system/build/irrlicht.0.0.3)
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/irrlicht
+
+
+=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+The following actions failed
+  - install irrlicht 0.0.3
+The following changes have been performed
+  - install ocamlfind 1.5.5
+
+=-=- irrlicht.0.0.3 troobleshooting -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+=> This package relies on external (system) dependencies that may be missing.
+   `opam depext irrlicht.0.0.3' may help you find the correct installation for
+   your system.
 
 #=== ERROR while installing irrlicht.0.0.3 ====================================#
 # opam-version         1.2.2 (c30ed46b7e70bcf0f872e482cbcbf6a1fa0c60b3)
@@ -643,18 +655,6 @@ The following actions will be performed:
 # E: Failure("Command ''/usr/bin/ocamlbuild' hash_values/main.byte enums/main.byte libirrlicht_stubs.a dllirrlicht_stubs.so irrlicht.cma irrlicht.cmxa irrlicht.a irrlicht.cmxs -tag debug' terminated with error code 10")
 
 
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions failed
-  - install irrlicht 0.0.3
-The following changes have been performed
-  - install ocamlfind 1.5.5
-
-=-=- irrlicht.0.0.3 troobleshooting -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-=> This package relies on external (system) dependencies that may be missing.
-   `opam depext irrlicht.0.0.3' may help you find the correct installation for
-   your system.
-
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150605204438.export"
+    opam switch import "~/.opam/system/backup/state-20150606095607.export"
 'opam install irrlicht' failed.

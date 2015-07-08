@@ -1,28 +1,28 @@
 + uname -m
+# Detecting depexts using flags: x86_64 linux debian
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=irrlicht
-# Detecting depexts using flags: x86_64 linux debian
 # The following system packages are needed:
 #  - g++
 #  - libirrlicht-dev
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=irrlicht
 + dpkg-query -W -f '${Package} ${Status}\n' g++ libirrlicht-dev m4 2>/dev/null
-+ sudo apt-get update
 # The following new OS packages need to be installed: libirrlicht-dev
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-Get:1 http://security.debian.org stable/updates InRelease [63.1 kB]
+Hit http://security.debian.org stable/updates InRelease
 Ign http://download.opensuse.org  InRelease
 Hit http://httpredir.debian.org stable InRelease
-Get:2 http://httpredir.debian.org stable-updates InRelease [133 kB]
+Get:1 http://httpredir.debian.org stable-updates InRelease [133 kB]
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Get:3 http://security.debian.org stable/updates/main amd64 Packages [133 kB]
-Get:4 http://httpredir.debian.org stable/main amd64 Packages [9038 kB]
-Get:5 http://download.opensuse.org  Packages [5783 B]
-Get:6 http://httpredir.debian.org stable-updates/main amd64 Packages [3616 B]
-Fetched 9376 kB in 7s (1307 kB/s)
+Get:2 http://security.debian.org stable/updates/main amd64 Packages [133 kB]
+Get:3 http://httpredir.debian.org stable/main amd64 Packages [9038 kB]
+Get:4 http://download.opensuse.org  Packages [5783 B]
+Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3616 B]
+Fetched 9313 kB in 3s (2351 kB/s)
 Reading package lists...
 # OS package update successful
 + sudo apt-get install -qq -yy libirrlicht-dev
@@ -145,8 +145,8 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [irrlicht: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/irrlicht.0.0.3+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -538,12 +538,12 @@ The following actions will be performed:
 - ocamlfind ocamldep -modules hash_values/parser.ml > hash_values/parser.ml.depends
 - ocamlfind ocamlc -c -g -I hash_values -o hash_values/parser.cmo hash_values/parser.ml
 - ocamlfind ocamlc -g -custom -dllib dllmake_hash_values_stubs -linkpkg hash_values/parser.cmo hash_values/lexer.cmo hash_values/main.cmo hash_values/libmake_hash_values_stubs.a -o hash_values/main.byte
+- W: Cannot find source file matching module 'Irr_enums' in library irrlicht
+- W: Cannot find source file matching module 'Irr_enums' in library irrlicht
 - ocamlfind ocamldep -modules enums/main.ml > enums/main.ml.depends
 - ocamlfind ocamldep -modules enums/expr.mli > enums/expr.mli.depends
 - /home/opam/.opam/4.02.1/bin/ocamllex.opt -q enums/lexer.mll
 - ocamlfind ocamldep -modules enums/lexer.ml > enums/lexer.ml.depends
-- W: Cannot find source file matching module 'Irr_enums' in library irrlicht
-- W: Cannot find source file matching module 'Irr_enums' in library irrlicht
 - /home/opam/.opam/4.02.1/bin/ocamlyacc enums/parser.mly
 - ocamlfind ocamldep -modules enums/parser.mli > enums/parser.mli.depends
 - ocamlfind ocamlc -c -g -I enums -o enums/expr.cmi enums/expr.mli
@@ -578,10 +578,22 @@ The following actions will be performed:
 -        ^
 - Command exited with code 1.
 - E: Failure("Command ''/home/opam/.opam/4.02.1/bin/ocamlbuild' hash_values/main.byte enums/main.byte libirrlicht_stubs.a dllirrlicht_stubs.so irrlicht.cma irrlicht.cmxa irrlicht.a irrlicht.cmxs -tag debug' terminated with error code 10")
-[ERROR] The compilation of irrlicht failed at "ocaml setup.ml -build".
 [irrlicht: ocamlfind remove] Command started
 + ocamlfind "remove" "irrlicht" (CWD=/home/opam/.opam/4.02.1/build/irrlicht.0.0.3)
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/4.02.1/lib/irrlicht
+
+
+=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+The following actions failed
+  - install irrlicht 0.0.3
+The following changes have been performed
+  - install ocamlfind 1.5.5
+
+=-=- irrlicht.0.0.3 troobleshooting -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+=> This package relies on external (system) dependencies that may be missing.
+   `opam depext irrlicht.0.0.3' may help you find the correct installation for
+   your system.
+[ERROR] The compilation of irrlicht failed at "ocaml setup.ml -build".
 
 #=== ERROR while installing irrlicht.0.0.3 ====================================#
 # opam-version         1.2.2 (c30ed46b7e70bcf0f872e482cbcbf6a1fa0c60b3)
@@ -617,18 +629,6 @@ The following actions will be performed:
 # E: Failure("Command ''/home/opam/.opam/4.02.1/bin/ocamlbuild' hash_values/main.byte enums/main.byte libirrlicht_stubs.a dllirrlicht_stubs.so irrlicht.cma irrlicht.cmxa irrlicht.a irrlicht.cmxs -tag debug' terminated with error code 10")
 
 
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions failed
-  - install irrlicht 0.0.3
-The following changes have been performed
-  - install ocamlfind 1.5.5
-
-=-=- irrlicht.0.0.3 troobleshooting -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-=> This package relies on external (system) dependencies that may be missing.
-   `opam depext irrlicht.0.0.3' may help you find the correct installation for
-   your system.
-
 The former state can be restored with:
-    opam switch import "~/.opam/4.02.1/backup/state-20150605154741.export"
+    opam switch import "~/.opam/4.02.1/backup/state-20150606045145.export"
 'opam install irrlicht' failed.
