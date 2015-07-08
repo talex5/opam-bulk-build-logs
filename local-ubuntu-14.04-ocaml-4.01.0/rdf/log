@@ -2,16 +2,16 @@
 # Detecting depexts using flags: x86_64 linux ubuntu
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=rdf
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=rdf
 # The following system packages are needed:
 #  - libpcre3-dev
 #  - m4
 #  - pkg-config
 #  - zlib1g-dev
-+ dpkg-query -W -f '${Package} ${Status}\n' libpcre3-dev m4 pkg-config zlib1g-dev 2>/dev/null
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=rdf
 # The following new OS packages need to be installed: libpcre3-dev zlib1g-dev
 Not running as root, the following command will be run through "sudo":
     apt-get update
++ dpkg-query -W -f '${Package} ${Status}\n' libpcre3-dev m4 pkg-config zlib1g-dev 2>/dev/null
 + sudo apt-get update
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
@@ -40,20 +40,20 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [32.0 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [382 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [143 kB]
-Fetched 2350 kB in 5s (433 kB/s)
+Fetched 2350 kB in 3s (590 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libpcre3-dev zlib1g-dev
 + sudo apt-get install -qq -yy libpcre3-dev zlib1g-dev
 debconf: unable to initialize frontend: Dialog
+Selecting previously unselected package libpcrecpp0:amd64.
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
 debconf: unable to initialize frontend: Readline
 debconf: (This frontend requires a controlling tty.)
 debconf: falling back to frontend: Teletype
 dpkg-preconfigure: unable to re-open stdin: 
-Selecting previously unselected package libpcrecpp0:amd64.
 (Reading database ... 23189 files and directories currently installed.)
 Preparing to unpack .../libpcrecpp0_1%3a8.31-2ubuntu2_amd64.deb ...
 Unpacking libpcrecpp0:amd64 (1:8.31-2ubuntu2) ...
@@ -88,12 +88,12 @@ The following actions will be performed:
 [cryptokit: from default] Command started
 [menhir: from default] Command started
 [ocamlfind: from default] Command started
-[cryptokit: from default] Command started
 [ocamlfind: from default] Command started
+[cryptokit: from default] Command started
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[ocamlnet: from default] Command started
 [menhir: from default] Command started
 [default] http://opam-archive:8080/archives/cryptokit.1.10+opam.tar.gz downloaded
-[ocamlnet: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [pcre: from default] Command started
 [default] http://opam-archive:8080/archives/menhir.20140422+opam.tar.gz downloaded
 [rdf: from default] Command started
@@ -103,12 +103,12 @@ The following actions will be performed:
 [rdf: from default] Command started
 [default] http://opam-archive:8080/archives/rdf.0.8.0+opam.tar.gz downloaded
 [uuidm: from default] Command started
-[ulex: from default] Command started
-[default] http://opam-archive:8080/archives/ulex.1.1+opam.tar.gz downloaded
-[xmlm: from default] Command started
 [ocamlnet: from default] Command started
-[uuidm: from default] Command started
+[ulex: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlnet.4.0.2+opam.tar.gz downloaded
+[xmlm: from default] Command started
+[uuidm: from default] Command started
+[default] http://opam-archive:8080/archives/ulex.1.1+opam.tar.gz downloaded
 [xmlm: from default] Command started
 [default] http://opam-archive:8080/archives/uuidm.0.9.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/xmlm.1.2.0+opam.tar.gz downloaded
@@ -205,7 +205,10 @@ The following actions will be performed:
 - Configuration for camlp4 written to site-lib-src/camlp4/META
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
-- Detecting compiler arguments: (extractor built) ok
+- Detecting compiler arguments: (extractor built) 
+- File "itest-aux/ppx.ml", line 1, characters 0-25:
+- Error: Unbound value Toploop.preprocess_phrase
+- ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /usr/lib/ocaml
@@ -229,8 +232,6 @@ The following actions will be performed:
 - Configuration has been written to Makefile.config
 - 
 - You can now do 'make all', and optionally 'make opt', to build ocamlfind.
-- File "itest-aux/ppx.ml", line 1, characters 0-25:
-- Error: Unbound value Toploop.preprocess_phrase
 [ocamlfind: make all] Command started
 + make "all" (CWD=/home/opam/.opam/system/build/ocamlfind.1.5.5)
 - for p in findlib bytes; do ( cd src/$p; make all ) || exit; done
@@ -1449,6 +1450,63 @@ The following actions will be performed:
 - Installed /home/opam/.opam/system/lib/menhirLib/META
 -> installed menhir.20140422
 [ulex: make] Command started
++ make  (CWD=/home/opam/.opam/system/build/ulex.1.1)
+- ocamlbuild -byte-plugin pa_ulex.cma ulexing.cma
+- /usr/bin/ocamlc.opt unix.cma -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cma myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmo -o myocamlbuild
+- /usr/bin/ocamldep.opt -pp camlp4orf -modules pa_ulex.ml > pa_ulex.ml.depends
+- /usr/bin/ocamldep.opt -modules cset.ml > cset.ml.depends
+- /usr/bin/ocamldep.opt -modules ulex.mli > ulex.mli.depends
+- /usr/bin/ocamlc.opt -c -o cset.cmo cset.ml
+- /usr/bin/ocamlc.opt -c -o ulex.cmi ulex.mli
+- /usr/bin/ocamlc.opt -c -I +camlp4 -pp camlp4orf -o pa_ulex.cmo pa_ulex.ml
+- /usr/bin/ocamldep.opt -modules ulex.ml > ulex.ml.depends
+- /usr/bin/ocamlc.opt -c -o ulex.cmo ulex.ml
+- /usr/bin/ocamlc.opt -a cset.cmo ulex.cmo pa_ulex.cmo -o pa_ulex.cma
+- /usr/bin/ocamldep.opt -modules ulexing.mli > ulexing.mli.depends
+- /usr/bin/ocamlc.opt -c -o ulexing.cmi ulexing.mli
+- /usr/bin/ocamldep.opt -modules ulexing.ml > ulexing.ml.depends
+- /usr/bin/ocamldep.opt -modules utf8.mli > utf8.mli.depends
+- /usr/bin/ocamlc.opt -c -o utf8.cmi utf8.mli
+- /usr/bin/ocamlc.opt -c -o ulexing.cmo ulexing.ml
+- /usr/bin/ocamldep.opt -modules utf8.ml > utf8.ml.depends
+- /usr/bin/ocamlc.opt -c -o utf8.cmo utf8.ml
+- + /usr/bin/ocamlc.opt -c -o utf8.cmo utf8.ml
+- File "utf8.ml", line 113, characters 20-21:
+- Warning 3: deprecated feature: operator (&); you should use (&&) instead
+- /usr/bin/ocamlc.opt -a utf8.cmo ulexing.cmo -o ulexing.cma
+[ulex: make all.opt] Command started
++ make "all.opt" (CWD=/home/opam/.opam/system/build/ulex.1.1)
+- ocamlbuild -byte-plugin pa_ulex.cma ulexing.cma pa_ulex.cmxa ulexing.cmxa
+- /usr/bin/ocamlopt.opt -c -o cset.cmx cset.ml
+- /usr/bin/ocamlopt.opt -c -o ulex.cmx ulex.ml
+- /usr/bin/ocamlopt.opt -c -I +camlp4 -pp camlp4orf -o pa_ulex.cmx pa_ulex.ml
+- /usr/bin/ocamlopt.opt -a cset.cmx ulex.cmx pa_ulex.cmx -o pa_ulex.cmxa
+- /usr/bin/ocamlopt.opt -c -o utf8.cmx utf8.ml
+- + /usr/bin/ocamlopt.opt -c -o utf8.cmx utf8.ml
+- File "utf8.ml", line 113, characters 20-21:
+- Warning 3: deprecated feature: operator (&); you should use (&&) instead
+- /usr/bin/ocamlopt.opt -c -o ulexing.cmx ulexing.ml
+- /usr/bin/ocamlopt.opt -a utf8.cmx ulexing.cmx -o ulexing.cmxa
+[ulex: make install] Command started
++ make "install" (CWD=/home/opam/.opam/system/build/ulex.1.1)
+- ocamlbuild -byte-plugin pa_ulex.cma ulexing.cma
+- cd _build && make -f ../Makefile realinstall
+- make[1]: Entering directory `/home/opam/.opam/system/build/ulex.1.1/_build'
+- ocamlfind install ulex ../META ulexing.mli utf8.mli ulexing.cmi utf8.cmi ulexing.cmx utf8.cmx pa_ulex.cma ulexing.a ulexing.cma ulexing.cmxa
+- make[1]: Leaving directory `/home/opam/.opam/system/build/ulex.1.1/_build'
+- Installed /home/opam/.opam/system/lib/ulex/ulexing.cmxa
+- Installed /home/opam/.opam/system/lib/ulex/ulexing.cma
+- Installed /home/opam/.opam/system/lib/ulex/ulexing.a
+- Installed /home/opam/.opam/system/lib/ulex/pa_ulex.cma
+- Installed /home/opam/.opam/system/lib/ulex/utf8.cmx
+- Installed /home/opam/.opam/system/lib/ulex/ulexing.cmx
+- Installed /home/opam/.opam/system/lib/ulex/utf8.cmi
+- Installed /home/opam/.opam/system/lib/ulex/ulexing.cmi
+- Installed /home/opam/.opam/system/lib/ulex/utf8.mli
+- Installed /home/opam/.opam/system/lib/ulex/ulexing.mli
+- Installed /home/opam/.opam/system/lib/ulex/META
+-> installed ulex.1.1
+[uuidm: ocaml setup.ml] Command started
 + ./configure "-bindir" "/home/opam/.opam/system/bin" "-disable-gssapi" "-disable-gnutls" "-enable-pcre" "-disable-gtk2" "-disable-zip" "-with-nethttpd" (CWD=/home/opam/.opam/system/build/ocamlnet.4.0.2)
 - Checking operating system... Linux
 - Checking for findlib... found
@@ -1524,63 +1582,6 @@ The following actions will be performed:
 - will install the package(s).
 - Welcome to Ocamlnet version 4.0.2
 [ocamlnet: make all] Command started
-+ make  (CWD=/home/opam/.opam/system/build/ulex.1.1)
-- ocamlbuild -byte-plugin pa_ulex.cma ulexing.cma
-- /usr/bin/ocamlc.opt unix.cma -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cma myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmo -o myocamlbuild
-- /usr/bin/ocamldep.opt -pp camlp4orf -modules pa_ulex.ml > pa_ulex.ml.depends
-- /usr/bin/ocamldep.opt -modules cset.ml > cset.ml.depends
-- /usr/bin/ocamldep.opt -modules ulex.mli > ulex.mli.depends
-- /usr/bin/ocamlc.opt -c -o cset.cmo cset.ml
-- /usr/bin/ocamlc.opt -c -o ulex.cmi ulex.mli
-- /usr/bin/ocamlc.opt -c -I +camlp4 -pp camlp4orf -o pa_ulex.cmo pa_ulex.ml
-- /usr/bin/ocamldep.opt -modules ulex.ml > ulex.ml.depends
-- /usr/bin/ocamlc.opt -c -o ulex.cmo ulex.ml
-- /usr/bin/ocamlc.opt -a cset.cmo ulex.cmo pa_ulex.cmo -o pa_ulex.cma
-- /usr/bin/ocamldep.opt -modules ulexing.mli > ulexing.mli.depends
-- /usr/bin/ocamlc.opt -c -o ulexing.cmi ulexing.mli
-- /usr/bin/ocamldep.opt -modules ulexing.ml > ulexing.ml.depends
-- /usr/bin/ocamldep.opt -modules utf8.mli > utf8.mli.depends
-- /usr/bin/ocamlc.opt -c -o utf8.cmi utf8.mli
-- /usr/bin/ocamlc.opt -c -o ulexing.cmo ulexing.ml
-- /usr/bin/ocamldep.opt -modules utf8.ml > utf8.ml.depends
-- /usr/bin/ocamlc.opt -c -o utf8.cmo utf8.ml
-- + /usr/bin/ocamlc.opt -c -o utf8.cmo utf8.ml
-- File "utf8.ml", line 113, characters 20-21:
-- Warning 3: deprecated feature: operator (&); you should use (&&) instead
-- /usr/bin/ocamlc.opt -a utf8.cmo ulexing.cmo -o ulexing.cma
-[ulex: make all.opt] Command started
-+ make "all.opt" (CWD=/home/opam/.opam/system/build/ulex.1.1)
-- ocamlbuild -byte-plugin pa_ulex.cma ulexing.cma pa_ulex.cmxa ulexing.cmxa
-- /usr/bin/ocamlopt.opt -c -o cset.cmx cset.ml
-- /usr/bin/ocamlopt.opt -c -o ulex.cmx ulex.ml
-- /usr/bin/ocamlopt.opt -c -I +camlp4 -pp camlp4orf -o pa_ulex.cmx pa_ulex.ml
-- /usr/bin/ocamlopt.opt -a cset.cmx ulex.cmx pa_ulex.cmx -o pa_ulex.cmxa
-- /usr/bin/ocamlopt.opt -c -o utf8.cmx utf8.ml
-- + /usr/bin/ocamlopt.opt -c -o utf8.cmx utf8.ml
-- File "utf8.ml", line 113, characters 20-21:
-- Warning 3: deprecated feature: operator (&); you should use (&&) instead
-- /usr/bin/ocamlopt.opt -c -o ulexing.cmx ulexing.ml
-- /usr/bin/ocamlopt.opt -a utf8.cmx ulexing.cmx -o ulexing.cmxa
-[ulex: make install] Command started
-+ make "install" (CWD=/home/opam/.opam/system/build/ulex.1.1)
-- ocamlbuild -byte-plugin pa_ulex.cma ulexing.cma
-- cd _build && make -f ../Makefile realinstall
-- make[1]: Entering directory `/home/opam/.opam/system/build/ulex.1.1/_build'
-- ocamlfind install ulex ../META ulexing.mli utf8.mli ulexing.cmi utf8.cmi ulexing.cmx utf8.cmx pa_ulex.cma ulexing.a ulexing.cma ulexing.cmxa
-- make[1]: Leaving directory `/home/opam/.opam/system/build/ulex.1.1/_build'
-- Installed /home/opam/.opam/system/lib/ulex/ulexing.cmxa
-- Installed /home/opam/.opam/system/lib/ulex/ulexing.cma
-- Installed /home/opam/.opam/system/lib/ulex/ulexing.a
-- Installed /home/opam/.opam/system/lib/ulex/pa_ulex.cma
-- Installed /home/opam/.opam/system/lib/ulex/utf8.cmx
-- Installed /home/opam/.opam/system/lib/ulex/ulexing.cmx
-- Installed /home/opam/.opam/system/lib/ulex/utf8.cmi
-- Installed /home/opam/.opam/system/lib/ulex/ulexing.cmi
-- Installed /home/opam/.opam/system/lib/ulex/utf8.mli
-- Installed /home/opam/.opam/system/lib/ulex/ulexing.mli
-- Installed /home/opam/.opam/system/lib/ulex/META
--> installed ulex.1.1
-[uuidm: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/system" (CWD=/home/opam/.opam/system/build/uuidm.0.9.5)
 - 
 - Configuration: 
@@ -1823,15 +1824,6 @@ The following actions will be performed:
 - ../../tools/stubcc -ocamlc ocamlc -ccopt "-O -g"   netsys_c_sem.c
 - ../../tools/stubcc -ocamlc ocamlc -ccopt "-O -g"   netsys_c_shm.c
 - ../../tools/stubcc -ocamlc ocamlc -ccopt "-O -g"   netsys_c_spawn.c
-- ../../tools/stubcc -ocamlc ocamlc -ccopt "-O -g"   netsys_c_subprocess.c
-- ../../tools/stubcc -ocamlc ocamlc -ccopt "-O -g"   netsys_c_syslog.c
-- ../../tools/stubcc -ocamlc ocamlc -ccopt "-O -g"   netsys_c_clock.c
-- ../../tools/stubcc -ocamlc ocamlc -ccopt "-O -g"   netsys_c_event.c
-- ../../tools/stubcc -ocamlc ocamlc -ccopt "-O -g"   netsys_c_win32.c
-- ../../tools/stubcc -ocamlc ocamlc -ccopt "-O -g"   netsys_c_htab.c
-- ../../tools/stubcc -ocamlc ocamlc -ccopt "-O -g"   netsys_c_queue.c
-- ../../tools/stubcc -ocamlc ocamlc -ccopt "-O -g"   netsys_c_mem.c
-- ../../tools/stubcc -ocamlc ocamlc -ccopt "-O -g"   netsys_c_xdr.c
 - File "netsys.ml", line 271, characters 6-39:
 - Warning 26: unused variable addr.
 - + gcc -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c  -O -g  -I'/usr/lib/ocaml' 'netsys_c.c'
@@ -1844,15 +1836,23 @@ The following actions will be performed:
 - + gcc -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c  -O -g  -I'/usr/lib/ocaml' 'netsys_c_sem.c'
 - + gcc -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c  -O -g  -I'/usr/lib/ocaml' 'netsys_c_shm.c'
 - + gcc -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c  -O -g  -I'/usr/lib/ocaml' 'netsys_c_spawn.c'
+- ../../tools/stubcc -ocamlc ocamlc -ccopt "-O -g"   netsys_c_subprocess.c
+- ../../tools/stubcc -ocamlc ocamlc -ccopt "-O -g"   netsys_c_syslog.c
+- ../../tools/stubcc -ocamlc ocamlc -ccopt "-O -g"   netsys_c_clock.c
+- ../../tools/stubcc -ocamlc ocamlc -ccopt "-O -g"   netsys_c_event.c
 - + gcc -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c  -O -g  -I'/usr/lib/ocaml' 'netsys_c_subprocess.c'
 - + gcc -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c  -O -g  -I'/usr/lib/ocaml' 'netsys_c_syslog.c'
 - + gcc -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c  -O -g  -I'/usr/lib/ocaml' 'netsys_c_clock.c'
 - + gcc -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c  -O -g  -I'/usr/lib/ocaml' 'netsys_c_event.c'
+- ../../tools/stubcc -ocamlc ocamlc -ccopt "-O -g"   netsys_c_win32.c
+- ../../tools/stubcc -ocamlc ocamlc -ccopt "-O -g"   netsys_c_htab.c
+- ../../tools/stubcc -ocamlc ocamlc -ccopt "-O -g"   netsys_c_queue.c
+- ../../tools/stubcc -ocamlc ocamlc -ccopt "-O -g"   netsys_c_mem.c
+- ../../tools/stubcc -ocamlc ocamlc -ccopt "-O -g"   netsys_c_xdr.c
 - + gcc -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c  -O -g  -I'/usr/lib/ocaml' 'netsys_c_win32.c'
 - + gcc -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c  -O -g  -I'/usr/lib/ocaml' 'netsys_c_htab.c'
 - + gcc -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c  -O -g  -I'/usr/lib/ocaml' 'netsys_c_queue.c'
 - + gcc -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c  -O -g  -I'/usr/lib/ocaml' 'netsys_c_mem.c'
-- + gcc -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c  -O -g  -I'/usr/lib/ocaml' 'netsys_c_xdr.c'
 - ../../tools/stubcc -ocamlc ocamlc -ccopt "-O -g"   netsys_c_ip6.c
 - if [ "Xnetsys_c.o netsys_c_poll.o netsys_c_fadvise.o netsys_c_fallocate.o netsys_c_ioprio.o netsys_c_locale.o netsys_c_multicast.o netsys_c_sem.o netsys_c_shm.o netsys_c_spawn.o netsys_c_subprocess.o netsys_c_syslog.o netsys_c_clock.o netsys_c_event.o netsys_c_win32.o netsys_c_htab.o netsys_c_queue.o netsys_c_mem.o netsys_c_xdr.o netsys_c_ip6.o" = "X" ]; then \
 - 		ocamlfind ocamlc -g   -package "unix unix"  -w -3-25 -a -o netsys.cma  netsys_conf.cmo netsys_types.cmo netlog.cmo netexn.cmo netsys_impl_util.cmo netsys_mem.cmo netsys_signal.cmo netsys_crypto_types.cmo netsys_crypto.cmo netsys_crypto_modes.cmo netsys_posix.cmo netsys_win32.cmo netsys_tls.cmo netsys.cmo netsys_ciphers.cmo netsys_digests.cmo netsys_rng.cmo netsys_pollset.cmo netsys_pollset_posix.cmo netsys_pollset_win32.cmo netsys_pollset_generic.cmo netsys_xdr.cmo netsys_tmp.cmo netsys_sem.cmo netsys_pmanage.cmo netsys_gssapi.cmo netsys_sasl_types.cmo netsys_sasl_util.cmo netsys_sasl.cmo; \
@@ -1889,9 +1889,10 @@ The following actions will be performed:
 - ocamlfind ocamlc -g  -I ../../src/netsys -package "unix" -w -3-25 -c  netshm_data.mli
 - ocamlfind ocamlc -g  -I ../../src/netsys -package "unix"  -w -3-25 -c  netshm_data.ml
 - ocamlfind ocamlc -g  -I ../../src/netsys -package "unix" -w -3-25 -c  netshm_hashtbl.mli
-- ocamlfind ocamlc -g  -I ../../src/netsys -package "unix"  -w -3-25 -c  netshm_hashtbl.ml
+- + gcc -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c  -O -g  -I'/usr/lib/ocaml' 'netsys_c_xdr.c'
 - + gcc -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c  -O -g  -I'/usr/lib/ocaml' 'netsys_c_ip6.c'
 - + gcc -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c  -O -g  -I'/usr/lib/ocaml' 'netsys_c_outofheap.c'
+- ocamlfind ocamlc -g  -I ../../src/netsys -package "unix"  -w -3-25 -c  netshm_hashtbl.ml
 - ocamlfind ocamlc -g  -I ../../src/netsys -package "unix" -w -3-25 -c  netshm_array.mli
 - ocamlfind ocamlc -g  -I ../../src/netsys -package "unix"  -w -3-25 -c  netshm_array.ml
 - if [ "X" = "X" ]; then \
@@ -1969,9 +1970,9 @@ The following actions will be performed:
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  nethtml.ml
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -w -3-25 -c  neturl.mli
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  neturl.ml
+- ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netsaslprep_data.ml
 - File "nethtml.ml", line 620, characters 4-16:
 - Warning 21: this statement never returns (or has an unsound type.)
-- ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netsaslprep_data.ml
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -w -3-25 -c  netsaslprep.mli
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netsaslprep.ml
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -w -3-25 -c  netaddress.mli
@@ -1988,13 +1989,13 @@ The following actions will be performed:
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netsendmail.ml
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -w -3-25 -c  nethttp.mli
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  nethttp.ml
+- File "netmime_channels.ml", line 137, characters 33-65:
+- Warning 18: this ground coercion is not principal.
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -w -3-25 -c  netpagebuffer.mli
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netpagebuffer.ml
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -w -3-25 -c  netfs.mli
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netfs.ml
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netglob_lex.ml
-- File "netmime_channels.ml", line 137, characters 33-65:
-- Warning 18: this ground coercion is not principal.
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -w -3-25 -c  netglob.mli
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netglob.ml
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -w -3-25 -c  netauth.mli
@@ -2023,10 +2024,10 @@ The following actions will be performed:
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netgssapi_auth.ml
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -w -3-25 -c  netmech_scram.mli
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netmech_scram.ml
-- ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -w -3-25 -c  netmech_scram_gssapi.mli
-- ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netmech_scram_gssapi.ml
 - File "netgssapi_auth.ml", line 100, characters 8-17:
 - Warning 26: unused variable mech_type.
+- ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -w -3-25 -c  netmech_scram_gssapi.mli
+- ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netmech_scram_gssapi.ml
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -w -3-25 -c  netmech_scram_sasl.mli
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netmech_scram_sasl.ml
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -w -3-25 -c  netmech_plain_sasl.mli
@@ -2042,12 +2043,12 @@ The following actions will be performed:
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netmech_gs2_sasl.ml
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -w -3-25 -c  netmech_krb5_sasl.mli
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netmech_krb5_sasl.ml
-- ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -w -3-25 -c  netmech_spnego_http.mli
-- ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netmech_spnego_http.ml
 - File "netmech_scram_sasl.ml", line 76, characters 14-15:
 - Warning 11: this match case is unused.
 - File "netmech_crammd5_sasl.ml", line 92, characters 10-14:
 - Warning 26: unused variable resp.
+- ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -w -3-25 -c  netmech_spnego_http.mli
+- ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netmech_spnego_http.ml
 - if [ "X" = "X" ]; then \
 - 		ocamlfind ocamlc -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -a -o netstring.cma  netconst.cmo netstring_str.cmo netbuffer.cmo netunichar.cmo netaux.cmo netchannels.cmo netchannels_crypto.cmo netsockaddr.cmo netdb.cmo netmappings_asn1.cmo netmappings.cmo netconversion.cmo netulex.cmo netencoding.cmo netstream.cmo netdate.cmo netmime_string.cmo nethtml_scanner.cmo nethtml.cmo neturl.cmo netsaslprep_data.cmo netsaslprep.cmo netaddress.cmo netcompression.cmo netmime.cmo netmime_header.cmo netmime_channels.cmo netsendmail.cmo nethttp.cmo netpagebuffer.cmo netfs.cmo netglob_lex.cmo netglob.cmo netauth.cmo netnumber.cmo netxdr_mstring.cmo netxdr.cmo netasn1.cmo netoid.cmo netdn.cmo netx509.cmo netascii_armor.cmo nettls_support.cmo netgssapi_support.cmo netgssapi_auth.cmo netmech_scram.cmo netmech_scram_gssapi.cmo netmech_scram_sasl.cmo netmech_plain_sasl.cmo netmech_crammd5_sasl.cmo netmech_digest.cmo netmech_digest_sasl.cmo netmech_digest_http.cmo netmech_gs2_sasl.cmo netmech_krb5_sasl.cmo netmech_spnego_http.cmo; \
 - 	else \
@@ -2079,18 +2080,6 @@ The following actions will be performed:
 - mkdir -p netdb
 - cd netdb && \
 - 	        ../../../tools/unimap_to_ocaml/unimap_to_ocaml -netdb ../*.pmap
-- touch netdb_done
-- sed -e 's/@VERSION@/4.0.2/' \
-- 	    -e 's/@AUTHDHREQS@//' \
-- 	    -e 's/@PREFERRED_CGI_PKG@//' \
-- 	    -e 's/@REGEXP_PROVIDER@/str/' \
-- 	    -e 's/@COMPAT_PCRE_PROVIDER@//' \
--  	    -e 's/@ZIP_PROVIDER@//' \
-- 		META.in >META
-- make[2]: Leaving directory `/home/opam/.opam/system/build/ocamlnet.4.0.2/src/netunidata'
-- make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlnet.4.0.2/src/netunidata'
-- make[1]: Entering directory `/home/opam/.opam/system/build/ocamlnet.4.0.2/src/netunidata'
-- ocamlfind ocamldep   *.ml *.mli >depend || { rm -f depend; exit 1; }
 - + gcc -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c  -O -g  -I'/usr/lib/ocaml' 'netaccel_c.c'
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
 - Reading netmappings_iso.pmap
@@ -2296,39 +2285,18 @@ The following actions will be performed:
 - Processing cp863
 -    (Heavy conflicts: 4 of 256)
 - Processing cp862
--    (Heavy conflicts: 4 of 256)
-- Processing cp861
--    (Heavy conflicts: 4 of 256)
-- Processing cp860
--    (Heavy conflicts: 3 of 256)
-- Processing cp857
--    (Heavy conflicts: 0 of 256)
-- Processing cp856
--    (Heavy conflicts: 0 of 256)
-- Processing cp855
--    (Heavy conflicts: 15 of 256)
-- Processing cp852
--    (Heavy conflicts: 10 of 256)
-- Processing cp850
--    (Heavy conflicts: 0 of 256)
-- Processing cp775
--    (Heavy conflicts: 9 of 256)
-- Processing cp737
--    (Heavy conflicts: 3 of 256)
-- Processing cp500
--    (Heavy conflicts: 0 of 256)
-- Processing cp437
--    (Heavy conflicts: 4 of 256)
-- Processing cp424
--    (Heavy conflicts: 0 of 256)
-- Processing cp1047
--    (Heavy conflicts: 0 of 256)
-- Processing cp1026
--    (Heavy conflicts: 0 of 256)
-- Processing cp1006
--    (Heavy conflicts: 2 of 256)
-- Processing cp037
--    (Heavy conflicts: 0 of 256)
+- touch netdb_done
+- sed -e 's/@VERSION@/4.0.2/' \
+- 	    -e 's/@AUTHDHREQS@//' \
+- 	    -e 's/@PREFERRED_CGI_PKG@//' \
+- 	    -e 's/@REGEXP_PROVIDER@/str/' \
+- 	    -e 's/@COMPAT_PCRE_PROVIDER@//' \
+-  	    -e 's/@ZIP_PROVIDER@//' \
+- 		META.in >META
+- make[2]: Leaving directory `/home/opam/.opam/system/build/ocamlnet.4.0.2/src/netunidata'
+- make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlnet.4.0.2/src/netunidata'
+- make[1]: Entering directory `/home/opam/.opam/system/build/ocamlnet.4.0.2/src/netunidata'
+- ocamlfind ocamldep   *.ml *.mli >depend || { rm -f depend; exit 1; }
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlnet.4.0.2/src/netunidata'
 - make[1]: Entering directory `/home/opam/.opam/system/build/ocamlnet.4.0.2/src/netunidata'
 - ocamlfind ocamlc -g  -I ../../src/netstring -package "unix"  -w -3-25 -c  netuniconfig.ml
@@ -2374,6 +2342,39 @@ The following actions will be performed:
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../../src/netstring -package "unix"  -w -3-25 -c  uq_resolver.ml
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../../src/netstring -package "unix" -w -3-25 -c  uq_engines.mli
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../../src/netstring -package "unix"  -w -3-25 -c  uq_engines.ml
+-    (Heavy conflicts: 4 of 256)
+- Processing cp861
+-    (Heavy conflicts: 4 of 256)
+- Processing cp860
+-    (Heavy conflicts: 3 of 256)
+- Processing cp857
+-    (Heavy conflicts: 0 of 256)
+- Processing cp856
+-    (Heavy conflicts: 0 of 256)
+- Processing cp855
+-    (Heavy conflicts: 15 of 256)
+- Processing cp852
+-    (Heavy conflicts: 10 of 256)
+- Processing cp850
+-    (Heavy conflicts: 0 of 256)
+- Processing cp775
+-    (Heavy conflicts: 9 of 256)
+- Processing cp737
+-    (Heavy conflicts: 3 of 256)
+- Processing cp500
+-    (Heavy conflicts: 0 of 256)
+- Processing cp437
+-    (Heavy conflicts: 4 of 256)
+- Processing cp424
+-    (Heavy conflicts: 0 of 256)
+- Processing cp1047
+-    (Heavy conflicts: 0 of 256)
+- Processing cp1026
+-    (Heavy conflicts: 0 of 256)
+- Processing cp1006
+-    (Heavy conflicts: 2 of 256)
+- Processing cp037
+-    (Heavy conflicts: 0 of 256)
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../../src/netstring -package "unix" -w -3-25 -c  uq_multiplex.mli
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../../src/netstring -package "unix"  -w -3-25 -c  uq_multiplex.ml
 - ocamlfind ocamlc -g  -I ../../src/netsys -I ../../src/netstring -package "unix" -w -3-25 -c  uq_transfer.mli
@@ -2477,8 +2478,6 @@ The following actions will be performed:
 - make[2]: Entering directory `/home/opam/.opam/system/build/ocamlnet.4.0.2/src/rpc'
 - ../rpc-generator/ocamlrpcgen -aux rpc_portmapper.x
 - ../rpc-generator/ocamlrpcgen -clnt-only-functor rpc_portmapper.x
-- File "generate.ml", line 612, characters 6-22:
-- Warning 26: unused variable get_type_of_decl.
 - sed -e 's/@VERSION@/4.0.2/' \
 - 	    -e 's/@AUTHDHREQS@//' \
 - 	    -e 's/@PREFERRED_CGI_PKG@//' \
@@ -2494,6 +2493,8 @@ The following actions will be performed:
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlnet.4.0.2/src/rpc'
 - make[1]: Entering directory `/home/opam/.opam/system/build/ocamlnet.4.0.2/src/rpc'
 - ocamlfind ocamlc -g  -I ../../src/equeue -I ../../src/netsys -I ../../src/netstring -I ../../src/netgssapi -package "unix" -w -3-25 -c  rpc.mli
+- File "generate.ml", line 612, characters 6-22:
+- Warning 26: unused variable get_type_of_decl.
 - ocamlfind ocamlc -g  -I ../../src/equeue -I ../../src/netsys -I ../../src/netstring -I ../../src/netgssapi -package "unix"  -w -3-25 -c  rpc.ml
 - ocamlfind ocamlc -g  -I ../../src/equeue -I ../../src/netsys -I ../../src/netstring -I ../../src/netgssapi -package "unix"  -w -3-25 -c  rpc_common.ml
 - ocamlfind ocamlc -g  -I ../../src/equeue -I ../../src/netsys -I ../../src/netstring -I ../../src/netgssapi -package "unix" -w -3-25 -c  rpc_program.mli
@@ -2570,16 +2571,16 @@ The following actions will be performed:
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlnet.4.0.2/src/netclient'
 - make[1]: Entering directory `/home/opam/.opam/system/build/ocamlnet.4.0.2/src/netclient'
 - ocamlfind ocamldep   *.ml *.mli >depend || { rm -f depend; exit 1; }
-- make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlnet.4.0.2/src/netclient'
-- make[1]: Entering directory `/home/opam/.opam/system/build/ocamlnet.4.0.2/src/netclient'
-- ocamlfind ocamlc -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netsys -package "unix" -w -3-25 -c  nethttp_client_conncache.mli
-- ocamlfind ocamlc -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netsys -package "unix"  -w -3-25 -c  nethttp_client_conncache.ml
-- ocamlfind ocamlc -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netsys -package "unix" -w -3-25 -c  nethttp_client.mli
 - File "rpc_auth_gssapi.ml", line 1072, characters 10-19:
 - Warning 26: unused variable get_props.
 - File "rpc_auth_gssapi.ml", line 1078, characters 12-16:
 - Warning 26: unused variable prog.
 - + gcc -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c  -O -g  -I'/usr/lib/ocaml' 'rpclocal.c'
+- make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlnet.4.0.2/src/netclient'
+- make[1]: Entering directory `/home/opam/.opam/system/build/ocamlnet.4.0.2/src/netclient'
+- ocamlfind ocamlc -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netsys -package "unix" -w -3-25 -c  nethttp_client_conncache.mli
+- ocamlfind ocamlc -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netsys -package "unix"  -w -3-25 -c  nethttp_client_conncache.ml
+- ocamlfind ocamlc -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netsys -package "unix" -w -3-25 -c  nethttp_client.mli
 - ocamlfind ocamlc -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netsys -package "unix"  -w -3-25 -c  nethttp_client.ml
 - ocamlfind ocamlc -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netsys -package "unix" -w -3-25 -c  nettelnet_client.mli
 - ocamlfind ocamlc -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netsys -package "unix"  -w -3-25 -c  nettelnet_client.ml
@@ -2926,14 +2927,14 @@ The following actions will be performed:
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g   -package "unix unix"  -w -3-25 -c -p -o `basename netsys.cmx .cmx`.p.cmx  netsys.ml
 - ocamlfind ocamlopt -g   -package "unix unix"  -w -3-25 -c  netsys_ciphers.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g   -package "unix unix"  -w -3-25 -c -p -o `basename netsys_ciphers.cmx .cmx`.p.cmx  netsys_ciphers.ml
-- File "netsys.ml", line 271, characters 6-39:
-- Warning 26: unused variable addr.
-- File "netsys.ml", line 271, characters 6-39:
-- Warning 26: unused variable addr.
 - ocamlfind ocamlopt -g   -package "unix unix"  -w -3-25 -c  netsys_digests.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g   -package "unix unix"  -w -3-25 -c -p -o `basename netsys_digests.cmx .cmx`.p.cmx  netsys_digests.ml
 - ocamlfind ocamlopt -g   -package "unix unix"  -w -3-25 -c  netsys_rng.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g   -package "unix unix"  -w -3-25 -c -p -o `basename netsys_rng.cmx .cmx`.p.cmx  netsys_rng.ml
+- File "netsys.ml", line 271, characters 6-39:
+- Warning 26: unused variable addr.
+- File "netsys.ml", line 271, characters 6-39:
+- Warning 26: unused variable addr.
 - ocamlfind ocamlopt -g   -package "unix unix"  -w -3-25 -c  netsys_pollset.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g   -package "unix unix"  -w -3-25 -c -p -o `basename netsys_pollset.cmx .cmx`.p.cmx  netsys_pollset.ml
 - ocamlfind ocamlopt -g   -package "unix unix"  -w -3-25 -c  netsys_pollset_posix.ml
@@ -2993,8 +2994,8 @@ The following actions will be performed:
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlnet.4.0.2/src/netshm'
 - make[1]: Entering directory `/home/opam/.opam/system/build/ocamlnet.4.0.2/src/netshm'
 - ocamlfind ocamlopt -g  -I ../../src/netsys -package "unix"  -w -3-25 -c  netshm.ml
-- + gcc -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c  -O -g  -I'/usr/lib/ocaml' 'netsys_c_gprof.c'
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netsys -package "unix"  -w -3-25 -c -p -o `basename netshm.cmx .cmx`.p.cmx  netshm.ml
+- + gcc -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC -c  -O -g  -I'/usr/lib/ocaml' 'netsys_c_gprof.c'
 - ocamlfind ocamlopt -g  -I ../../src/netsys -package "unix"  -w -3-25 -c  netshm_data.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netsys -package "unix"  -w -3-25 -c -p -o `basename netshm_data.cmx .cmx`.p.cmx  netshm_data.ml
 - ocamlfind ocamlopt -g  -I ../../src/netsys -package "unix"  -w -3-25 -c  netshm_hashtbl.ml
@@ -3061,13 +3062,13 @@ The following actions will be performed:
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c -p -o `basename nethtml_scanner.cmx .cmx`.p.cmx  nethtml_scanner.ml
 - ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  nethtml.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c -p -o `basename nethtml.cmx .cmx`.p.cmx  nethtml.ml
+- File "nethtml.ml", line 620, characters 4-16:
+- Warning 21: this statement never returns (or has an unsound type.)
 - ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  neturl.ml
-- File "nethtml.ml", line 620, characters 4-16:
-- Warning 21: this statement never returns (or has an unsound type.)
-- File "nethtml.ml", line 620, characters 4-16:
-- Warning 21: this statement never returns (or has an unsound type.)
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c -p -o `basename neturl.cmx .cmx`.p.cmx  neturl.ml
 - ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netsaslprep_data.ml
+- File "nethtml.ml", line 620, characters 4-16:
+- Warning 21: this statement never returns (or has an unsound type.)
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c -p -o `basename netsaslprep_data.cmx .cmx`.p.cmx  netsaslprep_data.ml
 - ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netsaslprep.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c -p -o `basename netsaslprep.cmx .cmx`.p.cmx  netsaslprep.ml
@@ -3082,12 +3083,12 @@ The following actions will be performed:
 - ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netmime_channels.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c -p -o `basename netmime_channels.cmx .cmx`.p.cmx  netmime_channels.ml
 - ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netsendmail.ml
+- File "netmime_channels.ml", line 137, characters 33-65:
+- Warning 18: this ground coercion is not principal.
+- File "netmime_channels.ml", line 137, characters 33-65:
+- Warning 18: this ground coercion is not principal.
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c -p -o `basename netsendmail.cmx .cmx`.p.cmx  netsendmail.ml
 - ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  nethttp.ml
-- File "netmime_channels.ml", line 137, characters 33-65:
-- Warning 18: this ground coercion is not principal.
-- File "netmime_channels.ml", line 137, characters 33-65:
-- Warning 18: this ground coercion is not principal.
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c -p -o `basename nethttp.cmx .cmx`.p.cmx  nethttp.ml
 - ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netpagebuffer.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c -p -o `basename netpagebuffer.cmx .cmx`.p.cmx  netpagebuffer.ml
@@ -3122,11 +3123,11 @@ The following actions will be performed:
 - ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netgssapi_auth.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c -p -o `basename netgssapi_auth.cmx .cmx`.p.cmx  netgssapi_auth.ml
 - ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netmech_scram.ml
+- File "netgssapi_auth.ml", line 100, characters 8-17:
+- Warning 26: unused variable mech_type.
+- File "netgssapi_auth.ml", line 100, characters 8-17:
+- Warning 26: unused variable mech_type.
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c -p -o `basename netmech_scram.cmx .cmx`.p.cmx  netmech_scram.ml
-- File "netgssapi_auth.ml", line 100, characters 8-17:
-- Warning 26: unused variable mech_type.
-- File "netgssapi_auth.ml", line 100, characters 8-17:
-- Warning 26: unused variable mech_type.
 - ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netmech_scram_gssapi.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c -p -o `basename netmech_scram_gssapi.cmx .cmx`.p.cmx  netmech_scram_gssapi.ml
 - ocamlfind ocamlopt -g  -I ../../src/netsys -I ../netstring-pcre -package "str bigarray unix" -pp "../../tools/cppo-0.9.4/cppo -D WORDSIZE_64 -D HOST_IS_LITTLE_ENDIAN -D USE_NETSYS_XDR -D ENABLE_STR_EXTERNALS -D HAVE_PCRE" -w -3-25 -c  netmech_scram_sasl.ml
@@ -3311,9 +3312,11 @@ The following actions will be performed:
 - ocamlfind ocamlopt -g  -I ../../src/netstring -package "unix"  -w -3-25 -c  rename.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netstring -package "unix"  -w -3-25 -c -p -o `basename rename.cmx .cmx`.p.cmx  rename.ml
 - ocamlfind ocamlopt -g  -I ../../src/netstring -package "unix"  -w -3-25 -c  generate.ml
+- [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netstring -package "unix"  -w -3-25 -c -p -o `basename generate.cmx .cmx`.p.cmx  generate.ml
 - File "generate.ml", line 612, characters 6-22:
 - Warning 26: unused variable get_type_of_decl.
-- [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netstring -package "unix"  -w -3-25 -c -p -o `basename generate.cmx .cmx`.p.cmx  generate.ml
+- File "generate.ml", line 612, characters 6-22:
+- Warning 26: unused variable get_type_of_decl.
 - ocamlfind ocamlopt -g  -I ../../src/netstring -package "unix"  -w -3-25 -c  direct.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/netstring -package "unix"  -w -3-25 -c -p -o `basename direct.cmx .cmx`.p.cmx  direct.ml
 - if [ "X" = "X" ]; then \
@@ -3344,8 +3347,6 @@ The following actions will be performed:
 - ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netsys -I ../../src/netstring -I ../../src/netgssapi -package "unix"  -w -3-25 -c  rpc_program.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netsys -I ../../src/netstring -I ../../src/netgssapi -package "unix"  -w -3-25 -c -p -o `basename rpc_program.cmx .cmx`.p.cmx  rpc_program.ml
 - ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netsys -I ../../src/netstring -I ../../src/netgssapi -package "unix"  -w -3-25 -c  rpc_util.ml
-- File "generate.ml", line 612, characters 6-22:
-- Warning 26: unused variable get_type_of_decl.
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netsys -I ../../src/netstring -I ../../src/netgssapi -package "unix"  -w -3-25 -c -p -o `basename rpc_util.cmx .cmx`.p.cmx  rpc_util.ml
 - ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netsys -I ../../src/netstring -I ../../src/netgssapi -package "unix"  -w -3-25 -c  rpc_portmapper_aux.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netsys -I ../../src/netstring -I ../../src/netgssapi -package "unix"  -w -3-25 -c -p -o `basename rpc_portmapper_aux.cmx .cmx`.p.cmx  rpc_portmapper_aux.ml
@@ -3373,16 +3374,16 @@ The following actions will be performed:
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netsys -I ../../src/netstring -I ../../src/netgssapi -package "unix"  -w -3-25 -c -p -o `basename rpc_auth_gssapi_aux.cmx .cmx`.p.cmx  rpc_auth_gssapi_aux.ml
 - ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netsys -I ../../src/netstring -I ../../src/netgssapi -package "unix"  -w -3-25 -c  rpc_auth_gssapi.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netsys -I ../../src/netstring -I ../../src/netgssapi -package "unix"  -w -3-25 -c -p -o `basename rpc_auth_gssapi.cmx .cmx`.p.cmx  rpc_auth_gssapi.ml
-- File "rpc_auth_gssapi.ml", line 1072, characters 10-19:
-- Warning 26: unused variable get_props.
-- File "rpc_auth_gssapi.ml", line 1078, characters 12-16:
-- Warning 26: unused variable prog.
-- File "rpc_auth_gssapi.ml", line 1072, characters 10-19:
-- Warning 26: unused variable get_props.
-- File "rpc_auth_gssapi.ml", line 1078, characters 12-16:
-- Warning 26: unused variable prog.
 - ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netsys -I ../../src/netstring -I ../../src/netgssapi -package "unix"  -w -3-25 -c  rpc_proxy.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netsys -I ../../src/netstring -I ../../src/netgssapi -package "unix"  -w -3-25 -c -p -o `basename rpc_proxy.cmx .cmx`.p.cmx  rpc_proxy.ml
+- File "rpc_auth_gssapi.ml", line 1072, characters 10-19:
+- Warning 26: unused variable get_props.
+- File "rpc_auth_gssapi.ml", line 1078, characters 12-16:
+- Warning 26: unused variable prog.
+- File "rpc_auth_gssapi.ml", line 1072, characters 10-19:
+- Warning 26: unused variable get_props.
+- File "rpc_auth_gssapi.ml", line 1078, characters 12-16:
+- Warning 26: unused variable prog.
 - if [ "X" = "X" ]; then \
 - 		ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netsys -I ../../src/netstring -I ../../src/netgssapi -package "unix"  -w -3-25 -a -o rpc.cmxa  rpc.cmx rpc_common.cmx rpc_program.cmx rpc_util.cmx rpc_portmapper_aux.cmx rpc_packer.cmx rpc_transport.cmx rpc_client_pre.cmx rpc_portmapper_clnt.cmx rpc_portmapper_impl.cmx rpc_client.cmx rpc_simple_client.cmx rpc_portmapper.cmx rpc_server.cmx rpc_auth_sys.cmx rpc_auth_gssapi_aux.cmx rpc_auth_gssapi.cmx rpc_proxy.cmx; \
 - 	else \
@@ -3673,8 +3674,6 @@ The following actions will be performed:
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c -p -o `basename nethttpd_services.cmx .cmx`.p.cmx  nethttpd_services.ml
 - ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c  nethttpd_plex.ml
 - [ 1 -eq 0 ] || ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -c -p -o `basename nethttpd_plex.cmx .cmx`.p.cmx  nethttpd_plex.ml
-- File "nethttpd_services.ml", line 1118, characters 4-5:
-- Warning 11: this match case is unused.
 - if [ "X" = "X" ]; then \
 - 		ocamlfind ocamlopt -g  -I ../../src/equeue -I ../../src/netstring -I ../../src/netcgi2 -I ../../src/netplex -I ../../src/netsys -package "unix" -pp ../../tools/cppo-0.9.4/cppo -w -3-25 -a -o nethttpd.cmxa  nethttpd_types.cmx nethttpd_util.cmx nethttpd_kernel.cmx nethttpd_reactor.cmx nethttpd_engine.cmx nethttpd_services.cmx nethttpd_plex.cmx; \
 - 	else \
@@ -3686,6 +3685,8 @@ The following actions will be performed:
 - 		../../tools/mkstublib -o nethttpd.p nethttpd_types.p.cmx nethttpd_util.p.cmx nethttpd_kernel.p.cmx nethttpd_reactor.p.cmx nethttpd_engine.p.cmx nethttpd_services.p.cmx nethttpd_plex.p.cmx  ; \
 - 	fi
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlnet.4.0.2/src/nethttpd'
+- File "nethttpd_services.ml", line 1118, characters 4-5:
+- Warning 11: this match case is unused.
 [ocamlnet: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/ocamlnet.4.0.2)
 - for pkg in netstring-pcre netsys netshm netstring netunidata equeue shell rpc-generator rpc rpc-auth-local netclient netcgi2 netplex netcgi2-plex netcamlbox netmulticore nethttpd; do \
@@ -4442,16 +4443,16 @@ The following actions will be performed:
 - config.status: creating master.Makefile
 - config.status: creating src/META
 - config.status: creating src/rdf_config.ml
-- ====
-- The following packages will be installed with findlib:
--   rdf
-- 
 - File "checkocaml.ml", line 423, characters 18-20:
 - Warning 3: deprecated feature: operator (or); you should use (||) instead
 - File "checkocaml.ml", line 828, characters 33-35:
 - Warning 3: deprecated feature: operator (or); you should use (||) instead
 - ocamlfind: Package `mysql' not found
 - ocamlfind: Package `postgresql' not found
+- ====
+- The following packages will be installed with findlib:
+-   rdf
+- 
 [rdf: make all] Command started
 + make "all" (CWD=/home/opam/.opam/system/build/rdf.0.8.0)
 - cd src && make all
@@ -4477,10 +4478,6 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -package netstring,uuidm,xmlm,ulex,menhirLib,cryptokit,pcre   -g   -c rdf_sparql_parser.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -package netstring,uuidm,xmlm,ulex,menhirLib,cryptokit,pcre   -g   -c rdf_sparql_lex.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -package netstring,uuidm,xmlm,ulex,menhirLib,cryptokit,pcre   -g   -c rdf_sparql_map.ml
-- Warning: 13 states have shift/reduce conflicts.
-- Warning: 11 states have reduce/reduce conflicts.
-- Warning: 65 shift/reduce conflicts were arbitrarily resolved.
-- Warning: 356 reduce/reduce conflicts were arbitrarily resolved.
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -package netstring,uuidm,xmlm,ulex,menhirLib,cryptokit,pcre   -g   -c rdf_sparql_print.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -package netstring,uuidm,xmlm,ulex,menhirLib,cryptokit,pcre   -g   -c rdf_sparql_algebra.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -package netstring,uuidm,xmlm,ulex,menhirLib,cryptokit,pcre   -g   -c rdf_bgp.mli
@@ -4488,6 +4485,10 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -package netstring,uuidm,xmlm,ulex,menhirLib,cryptokit,pcre   -g   -c rdf_rdfs.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -package netstring,uuidm,xmlm,ulex,menhirLib,cryptokit,pcre   -g   -c rdf_ds.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -package netstring,uuidm,xmlm,ulex,menhirLib,cryptokit,pcre   -g   -c rdf_mem.ml
+- Warning: 13 states have shift/reduce conflicts.
+- Warning: 11 states have reduce/reduce conflicts.
+- Warning: 65 shift/reduce conflicts were arbitrarily resolved.
+- Warning: 356 reduce/reduce conflicts were arbitrarily resolved.
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -package netstring,uuidm,xmlm,ulex,menhirLib,cryptokit,pcre   -g   -c rdf_dot.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -package netstring,uuidm,xmlm,ulex,menhirLib,cryptokit,pcre   -g   -c rdf_xml.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -package netstring,uuidm,xmlm,ulex,menhirLib,cryptokit,pcre   -g   -c rdf_ttl_types.ml
