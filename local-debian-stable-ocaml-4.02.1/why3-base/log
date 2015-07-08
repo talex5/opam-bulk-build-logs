@@ -2,11 +2,11 @@
 # Detecting depexts using flags: x86_64 linux debian
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=why3-base
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=why3-base
 # The following system packages are needed:
 #  - m4
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=why3-base
-+ dpkg-query -W -f '${Package} ${Status}\n' m4 2>/dev/null
 # All required OS packages found.
++ dpkg-query -W -f '${Package} ${Status}\n' m4 2>/dev/null
 The following actions will be performed:
   - install ocamlfind 1.5.5                                     [required by why3-base]
   - install menhir    20141215                                  [required by why3-base]
@@ -104,6 +104,9 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -149,12 +152,11 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -163,8 +165,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -215,7 +215,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -260,6 +259,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -1152,8 +1152,6 @@ The following actions will be performed:
 - checking for ocamlfind... yes
 - checking for rubber... no
 - checking for emacs... no
-- configure: WARNING: Cannot find rubber, documentation disabled.
-- ocamlfind: Package `zarith' not found
 - checking for /home/opam/.opam/4.02.1/lib/ocaml/zarith/zarith.cma... no
 - checking for /home/opam/.opam/4.02.1/lib/ocaml/zip/zip.cma... no
 - ocamlfind found menhirLib in /home/opam/.opam/4.02.1/lib/menhirLib
@@ -1166,6 +1164,17 @@ The following actions will be performed:
 - config.status: creating Makefile
 - config.status: creating src/config.sh
 - config.status: creating doc/version.tex
+- configure: WARNING: Cannot find rubber, documentation disabled.
+- ocamlfind: Package `zarith' not found
+- configure: WARNING: Lib Zarith not found, using Nums instead.
+- ocamlfind: Package `zip' not found
+- configure: WARNING: Lib camlzip not found, sessions files will not be compressed.
+- configure: WARNING: Cannot find coqc.
+- configure: WARNING: Cannot find coqdep.
+- configure: WARNING: Cannot find pvs.
+- configure: WARNING: Cannot find isabelle.
+- ocamlfind: Package `ocamlgraph' not found
+- configure: WARNING: Lib ocamlgraph not found, hypothesis selection disabled.
 - config.status: creating lib/why3/META
 - config.status: creating .merlin
 - config.status: creating src/jessie/Makefile
@@ -1197,15 +1206,6 @@ The following actions will be performed:
 -     Data path               : ${prefix}/share/why3
 -     Ocaml Library           : /home/opam/.opam/4.02.1/lib/why3
 -     Relocatable             : no
-- configure: WARNING: Lib Zarith not found, using Nums instead.
-- ocamlfind: Package `zip' not found
-- configure: WARNING: Lib camlzip not found, sessions files will not be compressed.
-- configure: WARNING: Cannot find coqc.
-- configure: WARNING: Cannot find coqdep.
-- configure: WARNING: Cannot find pvs.
-- configure: WARNING: Cannot find isabelle.
-- ocamlfind: Package `ocamlgraph' not found
-- configure: WARNING: Lib ocamlgraph not found, hypothesis selection disabled.
 [why3-base: make opt] Command started
 + make "opt" "byte" (CWD=/home/opam/.opam/4.02.1/build/why3-base.0.86)
 - Ocamllex src/why3doc/doc_lexer.mll
@@ -1601,8 +1601,6 @@ The following actions will be performed:
 - Ocamlopt src/util/cmdline.ml
 - Ocamlc   src/util/warning.mli
 - Ocamlopt src/util/warning.ml
-- Ocamlc   src/util/sysutil.mli
-- Ocamlopt src/util/sysutil.ml
 - File "src/util/lexlib.mll", line 101, characters 14-27:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -1615,6 +1613,8 @@ The following actions will be performed:
 - File "src/util/cmdline.ml", line 48, characters 10-20:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- Ocamlc   src/util/sysutil.mli
+- Ocamlopt src/util/sysutil.ml
 - Ocamlc   src/util/rc.mli
 - Ocamlopt src/util/rc.ml
 - Ocamlc   src/util/plugin.mli
@@ -1771,15 +1771,15 @@ The following actions will be performed:
 - Ocamlopt src/printer/smtv2.ml
 - Ocamlc   src/printer/coq.mli
 - Ocamlopt src/printer/coq.ml
-- File "src/printer/coq.ml", line 481, characters 14-27:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - Ocamlopt src/printer/pvs.ml
 - Ocamlopt src/printer/isabelle.ml
 - Ocamlc   src/printer/simplify.mli
 - Ocamlopt src/printer/simplify.ml
 - Ocamlc   src/printer/gappa.mli
 - Ocamlopt src/printer/gappa.ml
+- File "src/printer/coq.ml", line 481, characters 14-27:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - Ocamlc   src/printer/cvc3.mli
 - Ocamlopt src/printer/cvc3.ml
 - Ocamlopt src/printer/yices.ml
@@ -1818,11 +1818,6 @@ The following actions will be performed:
 - Ocamlopt src/session/termcode.ml
 - Ocamlc   src/session/session.mli
 - Ocamlopt src/session/session.ml
-- File "src/session/session.ml", line 1517, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "src/session/session.ml", line 1546, characters 16-27:
-- Warning 3: deprecated: String.copy
 - Ocamlc   src/session/session_tools.mli
 - Ocamlopt src/session/session_tools.ml
 - Ocamlc   src/session/strategy.mli
@@ -1831,6 +1826,11 @@ The following actions will be performed:
 - Ocamlopt src/session/strategy_parser.ml
 - Ocamlc   src/session/session_scheduler.mli
 - Ocamlopt src/session/session_scheduler.ml
+- File "src/session/session.ml", line 1517, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "src/session/session.ml", line 1546, characters 16-27:
+- Warning 3: deprecated: String.copy
 - Linking  lib/why3/why3.cmx
 - Ocamlopt plugins/parser/genequlin.ml
 - Linking  lib/plugins/genequlin.cmxs
@@ -1867,10 +1867,10 @@ The following actions will be performed:
 - Ocamlopt src/why3session/why3session_lib.ml
 - Ocamlopt src/why3session/why3session_copy.ml
 - Ocamlopt src/why3session/why3session_info.ml
-- Ocamlopt src/why3session/why3session_latex.ml
 - File "src/why3session/why3session_lib.ml", line 252, characters 10-23:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- Ocamlopt src/why3session/why3session_latex.ml
 - Ocamlopt src/why3session/why3session_html.ml
 - Ocamlopt src/why3session/why3session_rm.ml
 - Ocamlopt src/why3session/why3session_output.ml
@@ -1931,7 +1931,6 @@ The following actions will be performed:
 - Ocamlc   src/util/number.ml
 - Ocamlc   src/util/pqueue.ml
 - Ocamlc   src/core/ident.ml
-- Ocamlc   src/core/ty.ml
 - File "src/util/strings.ml", line 36, characters 12-25:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -1962,6 +1961,7 @@ The following actions will be performed:
 - File "src/util/number.ml", line 161, characters 31-44:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- Ocamlc   src/core/ty.ml
 - Ocamlc   src/core/term.ml
 - Ocamlc   src/core/pattern.ml
 - Ocamlc   src/core/decl.ml
@@ -1983,12 +1983,12 @@ The following actions will be performed:
 - Ocamlc   src/driver/parse_cvc4_z3_model.ml
 - Ocamlc   src/mlw/ity.ml
 - Ocamlc   src/mlw/expr.ml
-- File "src/mlw/expr.ml", line 440, characters 34-46:
-- Warning 48: implicit elimination of optional argument ?loc
 - Ocamlc   src/mlw/dexpr.ml
 - Ocamlc   src/parser/ptree.ml
 - Ocamlc   src/parser/glob.ml
 - Ocamlc   src/parser/parser.ml
+- File "src/mlw/expr.ml", line 440, characters 34-46:
+- Warning 48: implicit elimination of optional argument ?loc
 - Ocamlc   src/parser/typing.ml
 - Ocamlc   src/parser/lexer.ml
 - Ocamlc   src/transform/simplify_formula.ml
@@ -2032,10 +2032,10 @@ The following actions will be performed:
 - Ocamlc   src/printer/smtv2.ml
 - Ocamlc   src/printer/coq.ml
 - Ocamlc   src/printer/pvs.ml
-- Ocamlc   src/printer/isabelle.ml
 - File "src/printer/coq.ml", line 481, characters 14-27:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- Ocamlc   src/printer/isabelle.ml
 - Ocamlc   src/printer/simplify.ml
 - Ocamlc   src/printer/gappa.ml
 - Ocamlc   src/printer/cvc3.ml
@@ -2089,13 +2089,13 @@ The following actions will be performed:
 - Ocamlc   src/why3session/why3session_copy.ml
 - Ocamlc   src/why3session/why3session_info.ml
 - Ocamlc   src/why3session/why3session_latex.ml
+- File "src/why3session/why3session_lib.ml", line 252, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - Ocamlc   src/why3session/why3session_html.ml
 - Ocamlc   src/why3session/why3session_rm.ml
 - Ocamlc   src/why3session/why3session_output.ml
 - Ocamlc   src/why3session/why3session_run.ml
-- File "src/why3session/why3session_lib.ml", line 252, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - Ocamlc   src/why3session/why3session_csv.ml
 - Ocamlc   src/why3session/why3session_main.ml
 - Linking  bin/why3session.byte
