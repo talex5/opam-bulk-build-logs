@@ -2,24 +2,24 @@
 # Detecting depexts using flags: x86_64 linux ubuntu
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=frei0r
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=frei0r
 # The following system packages are needed:
 #  - frei0r-plugins-dev
 #  - m4
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=frei0r
 + dpkg-query -W -f '${Package} ${Status}\n' frei0r-plugins-dev m4 2>/dev/null
 # The following new OS packages need to be installed: frei0r-plugins-dev
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
-Ign http://archive.ubuntu.com trusty InRelease
-Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://download.opensuse.org  InRelease
 Hit http://download.opensuse.org  Release.gpg
-Ign http://archive.ubuntu.com trusty-security InRelease
 Hit http://download.opensuse.org  Release
+Ign http://archive.ubuntu.com trusty InRelease
+Ign http://archive.ubuntu.com trusty-updates InRelease
+Ign http://archive.ubuntu.com trusty-security InRelease
+Hit http://download.opensuse.org  Packages
 Hit http://archive.ubuntu.com trusty Release.gpg
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
-Hit http://download.opensuse.org  Packages
 Hit http://archive.ubuntu.com trusty-security Release.gpg
 Hit http://archive.ubuntu.com trusty Release
 Get:2 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
@@ -35,6 +35,7 @@ Get:4 http://archive.ubuntu.com trusty-updates/restricted Sources [3158 B]
 Get:5 http://archive.ubuntu.com trusty-updates/universe Sources [154 kB]
 Get:6 http://archive.ubuntu.com trusty-updates/main amd64 Packages [714 kB]
 Get:7 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [18.1 kB]
++ sudo apt-get install -qq -yy frei0r-plugins-dev
 Get:8 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [382 kB]
 Hit http://archive.ubuntu.com trusty-security/main Sources
 Hit http://archive.ubuntu.com trusty-security/restricted Sources
@@ -42,12 +43,11 @@ Hit http://archive.ubuntu.com trusty-security/universe Sources
 Hit http://archive.ubuntu.com trusty-security/main amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/universe amd64 Packages
-Fetched 1603 kB in 7s (216 kB/s)
+Fetched 1603 kB in 5s (306 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy frei0r-plugins-dev
-+ sudo apt-get install -qq -yy frei0r-plugins-dev
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
@@ -156,9 +156,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -204,9 +201,20 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
@@ -216,14 +224,6 @@ The following actions will be performed:
 - 			> topfind.ml ;                                   \
 - 	fi
 - ocamlc -I +compiler-libs -c topfind.mli
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -268,7 +268,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -313,6 +312,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -387,7 +387,8 @@ The following actions will be performed:
 - checking whether we are cross compiling... no
 - checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
-- checking whether gcc accepts -g... yes
+- checking whether gcc accepts -g... 
+- yes
 - checking for gcc option to accept ISO C89... none needed
 - checking build system type... x86_64-unknown-linux-gnu
 - checking host system type... x86_64-unknown-linux-gnu
