@@ -2,10 +2,10 @@
 # Detecting depexts using flags: x86_64 linux ubuntu
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=fat-filesystem
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=fat-filesystem
 # The following system packages are needed:
 #  - m4
 #  - time
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=fat-filesystem
 + dpkg-query -W -f '${Package} ${Status}\n' m4 time 2>/dev/null
 # The following new OS packages need to be installed: time
 + sudo apt-get update
@@ -14,16 +14,16 @@ Not running as root, the following command will be run through "sudo":
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
-Ign http://download.opensuse.org  InRelease
 Hit http://archive.ubuntu.com trusty Release.gpg
+Ign http://download.opensuse.org  InRelease
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Hit http://archive.ubuntu.com trusty-security Release.gpg
-Hit http://download.opensuse.org  Release.gpg
 Hit http://archive.ubuntu.com trusty Release
 Get:2 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
-Hit http://download.opensuse.org  Release
+Hit http://download.opensuse.org  Release.gpg
 Hit http://archive.ubuntu.com trusty-security Release
 Hit http://archive.ubuntu.com trusty/main Sources
+Hit http://download.opensuse.org  Release
 Hit http://archive.ubuntu.com trusty/restricted Sources
 Hit http://archive.ubuntu.com trusty/universe Sources
 Hit http://archive.ubuntu.com trusty/main amd64 Packages
@@ -42,20 +42,20 @@ Hit http://archive.ubuntu.com trusty-security/universe Sources
 Hit http://archive.ubuntu.com trusty-security/main amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/universe amd64 Packages
-Fetched 1603 kB in 3s (451 kB/s)
+Fetched 1603 kB in 3s (416 kB/s)
 Reading package lists...
++ sudo apt-get install -qq -yy time
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy time
-+ sudo apt-get install -qq -yy time
 debconf: unable to initialize frontend: Dialog
-Selecting previously unselected package time.
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
 debconf: unable to initialize frontend: Readline
 debconf: (This frontend requires a controlling tty.)
 debconf: falling back to frontend: Teletype
 dpkg-preconfigure: unable to re-open stdin: 
+Selecting previously unselected package time.
 (Reading database ... 22870 files and directories currently installed.)
 Preparing to unpack .../archives/time_1.7-24_amd64.deb ...
 Unpacking time (1.7-24) ...
@@ -84,30 +84,30 @@ The following actions will be performed:
 [cstruct: from default] Command started
 [fat-filesystem: from default] Command started
 [cppo: from default] Command started
-[cstruct: from default] Command started
 [fat-filesystem: from default] Command started
+[cstruct: from default] Command started
 [default] http://opam-archive:8080/archives/cppo.1.1.2+opam.tar.gz downloaded
 [io-page: from default] Command started
-[default] http://opam-archive:8080/archives/cstruct.1.6.0+opam.tar.gz downloaded
-[lwt: from default] Command started
 [default] http://opam-archive:8080/archives/fat-filesystem.0.10.3+opam.tar.gz downloaded
+[lwt: from default] Command started
+[default] http://opam-archive:8080/archives/cstruct.1.6.0+opam.tar.gz downloaded
 [mirage-block-unix: http] Command started
 [io-page: from default] Command started
-[lwt: from default] Command started
 [default] http://opam-archive:8080/archives/io-page.1.5.1+opam.tar.gz downloaded
 [mirage-types: from default] Command started
+[lwt: from default] Command started
 [default] http://opam-archive:8080/archives/lwt.2.4.8+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [mirage-types: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/mirage-types.2.3.0+opam.tar.gz downloaded
 [ocplib-endian: from default] Command started
-[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [ppx_tools: from default] Command started
 [ocplib-endian: from default] Command started
+[ppx_tools: from default] Command started
 [default] http://opam-archive:8080/archives/ocplib-endian.0.8+opam.tar.gz downloaded
 [re: from default] Command started
-[ppx_tools: from default] Command started
 [default] http://opam-archive:8080/archives/ppx_tools.0.99.2+opam.tar.gz downloaded
 [sexplib: from default] Command started
 [re: from default] Command started
@@ -319,7 +319,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -364,6 +363,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -2003,14 +2003,14 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -pack -g -annot -bin-annot unix/lib/sexplib_unix_conv.cmo -o unix/lib/sexplib_unix.cmo
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -a unix/lib/sexplib_unix.cmo -o unix/lib/sexplib_unix.cma
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I lib -package bigarray -package unix -for-pack Sexplib_unix -I unix/lib -I lib -o unix/lib/sexplib_unix_conv.cmx unix/lib/sexplib_unix_conv.ml
-- W: Cannot find source file matching module 'sexplib_unix' in library sexplib_unix
-- W: Cannot find source file matching module 'sexplib_num' in library sexplib_num
-- W: Cannot find source file matching module 'sexplib' in library sexplib
 - touch unix/lib/sexplib_unix.mli  ; if  /home/opam/.opam/system/bin/ocamlfind ocamlopt -pack -g -annot -bin-annot -I unix/lib unix/lib/sexplib_unix_conv.cmx -o unix/lib/sexplib_unix.cmx  ; then  rm -f unix/lib/sexplib_unix.mli  ; else  rm -f unix/lib/sexplib_unix.mli  ; exit 1; fi
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -a unix/lib/sexplib_unix.cmx -o unix/lib/sexplib_unix.cmxa
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared unix/lib/sexplib_unix.cmxa unix/lib/sexplib_unix.cmx -o unix/lib/sexplib_unix.cmxs
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -package type_conv -package camlp4.quotations -package camlp4.extend -modules syntax/pa_sexp_conv.mli > syntax/pa_sexp_conv.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -package type_conv -package camlp4.quotations -package camlp4.extend -I syntax -o syntax/pa_sexp_conv.cmi syntax/pa_sexp_conv.mli
+- W: Cannot find source file matching module 'sexplib_unix' in library sexplib_unix
+- W: Cannot find source file matching module 'sexplib_num' in library sexplib_num
+- W: Cannot find source file matching module 'sexplib' in library sexplib
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -syntax camlp4o -package type_conv -package camlp4.quotations -package camlp4.extend -modules syntax/pa_sexp_conv.ml > syntax/pa_sexp_conv.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -syntax camlp4o -syntax camlp4o -package type_conv -package camlp4.quotations -package camlp4.extend -I syntax -o syntax/pa_sexp_conv.cmo syntax/pa_sexp_conv.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -a syntax/pa_sexp_conv.cmo -o syntax/pa_sexp_conv.cma
@@ -2604,7 +2604,7 @@ The following actions will be performed:
 [fat-filesystem: make] Command started
 + make  (CWD=/home/opam/.opam/system/build/fat-filesystem.0.10.3)
 - ocamlfind: Package `oUnit' not found
-- W: Field 'pkg_ounit' is not set: Command ''/home/opam/.opam/system/bin/ocamlfind' query -format %d oUnit > '/tmp/oasis-d7398c.txt'' terminated with error code 2
+- W: Field 'pkg_ounit' is not set: Command ''/home/opam/.opam/system/bin/ocamlfind' query -format %d oUnit > '/tmp/oasis-061841.txt'' terminated with error code 2
 - E: Cannot find findlib package oUnit
 - E: Failure("1 configuration error")
 - make: *** [setup.data] Error 1
@@ -2617,24 +2617,6 @@ The following actions will be performed:
 + make "uninstall" (CWD=/home/opam/.opam/system/build/fat-filesystem.0.10.3)
 - rm -f /home/opam/.opam/system/bin/fat
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/fat-filesystem
-
-#=== ERROR while installing fat-filesystem.0.10.3 =============================#
-# opam-version         1.2.2 (c30ed46b7e70bcf0f872e482cbcbf6a1fa0c60b3)
-# os                   linux
-# command              make
-# path                 /home/opam/.opam/system/build/fat-filesystem.0.10.3
-# compiler             system (4.02.1)
-# exit-code            2
-# env-file             /home/opam/.opam/system/build/fat-filesystem.0.10.3/fat-filesystem-6-626d32.env
-# stdout-file          /home/opam/.opam/system/build/fat-filesystem.0.10.3/fat-filesystem-6-626d32.out
-# stderr-file          /home/opam/.opam/system/build/fat-filesystem.0.10.3/fat-filesystem-6-626d32.err
-### stderr ###
-# ocamlfind: Package `oUnit' not found
-# W: Field 'pkg_ounit' is not set: Command ''/home/opam/.opam/system/bin/ocamlfind' query -format %d oUnit > '/tmp/oasis-d7398c.txt'' terminated with error code 2
-# E: Cannot find findlib package oUnit
-# E: Failure("1 configuration error")
-# make: *** [setup.data] Error 1
-
 
 
 =-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -2656,6 +2638,24 @@ The following changes have been performed
   - install sexplib           112.35.00  
   - install type_conv         112.01.01  
 
+#=== ERROR while installing fat-filesystem.0.10.3 =============================#
+# opam-version         1.2.2 (c30ed46b7e70bcf0f872e482cbcbf6a1fa0c60b3)
+# os                   linux
+# command              make
+# path                 /home/opam/.opam/system/build/fat-filesystem.0.10.3
+# compiler             system (4.02.1)
+# exit-code            2
+# env-file             /home/opam/.opam/system/build/fat-filesystem.0.10.3/fat-filesystem-5-626d32.env
+# stdout-file          /home/opam/.opam/system/build/fat-filesystem.0.10.3/fat-filesystem-5-626d32.out
+# stderr-file          /home/opam/.opam/system/build/fat-filesystem.0.10.3/fat-filesystem-5-626d32.err
+### stderr ###
+# ocamlfind: Package `oUnit' not found
+# W: Field 'pkg_ounit' is not set: Command ''/home/opam/.opam/system/bin/ocamlfind' query -format %d oUnit > '/tmp/oasis-061841.txt'' terminated with error code 2
+# E: Cannot find findlib package oUnit
+# E: Failure("1 configuration error")
+# make: *** [setup.data] Error 1
+
+
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150604221127.export"
+    opam switch import "~/.opam/system/backup/state-20150605202728.export"
 'opam install fat-filesystem' failed.
