@@ -2,9 +2,9 @@
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=mm
 # Detecting depexts using flags: x86_64 linux ubuntu
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=mm
 # The following system packages are needed:
 #  - m4
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=mm
 + dpkg-query -W -f '${Package} ${Status}\n' m4 2>/dev/null
 # All required OS packages found.
 The following actions will be performed:
@@ -15,10 +15,10 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [mm: from default] Command started
 [ocamlfind: from default] Command started
-[ocamlfind: from default] Command started
 [mm: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/mm.0.2.1+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -155,13 +155,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
-- if [ "true" = "true" ]; then                 \
-- 		cp topfind.ml.in topfind.ml;                             \
-- 	else                                                             \
-- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 			> topfind.ml ;                                   \
-- 	fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -170,6 +163,13 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- if [ "true" = "true" ]; then                 \
+- 		cp topfind.ml.in topfind.ml;                             \
+- 	else                                                             \
+- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 			> topfind.ml ;                                   \
+- 	fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -383,7 +383,8 @@ The following actions will be performed:
 - checking for stdlib.h... yes
 - checking for string.h... yes
 - checking for memory.h... yes
-- checking for strings.h... yes
+- checking for strings.h... 
+- yes
 - checking for inttypes.h... yes
 - checking for stdint.h... yes
 - checking for unistd.h... yes
@@ -400,8 +401,7 @@ The following actions will be performed:
 - checking sys/soundcard.h presence... yes
 - checking for sys/soundcard.h... yes
 - checking libavcodec/avcodec.h usability... no
-- checking libavcodec/avcodec.h presence... 
-- no
+- checking libavcodec/avcodec.h presence... no
 - checking for libavcodec/avcodec.h... no
 - checking linux/videodev.h usability... no
 - checking linux/videodev.h presence... no
@@ -491,6 +491,7 @@ The following actions will be performed:
 - make[2]: Entering directory `/home/opam/.opam/system/build/mm.0.2.1/src'
 - make[2]: `libmm_stubs.a' is up to date.
 - ocamlopt.opt -c -dtypes -I .. ringbuffer.ml
+- ocamlopt.opt -c -dtypes -I .. IO.ml
 - File "IO.ml", line 71, characters 14-27:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -539,26 +540,29 @@ The following actions will be performed:
 - File "MIDI.ml", line 292, characters 14-52:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlopt.opt -c -dtypes -I .. IO.ml
+- File "IO.ml", line 71, characters 14-27:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "IO.ml", line 129, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "IO.ml", line 131, characters 6-54:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "IO.ml", line 142, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "IO.ml", line 144, characters 6-64:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
 - ocamlopt.opt -c -dtypes -I .. audio.ml
 - ocamlopt.opt -c -dtypes -I .. image.ml
 - ocamlopt.opt -c -dtypes -I .. video.ml
 - ocamlopt.opt -c -dtypes -I .. MIDI.ml
-- File "IO.ml", line 71, characters 14-27:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "IO.ml", line 129, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "IO.ml", line 131, characters 6-54:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "IO.ml", line 142, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "IO.ml", line 144, characters 6-64:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
+- ocamlopt.opt -c -dtypes -I .. synth.ml
+- ocamlopt.opt -a     -I .. -linkall       -cclib -lmm_stubs    -o mm.cmxa ringbuffer.cmx IO.cmx audio.cmx image.cmx video.cmx MIDI.cmx synth.cmx
+- make[2]: Leaving directory `/home/opam/.opam/system/build/mm.0.2.1/src'
+- make[1]: Leaving directory `/home/opam/.opam/system/build/mm.0.2.1/src'
 - File "audio.ml", line 956, characters 15-28:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -592,10 +596,6 @@ The following actions will be performed:
 - File "MIDI.ml", line 292, characters 14-52:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlopt.opt -c -dtypes -I .. synth.ml
-- ocamlopt.opt -a     -I .. -linkall       -cclib -lmm_stubs    -o mm.cmxa ringbuffer.cmx IO.cmx audio.cmx image.cmx video.cmx MIDI.cmx synth.cmx
-- make[2]: Leaving directory `/home/opam/.opam/system/build/mm.0.2.1/src'
-- make[1]: Leaving directory `/home/opam/.opam/system/build/mm.0.2.1/src'
 [mm: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/mm.0.2.1)
 - make -C src install
