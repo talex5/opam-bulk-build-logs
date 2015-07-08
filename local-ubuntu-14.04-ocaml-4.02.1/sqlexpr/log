@@ -1,16 +1,16 @@
 + uname -m
 + uname -s
-+ opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=sqlexpr
 # Detecting depexts using flags: x86_64 linux ubuntu
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=sqlexpr
++ opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=sqlexpr
 # The following system packages are needed:
 #  - libsqlite3-dev
 #  - m4
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=sqlexpr
 + dpkg-query -W -f '${Package} ${Status}\n' libsqlite3-dev m4 2>/dev/null
++ sudo apt-get update
 # The following new OS packages need to be installed: libsqlite3-dev
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
 Ign http://download.opensuse.org  InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
@@ -42,23 +42,23 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [32.0 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [382 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [143 kB]
-Fetched 2350 kB in 5s (441 kB/s)
+Fetched 2350 kB in 7s (302 kB/s)
 Reading package lists...
-+ sudo apt-get install -qq -yy libsqlite3-dev
 # OS package update successful
++ sudo apt-get install -qq -yy libsqlite3-dev
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libsqlite3-dev
 debconf: unable to initialize frontend: Dialog
 Selecting previously unselected package libsqlite3-dev:amd64.
-(Reading database ... 22870 files and directories currently installed.)
-Preparing to unpack .../libsqlite3-dev_3.8.2-1ubuntu2_amd64.deb ...
-Unpacking libsqlite3-dev:amd64 (3.8.2-1ubuntu2) ...
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
 debconf: unable to initialize frontend: Readline
 debconf: (This frontend requires a controlling tty.)
 debconf: falling back to frontend: Teletype
 dpkg-preconfigure: unable to re-open stdin: 
+(Reading database ... 22870 files and directories currently installed.)
+Preparing to unpack .../libsqlite3-dev_3.8.2-1ubuntu2_amd64.deb ...
+Unpacking libsqlite3-dev:amd64 (3.8.2-1ubuntu2) ...
 Setting up libsqlite3-dev:amd64 (3.8.2-1ubuntu2) ...
 # OS packages installation successful
 The following actions will be performed:
@@ -78,22 +78,22 @@ The following actions will be performed:
 [batteries: from default] Command started
 [csv: from default] Command started
 [estring: from default] Command started
-[estring: from default] Command started
 [csv: from default] Command started
-[default] http://opam-archive:8080/archives/estring.1.3+opam.tar.gz downloaded
+[estring: from default] Command started
+[default] http://opam-archive:8080/archives/csv.1.4+opam.tar.gz downloaded
 [lwt: from default] Command started
 [batteries: from default] Command started
-[default] http://opam-archive:8080/archives/csv.1.4+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/estring.1.3+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
+[lwt: from default] Command started
 [default] http://opam-archive:8080/archives/batteries.2.3.1+opam.tar.gz downloaded
 [ppx_tools: from default] Command started
-[lwt: from default] Command started
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/lwt.2.4.8+opam.tar.gz downloaded
 [sqlexpr: from default] Command started
-[ppx_tools: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [sqlite3: from default] Command started
+[ppx_tools: from default] Command started
 [default] http://opam-archive:8080/archives/ppx_tools.0.99.2+opam.tar.gz downloaded
 [sqlexpr: from default] Command started
 [sqlite3: from default] Command started
@@ -186,6 +186,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -231,12 +233,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -245,8 +247,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -298,6 +298,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -342,7 +343,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -2544,6 +2544,7 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -a syntax/pa_lwt.cmo -o syntax/lwt-syntax.cma
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -safe-string -syntax camlp4o -syntax camlp4o -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -I syntax -o syntax/pa_lwt_options.cmx syntax/pa_lwt_options.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -safe-string -syntax camlp4o -syntax camlp4o -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -I syntax -o syntax/pa_lwt.cmx syntax/pa_lwt.ml
+- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -a syntax/pa_lwt.cmx -o syntax/lwt-syntax.cmxa
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared syntax/lwt-syntax.cmxa syntax/pa_lwt.cmx -o syntax/lwt-syntax.cmxs
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -a syntax/pa_lwt_options.cmo -o syntax/lwt-syntax-options.cma
@@ -2579,7 +2580,6 @@ The following actions will be performed:
 - + /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -safe-string -package ppx_tools.metaquot -package compiler-libs.common -I ppx -o ppx/ppx_lwt_ex.cmx ppx/ppx_lwt_ex.ml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -linkpkg -g -linkpkg -package ppx_tools.metaquot -package compiler-libs.common ppx/ppx_lwt_ex.cmx -o ppx/ppx_lwt_ex.native
-- ocamlfind: Package `wikidoc' not found
 - + /home/opam/.opam/system/bin/ocamlfind ocamlopt -linkpkg -g -linkpkg -package ppx_tools.metaquot -package compiler-libs.common ppx/ppx_lwt_ex.cmx -o ppx/ppx_lwt_ex.native
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml, /usr/lib/ocaml/compiler-libs
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -package unix -package bytes -package bigarray -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -modules examples/unix/logging.ml > examples/unix/logging.ml.depends
@@ -2890,44 +2890,44 @@ The following actions will be performed:
 - pkg_unix: ............................................ /usr/lib/ocaml
 - pkg_threads: ......................................... /usr/lib/ocaml
 - 
-- I: Running command '/usr/bin/ocamlc.opt -config > '/tmp/oasis-334de4.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %v findlib > '/tmp/oasis-a806e1.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -predicates native dynlink -format %d/%a > '/tmp/oasis-0213e5.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d camlp4.lib > '/tmp/oasis-6934e0.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d camlp4.quotations.r > '/tmp/oasis-b73dd7.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d estring > '/tmp/oasis-45f692.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d csv > '/tmp/oasis-86cab9.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d batteries > '/tmp/oasis-eaee2b.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d sqlite3 > '/tmp/oasis-23297e.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d estring > '/tmp/oasis-64e28d.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d estring > '/tmp/oasis-d9cb43.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d lwt > '/tmp/oasis-0a2444.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %v lwt > '/tmp/oasis-36602c.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d lwt.syntax > '/tmp/oasis-512006.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d lwt.unix > '/tmp/oasis-dceb61.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d unix > '/tmp/oasis-105033.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d threads > '/tmp/oasis-3bed22.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -predicates native dynlink -format %d/%a > '/tmp/oasis-bc950c.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %v findlib > '/tmp/oasis-7b4d02.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -predicates native dynlink -format %d/%a > '/tmp/oasis-924707.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d camlp4.lib > '/tmp/oasis-8bde94.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d camlp4.quotations.r > '/tmp/oasis-e5cc47.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d estring > '/tmp/oasis-3bb39f.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d csv > '/tmp/oasis-df141b.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d batteries > '/tmp/oasis-2861c8.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d sqlite3 > '/tmp/oasis-d26b65.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d lwt > '/tmp/oasis-783861.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %v lwt > '/tmp/oasis-bbebab.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d lwt.syntax > '/tmp/oasis-3812ee.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d lwt.unix > '/tmp/oasis-a0acf6.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d unix > '/tmp/oasis-95a8ba.txt''
-- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d threads > '/tmp/oasis-e17a03.txt''
+- I: Running command '/usr/bin/ocamlc.opt -config > '/tmp/oasis-8a0bd3.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %v findlib > '/tmp/oasis-d9d87c.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -predicates native dynlink -format %d/%a > '/tmp/oasis-f73dee.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d camlp4.lib > '/tmp/oasis-497819.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d camlp4.quotations.r > '/tmp/oasis-e8bd3f.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d estring > '/tmp/oasis-f9c761.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d csv > '/tmp/oasis-a28ff4.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d batteries > '/tmp/oasis-abf1f2.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d sqlite3 > '/tmp/oasis-549fd5.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d estring > '/tmp/oasis-44a48f.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d estring > '/tmp/oasis-ec7b0c.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d lwt > '/tmp/oasis-393e71.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %v lwt > '/tmp/oasis-42a975.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d lwt.syntax > '/tmp/oasis-382c60.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d lwt.unix > '/tmp/oasis-f8330a.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d unix > '/tmp/oasis-242487.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d threads > '/tmp/oasis-e17239.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -predicates native dynlink -format %d/%a > '/tmp/oasis-0bc2bc.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %v findlib > '/tmp/oasis-5d3588.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -predicates native dynlink -format %d/%a > '/tmp/oasis-defcd8.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d camlp4.lib > '/tmp/oasis-fb311c.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d camlp4.quotations.r > '/tmp/oasis-ef5d43.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d estring > '/tmp/oasis-6f111e.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d csv > '/tmp/oasis-6f9c1c.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d batteries > '/tmp/oasis-8846b5.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d sqlite3 > '/tmp/oasis-9454d8.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d lwt > '/tmp/oasis-74b7a2.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %v lwt > '/tmp/oasis-085410.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d lwt.syntax > '/tmp/oasis-bf7fd9.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d lwt.unix > '/tmp/oasis-9fa5cf.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d unix > '/tmp/oasis-f2e47f.txt''
+- I: Running command '/home/opam/.opam/system/bin/ocamlfind query -format %d threads > '/tmp/oasis-c0d15a.txt''
 [sqlexpr: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-build" (CWD=/home/opam/.opam/system/build/sqlexpr.0.5.5)
+- I: Running command '/usr/bin/ocamlbuild sqlexpr_syntax.cma sqlexpr_syntax.cmxs sqlexpr_syntax.cmxa sqlexpr_syntax.a sqlexpr.cma sqlexpr.cmxs sqlexpr.cmxa sqlexpr.a -tag debug'
 - /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
 - ocamlfind ocamldep -package unix -package threads -package sqlite3 -package lwt.unix -package lwt.syntax -package lwt -package estring -package csv -package camlp4.quotations.r -package camlp4.lib -package batteries -syntax camlp4o -modules pa_sql.ml > pa_sql.ml.depends
 - ocamlfind ocamlc -c -g -package unix -package threads -package sqlite3 -package lwt.unix -package lwt.syntax -package lwt -package estring -package csv -package camlp4.quotations.r -package camlp4.lib -package batteries -syntax camlp4o -thread -o pa_sql.cmo pa_sql.ml
-- I: Running command '/usr/bin/ocamlbuild sqlexpr_syntax.cma sqlexpr_syntax.cmxs sqlexpr_syntax.cmxa sqlexpr_syntax.a sqlexpr.cma sqlexpr.cmxs sqlexpr.cmxa sqlexpr.a -tag debug'
 - ocamlfind ocamlc -a pa_sql.cmo -o sqlexpr_syntax.cma
 - ocamlfind ocamlopt -c -g -package unix -package threads -package sqlite3 -package lwt.unix -package lwt.syntax -package lwt -package estring -package csv -package camlp4.quotations.r -package camlp4.lib -package batteries -syntax camlp4o -thread -o pa_sql.cmx pa_sql.ml
 - ocamlfind ocamlopt -a pa_sql.cmx -o sqlexpr_syntax.cmxa
