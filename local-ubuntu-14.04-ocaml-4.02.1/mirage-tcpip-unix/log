@@ -1,15 +1,15 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux ubuntu
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=mirage-tcpip-unix
+# Detecting depexts using flags: x86_64 linux ubuntu
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=mirage-tcpip-unix
 # The following system packages are needed:
 #  - m4
 #  - time
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=mirage-tcpip-unix
++ dpkg-query -W -f '${Package} ${Status}\n' m4 time 2>/dev/null
 # The following new OS packages need to be installed: time
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ dpkg-query -W -f '${Package} ${Status}\n' m4 time 2>/dev/null
 + sudo apt-get update
 Ign http://download.opensuse.org  InRelease
 Hit http://download.opensuse.org  Release.gpg
@@ -42,20 +42,20 @@ Hit http://archive.ubuntu.com trusty-security/universe Sources
 Hit http://archive.ubuntu.com trusty-security/main amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/universe amd64 Packages
-Fetched 1603 kB in 5s (293 kB/s)
+Fetched 1603 kB in 6s (265 kB/s)
 Reading package lists...
 + sudo apt-get install -qq -yy time
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy time
 debconf: unable to initialize frontend: Dialog
+Selecting previously unselected package time.
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
 debconf: unable to initialize frontend: Readline
 debconf: (This frontend requires a controlling tty.)
 debconf: falling back to frontend: Teletype
 dpkg-preconfigure: unable to re-open stdin: 
-Selecting previously unselected package time.
 (Reading database ... 22870 files and directories currently installed.)
 Preparing to unpack .../archives/time_1.7-24_amd64.deb ...
 Unpacking time (1.7-24) ...
@@ -90,12 +90,12 @@ The following actions will be performed:
 [cppo: from default] Command started
 [cstruct: from default] Command started
 [io-page: from default] Command started
-[io-page: from default] Command started
-[default] http://opam-archive:8080/archives/io-page.1.5.1+opam.tar.gz downloaded
-[io-page-unix: from default] Command started
 [cppo: from default] Command started
-[cstruct: from default] Command started
+[io-page: from default] Command started
 [default] http://opam-archive:8080/archives/cppo.1.1.2+opam.tar.gz downloaded
+[io-page-unix: from default] Command started
+[cstruct: from default] Command started
+[default] http://opam-archive:8080/archives/io-page.1.5.1+opam.tar.gz downloaded
 [ipaddr: from default] Command started
 [io-page-unix: from default] Command started
 [default] http://opam-archive:8080/archives/cstruct.1.6.0+opam.tar.gz downloaded
@@ -112,9 +112,9 @@ The following actions will be performed:
 [mirage-net-unix: from default] Command started
 [default] http://opam-archive:8080/archives/mirage-clock-unix.1.0.0+opam.tar.gz downloaded
 [mirage-tcpip-unix: from default] Command started
-[mirage-profile: from default] Command started
 [default] http://opam-archive:8080/archives/mirage-net-unix.1.0.0+opam.tar.gz downloaded
 [mirage-types: from default] Command started
+[mirage-profile: from default] Command started
 [mirage-tcpip-unix: from default] Command started
 [default] http://opam-archive:8080/archives/mirage-profile.0.5+opam.tar.gz downloaded
 [mirage-unix: from default] Command started
@@ -125,9 +125,9 @@ The following actions will be performed:
 [ocplib-endian: from default] Command started
 [mirage-unix: from default] Command started
 [ocamlfind: from default] Command started
+[ocplib-endian: from default] Command started
 [default] http://opam-archive:8080/archives/mirage-unix.1.0.0+opam.tar.gz downloaded
 [ounit: from default] Command started
-[ocplib-endian: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [ppx_tools: from default] Command started
 [default] http://opam-archive:8080/archives/ocplib-endian.0.8+opam.tar.gz downloaded
@@ -139,9 +139,9 @@ The following actions will be performed:
 [default] http://opam-archive:8080/archives/ppx_tools.0.99.2+opam.tar.gz downloaded
 [tuntap: from default] Command started
 [sexplib: from default] Command started
+[shared-memory-ring: from default] Command started
 [default] http://opam-archive:8080/archives/sexplib.112.35.00+opam.tar.gz downloaded
 [type_conv: from default] Command started
-[shared-memory-ring: from default] Command started
 [tuntap: from default] Command started
 [default] http://opam-archive:8080/archives/shared-memory-ring.1.1.1+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/tuntap.0.7.0+opam.tar.gz downloaded
@@ -522,6 +522,23 @@ The following actions will be performed:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
 [ipaddr: make build] Command started
++ make  (CWD=/home/opam/.opam/system/build/cppo.1.1.2)
+- echo 'let cppo_version = "1.1.2"' > cppo_version.ml
+- ocamlyacc cppo_parser.mly
+- ocamllex cppo_lexer.mll
+- 368 states, 13139 transitions, table size 54764 bytes
+- 3729 additional bytes used for bindings
+- ocamlopt -o cppo -dtypes unix.cmxa str.cmxa cppo_version.ml cppo_types.ml cppo_parser.mli cppo_parser.ml cppo_lexer.ml cppo_command.ml cppo_eval.ml cppo_main.ml
+- cd ocamlbuild_plugin && ocamlbuild -use-ocamlfind ocamlbuild_cppo.cma ocamlbuild_cppo.cmxa ocamlbuild_cppo.a ocamlbuild_cppo.cmxs
+- ocamlfind ocamldep -package ocamlbuild -modules ocamlbuild_cppo.mli > ocamlbuild_cppo.mli.depends
+- ocamlfind ocamlc -c -package ocamlbuild -o ocamlbuild_cppo.cmi ocamlbuild_cppo.mli
+- ocamlfind ocamldep -package ocamlbuild -modules ocamlbuild_cppo.ml > ocamlbuild_cppo.ml.depends
+- ocamlfind ocamlc -c -package ocamlbuild -o ocamlbuild_cppo.cmo ocamlbuild_cppo.ml
+- ocamlfind ocamlc -a -package ocamlbuild ocamlbuild_cppo.cmo -o ocamlbuild_cppo.cma
+- ocamlfind ocamlopt -c -package ocamlbuild -o ocamlbuild_cppo.cmx ocamlbuild_cppo.ml
+- ocamlfind ocamlopt -a -package ocamlbuild ocamlbuild_cppo.cmx -o ocamlbuild_cppo.cmxa
+- ocamlfind ocamlopt -shared -package ocamlbuild ocamlbuild_cppo.cmx -o ocamlbuild_cppo.cmxs
+[cppo: make install-lib] Command started
 + make "build" (CWD=/home/opam/.opam/system/build/ipaddr.1.0.0)
 - ocaml setup.ml -build 
 - /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
@@ -639,23 +656,6 @@ The following actions will be performed:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
 [ipaddr: make install] Command started
-+ make  (CWD=/home/opam/.opam/system/build/cppo.1.1.2)
-- echo 'let cppo_version = "1.1.2"' > cppo_version.ml
-- ocamlyacc cppo_parser.mly
-- ocamllex cppo_lexer.mll
-- 368 states, 13139 transitions, table size 54764 bytes
-- 3729 additional bytes used for bindings
-- ocamlopt -o cppo -dtypes unix.cmxa str.cmxa cppo_version.ml cppo_types.ml cppo_parser.mli cppo_parser.ml cppo_lexer.ml cppo_command.ml cppo_eval.ml cppo_main.ml
-- cd ocamlbuild_plugin && ocamlbuild -use-ocamlfind ocamlbuild_cppo.cma ocamlbuild_cppo.cmxa ocamlbuild_cppo.a ocamlbuild_cppo.cmxs
-- ocamlfind ocamldep -package ocamlbuild -modules ocamlbuild_cppo.mli > ocamlbuild_cppo.mli.depends
-- ocamlfind ocamlc -c -package ocamlbuild -o ocamlbuild_cppo.cmi ocamlbuild_cppo.mli
-- ocamlfind ocamldep -package ocamlbuild -modules ocamlbuild_cppo.ml > ocamlbuild_cppo.ml.depends
-- ocamlfind ocamlc -c -package ocamlbuild -o ocamlbuild_cppo.cmo ocamlbuild_cppo.ml
-- ocamlfind ocamlc -a -package ocamlbuild ocamlbuild_cppo.cmo -o ocamlbuild_cppo.cma
-- ocamlfind ocamlopt -c -package ocamlbuild -o ocamlbuild_cppo.cmx ocamlbuild_cppo.ml
-- ocamlfind ocamlopt -a -package ocamlbuild ocamlbuild_cppo.cmx -o ocamlbuild_cppo.cmxa
-- ocamlfind ocamlopt -shared -package ocamlbuild ocamlbuild_cppo.cmx -o ocamlbuild_cppo.cmxs
-[cppo: make install-lib] Command started
 + make "install-lib" (CWD=/home/opam/.opam/system/build/cppo.1.1.2)
 - ocamlfind install -patch-version 1.1.2 "cppo_ocamlbuild" \
 - 		META ocamlbuild_plugin/_build/ocamlbuild_cppo.cmi ocamlbuild_plugin/_build/ocamlbuild_cppo.cma ocamlbuild_plugin/_build/ocamlbuild_cppo.cmxa ocamlbuild_plugin/_build/ocamlbuild_cppo.a ocamlbuild_plugin/_build/ocamlbuild_cppo.cmxs
@@ -1316,28 +1316,6 @@ The following actions will be performed:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
 [tuntap: make install] Command started
-+ make "PREFIX=/home/opam/.opam/system" "install" (CWD=/home/opam/.opam/system/build/tuntap.0.7.0)
-- ocaml setup.ml -install 
-- File "setup.ml", line 213, characters 8-26:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "setup.ml", line 1793, characters 6-24:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
-- Installed /home/opam/.opam/system/lib/tuntap/tuntap.mli
-- Installed /home/opam/.opam/system/lib/tuntap/libtuntap_stubs.a
-- Installed /home/opam/.opam/system/lib/tuntap/tuntap.cma
-- Installed /home/opam/.opam/system/lib/tuntap/tuntap.cmxa
-- Installed /home/opam/.opam/system/lib/tuntap/tuntap.a
-- Installed /home/opam/.opam/system/lib/tuntap/tuntap.cmxs
-- Installed /home/opam/.opam/system/lib/tuntap/tuntap.cmi
-- Installed /home/opam/.opam/system/lib/tuntap/tuntap.cmx
-- Installed /home/opam/.opam/system/lib/tuntap/META
-- Installed /home/opam/.opam/system/lib/stublibs/dlltuntap_stubs.so
-- Installed /home/opam/.opam/system/lib/stublibs/dlltuntap_stubs.so.owner
-- ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/system/lib/stublibs is not mentioned in ld.conf
--> installed tuntap.0.7.0
-[type_conv: make] Command started
 + ./configure "--prefix" "/home/opam/.opam/system" "--disable-libev" "--enable-camlp4" "--disable-react" "--disable-ssl" "--enable-unix" "--enable-preemptive" "--disable-glib" "--enable-ppx" (CWD=/home/opam/.opam/system/build/lwt.2.4.8)
 - not checking for pkg-config
 - not checking for libev
@@ -1434,6 +1412,28 @@ The following actions will be performed:
 - ocamldoc: ............................................ /usr/bin/ocamldoc
 - 
 [lwt: make build] Command started
++ make "PREFIX=/home/opam/.opam/system" "install" (CWD=/home/opam/.opam/system/build/tuntap.0.7.0)
+- ocaml setup.ml -install 
+- File "setup.ml", line 213, characters 8-26:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "setup.ml", line 1793, characters 6-24:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
+- Installed /home/opam/.opam/system/lib/tuntap/tuntap.mli
+- Installed /home/opam/.opam/system/lib/tuntap/libtuntap_stubs.a
+- Installed /home/opam/.opam/system/lib/tuntap/tuntap.cma
+- Installed /home/opam/.opam/system/lib/tuntap/tuntap.cmxa
+- Installed /home/opam/.opam/system/lib/tuntap/tuntap.a
+- Installed /home/opam/.opam/system/lib/tuntap/tuntap.cmxs
+- Installed /home/opam/.opam/system/lib/tuntap/tuntap.cmi
+- Installed /home/opam/.opam/system/lib/tuntap/tuntap.cmx
+- Installed /home/opam/.opam/system/lib/tuntap/META
+- Installed /home/opam/.opam/system/lib/stublibs/dlltuntap_stubs.so
+- Installed /home/opam/.opam/system/lib/stublibs/dlltuntap_stubs.so.owner
+- ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/system/lib/stublibs is not mentioned in ld.conf
+-> installed tuntap.0.7.0
+[type_conv: make] Command started
 + make  (CWD=/home/opam/.opam/system/build/type_conv.112.01.01)
 - ocamlopt.opt -o setup.exe setup.ml || ocamlopt -o setup.exe setup.ml || ocamlc -o setup.exe setup.ml
 - rm -f setup.cmx setup.cmi setup.o setup.obj setup.cmo
@@ -2387,10 +2387,10 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -safe-string -I src/core -I src/logger -I src/unix -I syntax -syntax camlp4o -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -package unix -package bytes -package bigarray -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -I examples/unix -I src/unix -I syntax -o examples/unix/logging.cmx examples/unix/logging.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -linkpkg -g -I src/unix -linkpkg -package unix -package bytes -package bigarray -package camlp4.quotations.o -package camlp4.extend -package camlp4 syntax/lwt-syntax.cmxa src/core/lwt.cmxa src/logger/lwt-log.cmxa src/unix/lwt-unix.cmxa examples/unix/logging.cmx -o examples/unix/logging.native
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -package unix -package bytes -package bigarray -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -modules examples/unix/relay.ml > examples/unix/relay.ml.depends
-- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -safe-string -I src/core -I src/logger -I src/unix -I syntax -syntax camlp4o -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -package unix -package bytes -package bigarray -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -I examples/unix -I src/unix -I syntax -o examples/unix/relay.cmo examples/unix/relay.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -safe-string -I src/core -I src/logger -I src/unix -I syntax -syntax camlp4o -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -package unix -package bytes -package bigarray -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -I examples/unix -I src/unix -I syntax -o examples/unix/relay.cmx examples/unix/relay.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -linkpkg -g -I src/unix -linkpkg -package unix -package bytes -package bigarray -package camlp4.quotations.o -package camlp4.extend -package camlp4 syntax/lwt-syntax.cmxa src/core/lwt.cmxa src/logger/lwt-log.cmxa src/unix/lwt-unix.cmxa examples/unix/relay.cmx -o examples/unix/relay.native
+- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -syntax camlp4o -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -package unix -package bytes -package bigarray -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -modules examples/unix/parallelize.ml > examples/unix/parallelize.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -safe-string -I src/core -I src/logger -I src/unix -I syntax -syntax camlp4o -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -package unix -package bytes -package bigarray -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -I examples/unix -I src/unix -I syntax -o examples/unix/parallelize.cmo examples/unix/parallelize.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -safe-string -I src/core -I src/logger -I src/unix -I syntax -syntax camlp4o -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -package unix -package bytes -package bigarray -package camlp4.quotations.o -package camlp4.extend -package camlp4 -syntax camlp4o -I examples/unix -I src/unix -I syntax -o examples/unix/parallelize.cmx examples/unix/parallelize.ml
@@ -3646,8 +3646,6 @@ The following actions will be performed:
 - ocamlfind ocamlc -c -g -annot -bin-annot -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/mirage-clock-unix -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/bytes -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/sexplib -I /home/opam/.opam/system/lib/cstruct -I /usr/lib/ocaml/camlp4 -I /home/opam/.opam/system/lib/cstruct -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/io-page-unix -I /home/opam/.opam/system/lib/mirage-unix -I /home/opam/.opam/system/lib/mirage-types -I /home/opam/.opam/system/lib/ipaddr -I /home/opam/.opam/system/lib/tuntap -I /home/opam/.opam/system/lib/mirage-net-unix -pp 'camlp4o -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/mirage-clock-unix -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/bytes -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/sexplib -I /home/opam/.opam/system/lib/cstruct -I /usr/lib/ocaml/camlp4 -I /home/opam/.opam/system/lib/cstruct cstruct-syntax.cma -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt lwt-syntax-options.cma -I /home/opam/.opam/system/lib/lwt lwt-syntax.cma -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/io-page-unix -I /home/opam/.opam/system/lib/mirage-unix -I /home/opam/.opam/system/lib/mirage-types -I /home/opam/.opam/system/lib/ipaddr -I /home/opam/.opam/system/lib/tuntap -I /home/opam/.opam/system/lib/mirage-net-unix -I /usr/lib/ocaml str.cma' -I lib -I lib/tcp -I lib/dhcp -o lib/checksum.cmi lib/checksum.mli
 - ocamlfind ocamldep -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/mirage-clock-unix -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/bytes -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/sexplib -I /home/opam/.opam/system/lib/cstruct -I /usr/lib/ocaml/camlp4 -I /home/opam/.opam/system/lib/cstruct -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/io-page-unix -I /home/opam/.opam/system/lib/mirage-unix -I /home/opam/.opam/system/lib/mirage-types -I /home/opam/.opam/system/lib/ipaddr -I /home/opam/.opam/system/lib/tuntap -I /home/opam/.opam/system/lib/mirage-net-unix -pp 'camlp4o -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/mirage-clock-unix -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/bytes -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/sexplib -I /home/opam/.opam/system/lib/cstruct -I /usr/lib/ocaml/camlp4 -I /home/opam/.opam/system/lib/cstruct cstruct-syntax.cma -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt lwt-syntax-options.cma -I /home/opam/.opam/system/lib/lwt lwt-syntax.cma -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/io-page-unix -I /home/opam/.opam/system/lib/mirage-unix -I /home/opam/.opam/system/lib/mirage-types -I /home/opam/.opam/system/lib/ipaddr -I /home/opam/.opam/system/lib/tuntap -I /home/opam/.opam/system/lib/mirage-net-unix -I /usr/lib/ocaml str.cma' -modules lib/checksum.ml > lib/checksum.ml.depends
 - ocamlfind ocamldep -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/mirage-clock-unix -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/bytes -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/sexplib -I /home/opam/.opam/system/lib/cstruct -I /usr/lib/ocaml/camlp4 -I /home/opam/.opam/system/lib/cstruct -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/io-page-unix -I /home/opam/.opam/system/lib/mirage-unix -I /home/opam/.opam/system/lib/mirage-types -I /home/opam/.opam/system/lib/ipaddr -I /home/opam/.opam/system/lib/tuntap -I /home/opam/.opam/system/lib/mirage-net-unix -pp 'camlp4o -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/mirage-clock-unix -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/bytes -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/sexplib -I /home/opam/.opam/system/lib/cstruct -I /usr/lib/ocaml/camlp4 -I /home/opam/.opam/system/lib/cstruct cstruct-syntax.cma -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt lwt-syntax-options.cma -I /home/opam/.opam/system/lib/lwt lwt-syntax.cma -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/io-page-unix -I /home/opam/.opam/system/lib/mirage-unix -I /home/opam/.opam/system/lib/mirage-types -I /home/opam/.opam/system/lib/ipaddr -I /home/opam/.opam/system/lib/tuntap -I /home/opam/.opam/system/lib/mirage-net-unix -I /usr/lib/ocaml str.cma' -modules lib/arp.mli > lib/arp.mli.depends
-- ocamlfind ocamlc -c -g -annot -bin-annot -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/mirage-clock-unix -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/bytes -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/sexplib -I /home/opam/.opam/system/lib/cstruct -I /usr/lib/ocaml/camlp4 -I /home/opam/.opam/system/lib/cstruct -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/io-page-unix -I /home/opam/.opam/system/lib/mirage-unix -I /home/opam/.opam/system/lib/mirage-types -I /home/opam/.opam/system/lib/ipaddr -I /home/opam/.opam/system/lib/tuntap -I /home/opam/.opam/system/lib/mirage-net-unix -pp 'camlp4o -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/mirage-clock-unix -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/bytes -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/sexplib -I /home/opam/.opam/system/lib/cstruct -I /usr/lib/ocaml/camlp4 -I /home/opam/.opam/system/lib/cstruct cstruct-syntax.cma -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt lwt-syntax-options.cma -I /home/opam/.opam/system/lib/lwt lwt-syntax.cma -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/io-page-unix -I /home/opam/.opam/system/lib/mirage-unix -I /home/opam/.opam/system/lib/mirage-types -I /home/opam/.opam/system/lib/ipaddr -I /home/opam/.opam/system/lib/tuntap -I /home/opam/.opam/system/lib/mirage-net-unix -I /usr/lib/ocaml str.cma' -I lib -I lib/tcp -I lib/dhcp -o lib/arp.cmi lib/arp.mli
-- ocamlfind ocamldep -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/mirage-clock-unix -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/bytes -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/sexplib -I /home/opam/.opam/system/lib/cstruct -I /usr/lib/ocaml/camlp4 -I /home/opam/.opam/system/lib/cstruct -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/io-page-unix -I /home/opam/.opam/system/lib/mirage-unix -I /home/opam/.opam/system/lib/mirage-types -I /home/opam/.opam/system/lib/ipaddr -I /home/opam/.opam/system/lib/tuntap -I /home/opam/.opam/system/lib/mirage-net-unix -pp 'camlp4o -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/mirage-clock-unix -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/bytes -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/sexplib -I /home/opam/.opam/system/lib/cstruct -I /usr/lib/ocaml/camlp4 -I /home/opam/.opam/system/lib/cstruct cstruct-syntax.cma -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt lwt-syntax-options.cma -I /home/opam/.opam/system/lib/lwt lwt-syntax.cma -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/io-page-unix -I /home/opam/.opam/system/lib/mirage-unix -I /home/opam/.opam/system/lib/mirage-types -I /home/opam/.opam/system/lib/ipaddr -I /home/opam/.opam/system/lib/tuntap -I /home/opam/.opam/system/lib/mirage-net-unix -I /usr/lib/ocaml str.cma' -modules lib/arp.ml > lib/arp.ml.depends
 - + njobs=8
 - + [ unix =  ]
 - + cmd=configure
@@ -3709,6 +3707,8 @@ The following actions will be performed:
 - + OCAMLBUILD_FLAGS=-use-ocamlfind -classic-display -j 8
 - + compile
 - + /usr/bin/ocamlbuild -use-ocamlfind -classic-display -j 8 mirage-tcpip-unix.all
+- ocamlfind ocamlc -c -g -annot -bin-annot -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/mirage-clock-unix -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/bytes -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/sexplib -I /home/opam/.opam/system/lib/cstruct -I /usr/lib/ocaml/camlp4 -I /home/opam/.opam/system/lib/cstruct -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/io-page-unix -I /home/opam/.opam/system/lib/mirage-unix -I /home/opam/.opam/system/lib/mirage-types -I /home/opam/.opam/system/lib/ipaddr -I /home/opam/.opam/system/lib/tuntap -I /home/opam/.opam/system/lib/mirage-net-unix -pp 'camlp4o -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/mirage-clock-unix -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/bytes -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/sexplib -I /home/opam/.opam/system/lib/cstruct -I /usr/lib/ocaml/camlp4 -I /home/opam/.opam/system/lib/cstruct cstruct-syntax.cma -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt lwt-syntax-options.cma -I /home/opam/.opam/system/lib/lwt lwt-syntax.cma -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/io-page-unix -I /home/opam/.opam/system/lib/mirage-unix -I /home/opam/.opam/system/lib/mirage-types -I /home/opam/.opam/system/lib/ipaddr -I /home/opam/.opam/system/lib/tuntap -I /home/opam/.opam/system/lib/mirage-net-unix -I /usr/lib/ocaml str.cma' -I lib -I lib/tcp -I lib/dhcp -o lib/arp.cmi lib/arp.mli
+- ocamlfind ocamldep -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/mirage-clock-unix -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/bytes -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/sexplib -I /home/opam/.opam/system/lib/cstruct -I /usr/lib/ocaml/camlp4 -I /home/opam/.opam/system/lib/cstruct -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/io-page-unix -I /home/opam/.opam/system/lib/mirage-unix -I /home/opam/.opam/system/lib/mirage-types -I /home/opam/.opam/system/lib/ipaddr -I /home/opam/.opam/system/lib/tuntap -I /home/opam/.opam/system/lib/mirage-net-unix -pp 'camlp4o -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/mirage-clock-unix -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/bytes -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/sexplib -I /home/opam/.opam/system/lib/cstruct -I /usr/lib/ocaml/camlp4 -I /home/opam/.opam/system/lib/cstruct cstruct-syntax.cma -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt lwt-syntax-options.cma -I /home/opam/.opam/system/lib/lwt lwt-syntax.cma -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/io-page-unix -I /home/opam/.opam/system/lib/mirage-unix -I /home/opam/.opam/system/lib/mirage-types -I /home/opam/.opam/system/lib/ipaddr -I /home/opam/.opam/system/lib/tuntap -I /home/opam/.opam/system/lib/mirage-net-unix -I /usr/lib/ocaml str.cma' -modules lib/arp.ml > lib/arp.ml.depends
 - ocamlfind ocamldep -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/mirage-clock-unix -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/bytes -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/sexplib -I /home/opam/.opam/system/lib/cstruct -I /usr/lib/ocaml/camlp4 -I /home/opam/.opam/system/lib/cstruct -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/io-page-unix -I /home/opam/.opam/system/lib/mirage-unix -I /home/opam/.opam/system/lib/mirage-types -I /home/opam/.opam/system/lib/ipaddr -I /home/opam/.opam/system/lib/tuntap -I /home/opam/.opam/system/lib/mirage-net-unix -pp 'camlp4o -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/mirage-clock-unix -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/bytes -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/sexplib -I /home/opam/.opam/system/lib/cstruct -I /usr/lib/ocaml/camlp4 -I /home/opam/.opam/system/lib/cstruct cstruct-syntax.cma -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt lwt-syntax-options.cma -I /home/opam/.opam/system/lib/lwt lwt-syntax.cma -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/io-page-unix -I /home/opam/.opam/system/lib/mirage-unix -I /home/opam/.opam/system/lib/mirage-types -I /home/opam/.opam/system/lib/ipaddr -I /home/opam/.opam/system/lib/tuntap -I /home/opam/.opam/system/lib/mirage-net-unix -I /usr/lib/ocaml str.cma' -modules lib/ethif.mli > lib/ethif.mli.depends
 - ocamlfind ocamlc -c -g -annot -bin-annot -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/mirage-clock-unix -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/bytes -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/sexplib -I /home/opam/.opam/system/lib/cstruct -I /usr/lib/ocaml/camlp4 -I /home/opam/.opam/system/lib/cstruct -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/io-page-unix -I /home/opam/.opam/system/lib/mirage-unix -I /home/opam/.opam/system/lib/mirage-types -I /home/opam/.opam/system/lib/ipaddr -I /home/opam/.opam/system/lib/tuntap -I /home/opam/.opam/system/lib/mirage-net-unix -pp 'camlp4o -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/mirage-clock-unix -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/bytes -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/sexplib -I /home/opam/.opam/system/lib/cstruct -I /usr/lib/ocaml/camlp4 -I /home/opam/.opam/system/lib/cstruct cstruct-syntax.cma -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt lwt-syntax-options.cma -I /home/opam/.opam/system/lib/lwt lwt-syntax.cma -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/io-page-unix -I /home/opam/.opam/system/lib/mirage-unix -I /home/opam/.opam/system/lib/mirage-types -I /home/opam/.opam/system/lib/ipaddr -I /home/opam/.opam/system/lib/tuntap -I /home/opam/.opam/system/lib/mirage-net-unix -I /usr/lib/ocaml str.cma' -I lib -I lib/tcp -I lib/dhcp -o lib/ethif.cmi lib/ethif.mli
 - ocamlfind ocamldep -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/mirage-clock-unix -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/bytes -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/sexplib -I /home/opam/.opam/system/lib/cstruct -I /usr/lib/ocaml/camlp4 -I /home/opam/.opam/system/lib/cstruct -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/io-page-unix -I /home/opam/.opam/system/lib/mirage-unix -I /home/opam/.opam/system/lib/mirage-types -I /home/opam/.opam/system/lib/ipaddr -I /home/opam/.opam/system/lib/tuntap -I /home/opam/.opam/system/lib/mirage-net-unix -pp 'camlp4o -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/mirage-clock-unix -I /usr/lib/ocaml -I /home/opam/.opam/system/lib/bytes -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/ocplib-endian -I /home/opam/.opam/system/lib/sexplib -I /home/opam/.opam/system/lib/cstruct -I /usr/lib/ocaml/camlp4 -I /home/opam/.opam/system/lib/cstruct cstruct-syntax.cma -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt lwt-syntax-options.cma -I /home/opam/.opam/system/lib/lwt lwt-syntax.cma -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/lwt -I /home/opam/.opam/system/lib/io-page-unix -I /home/opam/.opam/system/lib/mirage-unix -I /home/opam/.opam/system/lib/mirage-types -I /home/opam/.opam/system/lib/ipaddr -I /home/opam/.opam/system/lib/tuntap -I /home/opam/.opam/system/lib/mirage-net-unix -I /usr/lib/ocaml str.cma' -modules lib/ethif.ml > lib/ethif.ml.depends
