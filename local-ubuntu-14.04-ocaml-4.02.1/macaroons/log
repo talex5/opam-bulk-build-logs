@@ -1,6 +1,6 @@
 + uname -m
-+ uname -s
 # Detecting depexts using flags: x86_64 linux ubuntu
++ uname -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=macaroons
 # The following system packages are needed:
 #  - m4
@@ -42,7 +42,7 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [32.0 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [382 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [143 kB]
-Fetched 2350 kB in 5s (394 kB/s)
+Fetched 2350 kB in 5s (449 kB/s)
 Reading package lists...
 + sudo apt-get install -qq -yy time
 # OS package update successful
@@ -80,15 +80,15 @@ The following actions will be performed:
 [cppo: from default] Command started
 [cstruct: from default] Command started
 [cppo: from default] Command started
-[default] http://opam-archive:8080/archives/cppo.1.1.2+opam.tar.gz downloaded
-[hex: from default] Command started
 [base64: from default] Command started
 [cstruct: from default] Command started
+[default] http://opam-archive:8080/archives/cppo.1.1.2+opam.tar.gz downloaded
+[hex: from default] Command started
 [default] http://opam-archive:8080/archives/base64.2.0.0+opam.tar.gz downloaded
 [macaroons: from default] Command started
-[hex: from default] Command started
 [default] http://opam-archive:8080/archives/cstruct.1.6.0+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
+[hex: from default] Command started
 [default] http://opam-archive:8080/archives/hex.0.2.0+opam.tar.gz downloaded
 [ocplib-endian: from default] Command started
 [macaroons: from default] Command started
@@ -191,6 +191,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -236,13 +238,18 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 		cp topfind.ml.in topfind.ml;                             \
+- 	else                                                             \
+- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 			> topfind.ml ;                                   \
+- 	fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -251,13 +258,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 		cp topfind.ml.in topfind.ml;                             \
-- 	else                                                             \
-- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 			> topfind.ml ;                                   \
-- 	fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -303,7 +303,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -348,6 +347,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -898,6 +898,9 @@ The following actions will be performed:
 - 
 - ./setup.exe -build 
 - ocamlfind ocamlopt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa -linkpkg myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
+- W: Cannot find source file matching module 'sexplib_unix' in library sexplib_unix
+- W: Cannot find source file matching module 'sexplib_num' in library sexplib_num
+- W: Cannot find source file matching module 'sexplib' in library sexplib
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bigarray -modules lib/conv.mli > lib/conv.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bigarray -modules lib/sexp.mli > lib/sexp.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bigarray -modules lib/sexp_intf.ml > lib/sexp_intf.ml.depends
@@ -917,9 +920,6 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package bigarray -I lib -o lib/parser_with_layout.cmi lib/parser_with_layout.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package bigarray -I lib -o lib/lexer.cmi lib/lexer.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -pp 'cpp -undef -traditional -Isyntax -w' -package bigarray -I lib -o lib/pre_sexp.cmo lib/pre_sexp.ml
-- W: Cannot find source file matching module 'sexplib_unix' in library sexplib_unix
-- W: Cannot find source file matching module 'sexplib_num' in library sexplib_num
-- W: Cannot find source file matching module 'sexplib' in library sexplib
 - + /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -pp 'cpp -undef -traditional -Isyntax -w' -package bigarray -I lib -o lib/pre_sexp.cmo lib/pre_sexp.ml
 - File "lib/pre_sexp.ml", line 35, characters 12-25:
 - Warning 3: deprecated: String.create
