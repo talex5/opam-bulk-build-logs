@@ -1,10 +1,10 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux debian
 + uname -s
+# Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=spdiff
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=spdiff
 # The following system packages are needed:
 #  - m4
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=spdiff
 + dpkg-query -W -f '${Package} ${Status}\n' m4 2>/dev/null
 # All required OS packages found.
 The following actions will be performed:
@@ -18,8 +18,8 @@ The following actions will be performed:
 [ocamlfind: from default] Command started
 [spdiff: from default] Command started
 [ocamlfind: from default] Command started
-[menhir: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[menhir: from default] Command started
 [default] http://opam-archive:8080/archives/menhir.20140422+opam.tar.gz downloaded
 [spdiff: from default] Command started
 [default] http://opam-archive:8080/archives/spdiff.0.1+opam.tar.gz downloaded
@@ -104,6 +104,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -149,12 +151,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -163,8 +165,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -1473,6 +1473,14 @@ The following actions will be performed:
 - ocamlc -g -dtypes -I ocamlextra -I ocollection   -c ocamlextra/suffix_tree_ext.mli
 - ocamlopt  -I ocamlextra -I ocollection   -c ocamlextra/suffix_tree_ext.ml
 - ocamlopt  -I ocamlextra -I ocollection  -a -o commons.cmxa ocamlextra/dumper.cmx ocamlextra/ANSITerminal.cmx ocamlextra/setb.cmx ocamlextra/mapb.cmx ocamlextra/setPt.cmx common.cmx common_extra.cmx interfaces.cmx objet.cmx ocollection.cmx seti.cmx oset.cmx oassoc.cmx osequence.cmx ograph.cmx ocollection/oseti.cmx ocollection/oseth.cmx ocollection/osetb.cmx ocollection/osetpt.cmx ocollection/oassocb.cmx ocollection/oassoch.cmx ocollection/oassoc_buffer.cmx ocollection/oassoc_cache.cmx ocollection/oassocid.cmx oarray.cmx ocollection/ograph2way.cmx ograph_extended.cmx ofullcommon.cmx glimpse.cmx parser_combinators.cmx ocamlextra/enum.cmx ocamlextra/dynArray.cmx ocamlextra/suffix_tree.cmx ocamlextra/suffix_tree_ext.cmx
+- make[1]: Leaving directory '/home/opam/.opam/4.02.1/build/spdiff.0.1/localcocci/commons'
+- make[1]: Entering directory '/home/opam/.opam/4.02.1/build/spdiff.0.1/localcocci/globals'
+- ocamlopt   -c flag.ml
+- ocamlopt   -c config.ml
+- ocamlopt   -a -o globals.cmxa flag.cmx config.cmx
+- make[1]: Leaving directory '/home/opam/.opam/4.02.1/build/spdiff.0.1/localcocci/globals'
+- make[1]: Entering directory '/home/opam/.opam/4.02.1/build/spdiff.0.1/localcocci/menhirlib'
+- ocamlopt  -for-pack MenhirLib     -c infiniteArray.ml
 - File "ocamlextra/suffix_tree.ml", line 52, characters 13-14:
 - Warning 3: deprecated: Pervasives.&
 - Use (&&) instead.
@@ -1503,14 +1511,6 @@ The following actions will be performed:
 - File "ocamlextra/suffix_tree_ext.ml", line 272, characters 24-25:
 - Warning 3: deprecated: Pervasives.&
 - Use (&&) instead.
-- make[1]: Leaving directory '/home/opam/.opam/4.02.1/build/spdiff.0.1/localcocci/commons'
-- make[1]: Entering directory '/home/opam/.opam/4.02.1/build/spdiff.0.1/localcocci/globals'
-- ocamlopt   -c flag.ml
-- ocamlopt   -c config.ml
-- ocamlopt   -a -o globals.cmxa flag.cmx config.cmx
-- make[1]: Leaving directory '/home/opam/.opam/4.02.1/build/spdiff.0.1/localcocci/globals'
-- make[1]: Entering directory '/home/opam/.opam/4.02.1/build/spdiff.0.1/localcocci/menhirlib'
-- ocamlopt  -for-pack MenhirLib     -c infiniteArray.ml
 - ocamlopt  -for-pack MenhirLib     -c packedIntArray.ml
 - ocamlopt  -for-pack MenhirLib     -c rowDisplacement.ml
 - ocamlopt  -for-pack MenhirLib     -c engineTypes.ml
@@ -1525,6 +1525,7 @@ The following actions will be performed:
 - ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c flag_parsing_cocci.ml
 - ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c type_cocci.mli
 - ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c type_cocci.ml
+- ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c ast_cocci.mli
 - File "packedIntArray.ml", line 91, characters 6-19:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -1537,7 +1538,6 @@ The following actions will be performed:
 - File "packedIntArray.ml", line 145, characters 1-46:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c ast_cocci.mli
 - ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c ast_cocci.ml
 - ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c ast0_cocci.mli
 - ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c ast0_cocci.ml
@@ -1556,11 +1556,11 @@ The following actions will be performed:
 - ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c compute_lines.ml
 - ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c comm_assoc.mli
 - ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c comm_assoc.ml
-- ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c iso_pattern.mli
-- ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c iso_pattern.ml
 - File "comm_assoc.ml", line 18, characters 20-22:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
+- ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c iso_pattern.mli
+- ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c iso_pattern.ml
 - File "iso_pattern.ml", line 238, characters 20-22:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
@@ -1634,10 +1634,6 @@ The following actions will be performed:
 - ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c iso_compile.ml
 - ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c single_statement.mli
 - ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c single_statement.ml
-- ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c simple_assignments.mli
-- ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c simple_assignments.ml
-- ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c ast0toast.mli
-- ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c ast0toast.ml
 - File "single_statement.ml", line 88, characters 17-19:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
@@ -1659,6 +1655,10 @@ The following actions will be performed:
 - File "single_statement.ml", line 231, characters 16-18:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
+- ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c simple_assignments.mli
+- ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c simple_assignments.ml
+- ocamlc -g -dtypes -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c ast0toast.mli
+- ocamlopt  -I ../commons -I ../commons/ocamlextra -I ../globals -I ../menhirlib -c ast0toast.ml
 - File "ast0toast.ml", line 53, characters 8-10:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
@@ -1845,12 +1845,6 @@ The following actions will be performed:
 - ocamlopt.opt -g -dtypes -I localcocci/commons -I localcocci/commons/ocamlextra -I localcocci/globals -I localcocci/commons/ocollection -I localcocci/globals -I localcocci/parsing_c   -c hashcons.ml
 - ocamlopt.opt -g -dtypes -I localcocci/commons -I localcocci/commons/ocamlextra -I localcocci/globals -I localcocci/commons/ocollection -I localcocci/globals -I localcocci/parsing_c   -c jconfig.ml
 - ocamlopt.opt -g -dtypes -I localcocci/commons -I localcocci/commons/ocamlextra -I localcocci/globals -I localcocci/commons/ocollection -I localcocci/globals -I localcocci/parsing_c   -c gtree.ml
-- File "hashcons.ml", line 40, characters 12-24:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
-- File "hashcons.ml", line 179, characters 14-26:
-- Warning 3: deprecated: Array.create
-- Use Array.make instead.
 - ocamlopt.opt -g -dtypes -I localcocci/commons -I localcocci/commons/ocamlextra -I localcocci/globals -I localcocci/commons/ocollection -I localcocci/globals -I localcocci/parsing_c   -c env.ml
 - ocamlopt.opt -g -dtypes -I localcocci/commons -I localcocci/commons/ocamlextra -I localcocci/globals -I localcocci/commons/ocollection -I localcocci/globals -I localcocci/parsing_c   -c gtree_util.ml
 - ocamlopt.opt -g -dtypes -I localcocci/commons -I localcocci/commons/ocamlextra -I localcocci/globals -I localcocci/commons/ocollection -I localcocci/globals -I localcocci/parsing_c   -c util.ml
@@ -1865,6 +1859,12 @@ The following actions will be performed:
 - ocamlc.opt -g -dtypes -custom   -I localcocci/commons -I localcocci/commons/ocamlextra -I localcocci/globals -I localcocci/commons/ocollection -I localcocci/globals -I localcocci/parsing_c  -c control_flow_c2.mli
 - ocamlopt.opt -g -dtypes -I localcocci/commons -I localcocci/commons/ocamlextra -I localcocci/globals -I localcocci/commons/ocollection -I localcocci/globals -I localcocci/parsing_c   -c control_flow_c2.ml
 - ocamlopt.opt -g -dtypes -I localcocci/commons -I localcocci/commons/ocamlextra -I localcocci/globals -I localcocci/commons/ocollection -I localcocci/globals -I localcocci/parsing_c   -c ast_to_flow2.ml
+- File "hashcons.ml", line 40, characters 12-24:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
+- File "hashcons.ml", line 179, characters 14-26:
+- Warning 3: deprecated: Array.create
+- Use Array.make instead.
 - ocamlopt.opt -g -dtypes -I localcocci/commons -I localcocci/commons/ocamlextra -I localcocci/globals -I localcocci/commons/ocollection -I localcocci/globals -I localcocci/parsing_c   -c msa.ml
 - ocamlopt.opt -g -dtypes -I localcocci/commons -I localcocci/commons/ocamlextra -I localcocci/globals -I localcocci/commons/ocollection -I localcocci/globals -I localcocci/parsing_c   -c diff.ml
 - ocamlopt.opt -g -dtypes -I localcocci/commons -I localcocci/commons/ocamlextra -I localcocci/globals -I localcocci/commons/ocollection -I localcocci/globals -I localcocci/parsing_c   -c reader.ml
