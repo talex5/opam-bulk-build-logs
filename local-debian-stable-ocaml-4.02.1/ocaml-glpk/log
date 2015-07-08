@@ -2,29 +2,29 @@
 + uname -s
 # Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=ocaml-glpk
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=ocaml-glpk
 # The following system packages are needed:
 #  - libglpk-dev
 #  - m4
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=ocaml-glpk
 + dpkg-query -W -f '${Package} ${Status}\n' libglpk-dev m4 2>/dev/null
-+ sudo apt-get update
 # The following new OS packages need to be installed: libglpk-dev
 Not running as root, the following command will be run through "sudo":
     apt-get update
-Get:1 http://security.debian.org stable/updates InRelease [63.1 kB]
++ sudo apt-get update
+Hit http://security.debian.org stable/updates InRelease
 Ign http://download.opensuse.org  InRelease
 Hit http://httpredir.debian.org stable InRelease
-Get:2 http://httpredir.debian.org stable-updates InRelease [133 kB]
+Get:1 http://httpredir.debian.org stable-updates InRelease [133 kB]
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Get:3 http://security.debian.org stable/updates/main amd64 Packages [132 kB]
-Get:4 http://httpredir.debian.org stable/main amd64 Packages [9038 kB]
-Get:5 http://download.opensuse.org  Packages [5783 B]
-Get:6 http://httpredir.debian.org stable-updates/main amd64 Packages [3616 B]
-Fetched 9375 kB in 3s (2408 kB/s)
+Get:2 http://security.debian.org stable/updates/main amd64 Packages [132 kB]
+Get:3 http://httpredir.debian.org stable/main amd64 Packages [9038 kB]
+Get:4 http://download.opensuse.org  Packages [5783 B]
+Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3616 B]
+Fetched 9312 kB in 4s (2153 kB/s)
 Reading package lists...
-# OS package update successful
 + sudo apt-get install -qq -yy libglpk-dev
+# OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libglpk-dev
 debconf: unable to initialize frontend: Dialog
@@ -150,9 +150,9 @@ The following actions will be performed:
 [ocaml-glpk: from default] Command started
 [ocamlfind: from default] Command started
 [ocaml-glpk: from default] Command started
-[default] http://opam-archive:8080/archives/ocaml-glpk.0.1.6+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocaml-glpk.0.1.6+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -185,8 +185,7 @@ The following actions will be performed:
 - Configuration for ocamlbuild written to site-lib-src/ocamlbuild/META
 - Configuration for compiler-libs written to site-lib-src/compiler-libs/META
 - Configuration for bytes written to site-lib-src/bytes/META
-- Detecting compiler arguments: (extractor built) 
-- ok
+- Detecting compiler arguments: (extractor built) ok
 - 
 - About the OCAML core installation:
 -     Standard library:      /home/opam/.opam/4.02.1/lib/ocaml
@@ -235,6 +234,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -280,12 +281,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -294,8 +295,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -346,7 +345,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -391,6 +389,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -2632,44 +2631,7 @@ The following actions will be performed:
 -  #define Lpx_val(v) (*((LPX**)Data_custom_val(v)))
 -                            ^
 - glpk_stubs.c:472:13: note: in expansion of macro 'Lpx_val'
--[ERROR] The compilation of ocaml-glpk failed at "make".
-
-#=== ERROR while installing ocaml-glpk.0.1.6 ==================================#
-# opam-version         1.2.2 (c30ed46b7e70bcf0f872e482cbcbf6a1fa0c60b3)
-# os                   linux
-# command              make
-# path                 /home/opam/.opam/4.02.1/build/ocaml-glpk.0.1.6
-# compiler             4.02.1
-# exit-code            2
-# env-file             /home/opam/.opam/4.02.1/build/ocaml-glpk.0.1.6/ocaml-glpk-11-b76d46.env
-# stdout-file          /home/opam/.opam/4.02.1/build/ocaml-glpk.0.1.6/ocaml-glpk-11-b76d46.out
-# stderr-file          /home/opam/.opam/4.02.1/build/ocaml-glpk.0.1.6/ocaml-glpk-11-b76d46.err
-### stdout ###
-# [...]
-# making ._bcdi/glpk.di from glpk.mli
-# making ._d/glpk.d from glpk.ml
-# ocamlc -c -cc "cc" -ccopt "-fPIC -Wall -ansi -DCAML_NAME_SPACE -g \
-# 			-DPIC   \
-# 			    -o glpk_stubs.o " glpk_stubs.c 
-# OCamlMakefile:1013: recipe for target 'glpk_stubs.o' failed
-# make[2]: Leaving directory '/home/opam/.opam/4.02.1/build/ocaml-glpk.0.1.6/src'
-# OCamlMakefile:716: recipe for target 'byte-code-library' failed
-# make[1]: Leaving directory '/home/opam/.opam/4.02.1/build/ocaml-glpk.0.1.6/src'
-# Makefile:13: recipe for target 'byte' failed
-### stderr ###
-# [...]
-# glpk_stubs.c:523:23: note: in expansion of macro 'Lpx_val'
-#    if (lpx_write_cpxlp(Lpx_val(blp), String_val(fname)))
-#                        ^
-# glpk_stubs.c: At top level:
-# glpk_stubs.c:89:33: warning: 'lpx_ops' defined but not used [-Wunused-variable]
-#  static struct custom_operations lpx_ops =
-#                                  ^
-# make[2]: *** [glpk_stubs.o] Error 2
-# make[1]: *** [byte-code-library] Error 2
-# make: *** [byte] Error 2
-
-    LPX *lp = Lpx_val(blp); \
+-    LPX *lp = Lpx_val(blp); \
 -              ^
 - glpk_stubs.c:506:1: note: in expansion of macro 'BIND_INT_PARAM'
 -  BIND_INT_PARAM(iteration_limit, LPX_K_ITLIM);
@@ -3337,7 +3299,8 @@ The following actions will be performed:
 - glpk_stubs.c:82:29: error: expected expression before ')' token
 -  #define Lpx_val(v) (*((LPX**)Data_custom_val(v)))
 -                              ^
-- glpk_stubs.c:477:13: note: in expansion of macro 'Lpx_val'
+- glpk_stubs.c:477:13[ERROR] The compilation of ocaml-glpk failed at "make".
+: note: in expansion of macro 'Lpx_val'
 -    LPX *lp = Lpx_val(blp); \
 -              ^
 - glpk_stubs.c:511:1: note: in expansion of macro 'BIND_INT_PARAM'
@@ -3435,6 +3398,42 @@ The following changes have been performed
    `opam depext ocaml-glpk.0.1.6' may help you find the correct installation
    for your system.
 
+#=== ERROR while installing ocaml-glpk.0.1.6 ==================================#
+# opam-version         1.2.2 (c30ed46b7e70bcf0f872e482cbcbf6a1fa0c60b3)
+# os                   linux
+# command              make
+# path                 /home/opam/.opam/4.02.1/build/ocaml-glpk.0.1.6
+# compiler             4.02.1
+# exit-code            2
+# env-file             /home/opam/.opam/4.02.1/build/ocaml-glpk.0.1.6/ocaml-glpk-5-b76d46.env
+# stdout-file          /home/opam/.opam/4.02.1/build/ocaml-glpk.0.1.6/ocaml-glpk-5-b76d46.out
+# stderr-file          /home/opam/.opam/4.02.1/build/ocaml-glpk.0.1.6/ocaml-glpk-5-b76d46.err
+### stdout ###
+# [...]
+# making ._bcdi/glpk.di from glpk.mli
+# making ._d/glpk.d from glpk.ml
+# ocamlc -c -cc "cc" -ccopt "-fPIC -Wall -ansi -DCAML_NAME_SPACE -g \
+# 			-DPIC   \
+# 			    -o glpk_stubs.o " glpk_stubs.c 
+# OCamlMakefile:1013: recipe for target 'glpk_stubs.o' failed
+# make[2]: Leaving directory '/home/opam/.opam/4.02.1/build/ocaml-glpk.0.1.6/src'
+# OCamlMakefile:716: recipe for target 'byte-code-library' failed
+# make[1]: Leaving directory '/home/opam/.opam/4.02.1/build/ocaml-glpk.0.1.6/src'
+# Makefile:13: recipe for target 'byte' failed
+### stderr ###
+# [...]
+# glpk_stubs.c:523:23: note: in expansion of macro 'Lpx_val'
+#    if (lpx_write_cpxlp(Lpx_val(blp), String_val(fname)))
+#                        ^
+# glpk_stubs.c: At top level:
+# glpk_stubs.c:89:33: warning: 'lpx_ops' defined but not used [-Wunused-variable]
+#  static struct custom_operations lpx_ops =
+#                                  ^
+# make[2]: *** [glpk_stubs.o] Error 2
+# make[1]: *** [byte-code-library] Error 2
+# make: *** [byte] Error 2
+
+
 The former state can be restored with:
-    opam switch import "~/.opam/4.02.1/backup/state-20150604004925.export"
+    opam switch import "~/.opam/4.02.1/backup/state-20150604125626.export"
 'opam install ocaml-glpk' failed.
