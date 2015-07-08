@@ -1,7 +1,7 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux "centos"
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,"centos" --required-by=mirage-net-direct
+# Detecting depexts using flags: x86_64 linux "centos"
 + opam list --safe --recursive --external=source,x86_64,linux,"centos" --required-by=mirage-net-direct
 # No extra OS packages requirements found.
 The following actions will be performed:
@@ -27,8 +27,8 @@ The following actions will be performed:
 [cstruct: from default] Command started
 [fd-send-recv: from default] Command started
 [ipaddr: from default] Command started
-[cstruct: from default] Command started
 [fd-send-recv: from default] Command started
+[cstruct: from default] Command started
 [ipaddr: from default] Command started
 [default] http://opam-archive:8080/archives/fd-send-recv.1.0.1+opam.tar.gz downloaded
 [lwt: from default] Command started
@@ -54,21 +54,21 @@ The following actions will be performed:
 [ounit: from default] Command started
 [default] http://opam-archive:8080/archives/ocplib-endian.0.4+opam.tar.gz downloaded
 [sexplib: from default] Command started
-[ounit: from default] Command started
-[default] http://opam-archive:8080/archives/ounit.2.0.0+opam.tar.gz downloaded
+[optcomp: from default] Command started
+[default] http://opam-archive:8080/archives/optcomp.1.6+opam.tar.gz downloaded
 [shared-memory-ring: from default] Command started
+[sexplib: from default] Command started
+[default] http://opam-archive:8080/archives/sexplib.112.35.00+opam.tar.gz downloaded
+[tuntap: from default] Command started
 [shared-memory-ring: from default] Command started
 [default] http://opam-archive:8080/archives/shared-memory-ring.1.1.0+opam.tar.gz downloaded
-[tuntap: from default] Command started
+[type_conv: from default] Command started
 [tuntap: from default] Command started
 [default] http://opam-archive:8080/archives/tuntap.0.7.0+opam.tar.gz downloaded
 [type_conv: from default] Command started
-[optcomp: from default] Command started
-[default] http://opam-archive:8080/archives/optcomp.1.6+opam.tar.gz downloaded
-[sexplib: from default] Command started
-[default] http://opam-archive:8080/archives/sexplib.112.35.00+opam.tar.gz downloaded
-[type_conv: from default] Command started
 [default] http://opam-archive:8080/archives/type_conv.112.01.01+opam.tar.gz downloaded
+[ounit: from default] Command started
+[default] http://opam-archive:8080/archives/ounit.2.0.0+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlp4: sh] Command started
@@ -161,6 +161,7 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
+- ocamlc -I +compiler-libs -g -c frontend.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -206,7 +207,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
@@ -215,14 +215,6 @@ The following actions will be performed:
 - 	sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
 - 		> topfind.ml ;                                   \
 - fi
-- File "frontend.ml", line 32, characters 9-20:
-- Warning 3: deprecated: String.copy
-- File "frontend.ml", line 34, characters 24-36:
-- Warning 3: deprecated: String.set
-- Use Bytes.set instead.
-- File "frontend.ml", line 1769, characters 16-29:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
@@ -234,6 +226,14 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c num_top_printers.mli
 - ocamlc -I +compiler-libs -g -c num_top_printers.ml
 - ocamlc -I +compiler-libs -c num_top.mli
+- File "frontend.ml", line 32, characters 9-20:
+- Warning 3: deprecated: String.copy
+- File "frontend.ml", line 34, characters 24-36:
+- Warning 3: deprecated: String.set
+- Use Bytes.set instead.
+- File "frontend.ml", line 1769, characters 16-29:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - ocamlc -I +compiler-libs -g -c num_top.ml
 - ocamlc -I +compiler-libs -a -o num_top.cma num_top_printers.cmo num_top.cmo
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
@@ -2472,9 +2472,6 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bigarray -modules lib/sexp.ml > lib/sexp.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bigarray -modules lib/sexp_with_layout.ml > lib/sexp_with_layout.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package bigarray -I lib -o lib/sexp_with_layout.cmo lib/sexp_with_layout.ml
-- W: Cannot find source file matching module 'sexplib_unix' in library sexplib_unix
-- W: Cannot find source file matching module 'sexplib_num' in library sexplib_num
-- W: Cannot find source file matching module 'sexplib' in library sexplib
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bigarray -modules lib/src_pos.ml > lib/src_pos.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bigarray -modules lib/std.ml > lib/std.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bigarray -modules lib/type_with_layout.ml > lib/type_with_layout.ml.depends
@@ -2520,6 +2517,9 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package bigarray -for-pack Sexplib -I lib -o lib/src_pos.cmx lib/src_pos.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package bigarray -for-pack Sexplib -I lib -o lib/type_with_layout.cmx lib/type_with_layout.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package bigarray -for-pack Sexplib -I lib -o lib/parser.cmx lib/parser.ml
+- W: Cannot find source file matching module 'sexplib_unix' in library sexplib_unix
+- W: Cannot find source file matching module 'sexplib_num' in library sexplib_num
+- W: Cannot find source file matching module 'sexplib' in library sexplib
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package bigarray -for-pack Sexplib -I lib -o lib/parser_with_layout.cmx lib/parser_with_layout.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package bigarray -for-pack Sexplib -I lib -o lib/lexer.cmx lib/lexer.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -pp 'cpp -undef -traditional -Isyntax -w' -package bigarray -for-pack Sexplib -I lib -o lib/pre_sexp.cmx lib/pre_sexp.ml
@@ -3090,10 +3090,10 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamldoc -dump lwt/lwt_ring.odoc -I lib -package cstruct -syntax camlp4o -package cstruct.syntax -package lwt -syntax camlp4o -package lwt.syntax -syntax camlp4o -I lib -I lwt -I xen lwt/lwt_ring.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamldoc -dump xen/xenstore_ring.odoc -I lib -package cstruct -syntax camlp4o -package cstruct.syntax -syntax camlp4o -I lib -I xen -I lwt xen/xenstore_ring.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamldoc -dump xen/console_ring.odoc -I lib -package cstruct -syntax camlp4o -package cstruct.syntax -syntax camlp4o -I lib -I xen -I lwt xen/console_ring.mli
-- + /home/opam/.opam/system/bin/ocamlfind ocamldoc -dump xen/xenstore_ring.odoc -I lib -package cstruct -syntax camlp4o -package cstruct.syntax -syntax camlp4o -I lib -I xen -I lwt xen/xenstore_ring.mli
-- Warning: Module type Ring.Bidirectional_byte_stream not found
-- Warning: Module type Ring.Bidirectional_byte_stream not found
 - + /home/opam/.opam/system/bin/ocamlfind ocamldoc -dump xen/console_ring.odoc -I lib -package cstruct -syntax camlp4o -package cstruct.syntax -syntax camlp4o -I lib -I xen -I lwt xen/console_ring.mli
+- Warning: Module type Ring.Bidirectional_byte_stream not found
+- Warning: Module type Ring.Bidirectional_byte_stream not found
+- + /home/opam/.opam/system/bin/ocamlfind ocamldoc -dump xen/xenstore_ring.odoc -I lib -package cstruct -syntax camlp4o -package cstruct.syntax -syntax camlp4o -I lib -I xen -I lwt xen/xenstore_ring.mli
 - Warning: Module type Ring.Bidirectional_byte_stream not found
 - Warning: Module type Ring.Bidirectional_byte_stream not found
 - rm -rf doc/api.docdir
