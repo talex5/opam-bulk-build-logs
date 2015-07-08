@@ -1,32 +1,32 @@
+# Detecting depexts using flags: x86_64 linux debian
 + uname -m
 + uname -s
-# Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=taglib
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=taglib
 # The following system packages are needed:
 #  - libtag1-dev
 #  - m4
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=taglib
 + dpkg-query -W -f '${Package} ${Status}\n' libtag1-dev m4 2>/dev/null
-# The following new OS packages need to be installed: libtag1-dev
 + sudo apt-get update
+# The following new OS packages need to be installed: libtag1-dev
 Not running as root, the following command will be run through "sudo":
     apt-get update
 Hit http://security.debian.org stable/updates InRelease
 Ign http://download.opensuse.org  InRelease
 Hit http://httpredir.debian.org stable InRelease
-Get:1 http://httpredir.debian.org stable-updates InRelease [133 kB]
 Hit http://download.opensuse.org  Release.gpg
+Get:1 http://httpredir.debian.org stable-updates InRelease [133 kB]
 Hit http://download.opensuse.org  Release
 Get:2 http://security.debian.org stable/updates/main amd64 Packages [132 kB]
-Get:3 http://httpredir.debian.org stable-updates/main amd64 Packages [3616 B]
+Get:3 http://httpredir.debian.org stable/main amd64 Packages [9038 kB]
 Get:4 http://download.opensuse.org  Packages [5783 B]
-Get:5 http://httpredir.debian.org stable/main amd64 Packages [9038 kB]
-Fetched 9312 kB in 4s (2313 kB/s)
+Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3616 B]
+Fetched 9312 kB in 5s (1675 kB/s)
 Reading package lists...
 # OS package update successful
-+ sudo apt-get install -qq -yy libtag1-dev
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libtag1-dev
++ sudo apt-get install -qq -yy libtag1-dev
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
@@ -140,6 +140,10 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_metascanner.ml
 - ocamlc -I +compiler-libs -c fl_topo.mli
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
+- ocamlc -I +compiler-libs -c fl_package_base.mli
+- ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -185,14 +189,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c fl_package_base.mli
-- ocamlc -I +compiler-libs -g -c fl_package_base.ml
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -201,8 +203,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -251,6 +251,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_split.ml
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
+- ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -289,16 +290,15 @@ The following actions will be performed:
 - File "fl_meta.mll", line 62, characters 11-22:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlopt -I +compiler-libs -c fl_metascanner.ml
-- ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
-- ocamlopt -I +compiler-libs -c findlib.ml
 - File "fl_metascanner.ml", line 111, characters 23-32:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
+- ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
 - if [ 1 -gt 0 ]; then \
@@ -368,12 +368,12 @@ The following actions will be performed:
 - checking whether the C compiler works... yes
 - checking for C compiler default output file name... a.out
 - checking for suffix of executables... 
-- 
 - checking whether we are cross compiling... no
 - checking for suffix of object files... o
 - checking whether we are using the GNU C compiler... yes
 - checking whether gcc accepts -g... yes
-- checking for gcc option to accept ISO C89... none needed
+- checking for gcc option to accept ISO C89... 
+- none needed
 - checking build system type... x86_64-unknown-linux-gnu
 - checking host system type... x86_64-unknown-linux-gnu
 - checking for a BSD-compatible install... /usr/bin/install -c
@@ -410,8 +410,7 @@ The following actions will be performed:
 - checking for camlp4r... camlp4r
 - checking for camlp4rf... camlp4rf
 - checking for ocamlfind... ocamlfind
-- checking for caml/threads.h... 
-- yes
+- checking for caml/threads.h... yes
 - checking for gcc option to produce PIC... -fPIC
 - checking for g++... g++
 - checking whether we are using the GNU C++ compiler... yes
@@ -419,14 +418,15 @@ The following actions will be performed:
 - checking for pkg-config... /usr/bin/pkg-config
 - checking pkg-config is at least version 0.9.0... yes
 - checking whether pkg-config knows about taglib >= 1.6... ok
-- checking for class TagLib::PropertyMap in tag library... ok
-- checking for class TagLib::WavPack::File in tag library... 
+- checking for class TagLib::PropertyMap in tag library... 
 - ok
+- checking for class TagLib::WavPack::File in tag library... ok
 - checking for class TagLib::Ogg::Speex::File in tag library... ok
-- checking for class TagLib::MP4::File in tag library... ok
-- checking for class TagLib::ASF::File in tag library... 
+- checking for class TagLib::MP4::File in tag library... 
 - ok
-- checking for class TagLib::TrueAudio::File in tag library... ok
+- checking for class TagLib::ASF::File in tag library... ok
+- checking for class TagLib::TrueAudio::File in tag library... 
+- ok
 - configure: creating ./config.status
 - config.status: creating Makefile
 - config.status: creating src/META
