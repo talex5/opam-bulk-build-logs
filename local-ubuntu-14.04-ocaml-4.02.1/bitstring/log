@@ -8,29 +8,29 @@
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=bitstring
 + dpkg-query -W -f '${Package} ${Status}\n' m4 time 2>/dev/null
 # The following new OS packages need to be installed: time
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
-Ign http://download.opensuse.org  InRelease
 Hit http://archive.ubuntu.com trusty Release.gpg
+Ign http://download.opensuse.org  InRelease
 Get:1 http://archive.ubuntu.com trusty-updates Release.gpg [933 B]
 Hit http://archive.ubuntu.com trusty-security Release.gpg
-Hit http://download.opensuse.org  Release.gpg
 Hit http://archive.ubuntu.com trusty Release
 Get:2 http://archive.ubuntu.com trusty-updates Release [63.5 kB]
-Hit http://download.opensuse.org  Release
+Hit http://download.opensuse.org  Release.gpg
 Hit http://archive.ubuntu.com trusty-security Release
 Hit http://archive.ubuntu.com trusty/main Sources
+Hit http://download.opensuse.org  Release
 Hit http://archive.ubuntu.com trusty/restricted Sources
 Hit http://archive.ubuntu.com trusty/universe Sources
-Hit http://download.opensuse.org  Packages
 Hit http://archive.ubuntu.com trusty/main amd64 Packages
 Hit http://archive.ubuntu.com trusty/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty/universe amd64 Packages
 Get:3 http://archive.ubuntu.com trusty-updates/main Sources [268 kB]
+Hit http://download.opensuse.org  Packages
 Get:4 http://archive.ubuntu.com trusty-updates/restricted Sources [3158 B]
 Get:5 http://archive.ubuntu.com trusty-updates/universe Sources [154 kB]
 Get:6 http://archive.ubuntu.com trusty-updates/main amd64 Packages [714 kB]
@@ -42,12 +42,12 @@ Hit http://archive.ubuntu.com trusty-security/universe Sources
 Hit http://archive.ubuntu.com trusty-security/main amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/universe amd64 Packages
-Fetched 1603 kB in 3s (420 kB/s)
+Fetched 1603 kB in 3s (409 kB/s)
 Reading package lists...
++ sudo apt-get install -qq -yy time
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy time
-+ sudo apt-get install -qq -yy time
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
@@ -71,8 +71,8 @@ The following actions will be performed:
 [bitstring: from default] Command started
 [ocamlfind: from default] Command started
 [bitstring: from default] Command started
-[default] http://opam-archive:8080/archives/bitstring.2.0.4+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/bitstring.2.0.4+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -402,18 +402,18 @@ The following actions will be performed:
 - checking for grep that handles long lines and -e... /bin/grep
 - checking for egrep... /bin/grep -E
 - checking for ANSI C header files... yes
-- checking for sys/types.h... yes
-- checking for sys/stat.h... 
+- checking for sys/types.h... 
 - yes
+- checking for sys/stat.h... yes
 - checking for stdlib.h... yes
 - checking for string.h... yes
 - checking for memory.h... yes
 - checking for strings.h... yes
 - checking for inttypes.h... yes
 - checking for stdint.h... yes
-- checking for unistd.h... yes
-- checking whether byte ordering is bigendian... 
-- no
+- checking for unistd.h... 
+- yes
+- checking whether byte ordering is bigendian... no
 - checking byteswap.h usability... yes
 - checking byteswap.h presence... yes
 - checking for byteswap.h... yes
@@ -473,6 +473,14 @@ The following actions will be performed:
 - File "bitstring.ml", line 93, characters 12-25:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- ocamlfind ocamlc -g  -c bitmatch.ml
+- ocamlmklib -o bitstring bitstring_types.cmo bitstring_config.cmo bitstring_c.o bitstring.cmo bitmatch.cmo
+- ocamlfind ocamlc -g  \
+- 	  -I +camlp4 -pp camlp4of -c bitstring_persistent.mli
+- ocamlfind ocamlc -g  \
+- 	  -I +camlp4 -pp camlp4of -c bitstring_persistent.ml
+- ocamlfind ocamlc -a -o bitstring_persistent.cma bitstring_persistent.cmo
+- ocamlfind ocamlopt   -c bitstring_types.ml
 - File "bitstring.ml", line 103, characters 12-25:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -491,16 +499,15 @@ The following actions will be performed:
 - File "bitstring.ml", line 1205, characters 25-45:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlfind ocamlc -g  -c bitmatch.ml
-- ocamlmklib -o bitstring bitstring_types.cmo bitstring_config.cmo bitstring_c.o bitstring.cmo bitmatch.cmo
-- ocamlfind ocamlc -g  \
-- 	  -I +camlp4 -pp camlp4of -c bitstring_persistent.mli
-- ocamlfind ocamlc -g  \
-- 	  -I +camlp4 -pp camlp4of -c bitstring_persistent.ml
-- ocamlfind ocamlc -a -o bitstring_persistent.cma bitstring_persistent.cmo
-- ocamlfind ocamlopt   -c bitstring_types.ml
 - ocamlfind ocamlopt   -c bitstring_config.ml
 - ocamlfind ocamlopt   -c bitstring.ml
+- ocamlfind ocamlopt   -c bitmatch.ml
+- ocamlmklib -o bitstring bitstring_types.cmx bitstring_config.cmx bitstring_c.o bitstring.cmx bitmatch.cmx
+- ocamlfind ocamlopt   \
+- 	  -I +camlp4 -pp camlp4of -c bitstring_persistent.ml
+- ocamlfind ocamlopt -a -o bitstring_persistent.cmxa bitstring_persistent.cmx
+- ocamlfind ocamlc bitstring.cma -I +camlp4 dynlink.cma camlp4lib.cma \
+- 	  -pp camlp4of -c pa_bitstring.ml -o pa_bitstring.cmo
 - File "bitstring.ml", line 64, characters 12-25:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -528,13 +535,6 @@ The following actions will be performed:
 - File "bitstring.ml", line 1205, characters 25-45:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlfind ocamlopt   -c bitmatch.ml
-- ocamlmklib -o bitstring bitstring_types.cmx bitstring_config.cmx bitstring_c.o bitstring.cmx bitmatch.cmx
-- ocamlfind ocamlopt   \
-- 	  -I +camlp4 -pp camlp4of -c bitstring_persistent.ml
-- ocamlfind ocamlopt -a -o bitstring_persistent.cmxa bitstring_persistent.cmx
-- ocamlfind ocamlc bitstring.cma -I +camlp4 dynlink.cma camlp4lib.cma \
-- 	  -pp camlp4of -c pa_bitstring.ml -o pa_bitstring.cmo
 - ocamlfind ocamlc -g  -c bitstring_objinfo.ml
 - ocamlfind ocamlc -I +camlp4 unix.cma dynlink.cma camlp4lib.cma \
 - 	  -linkpkg \
