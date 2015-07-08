@@ -1,31 +1,12 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux debian
 + uname -s
-+ lsb_release -i -s
+# Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=ocf
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=ocf
-+ sudo apt-get update
 # The following system packages are needed:
 #  - m4
-Not running as root, the following command will be run through "sudo":
-    apt-get update
-Ign http://download.opensuse.org  InRelease
-Hit http://security.debian.org stable/updates InRelease
-Hit http://download.opensuse.org  Release.gpg
-Get:1 http://security.debian.org stable/updates/main amd64 Packages [121 kB]
-Hit http://download.opensuse.org  Release
-Get:2 http://download.opensuse.org  Packages [5783 B]
-Hit http://httpredir.debian.org stable InRelease
-Get:3 http://httpredir.debian.org stable-updates InRelease [126 kB]
-Get:4 http://httpredir.debian.org stable/main amd64 Packages [9038 kB]
-Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9293 kB in 6s (1340 kB/s)
-Reading package lists...
-+ sudo apt-get install -qq -yy m4
-# OS package update successful
-Not running as root, the following command will be run through "sudo":
-    apt-get install -qq -yy m4
-# OS packages installation successful
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=ocf
++ dpkg-query -W -f '${Package} ${Status}\n' m4 2>/dev/null
+# All required OS packages found.
 The following actions will be performed:
   - install ocamlfind   1.5.5                                   [required by ocf]
   - install ppx_tools   0.99.2                                  [required by ocf]
@@ -33,7 +14,7 @@ The following actions will be performed:
   - install cppo        1.1.2                                   [required by yojson]
   - install biniou      1.0.9                                   [required by yojson]
   - install yojson      1.2.1                                   [required by ocf]
-  - install ocf         0.1.0 
+  - install ocf         0.3.0 
 ===== 7 to install =====
 
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -41,20 +22,20 @@ The following actions will be performed:
 [cppo: from default] Command started
 [easy-format: from default] Command started
 [cppo: from default] Command started
-[easy-format: from default] Command started
 [biniou: from default] Command started
-[default] http://opam-archive:8080/archives/easy-format.1.0.2+opam.tar.gz downloaded
+[easy-format: from default] Command started
+[default] http://opam-archive:8080/archives/biniou.1.0.9+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/cppo.1.1.2+opam.tar.gz downloaded
 [ocf: from default] Command started
-[default] http://opam-archive:8080/archives/biniou.1.0.9+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/easy-format.1.0.2+opam.tar.gz downloaded
 [ppx_tools: from default] Command started
 [ocamlfind: from default] Command started
-[ocf: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [yojson: from default] Command started
+[ocf: from default] Command started
 [ppx_tools: from default] Command started
-[default] http://opam-archive:8080/archives/ocf.0.1.0+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocf.0.3.0+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ppx_tools.0.99.2+opam.tar.gz downloaded
 [yojson: from default] Command started
 [default] http://opam-archive:8080/archives/yojson.1.2.1+opam.tar.gz downloaded
@@ -139,10 +120,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -188,10 +165,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -200,6 +179,8 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -881,7 +862,7 @@ The following actions will be performed:
 - Installed /home/opam/.opam/4.02.1/lib/yojson/META
 -> installed yojson.1.2.1
 [ocf: ./configure] Command started
-+ ./configure "--prefix" "/home/opam/.opam/4.02.1" (CWD=/home/opam/.opam/4.02.1/build/ocf.0.1.0)
++ ./configure "--prefix" "/home/opam/.opam/4.02.1" (CWD=/home/opam/.opam/4.02.1/build/ocf.0.3.0)
 - checking for ocamlc... /home/opam/.opam/4.02.1/bin/ocamlc
 - found OCaml version 4.2.1 (4.02.1)
 - checking for ocamlfind... /home/opam/.opam/4.02.1/bin/ocamlfind
@@ -930,13 +911,13 @@ The following actions will be performed:
 - 
 - ### Results of configuration ###
 - 
-- Version is 0.1.0
+- Version is 0.3.0
 - Package to be installed: ocf
 - 
 [ocf: make all] Command started
-+ make "all" (CWD=/home/opam/.opam/4.02.1/build/ocf.0.1.0)
++ make "all" (CWD=/home/opam/.opam/4.02.1/build/ocf.0.3.0)
 - cd src && make all
-- make[1]: Entering directory '/home/opam/.opam/4.02.1/build/ocf.0.1.0/src'
+- make[1]: Entering directory '/home/opam/.opam/4.02.1/build/ocf.0.3.0/src'
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -package yojson  -I +ocamldoc -g -verbose -annot  -c ocf.mli
 - Effective set of compiler predicates: pkg_easy-format,pkg_biniou,pkg_yojson,autolink,byte
 - + ocamlc.opt -I /home/opam/.opam/4.02.1/lib/ocaml/ocamldoc -g -verbose -annot -c -I /home/opam/.opam/4.02.1/lib/easy-format -I /home/opam/.opam/4.02.1/lib/biniou -I /home/opam/.opam/4.02.1/lib/yojson ocf.mli
@@ -946,11 +927,11 @@ The following actions will be performed:
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -a -o ocf.cmxa ocf.cmx
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -shared -o ocf.cmxs ocf.cmx
 - make PACKAGES=yojson,ppx_tools.metaquot ppx_ocf.cmx
-- make[2]: Entering directory '/home/opam/.opam/4.02.1/build/ocf.0.1.0/src'
+- make[2]: Entering directory '/home/opam/.opam/4.02.1/build/ocf.0.3.0/src'
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -package yojson,ppx_tools.metaquot  -I +ocamldoc -g -verbose -annot  -c ppx_ocf.ml
 - Effective set of compiler predicates: pkg_easy-format,pkg_biniou,pkg_yojson,pkg_compiler-libs,pkg_compiler-libs.common,pkg_ppx_tools,pkg_ppx_tools.metaquot,autolink,native
 - + ocamlopt.opt -I /home/opam/.opam/4.02.1/lib/ocaml/ocamldoc -g -verbose -annot -c -I /home/opam/.opam/4.02.1/lib/easy-format -I /home/opam/.opam/4.02.1/lib/biniou -I /home/opam/.opam/4.02.1/lib/yojson -I /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs -I /home/opam/.opam/4.02.1/lib/ppx_tools -ppx /home/opam/.opam/4.02.1/lib/ppx_tools/./ppx_metaquot ppx_ocf.ml
-- make[2]: Leaving directory '/home/opam/.opam/4.02.1/build/ocf.0.1.0/src'
+- make[2]: Leaving directory '/home/opam/.opam/4.02.1/build/ocf.0.3.0/src'
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlopt -o ppx_ocf -I +ocamldoc -g -verbose -annot  -package ppx_tools.metaquot \
 - -I +ocamldoc -g -verbose -annot  -linkpkg ppx_ocf.cmx
 - Effective set of compiler predicates: pkg_compiler-libs,pkg_compiler-libs.common,pkg_ppx_tools,pkg_ppx_tools.metaquot,autolink,native
@@ -960,39 +941,31 @@ The following actions will be performed:
 - + ocamlc.opt -I /home/opam/.opam/4.02.1/lib/ocaml/ocamldoc -g -verbose -annot -c -I /home/opam/.opam/4.02.1/lib/easy-format -I /home/opam/.opam/4.02.1/lib/biniou -I /home/opam/.opam/4.02.1/lib/yojson ocf.ml
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -a -o ocf.cma ocf.cmo
 - make PACKAGES=yojson,ppx_tools.metaquot ppx_ocf.cmo
-- make[2]: Entering directory '/home/opam/.opam/4.02.1/build/ocf.0.1.0/src'
+- make[2]: Entering directory '/home/opam/.opam/4.02.1/build/ocf.0.3.0/src'
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -package yojson,ppx_tools.metaquot  -I +ocamldoc -g -verbose -annot  -c ppx_ocf.ml
 - Effective set of compiler predicates: pkg_easy-format,pkg_biniou,pkg_yojson,pkg_compiler-libs,pkg_compiler-libs.common,pkg_ppx_tools,pkg_ppx_tools.metaquot,autolink,byte
 - + ocamlc.opt -I /home/opam/.opam/4.02.1/lib/ocaml/ocamldoc -g -verbose -annot -c -I /home/opam/.opam/4.02.1/lib/easy-format -I /home/opam/.opam/4.02.1/lib/biniou -I /home/opam/.opam/4.02.1/lib/yojson -I /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs -I /home/opam/.opam/4.02.1/lib/ppx_tools -ppx /home/opam/.opam/4.02.1/lib/ppx_tools/./ppx_metaquot ppx_ocf.ml
-- make[2]: Leaving directory '/home/opam/.opam/4.02.1/build/ocf.0.1.0/src'
+- make[2]: Leaving directory '/home/opam/.opam/4.02.1/build/ocf.0.3.0/src'
 - /home/opam/.opam/4.02.1/bin/ocamlfind ocamlc -o ppx_ocf.byte -I +ocamldoc -g -verbose -annot  -package ppx_tools.metaquot \
 - -I +ocamldoc -g -verbose -annot  -linkpkg ppx_ocf.cmo
 - Effective set of compiler predicates: pkg_compiler-libs,pkg_compiler-libs.common,pkg_ppx_tools,pkg_ppx_tools.metaquot,autolink,byte
 - + ocamlc.opt -o ppx_ocf.byte -I /home/opam/.opam/4.02.1/lib/ocaml/ocamldoc -g -verbose -annot -I /home/opam/.opam/4.02.1/lib/ocaml/ocamldoc -g -verbose -annot -I /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs -I /home/opam/.opam/4.02.1/lib/ppx_tools -ppx /home/opam/.opam/4.02.1/lib/ppx_tools/./ppx_metaquot /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs/ocamlcommon.cma /home/opam/.opam/4.02.1/lib/ppx_tools/ppx_tools.cma ppx_ocf.cmo
-- make[1]: Leaving directory '/home/opam/.opam/4.02.1/build/ocf.0.1.0/src'
-- Makefile:129: warning: overriding recipe for target 'docstog'
-- Makefile:121: warning: ignoring old recipe for target 'docstog'
-- + as -o 'ocf.o' '/tmp/camlasm7a4d89.s'
-- Makefile:129: warning: overriding recipe for target 'docstog'
-- Makefile:121: warning: ignoring old recipe for target 'docstog'
+- + as -o 'ocf.o' '/tmp/camlasmec894b.s'
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- + /home/opam/.opam/4.02.1/lib/ppx_tools/./ppx_metaquot '/tmp/camlppxd4c91f' '/tmp/camlppx646343'
-- + as -o 'ppx_ocf.o' '/tmp/camlasmb8e0cd.s'
+- + /home/opam/.opam/4.02.1/lib/ppx_tools/./ppx_metaquot '/tmp/camlppx755620' '/tmp/camlppx77cbdd'
+- + as -o 'ppx_ocf.o' '/tmp/camlasmee0150.s'
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- + as -o '/tmp/camlstartupf85313.o' '/tmp/camlstartupa903de.s'
-- + gcc -o 'ppx_ocf'   '-L/home/opam/.opam/4.02.1/lib/ocaml/ocamldoc' '-L/home/opam/.opam/4.02.1/lib/ocaml/ocamldoc' '-L/home/opam/.opam/4.02.1/lib/ocaml/compiler-libs' '-L/home/opam/.opam/4.02.1/lib/ppx_tools' '-L/home/opam/.opam/4.02.1/lib/ocaml'  '/tmp/camlstartupf85313.o' '/home/opam/.opam/4.02.1/lib/ocaml/std_exit.o' 'ppx_ocf.o' '/home/opam/.opam/4.02.1/lib/ppx_tools/ppx_tools.a' '/home/opam/.opam/4.02.1/lib/ocaml/compiler-libs/ocamlcommon.a' '/home/opam/.opam/4.02.1/lib/ocaml/stdlib.a' '/home/opam/.opam/4.02.1/lib/ocaml/libasmrun.a' -lm  -ldl
-- Makefile:129: warning: overriding recipe for target 'docstog'
-- Makefile:121: warning: ignoring old recipe for target 'docstog'
+- + as -o '/tmp/camlstartupcb68f2.o' '/tmp/camlstartupb00fbd.s'
+- + gcc -o 'ppx_ocf'   '-L/home/opam/.opam/4.02.1/lib/ocaml/ocamldoc' '-L/home/opam/.opam/4.02.1/lib/ocaml/ocamldoc' '-L/home/opam/.opam/4.02.1/lib/ocaml/compiler-libs' '-L/home/opam/.opam/4.02.1/lib/ppx_tools' '-L/home/opam/.opam/4.02.1/lib/ocaml'  '/tmp/camlstartupcb68f2.o' '/home/opam/.opam/4.02.1/lib/ocaml/std_exit.o' 'ppx_ocf.o' '/home/opam/.opam/4.02.1/lib/ppx_tools/ppx_tools.a' '/home/opam/.opam/4.02.1/lib/ocaml/compiler-libs/ocamlcommon.a' '/home/opam/.opam/4.02.1/lib/ocaml/stdlib.a' '/home/opam/.opam/4.02.1/lib/ocaml/libasmrun.a' -lm  -ldl
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- + /home/opam/.opam/4.02.1/lib/ppx_tools/./ppx_metaquot '/tmp/camlppx834a8b' '/tmp/camlppxdf94b0'
+- + /home/opam/.opam/4.02.1/lib/ppx_tools/./ppx_metaquot '/tmp/camlppxe18364' '/tmp/camlppx1b1203'
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- make[1]: Leaving directory '/home/opam/.opam/4.02.1/build/ocf.0.3.0/src'
 [ocf: make install] Command started
-+ make "install" (CWD=/home/opam/.opam/4.02.1/build/ocf.0.1.0)
++ make "install" (CWD=/home/opam/.opam/4.02.1/build/ocf.0.3.0)
 - cd src && make install
-- make[1]: Entering directory '/home/opam/.opam/4.02.1/build/ocf.0.1.0/src'
-- make[1]: Leaving directory '/home/opam/.opam/4.02.1/build/ocf.0.1.0/src'
-- Makefile:129: warning: overriding recipe for target 'docstog'
-- Makefile:121: warning: ignoring old recipe for target 'docstog'
+- make[1]: Entering directory '/home/opam/.opam/4.02.1/build/ocf.0.3.0/src'
+- make[1]: Leaving directory '/home/opam/.opam/4.02.1/build/ocf.0.3.0/src'
 - Installed /home/opam/.opam/4.02.1/lib/ocf/ppx_ocf.byte
 - Installed /home/opam/.opam/4.02.1/lib/ocf/ppx_ocf
 - Installed /home/opam/.opam/4.02.1/lib/ocf/ocf.cmxs
@@ -1003,5 +976,5 @@ The following actions will be performed:
 - Installed /home/opam/.opam/4.02.1/lib/ocf/ocf.cmx
 - Installed /home/opam/.opam/4.02.1/lib/ocf/ocf.cmi
 - Installed /home/opam/.opam/4.02.1/lib/ocf/META
--> installed ocf.0.1.0
+-> installed ocf.0.3.0
 Done.
