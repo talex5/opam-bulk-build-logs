@@ -1,7 +1,7 @@
 + uname -m
 + uname -s
-# Detecting depexts using flags: x86_64 linux "centos"
 + opam list --safe --recursive --external=x86_64,linux,"centos" --required-by=riak
+# Detecting depexts using flags: x86_64 linux "centos"
 + opam list --safe --recursive --external=source,x86_64,linux,"centos" --required-by=riak
 # No extra OS packages requirements found.
 The following actions will be performed:
@@ -21,29 +21,29 @@ The following actions will be performed:
 [easy-format: from default] Command started
 [lwt: from default] Command started
 [ocamlfind: from default] Command started
-[lwt: from default] Command started
 [easy-format: from default] Command started
-[ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/lwt.2.4.5+opam.tar.gz downloaded
-[ounit: from default] Command started
+[lwt: from default] Command started
 [default] http://opam-archive:8080/archives/easy-format.1.0.2+opam.tar.gz downloaded
-[piqi: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[riak: from default] Command started
 [ounit: from default] Command started
+[default] http://opam-archive:8080/archives/lwt.2.4.5+opam.tar.gz downloaded
 [piqi: from default] Command started
+[ounit: from default] Command started
 [default] http://opam-archive:8080/archives/ounit.2.0.0+opam.tar.gz downloaded
+[riak: from default] Command started
+[piqi: from default] Command started
+[default] http://opam-archive:8080/archives/piqi.0.6.5+opam.tar.gz downloaded
 [riak-pb: from default] Command started
 [riak: from default] Command started
-[default] http://opam-archive:8080/archives/piqi.0.6.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/riak.1.0.0+opam.tar.gz downloaded
 [ulex: from default] Command started
 [riak-pb: from default] Command started
-[default] http://opam-archive:8080/archives/riak.1.0.0+opam.tar.gz downloaded
-[xmlm: from default] Command started
-[ulex: from default] Command started
 [default] http://opam-archive:8080/archives/riak-pb.1.0.0+opam.tar.gz downloaded
 [xmlm: from default] Command started
+[ulex: from default] Command started
+[ocamlfind: from default] Command started
+[xmlm: from default] Command started
 [default] http://opam-archive:8080/archives/ulex.1.1+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/xmlm.1.2.0+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -200,10 +200,6 @@ The following actions will be performed:
 - 	../../tools/patch '@SITELIB@' '/home/opam/.opam/system/lib' \
 -     	    >topfind
 - ocamlc -I +compiler-libs -c num_top_printers.mli
-- ocamlc -I +compiler-libs -g -c num_top_printers.ml
-- ocamlc -I +compiler-libs -c num_top.mli
-- ocamlc -I +compiler-libs -g -c num_top.ml
-- ocamlc -I +compiler-libs -a -o num_top.cma num_top_printers.cmo num_top.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -212,6 +208,10 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- ocamlc -I +compiler-libs -g -c num_top_printers.ml
+- ocamlc -I +compiler-libs -c num_top.mli
+- ocamlc -I +compiler-libs -g -c num_top.ml
+- ocamlc -I +compiler-libs -a -o num_top.cma num_top_printers.cmo num_top.cmo
 - make[1]: Leaving directory `/home/opam/.opam/system/build/ocamlfind.1.5.5/src/findlib'
 - make all-config
 - make[1]: Entering directory `/home/opam/.opam/system/build/ocamlfind.1.5.5'
@@ -245,6 +245,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -289,7 +290,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -926,7 +926,6 @@ The following actions will be performed:
 - easy-format is installed in /home/opam/.opam/system/lib/easy-format
 [piqi: make] Command started
 + make  (CWD=/home/opam/.opam/system/build/piqi.0.6.5)
-[ERROR] The compilation of piqi failed at "make".
 - mkdir -p /home/opam/.opam/system/build/piqi.0.6.5/build/lib/ocaml
 - set -e; \
 - for dir in piqi-camlp4 piqirun-ocaml piqicc piqic piqilib piqi-tools ; do \
@@ -948,11 +947,12 @@ The following actions will be performed:
 - 
 - File "pa_labelscope.ml", line 1:
 - Error: Error while running external preprocessor
-- Command line: camlp4orf  'pa_labelscope.ml' > /tmp/ocamlppc84340
+- Command line: camlp4orf  'pa_labelscope.ml' > /tmp/ocamlpp23bd4c
 - 
 - make[2]: *** [pa_labelscope.cmo] Error 2
 - make[1]: *** [4.02] Error 2
 - make: *** [dirs] Error 2
+[ERROR] The compilation of piqi failed at "make".
 [piqi: rm] Command started
 + rm "-f" "/home/opam/.opam/system/bin/piqi" "/home/opam/.opam/system/bin/piqic" (CWD=/home/opam/.opam/system/build/piqi.0.6.5)
 [piqi: ocamlfind remove] Command started
@@ -1197,13 +1197,6 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -a src/logger/lwt_log_rules.cmo src/logger/lwt_log_core.cmo -o src/logger/lwt-log.cma
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -I src/core -package camlp4 -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -ppopt syntax/pa_optcomp.cmo -I src/logger -I src/core -o src/logger/lwt_log_rules.cmx src/logger/lwt_log_rules.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -I src/core -package camlp4 -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -ppopt syntax/pa_optcomp.cmo -I src/logger -I src/core -o src/logger/lwt_log_core.cmx src/logger/lwt_log_core.ml
-- + /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -I src/core -package camlp4 -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -ppopt syntax/pa_optcomp.cmo -I src/logger -I src/core -o src/logger/lwt_log_core.cmx src/logger/lwt_log_core.ml
-- File "src/logger/lwt_log_core.ml", line 231, characters 15-33:
-- Warning 3: deprecated: Lazy.lazy_from_fun
-- Use Lazy.from_fun instead.
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -a src/logger/lwt_log_rules.cmx src/logger/lwt_log_core.cmx -o src/logger/lwt-log.cmxa
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared src/logger/lwt-log.cmxa src/logger/lwt_log_rules.cmx src/logger/lwt_log_core.cmx -o src/logger/lwt-log.cmxs
-- /home/opam/.opam/system/bin/ocamlfind ocamlc -ccopt -I/usr/include -ccopt -Isrc/unix -c src/unix/lwt_unix_stubs.c
 - File "setup.ml", line 254, characters 8-26:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
@@ -1211,6 +1204,13 @@ The following actions will be performed:
 - Warning 3: deprecated: Lazy.lazy_from_fun
 - Use Lazy.from_fun instead.
 - ocamlfind: Package `wikidoc' not found
+- + /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -I src/core -package camlp4 -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -ppopt syntax/pa_optcomp.cmo -I src/logger -I src/core -o src/logger/lwt_log_core.cmx src/logger/lwt_log_core.ml
+- File "src/logger/lwt_log_core.ml", line 231, characters 15-33:
+- Warning 3: deprecated: Lazy.lazy_from_fun
+- Use Lazy.from_fun instead.
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -a src/logger/lwt_log_rules.cmx src/logger/lwt_log_core.cmx -o src/logger/lwt-log.cmxa
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared src/logger/lwt-log.cmxa src/logger/lwt_log_rules.cmx src/logger/lwt_log_core.cmx -o src/logger/lwt-log.cmxs
+- /home/opam/.opam/system/bin/ocamlfind ocamlc -ccopt -I/usr/include -ccopt -Isrc/unix -c src/unix/lwt_unix_stubs.c
 - mv lwt_unix_stubs.o src/unix/lwt_unix_stubs.o
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -ccopt -I/usr/include -ccopt -Isrc/unix -c src/unix/lwt_libev_stubs.c
 - mv lwt_libev_stubs.o src/unix/lwt_libev_stubs.o
@@ -1454,6 +1454,42 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -I src/core -I src/logger -I src/unix -I syntax -package bigarray -package camlp4 -syntax camlp4o -package camlp4.extend -syntax camlp4o -package camlp4.quotations.o -package unix -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -ppopt syntax/pa_optcomp.cmo -I examples/unix -I src/unix -I syntax -o examples/unix/parallelize.cmo examples/unix/parallelize.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -I src/core -I src/logger -I src/unix -I syntax -package bigarray -package camlp4 -syntax camlp4o -package camlp4.extend -syntax camlp4o -package camlp4.quotations.o -package unix -syntax camlp4o -ppopt syntax/pa_lwt_options.cmo -ppopt syntax/pa_lwt.cmo -ppopt syntax/pa_lwt_log.cmo -ppopt syntax/pa_optcomp.cmo -I examples/unix -I src/unix -I syntax -o examples/unix/parallelize.cmx examples/unix/parallelize.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -g -I src/unix -linkpkg -package bigarray -package camlp4 -package camlp4.extend -package camlp4.quotations.o -package unix syntax/lwt-syntax.cmxa src/core/lwt.cmxa src/logger/lwt-log.cmxa src/unix/lwt-unix.cmxa examples/unix/parallelize.cmx -o examples/unix/parallelize.native
+
+#=== ERROR while installing piqi.0.6.5 ========================================#
+# opam-version         1.2.2 (c30ed46b7e70bcf0f872e482cbcbf6a1fa0c60b3)
+# os                   linux
+# command              make
+# path                 /home/opam/.opam/system/build/piqi.0.6.5
+# compiler             system (4.02.1)
+# exit-code            2
+# env-file             /home/opam/.opam/system/build/piqi.0.6.5/piqi-1-777834.env
+# stdout-file          /home/opam/.opam/system/build/piqi.0.6.5/piqi-1-777834.out
+# stderr-file          /home/opam/.opam/system/build/piqi.0.6.5/piqi-1-777834.err
+### stdout ###
+# [...]
+# make[1]: Entering directory `/home/opam/.opam/system/build/piqi.0.6.5/piqi-camlp4'
+# Building CamlP4 extensions for OCaml 4.02
+# There is no library for OCaml 4.02, trying 4.00 ...
+# make OCAML_VERSION=4.00 all
+# make[2]: Entering directory `/home/opam/.opam/system/build/piqi.0.6.5/piqi-camlp4'
+# ln -s 4.00/pa_labelscope.ml pa_labelscope.ml
+# ln -s 4.00/pa_openin.ml pa_openin.ml
+# ocamlc -c -pp "camlp4orf " -I +camlp4 pa_labelscope.ml
+# make[2]: Leaving directory `/home/opam/.opam/system/build/piqi.0.6.5/piqi-camlp4'
+# make[1]: Leaving directory `/home/opam/.opam/system/build/piqi.0.6.5/piqi-camlp4'
+### stderr ###
+# [...]
+# While expanding quotation "expr" in a position of "expr":
+#   Parse error: illegal begin of quotation of expression
+# 
+# File "pa_labelscope.ml", line 1:
+# Error: Error while running external preprocessor
+# Command line: camlp4orf  'pa_labelscope.ml' > /tmp/ocamlpp23bd4c
+# 
+# make[2]: *** [pa_labelscope.cmo] Error 2
+# make[1]: *** [4.02] Error 2
+# make: *** [dirs] Error 2
+
 [lwt: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/lwt.2.4.5)
 - ./setup.exe -install 
@@ -1598,42 +1634,6 @@ The following actions will be performed:
 - ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/system/lib/stublibs is not mentioned in ld.conf
 -> installed lwt.2.4.5
 
-#=== ERROR while installing piqi.0.6.5 ========================================#
-# opam-version         1.2.2 (c30ed46b7e70bcf0f872e482cbcbf6a1fa0c60b3)
-# os                   linux
-# command              make
-# path                 /home/opam/.opam/system/build/piqi.0.6.5
-# compiler             system (4.02.1)
-# exit-code            2
-# env-file             /home/opam/.opam/system/build/piqi.0.6.5/piqi-1-777834.env
-# stdout-file          /home/opam/.opam/system/build/piqi.0.6.5/piqi-1-777834.out
-# stderr-file          /home/opam/.opam/system/build/piqi.0.6.5/piqi-1-777834.err
-### stdout ###
-# [...]
-# make[1]: Entering directory `/home/opam/.opam/system/build/piqi.0.6.5/piqi-camlp4'
-# Building CamlP4 extensions for OCaml 4.02
-# There is no library for OCaml 4.02, trying 4.00 ...
-# make OCAML_VERSION=4.00 all
-# make[2]: Entering directory `/home/opam/.opam/system/build/piqi.0.6.5/piqi-camlp4'
-# ln -s 4.00/pa_labelscope.ml pa_labelscope.ml
-# ln -s 4.00/pa_openin.ml pa_openin.ml
-# ocamlc -c -pp "camlp4orf " -I +camlp4 pa_labelscope.ml
-# make[2]: Leaving directory `/home/opam/.opam/system/build/piqi.0.6.5/piqi-camlp4'
-# make[1]: Leaving directory `/home/opam/.opam/system/build/piqi.0.6.5/piqi-camlp4'
-### stderr ###
-# [...]
-# While expanding quotation "expr" in a position of "expr":
-#   Parse error: illegal begin of quotation of expression
-# 
-# File "pa_labelscope.ml", line 1:
-# Error: Error while running external preprocessor
-# Command line: camlp4orf  'pa_labelscope.ml' > /tmp/ocamlppc84340
-# 
-# make[2]: *** [pa_labelscope.cmo] Error 2
-# make[1]: *** [4.02] Error 2
-# make: *** [dirs] Error 2
-
-
 
 =-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 The following actions were aborted
@@ -1651,5 +1651,5 @@ The following changes have been performed
   - install xmlm        1.2.0      
 
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150604194342.export"
+    opam switch import "~/.opam/system/backup/state-20150605010525.export"
 'opam install riak' failed.
