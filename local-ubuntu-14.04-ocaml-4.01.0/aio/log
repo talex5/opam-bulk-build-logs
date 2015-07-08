@@ -1,16 +1,16 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux ubuntu
 + uname -s
+# Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=aio
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=aio
 # The following system packages are needed:
 #  - libaio-dev
 #  - m4
++ dpkg-query -W -f '${Package} ${Status}\n' libaio-dev m4 2>/dev/null
++ sudo apt-get update
 # The following new OS packages need to be installed: libaio-dev
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ dpkg-query -W -f '${Package} ${Status}\n' libaio-dev m4 2>/dev/null
-+ sudo apt-get update
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
@@ -38,7 +38,7 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [32.0 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [382 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [143 kB]
-Fetched 2350 kB in 5s (422 kB/s)
+Fetched 2350 kB in 5s (430 kB/s)
 Reading package lists...
 + sudo apt-get install -qq -yy libaio-dev
 # OS package update successful
@@ -71,8 +71,8 @@ The following actions will be performed:
 [aio: from default] Command started
 [ocamlfind: from default] Command started
 [aio: from default] Command started
-[default] http://opam-archive:8080/archives/aio.0.0.3+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/aio.0.0.3+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -311,10 +311,6 @@ The following actions will be performed:
 - ocamlc -c -cc "cc" -ccopt "-fPIC -O2 -g -W -Wall \
 - 				-DPIC   \
 - 				    -o aio_stubs.o " aio_stubs.c
-- aio_stubs.c: In function 'caml_aio_run':
-- aio_stubs.c:272:3: warning: ignoring return value of 'read', declared with attribute warn_unused_result [-Wunused-result]
--    (void)read(ctx->fd, &num, sizeof(num));
--    ^
 - ocamlc -c -cc "cc" -ccopt "-fPIC -O2 -g -W -Wall \
 - 				-DPIC   \
 - 				    -o aio_buffer_stubs.o " aio_buffer_stubs.c
@@ -325,6 +321,10 @@ The following actions will be performed:
 - ocamlmklib         \
 - 				-o aio_stubs  aio_stubs.o aio_buffer_stubs.o -laio  \
 - 				
+- aio_stubs.c: In function 'caml_aio_run':
+- aio_stubs.c:272:3: warning: ignoring return value of 'read', declared with attribute warn_unused_result [-Wunused-result]
+-    (void)read(ctx->fd, &num, sizeof(num));
+-    ^
 - ocamlc -a -cclib -laio_stubs -cclib -laio   -dllib dllaio_stubs.so -custom             -o aio.cma aio_buffer.cmo aio.cmo
 - make[2]: Leaving directory `/home/opam/.opam/system/build/aio.0.0.3/lib'
 - make[2]: Entering directory `/home/opam/.opam/system/build/aio.0.0.3/lib'
