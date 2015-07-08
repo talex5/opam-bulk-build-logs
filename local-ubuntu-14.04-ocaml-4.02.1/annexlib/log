@@ -1,17 +1,17 @@
+# Detecting depexts using flags: x86_64 linux ubuntu
 + uname -m
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=annexlib
-# Detecting depexts using flags: x86_64 linux ubuntu
 # The following system packages are needed:
 #  - libpcre3-dev
 #  - m4
 #  - pkg-config
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=annexlib
++ dpkg-query -W -f '${Package} ${Status}\n' libpcre3-dev m4 pkg-config 2>/dev/null
 # The following new OS packages need to be installed: libpcre3-dev
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ dpkg-query -W -f '${Package} ${Status}\n' libpcre3-dev m4 pkg-config 2>/dev/null
-+ sudo apt-get update
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
@@ -43,7 +43,7 @@ Hit http://archive.ubuntu.com trusty-security/universe Sources
 Hit http://archive.ubuntu.com trusty-security/main amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/universe amd64 Packages
-Fetched 1603 kB in 4s (349 kB/s)
+Fetched 1603 kB in 8s (185 kB/s)
 Reading package lists...
 + sudo apt-get install -qq -yy libpcre3-dev
 # OS package update successful
@@ -230,8 +230,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -277,19 +275,13 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
-- if [ "true" = "true" ]; then                 \
-- 		cp topfind.ml.in topfind.ml;                             \
-- 	else                                                             \
-- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 			> topfind.ml ;                                   \
-- 	fi
-- ocamlc -I +compiler-libs -c topfind.mli
-- ocamlc -I +compiler-libs -g -c topfind.ml
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -298,6 +290,14 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- if [ "true" = "true" ]; then                 \
+- 		cp topfind.ml.in topfind.ml;                             \
+- 	else                                                             \
+- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 			> topfind.ml ;                                   \
+- 	fi
+- ocamlc -I +compiler-libs -c topfind.mli
+- ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
 - 	export USE_CYGPATH; \
@@ -581,7 +581,8 @@ The following actions will be performed:
 - checking for ocamlopt... opt
 - checking how to run the C preprocessor... gcc -E
 - checking for egrep... grep -E
-- checking for ANSI C header files... yes
+- checking for ANSI C header files... 
+- yes
 - checking for sys/types.h... yes
 - checking for sys/stat.h... yes
 - checking for stdlib.h... yes
@@ -590,10 +591,10 @@ The following actions will be performed:
 - checking for strings.h... yes
 - checking for inttypes.h... yes
 - checking for stdint.h... yes
-- checking for unistd.h... 
-- yes
+- checking for unistd.h... yes
 - checking for unistd.h... (cached) yes
-- checking netdb.h usability... yes
+- checking netdb.h usability... 
+- yes
 - checking netdb.h presence... yes
 - checking for netdb.h... yes
 - checking for sys/types.h... (cached) yes
@@ -611,8 +612,7 @@ The following actions will be performed:
 - checking for features.h... yes
 - checking for setservent... yes
 - checking for getservent... yes
-- checking for endservent... 
-- yes
+- checking for endservent... yes
 - checking for strptime... yes
 - checking for pread... yes
 - checking for pwrite... yes
@@ -623,7 +623,8 @@ The following actions will be performed:
 - checking for setpgid... yes
 - checking for getpgid... yes
 - checking for setpgrp... yes
-- checking for getpgrp... yes
+- checking for getpgrp... 
+- yes
 - checking whether setpgrp takes no argument... yes
 - configure: creating ./config.status
 - config.status: creating Makefile
@@ -673,6 +674,7 @@ The following actions will be performed:
 - ocamlfind ocamlc -package pcre,unix -c charExtras.mli
 - ocamlfind ocamlc -package pcre,unix -c charExtras.ml
 - ocamlfind ocamlc -package pcre,unix -c strExtras.mli
+- ocamlfind ocamlc -package pcre,unix -c strExtras.ml
 - util_stubs.c: In function 'stew_strptime_tm':
 - util_stubs.c:400:3: warning: implicit declaration of function 'strptime' [-Wimplicit-function-declaration]
 -    s = strptime(String_val(time_str), String_val(fmt), &tm);
@@ -683,7 +685,6 @@ The following actions will be performed:
 - File "charExtras.ml", line 31, characters 35-37:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
-- ocamlfind ocamlc -package pcre,unix -c strExtras.ml
 - ocamlfind ocamlc -package pcre,unix -c iOExtras.mli
 - ocamlfind ocamlc -package pcre,unix -c iOExtras.ml
 - ocamlfind ocamlc -package pcre,unix -c time.mli
@@ -832,6 +833,12 @@ The following actions will be performed:
 - ocamlfind ocamlopt -package pcre,unix -c time.ml
 - ocamlfind ocamlopt -package pcre,unix -c unixExtras.ml
 - ocamlfind ocamlopt -package pcre,unix -c glob.ml
+- ocamlfind ocamlopt -package pcre,unix -c find.ml
+- ocamlfind ocamlopt -package pcre,unix -c syslog.ml
+- ocamlfind ocamlopt -package pcre,unix -c variant.ml
+- ocamlfind ocamlopt -a              -cclib -lannexlib_stubs   \
+- 				 -o annexlib.cmxa arrayExtras.cmx listExtras.cmx option.cmx locale.cmx charExtras.cmx strExtras.cmx iOExtras.cmx time.cmx unixExtras.cmx glob.cmx find.cmx syslog.cmx variant.cmx
+- make[1]: Leaving directory `/home/opam/.opam/system/build/annexlib.0.13.5'
 - File "charExtras.ml", line 31, characters 35-37:
 - Warning 3: deprecated: Pervasives.or
 - Use (||) instead.
@@ -934,12 +941,6 @@ The following actions will be performed:
 - File "glob.ml", line 246, characters 8-23:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlfind ocamlopt -package pcre,unix -c find.ml
-- ocamlfind ocamlopt -package pcre,unix -c syslog.ml
-- ocamlfind ocamlopt -package pcre,unix -c variant.ml
-- ocamlfind ocamlopt -a              -cclib -lannexlib_stubs   \
-- 				 -o annexlib.cmxa arrayExtras.cmx listExtras.cmx option.cmx locale.cmx charExtras.cmx strExtras.cmx iOExtras.cmx time.cmx unixExtras.cmx glob.cmx find.cmx syslog.cmx variant.cmx
-- make[1]: Leaving directory `/home/opam/.opam/system/build/annexlib.0.13.5'
 [annexlib: make install] Command started
 + make "install" (CWD=/home/opam/.opam/system/build/annexlib.0.13.5)
 - make[1]: Entering directory `/home/opam/.opam/system/build/annexlib.0.13.5'
