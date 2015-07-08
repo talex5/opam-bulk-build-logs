@@ -1,35 +1,36 @@
 + uname -m
 + uname -s
-+ lsb_release -i -s
 # Detecting depexts using flags: x86_64 linux debian
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=sqlexpr
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=sqlexpr
 # The following system packages are needed:
 #  - libsqlite3-dev
 #  - m4
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=sqlexpr
++ dpkg-query -W -f '${Package} ${Status}\n' libsqlite3-dev m4 2>/dev/null
+# The following new OS packages need to be installed: libsqlite3-dev
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
 Hit http://security.debian.org stable/updates InRelease
-Get:1 http://httpredir.debian.org stable InRelease [134 kB]
-Get:2 http://security.debian.org stable/updates/main amd64 Packages [121 kB]
-Get:3 http://httpredir.debian.org stable-updates InRelease [126 kB]
-Get:4 http://httpredir.debian.org stable/main amd64 Packages [9038 kB]
-Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3612 B]
-Fetched 9422 kB in 5s (1767 kB/s)
+Hit http://httpredir.debian.org stable InRelease
+Get:1 http://httpredir.debian.org stable-updates InRelease [133 kB]
+Get:2 http://security.debian.org stable/updates/main amd64 Packages [132 kB]
+Get:3 http://httpredir.debian.org stable/main amd64 Packages [9038 kB]
+Get:4 http://httpredir.debian.org stable-updates/main amd64 Packages [3616 B]
+Fetched 9306 kB in 3s (2442 kB/s)
 Reading package lists...
-+ sudo apt-get install -qq -yy libsqlite3-dev m4
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
-    apt-get install -qq -yy libsqlite3-dev m4
+    apt-get install -qq -yy libsqlite3-dev
++ sudo apt-get install -qq -yy libsqlite3-dev
 debconf: unable to initialize frontend: Dialog
+Selecting previously unselected package libsqlite3-dev:amd64.
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
 debconf: unable to initialize frontend: Readline
 debconf: (This frontend requires a controlling tty.)
 debconf: falling back to frontend: Teletype
 dpkg-preconfigure: unable to re-open stdin: 
-Selecting previously unselected package libsqlite3-dev:amd64.
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 23141 files and directories currently installed.)
 Preparing to unpack .../libsqlite3-dev_3.8.7.1-1+deb8u1_amd64.deb ...
 Unpacking libsqlite3-dev:amd64 (3.8.7.1-1+deb8u1) ...
@@ -40,12 +41,13 @@ The following actions will be performed:
   - install ocamlfind   1.5.5                                   [required by sqlexpr]
   - install camlp4      4.01.0                                  [required by estring, lwt]
   - install sqlite3     2.0.9                                   [required by sqlexpr]
-  - install csv         1.3.4                                   [required by sqlexpr]
   - install batteries   2.3.1                                   [required by sqlexpr]
+  - install base-bytes  legacy                                  [required by csv]
   - install lwt         2.4.8                                   [required by sqlexpr]
   - install estring     1.3                                     [required by sqlexpr]
+  - install csv         1.4                                     [required by sqlexpr]
   - install sqlexpr     0.5.5 
-===== 9 to install =====
+===== 10 to install =====
 
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [batteries: from default] Command started
@@ -53,17 +55,17 @@ The following actions will be performed:
 [estring: from default] Command started
 [csv: from default] Command started
 [estring: from default] Command started
-[default] http://opam-archive:8080/archives/csv.1.3.4+opam.tar.gz downloaded
-[lwt: from default] Command started
 [batteries: from default] Command started
+[default] http://opam-archive:8080/archives/csv.1.4+opam.tar.gz downloaded
+[lwt: from default] Command started
 [default] http://opam-archive:8080/archives/estring.1.3+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/batteries.2.3.1+opam.tar.gz downloaded
 [sqlexpr: from default] Command started
 [lwt: from default] Command started
-[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/lwt.2.4.8+opam.tar.gz downloaded
 [sqlite3: from default] Command started
+[ocamlfind: from default] Command started
 [sqlexpr: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/sqlexpr.0.5.5+opam.tar.gz downloaded
@@ -290,6 +292,7 @@ The following actions will be performed:
 - cp doc/ref-man/META.5 doc/ref-man/site-lib.5 doc/ref-man/findlib.conf.5 /home/opam/.opam/4.01.0/man/man5
 - make[1]: Leaving directory '/home/opam/.opam/4.01.0/build/ocamlfind.1.5.5'
 -> installed ocamlfind.1.5.5
+-> installed base-bytes.legacy
 [batteries: ocaml setup.ml] Command started
 [csv: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/4.01.0" (CWD=/home/opam/.opam/4.01.0/build/batteries.2.3.1)
@@ -348,7 +351,7 @@ The following actions will be performed:
 - make: .......................................... /usr/bin/make
 - 
 [batteries: make all] Command started
-+ ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/4.01.0" (CWD=/home/opam/.opam/4.01.0/build/csv.1.3.4)
++ ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/4.01.0" (CWD=/home/opam/.opam/4.01.0/build/csv.1.4)
 - 
 - Configuration: 
 - ocamlfind: ........................................... /home/opam/.opam/4.01.0/bin/ocamlfind
@@ -356,7 +359,7 @@ The following actions will be performed:
 - ocamlopt: ............................................ /home/opam/.opam/4.01.0/bin/ocamlopt.opt
 - ocamlbuild: .......................................... /home/opam/.opam/4.01.0/bin/ocamlbuild
 - Package name: ........................................ csv
-- Package version: ..................................... 1.3.4
+- Package version: ..................................... 1.4
 - os_type: ............................................. Unix
 - system: .............................................. linux
 - architecture: ........................................ amd64
@@ -404,33 +407,38 @@ The following actions will be performed:
 - OCamlbuild additional flags: ......................... 
 - Create documentations: ............................... true
 - Compile tests executable and library and run them: ... false
+- pkg_bytes: ........................................... /home/opam/.opam/4.01.0/lib/bytes
 - ocamldoc: ............................................ /home/opam/.opam/4.01.0/bin/ocamldoc
 - 
 [csv: ocaml setup.ml] Command started
-+ ocaml "setup.ml" "-build" (CWD=/home/opam/.opam/4.01.0/build/csv.1.3.4)
++ ocaml "setup.ml" "-build" (CWD=/home/opam/.opam/4.01.0/build/csv.1.4)
 - /home/opam/.opam/4.01.0/bin/ocamlopt.opt unix.cmxa -I /home/opam/.opam/4.01.0/lib/ocaml/ocamlbuild /home/opam/.opam/4.01.0/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /home/opam/.opam/4.01.0/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamldep -modules src/csv.mli > src/csv.mli.depends
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I src -o src/csv.cmi src/csv.mli
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamldep -modules src/csv.ml > src/csv.ml.depends
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I src -o src/csv.cmo src/csv.ml
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamldep -package bytes -modules src/csv.mli > src/csv.mli.depends
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package bytes -w A-4@8-29-33-40-41-42-44-45-48 -I src -o src/csv.cmi src/csv.mli
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamldep -package bytes -modules src/csv.ml > src/csv.ml.depends
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -c -g -annot -bin-annot -package bytes -w A-4@8-29-33-40-41-42-44-45-48 -I src -o src/csv.cmo src/csv.ml
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -a src/csv.cmo -o src/csv.cma
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I src -o src/csv.cmx src/csv.ml
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -package bytes -w A-4@8-29-33-40-41-42-44-45-48 -I src -o src/csv.cmx src/csv.ml
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -a src/csv.cmx -o src/csv.cmxa
 - /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -shared src/csv.cmxa src/csv.cmx -o src/csv.cmxs
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamldep -modules examples/csvtool.ml > examples/csvtool.ml.depends
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I src -I examples -I src -o examples/csvtool.cmo examples/csvtool.ml
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I src -I examples -I src -o examples/csvtool.cmx examples/csvtool.ml
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -g -linkpkg src/csv.cmxa examples/csvtool.cmx -o examples/csvtool.native
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamldep -modules examples/example.ml > examples/example.ml.depends
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I src -I examples -I src -o examples/example.cmo examples/example.ml
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I src -I examples -I src -o examples/example.cmx examples/example.ml
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -g -linkpkg src/csv.cmxa examples/example.cmx -o examples/example.native
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamldep -modules tests/test.ml > tests/test.ml.depends
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I src -I tests -I src -o tests/test.cmo tests/test.ml
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I src -I tests -I src -o tests/test.cmx tests/test.ml
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -g -linkpkg src/csv.cmxa tests/test.cmx -o tests/test.native
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamldep -package bytes -modules examples/csvtool.ml > examples/csvtool.ml.depends
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I src -package bytes -w A-4@8-29-33-40-41-42-44-45-48 -I examples -I src -o examples/csvtool.cmo examples/csvtool.ml
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I src -package bytes -w A-4@8-29-33-40-41-42-44-45-48 -I examples -I src -o examples/csvtool.cmx examples/csvtool.ml
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -g -linkpkg -package bytes src/csv.cmxa examples/csvtool.cmx -o examples/csvtool.native
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamldep -package bytes -modules examples/example.ml > examples/example.ml.depends
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I src -package bytes -w A-4@8-29-33-40-41-42-44-45-48 -I examples -I src -o examples/example.cmo examples/example.ml
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I src -package bytes -w A-4@8-29-33-40-41-42-44-45-48 -I examples -I src -o examples/example.cmx examples/example.ml
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -g -linkpkg -package bytes src/csv.cmxa examples/example.cmx -o examples/example.native
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamldep -package bytes -modules tests/test.ml > tests/test.ml.depends
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I src -package bytes -w A-4@8-29-33-40-41-42-44-45-48 -I tests -I src -o tests/test.cmo tests/test.ml
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I src -package bytes -w A-4@8-29-33-40-41-42-44-45-48 -I tests -I src -o tests/test.cmx tests/test.ml
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -g -linkpkg -package bytes src/csv.cmxa tests/test.cmx -o tests/test.native
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamldep -package bytes -modules tests/test_header.ml > tests/test_header.ml.depends
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I src -package bytes -w A-4@8-29-33-40-41-42-44-45-48 -I tests -I src -o tests/test_header.cmo tests/test_header.ml
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I src -package bytes -w A-4@8-29-33-40-41-42-44-45-48 -I tests -I src -o tests/test_header.cmx tests/test_header.ml
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -g -linkpkg -package bytes src/csv.cmxa tests/test_header.cmx -o tests/test_header.native
 [csv: ocaml setup.ml] Command started
-+ ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/4.01.0/build/csv.1.3.4)
++ ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/4.01.0/build/csv.1.4)
 - Installed /home/opam/.opam/4.01.0/lib/csv/csv.mli
 - Installed /home/opam/.opam/4.01.0/lib/csv/csv.cma
 - Installed /home/opam/.opam/4.01.0/lib/csv/csv.cmxa
@@ -442,7 +450,7 @@ The following actions will be performed:
 - Installed /home/opam/.opam/4.01.0/lib/csv/csv.annot
 - Installed /home/opam/.opam/4.01.0/lib/csv/csv.cmx
 - Installed /home/opam/.opam/4.01.0/lib/csv/META
--> installed csv.1.3.4
+-> installed csv.1.4
 [estring: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/4.01.0" (CWD=/home/opam/.opam/4.01.0/build/estring.1.3)
 - 
@@ -1416,6 +1424,97 @@ The following actions will be performed:
 - Installed /home/opam/.opam/4.01.0/lib/batteries/META
 -> installed batteries.2.3.1
 [sqlite3: ocaml setup.ml] Command started
++ ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/4.01.0" (CWD=/home/opam/.opam/4.01.0/build/sqlite3.2.0.9)
+- 
+- Configuration: 
+- ocamlfind: ........................................... /home/opam/.opam/4.01.0/bin/ocamlfind
+- ocamlc: .............................................. /home/opam/.opam/4.01.0/bin/ocamlc.opt
+- ocamlopt: ............................................ /home/opam/.opam/4.01.0/bin/ocamlopt.opt
+- ocamlbuild: .......................................... /home/opam/.opam/4.01.0/bin/ocamlbuild
+- Package name: ........................................ sqlite3
+- Package version: ..................................... 2.0.9
+- os_type: ............................................. Unix
+- system: .............................................. linux
+- architecture: ........................................ amd64
+- ccomp_type: .......................................... cc
+- ocaml_version: ....................................... 4.01.0
+- standard_library_default: ............................ /home/opam/.opam/4.01.0/lib/ocaml
+- standard_library: .................................... /home/opam/.opam/4.01.0/lib/ocaml
+- standard_runtime: .................................... /home/opam/.opam/4.01.0/bin/ocamlrun
+- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
+- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
+- model: ............................................... default
+- ext_obj: ............................................. .o
+- ext_asm: ............................................. .s
+- ext_lib: ............................................. .a
+- ext_dll: ............................................. .so
+- default_executable_name: ............................. a.out
+- systhread_supported: ................................. true
+- Install architecture-independent files dir: .......... /home/opam/.opam/4.01.0
+- Install architecture-dependent files in dir: ......... $prefix
+- User executables: .................................... $exec_prefix/bin
+- System admin executables: ............................ $exec_prefix/sbin
+- Program executables: ................................. $exec_prefix/libexec
+- Read-only single-machine data: ....................... $prefix/etc
+- Modifiable architecture-independent data: ............ $prefix/com
+- Modifiable single-machine data: ...................... $prefix/var
+- Object code libraries: ............................... $exec_prefix/lib
+- Read-only arch-independent data root: ................ $prefix/share
+- Read-only architecture-independent data: ............. $datarootdir
+- Info documentation: .................................. $datarootdir/info
+- Locale-dependent data: ............................... $datarootdir/locale
+- Man documentation: ................................... $datarootdir/man
+- Documentation root: .................................. $datarootdir/doc/$pkg_name
+- HTML documentation: .................................. $docdir
+- DVI documentation: ................................... $docdir
+- PDF documentation: ................................... $docdir
+- PS documentation: .................................... $docdir
+- findlib_version: ..................................... 1.5.5
+- is_native: ........................................... true
+- suffix_program: ...................................... 
+- Remove a file.: ...................................... rm -f
+- Remove a directory.: ................................. rm -rf
+- Turn ocaml debug flag on: ............................ true
+- Turn ocaml profile flag on: .......................... false
+- Compiler support generation of .cmxs.: ............... true
+- OCamlbuild additional flags: ......................... 
+- Strict compile-time checks: .......................... true
+- Create documentations: ............................... true
+- Compile tests executable and library and run them: ... false
+- ocamldoc: ............................................ /home/opam/.opam/4.01.0/bin/ocamldoc
+- 
+[sqlite3: ocaml setup.ml] Command started
++ ocaml "setup.ml" "-build" (CWD=/home/opam/.opam/4.01.0/build/sqlite3.2.0.9)
+- /home/opam/.opam/4.01.0/bin/ocamlopt.opt unix.cmxa -I /home/opam/.opam/4.01.0/lib/ocaml/ocamlbuild /home/opam/.opam/4.01.0/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /home/opam/.opam/4.01.0/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -ccopt -g -ccopt -O2 -ccopt -fPIC -ccopt -DPIC -ccopt -Wall -ccopt -pedantic -ccopt -Wextra -ccopt -Wunused -ccopt -Wno-long-long -c lib/sqlite3_stubs.c
+- mv sqlite3_stubs.o lib/sqlite3_stubs.o
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlmklib -o lib/sqlite3_stubs -lsqlite3 -lsqlite3 lib/sqlite3_stubs.o
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamldep -modules lib/sqlite3.mli > lib/sqlite3.mli.depends
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -c -g -annot -bin-annot -strict-sequence -ccopt -g -ccopt -O2 -ccopt -fPIC -ccopt -DPIC -ccopt -Wall -ccopt -pedantic -ccopt -Wextra -ccopt -Wunused -ccopt -Wno-long-long -w Aer-44 -I lib -o lib/sqlite3.cmi lib/sqlite3.mli
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamldep -modules lib/sqlite3.ml > lib/sqlite3.ml.depends
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -c -g -annot -bin-annot -strict-sequence -ccopt -g -ccopt -O2 -ccopt -fPIC -ccopt -DPIC -ccopt -Wall -ccopt -pedantic -ccopt -Wextra -ccopt -Wunused -ccopt -Wno-long-long -w Aer-44 -I lib -o lib/sqlite3.cmo lib/sqlite3.ml
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -a -dllib -lsqlite3_stubs -cclib -lsqlite3_stubs -cclib -lsqlite3 -cclib -lsqlite3 -cclib -lsqlite3 lib/sqlite3.cmo -o lib/sqlite3.cma
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -strict-sequence -ccopt -g -ccopt -O2 -ccopt -fPIC -ccopt -DPIC -ccopt -Wall -ccopt -pedantic -ccopt -Wextra -ccopt -Wunused -ccopt -Wno-long-long -w Aer-44 -I lib -o lib/sqlite3.cmx lib/sqlite3.ml
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -a -cclib -lsqlite3_stubs -cclib -lsqlite3 -cclib -lsqlite3 -cclib -lsqlite3 lib/sqlite3.cmx -o lib/sqlite3.cmxa
+- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -shared -cclib -lsqlite3_stubs -I lib -cclib -lsqlite3 lib/sqlite3.cmxa lib/sqlite3.cmx -o lib/sqlite3.cmxs
+[sqlite3: ocaml setup.ml] Command started
++ ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/4.01.0/build/sqlite3.2.0.9)
+- Installed /home/opam/.opam/4.01.0/lib/sqlite3/sqlite3.mli
+- Installed /home/opam/.opam/4.01.0/lib/sqlite3/libsqlite3_stubs.a
+- Installed /home/opam/.opam/4.01.0/lib/sqlite3/sqlite3.cma
+- Installed /home/opam/.opam/4.01.0/lib/sqlite3/sqlite3.cmxa
+- Installed /home/opam/.opam/4.01.0/lib/sqlite3/sqlite3.a
+- Installed /home/opam/.opam/4.01.0/lib/sqlite3/sqlite3.cmxs
+- Installed /home/opam/.opam/4.01.0/lib/sqlite3/sqlite3.cmi
+- Installed /home/opam/.opam/4.01.0/lib/sqlite3/sqlite3.cmti
+- Installed /home/opam/.opam/4.01.0/lib/sqlite3/sqlite3.cmt
+- Installed /home/opam/.opam/4.01.0/lib/sqlite3/sqlite3.annot
+- Installed /home/opam/.opam/4.01.0/lib/sqlite3/sqlite3.cmx
+- Installed /home/opam/.opam/4.01.0/lib/sqlite3/META
+- Installed /home/opam/.opam/4.01.0/lib/stublibs/dllsqlite3_stubs.so
+- Installed /home/opam/.opam/4.01.0/lib/stublibs/dllsqlite3_stubs.so.owner
+- ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/4.01.0/lib/stublibs is not mentioned in ld.conf
+-> installed sqlite3.2.0.9
 + make "build" (CWD=/home/opam/.opam/4.01.0/build/lwt.2.4.8)
 - ocamlopt.opt -o setup.exe setup.ml || ocamlopt -o setup.exe setup.ml || ocamlc -o setup.exe setup.ml
 - rm -f setup.cmx setup.cmi setup.o setup.obj setup.cmo
@@ -1980,123 +2079,26 @@ The following actions will be performed:
 - Installed /home/opam/.opam/4.01.0/lib/stublibs/dlllwt-unix_stubs.so.owner
 - ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/4.01.0/lib/stublibs is not mentioned in ld.conf
 -> installed lwt.2.4.8
-+ ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/4.01.0" (CWD=/home/opam/.opam/4.01.0/build/sqlite3.2.0.9)
-- 
-- Configuration: 
-- ocamlfind: ........................................... /home/opam/.opam/4.01.0/bin/ocamlfind
-- ocamlc: .............................................. /home/opam/.opam/4.01.0/bin/ocamlc.opt
-- ocamlopt: ............................................ /home/opam/.opam/4.01.0/bin/ocamlopt.opt
-- ocamlbuild: .......................................... /home/opam/.opam/4.01.0/bin/ocamlbuild
-- Package name: ........................................ sqlite3
-- Package version: ..................................... 2.0.9
-- os_type: ............................................. Unix
-- system: .............................................. linux
-- architecture: ........................................ amd64
-- ccomp_type: .......................................... cc
-- ocaml_version: ....................................... 4.01.0
-- standard_library_default: ............................ /home/opam/.opam/4.01.0/lib/ocaml
-- standard_library: .................................... /home/opam/.opam/4.01.0/lib/ocaml
-- standard_runtime: .................................... /home/opam/.opam/4.01.0/bin/ocamlrun
-- bytecomp_c_compiler: ................................. gcc -fno-defer-pop -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -fPIC
-- native_c_compiler: ................................... gcc -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT
-- model: ............................................... default
-- ext_obj: ............................................. .o
-- ext_asm: ............................................. .s
-- ext_lib: ............................................. .a
-- ext_dll: ............................................. .so
-- default_executable_name: ............................. a.out
-- systhread_supported: ................................. true
-- Install architecture-independent files dir: .......... /home/opam/.opam/4.01.0
-- Install architecture-dependent files in dir: ......... $prefix
-- User executables: .................................... $exec_prefix/bin
-- System admin executables: ............................ $exec_prefix/sbin
-- Program executables: ................................. $exec_prefix/libexec
-- Read-only single-machine data: ....................... $prefix/etc
-- Modifiable architecture-independent data: ............ $prefix/com
-- Modifiable single-machine data: ...................... $prefix/var
-- Object code libraries: ............................... $exec_prefix/lib
-- Read-only arch-independent data root: ................ $prefix/share
-- Read-only architecture-independent data: ............. $datarootdir
-- Info documentation: .................................. $datarootdir/info
-- Locale-dependent data: ............................... $datarootdir/locale
-- Man documentation: ................................... $datarootdir/man
-- Documentation root: .................................. $datarootdir/doc/$pkg_name
-- HTML documentation: .................................. $docdir
-- DVI documentation: ................................... $docdir
-- PDF documentation: ................................... $docdir
-- PS documentation: .................................... $docdir
-- findlib_version: ..................................... 1.5.5
-- is_native: ........................................... true
-- suffix_program: ...................................... 
-- Remove a file.: ...................................... rm -f
-- Remove a directory.: ................................. rm -rf
-- Turn ocaml debug flag on: ............................ true
-- Turn ocaml profile flag on: .......................... false
-- Compiler support generation of .cmxs.: ............... true
-- OCamlbuild additional flags: ......................... 
-- Strict compile-time checks: .......................... true
-- Create documentations: ............................... true
-- Compile tests executable and library and run them: ... false
-- ocamldoc: ............................................ /home/opam/.opam/4.01.0/bin/ocamldoc
-- 
-[sqlite3: ocaml setup.ml] Command started
-+ ocaml "setup.ml" "-build" (CWD=/home/opam/.opam/4.01.0/build/sqlite3.2.0.9)
-- /home/opam/.opam/4.01.0/bin/ocamlopt.opt unix.cmxa -I /home/opam/.opam/4.01.0/lib/ocaml/ocamlbuild /home/opam/.opam/4.01.0/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /home/opam/.opam/4.01.0/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -ccopt -g -ccopt -O2 -ccopt -fPIC -ccopt -DPIC -ccopt -Wall -ccopt -pedantic -ccopt -Wextra -ccopt -Wunused -ccopt -Wno-long-long -c lib/sqlite3_stubs.c
-- mv sqlite3_stubs.o lib/sqlite3_stubs.o
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlmklib -o lib/sqlite3_stubs -lsqlite3 -lsqlite3 lib/sqlite3_stubs.o
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamldep -modules lib/sqlite3.mli > lib/sqlite3.mli.depends
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -c -g -annot -bin-annot -strict-sequence -ccopt -g -ccopt -O2 -ccopt -fPIC -ccopt -DPIC -ccopt -Wall -ccopt -pedantic -ccopt -Wextra -ccopt -Wunused -ccopt -Wno-long-long -w Aer-44 -I lib -o lib/sqlite3.cmi lib/sqlite3.mli
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamldep -modules lib/sqlite3.ml > lib/sqlite3.ml.depends
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -c -g -annot -bin-annot -strict-sequence -ccopt -g -ccopt -O2 -ccopt -fPIC -ccopt -DPIC -ccopt -Wall -ccopt -pedantic -ccopt -Wextra -ccopt -Wunused -ccopt -Wno-long-long -w Aer-44 -I lib -o lib/sqlite3.cmo lib/sqlite3.ml
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlc -a -dllib -lsqlite3_stubs -cclib -lsqlite3_stubs -cclib -lsqlite3 -cclib -lsqlite3 -cclib -lsqlite3 lib/sqlite3.cmo -o lib/sqlite3.cma
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -strict-sequence -ccopt -g -ccopt -O2 -ccopt -fPIC -ccopt -DPIC -ccopt -Wall -ccopt -pedantic -ccopt -Wextra -ccopt -Wunused -ccopt -Wno-long-long -w Aer-44 -I lib -o lib/sqlite3.cmx lib/sqlite3.ml
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -a -cclib -lsqlite3_stubs -cclib -lsqlite3 -cclib -lsqlite3 -cclib -lsqlite3 lib/sqlite3.cmx -o lib/sqlite3.cmxa
-- /home/opam/.opam/4.01.0/bin/ocamlfind ocamlopt -shared -cclib -lsqlite3_stubs -I lib -cclib -lsqlite3 lib/sqlite3.cmxa lib/sqlite3.cmx -o lib/sqlite3.cmxs
-[sqlite3: ocaml setup.ml] Command started
-+ ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/4.01.0/build/sqlite3.2.0.9)
-- Installed /home/opam/.opam/4.01.0/lib/sqlite3/sqlite3.mli
-- Installed /home/opam/.opam/4.01.0/lib/sqlite3/libsqlite3_stubs.a
-- Installed /home/opam/.opam/4.01.0/lib/sqlite3/sqlite3.cma
-- Installed /home/opam/.opam/4.01.0/lib/sqlite3/sqlite3.cmxa
-- Installed /home/opam/.opam/4.01.0/lib/sqlite3/sqlite3.a
-- Installed /home/opam/.opam/4.01.0/lib/sqlite3/sqlite3.cmxs
-- Installed /home/opam/.opam/4.01.0/lib/sqlite3/sqlite3.cmi
-- Installed /home/opam/.opam/4.01.0/lib/sqlite3/sqlite3.cmti
-- Installed /home/opam/.opam/4.01.0/lib/sqlite3/sqlite3.cmt
-- Installed /home/opam/.opam/4.01.0/lib/sqlite3/sqlite3.annot
-- Installed /home/opam/.opam/4.01.0/lib/sqlite3/sqlite3.cmx
-- Installed /home/opam/.opam/4.01.0/lib/sqlite3/META
-- Installed /home/opam/.opam/4.01.0/lib/stublibs/dllsqlite3_stubs.so
-- Installed /home/opam/.opam/4.01.0/lib/stublibs/dllsqlite3_stubs.so.owner
-- ocamlfind: [WARNING] You have installed DLLs but the directory /home/opam/.opam/4.01.0/lib/stublibs is not mentioned in ld.conf
--> installed sqlite3.2.0.9
 [sqlexpr: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/4.01.0" (CWD=/home/opam/.opam/4.01.0/build/sqlexpr.0.5.5)
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlc.opt -config > '/tmp/oasis-ef49a6.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %v findlib > '/tmp/oasis-c6cab4.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -predicates native dynlink -format %d/%a > '/tmp/oasis-f30228.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d camlp4.lib > '/tmp/oasis-166db6.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d camlp4.quotations.r > '/tmp/oasis-05c5c1.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d estring > '/tmp/oasis-8663eb.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d csv > '/tmp/oasis-291b09.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d batteries > '/tmp/oasis-70d849.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d sqlite3 > '/tmp/oasis-70a1a0.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d estring > '/tmp/oasis-424f3e.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d estring > '/tmp/oasis-da27c4.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d lwt > '/tmp/oasis-9706aa.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %v lwt > '/tmp/oasis-c50071.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d lwt.syntax > '/tmp/oasis-e6a607.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d lwt.unix > '/tmp/oasis-7b9ccd.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d unix > '/tmp/oasis-3dad5b.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d threads > '/tmp/oasis-8ebc8b.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -predicates native dynlink -format %d/%a > '/tmp/oasis-e7bc5d.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %v findlib > '/tmp/oasis-54adb5.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -predicates native dynlink -format %d/%a > '/tmp/oasis-323eed.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d camlp4.lib > '/tmp/oasis-0e4fee.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d camlp4.quotations.r > '/tmp/oasis-bbb38e.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d estring > '/tmp/oasis-cf5847.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d csv > '/tmp/oasis-3a613c.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlc.opt -config > '/tmp/oasis-f26c0c.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %v findlib > '/tmp/oasis-701383.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -predicates native dynlink -format %d/%a > '/tmp/oasis-af5c50.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d camlp4.lib > '/tmp/oasis-dd89ea.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d camlp4.quotations.r > '/tmp/oasis-934921.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d estring > '/tmp/oasis-6e2ae8.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d csv > '/tmp/oasis-70d664.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d batteries > '/tmp/oasis-a93a6a.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d sqlite3 > '/tmp/oasis-b07ef8.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d estring > '/tmp/oasis-b16f72.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d estring > '/tmp/oasis-dc430d.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d lwt > '/tmp/oasis-24f23b.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %v lwt > '/tmp/oasis-ce527e.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d lwt.syntax > '/tmp/oasis-ea2140.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d lwt.unix > '/tmp/oasis-1a0400.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d unix > '/tmp/oasis-c7c856.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d threads > '/tmp/oasis-1e3b22.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -predicates native dynlink -format %d/%a > '/tmp/oasis-48df5f.txt''
 - 
 - Configuration: 
 - ocamlfind: ........................................... /home/opam/.opam/4.01.0/bin/ocamlfind
@@ -2165,14 +2167,20 @@ The following actions will be performed:
 - pkg_unix: ............................................ /home/opam/.opam/4.01.0/lib/ocaml
 - pkg_threads: ......................................... /home/opam/.opam/4.01.0/lib/ocaml
 - 
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d batteries > '/tmp/oasis-7f3a2e.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d sqlite3 > '/tmp/oasis-f961f0.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d lwt > '/tmp/oasis-11e16c.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %v lwt > '/tmp/oasis-26fd90.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d lwt.syntax > '/tmp/oasis-18b255.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d lwt.unix > '/tmp/oasis-709ad4.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d unix > '/tmp/oasis-f84096.txt''
-- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d threads > '/tmp/oasis-d151ef.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %v findlib > '/tmp/oasis-b7997f.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -predicates native dynlink -format %d/%a > '/tmp/oasis-625234.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d camlp4.lib > '/tmp/oasis-99b67e.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d camlp4.quotations.r > '/tmp/oasis-722ac5.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d estring > '/tmp/oasis-00fd63.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d csv > '/tmp/oasis-b2af1d.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d batteries > '/tmp/oasis-2d9ffd.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d sqlite3 > '/tmp/oasis-067485.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d lwt > '/tmp/oasis-248f79.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %v lwt > '/tmp/oasis-37568f.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d lwt.syntax > '/tmp/oasis-125071.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d lwt.unix > '/tmp/oasis-d87d6f.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d unix > '/tmp/oasis-1baacc.txt''
+- I: Running command '/home/opam/.opam/4.01.0/bin/ocamlfind query -format %d threads > '/tmp/oasis-f2c5eb.txt''
 [sqlexpr: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-build" (CWD=/home/opam/.opam/4.01.0/build/sqlexpr.0.5.5)
 - /home/opam/.opam/4.01.0/bin/ocamlopt.opt unix.cmxa -I /home/opam/.opam/4.01.0/lib/ocaml/ocamlbuild /home/opam/.opam/4.01.0/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /home/opam/.opam/4.01.0/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
