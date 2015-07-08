@@ -1,16 +1,16 @@
 + uname -m
 + uname -s
-# Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=riak-pb
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=riak-pb
+# Detecting depexts using flags: x86_64 linux ubuntu
 # The following system packages are needed:
 #  - m4
 #  - protobuf-compiler
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=riak-pb
 + dpkg-query -W -f '${Package} ${Status}\n' m4 protobuf-compiler 2>/dev/null
++ sudo apt-get update
 # The following new OS packages need to be installed: protobuf-compiler
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
 Ign http://download.opensuse.org  InRelease
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
@@ -35,6 +35,7 @@ Get:4 http://archive.ubuntu.com trusty-updates/restricted Sources [3158 B]
 Get:5 http://archive.ubuntu.com trusty-updates/universe Sources [154 kB]
 Get:6 http://archive.ubuntu.com trusty-updates/main amd64 Packages [714 kB]
 Get:7 http://archive.ubuntu.com trusty-updates/restricted amd64 Packages [18.1 kB]
++ sudo apt-get install -qq -yy protobuf-compiler
 Get:8 http://archive.ubuntu.com trusty-updates/universe amd64 Packages [382 kB]
 Hit http://archive.ubuntu.com trusty-security/main Sources
 Hit http://archive.ubuntu.com trusty-security/restricted Sources
@@ -42,12 +43,11 @@ Hit http://archive.ubuntu.com trusty-security/universe Sources
 Hit http://archive.ubuntu.com trusty-security/main amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/universe amd64 Packages
-Fetched 1603 kB in 4s (325 kB/s)
+Fetched 1603 kB in 5s (301 kB/s)
 Reading package lists...
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy protobuf-compiler
-+ sudo apt-get install -qq -yy protobuf-compiler
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
@@ -86,18 +86,18 @@ The following actions will be performed:
 [piqi: from default] Command started
 [easy-format: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/easy-format.1.0.2+opam.tar.gz downloaded
-[riak-pb: from default] Command started
 [piqi: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
-[ulex: from default] Command started
 [riak-pb: from default] Command started
+[default] http://opam-archive:8080/archives/easy-format.1.0.2+opam.tar.gz downloaded
+[ulex: from default] Command started
 [default] http://opam-archive:8080/archives/piqi.0.6.0+opam.tar.gz downloaded
 [xmlm: from default] Command started
+[riak-pb: from default] Command started
 [ulex: from default] Command started
 [default] http://opam-archive:8080/archives/riak-pb.1.0.0+opam.tar.gz downloaded
-[xmlm: from default] Command started
 [default] http://opam-archive:8080/archives/ulex.1.1+opam.tar.gz downloaded
+[xmlm: from default] Command started
 [default] http://opam-archive:8080/archives/xmlm.1.2.0+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -186,6 +186,9 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
+- ocamlc -I +compiler-libs -g -c fl_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -231,12 +234,11 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
-- ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+- 	           ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -245,8 +247,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
-- 	           ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -299,6 +299,7 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -343,7 +344,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -501,7 +501,6 @@ The following actions will be performed:
 - ocamlfind ocamlopt -c -annot -bin-annot -I test -I src -o test/xhtml.cmx test/xhtml.ml
 - ocamlfind ocamlopt -c -annot -bin-annot -I test -I src -o test/xmltrip.cmx test/xmltrip.ml
 - ocamlfind ocamlopt -linkpkg src/xmlm.cmx test/xhtml.cmx test/xmltrip.cmx -o test/xmltrip.native
-[ERROR] The compilation of piqi failed at "make".
 -> installed xmlm.1.2.0
 + make "all.opt" (CWD=/home/opam/.opam/system/build/ulex.1.1)
 - ocamlbuild -byte-plugin pa_ulex.cma ulexing.cma pa_ulex.cmxa ulexing.cmxa
@@ -584,29 +583,17 @@ The following actions will be performed:
 - 
 - File "pa_labelscope.ml", line 1:
 - Error: Error while running external preprocessor
-- Command line: camlp4orf  'pa_labelscope.ml' > /tmp/ocamlpp77da26
+- Command line: camlp4orf  'pa_labelscope.ml' > /tmp/ocamlpp450e0f
 - 
 - make[2]: *** [pa_labelscope.cmo] Error 2
 - make[1]: *** [4.02] Error 2
 - make: *** [dirs] Error 2
+[ERROR] The compilation of piqi failed at "make".
 [piqi: rm] Command started
 + rm "-f" "/home/opam/.opam/system/bin/piqi" "/home/opam/.opam/system/bin/piqic" (CWD=/home/opam/.opam/system/build/piqi.0.6.0)
 [piqi: ocamlfind remove] Command started
 + ocamlfind "remove" "piqi" (CWD=/home/opam/.opam/system/build/piqi.0.6.0)
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/piqi
-
-
-=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-The following actions were aborted
-  - install riak-pb 1.0.0
-The following actions failed
-  - install piqi 0.6.0
-The following changes have been performed
-  - install camlp4      4.02+system
-  - install easy-format 1.0.2      
-  - install ocamlfind   1.5.5      
-  - install ulex        1.1        
-  - install xmlm        1.2.0      
 
 #=== ERROR while installing piqi.0.6.0 ========================================#
 # opam-version         1.2.2 (c30ed46b7e70bcf0f872e482cbcbf6a1fa0c60b3)
@@ -637,13 +624,26 @@ The following changes have been performed
 # 
 # File "pa_labelscope.ml", line 1:
 # Error: Error while running external preprocessor
-# Command line: camlp4orf  'pa_labelscope.ml' > /tmp/ocamlpp77da26
+# Command line: camlp4orf  'pa_labelscope.ml' > /tmp/ocamlpp450e0f
 # 
 # make[2]: *** [pa_labelscope.cmo] Error 2
 # make[1]: *** [4.02] Error 2
 # make: *** [dirs] Error 2
 
 
+
+=-=- Error report -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+The following actions were aborted
+  - install riak-pb 1.0.0
+The following actions failed
+  - install piqi 0.6.0
+The following changes have been performed
+  - install camlp4      4.02+system
+  - install easy-format 1.0.2      
+  - install ocamlfind   1.5.5      
+  - install ulex        1.1        
+  - install xmlm        1.2.0      
+
 The former state can be restored with:
-    opam switch import "~/.opam/system/backup/state-20150605214237.export"
+    opam switch import "~/.opam/system/backup/state-20150606105502.export"
 'opam install riak-pb' failed.
