@@ -1,10 +1,10 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux ubuntu
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=why3-base
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=why3-base
+# Detecting depexts using flags: x86_64 linux ubuntu
 # The following system packages are needed:
 #  - m4
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=why3-base
 + dpkg-query -W -f '${Package} ${Status}\n' m4 2>/dev/null
 # All required OS packages found.
 The following actions will be performed:
@@ -109,8 +109,6 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
-- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
-- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -156,9 +154,18 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
+- ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 - 	           ocaml_args.cmo frontend.cmo
+- if [ "true" = "true" ]; then                 \
+- 		cp topfind.ml.in topfind.ml;                             \
+- 	else                                                             \
+- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
+- 			> topfind.ml ;                                   \
+- 	fi
+- ocamlc -I +compiler-libs -c topfind.mli
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -167,13 +174,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- if [ "true" = "true" ]; then                 \
-- 		cp topfind.ml.in topfind.ml;                             \
-- 	else                                                             \
-- 		sed -e '/PPXOPT_BEGIN/,/PPXOPT_END/ d' topfind.ml.in     \
-- 			> topfind.ml ;                                   \
-- 	fi
-- ocamlc -I +compiler-libs -c topfind.mli
 - ocamlc -I +compiler-libs -g -c topfind.ml
 - ocamlc -I +compiler-libs -a -o findlib_top.cma topfind.cmo
 - USE_CYGPATH="0"; \
@@ -1285,9 +1285,6 @@ The following actions will be performed:
 - Ocamldep src/session/session.ml
 - Ocamldep src/session/termcode.ml
 - Ocamldep src/session/xml.ml
-- Ocamldep src/session/compress.ml
-- Ocamldep src/whyml/mlw_interp.ml
-- Ocamldep src/whyml/mlw_main.ml
 - Makefile:245: src/util/config.dep: No such file or directory
 - Makefile:245: src/util/bigInt.dep: No such file or directory
 - Makefile:245: src/util/util.dep: No such file or directory
@@ -1448,6 +1445,9 @@ The following actions will be performed:
 - recommend switching on --infer in order to avoid obscure type error messages.
 - Warning: you are using the standard library and/or the %inline keyword. We
 - recommend switching on --infer in order to avoid obscure type error messages.
+- Ocamldep src/session/compress.ml
+- Ocamldep src/whyml/mlw_interp.ml
+- Ocamldep src/whyml/mlw_main.ml
 - Ocamldep src/whyml/mlw_ocaml.ml
 - Ocamldep src/whyml/mlw_exec.ml
 - Ocamldep src/whyml/mlw_driver.ml
@@ -1579,16 +1579,16 @@ The following actions will be performed:
 - Ocamlopt src/util/exthtbl.ml
 - Ocamlc   src/util/weakhtbl.mli
 - Ocamlopt src/util/weakhtbl.ml
-- Ocamlc   src/util/hashcons.mli
-- Ocamlopt src/util/hashcons.ml
-- Ocamlc   src/util/stdlib.mli
-- Ocamlopt src/util/stdlib.ml
 - File "src/util/strings.ml", line 36, characters 12-25:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
 - File "src/util/strings.ml", line 38, characters 4-15:
 - Warning 3: deprecated: String.fill
 - Use Bytes.fill instead.
+- Ocamlc   src/util/hashcons.mli
+- Ocamlopt src/util/hashcons.ml
+- Ocamlc   src/util/stdlib.mli
+- Ocamlopt src/util/stdlib.ml
 - Ocamlc   src/util/exn_printer.mli
 - Ocamlopt src/util/exn_printer.ml
 - Ocamlc   src/util/pp.mli
@@ -1613,11 +1613,6 @@ The following actions will be performed:
 - Ocamlopt src/util/plugin.ml
 - Ocamlc   src/util/number.mli
 - Ocamlopt src/util/number.ml
-- Ocamlc   src/util/pqueue.mli
-- Ocamlopt src/util/pqueue.ml
-- Ocamlc   src/core/ident.mli
-- Ocamlopt src/core/ident.ml
-- Ocamlc   src/core/ty.mli
 - File "src/util/lexlib.mll", line 101, characters 14-27:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -1642,6 +1637,11 @@ The following actions will be performed:
 - File "src/util/number.ml", line 161, characters 31-44:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- Ocamlc   src/util/pqueue.mli
+- Ocamlopt src/util/pqueue.ml
+- Ocamlc   src/core/ident.mli
+- Ocamlopt src/core/ident.ml
+- Ocamlc   src/core/ty.mli
 - Ocamlopt src/core/ty.ml
 - Ocamlc   src/core/term.mli
 - Ocamlopt src/core/term.ml
@@ -1683,13 +1683,13 @@ The following actions will be performed:
 - Ocamlopt src/mlw/ity.ml
 - Ocamlc   src/mlw/expr.mli
 - Ocamlopt src/mlw/expr.ml
-- File "src/mlw/expr.ml", line 440, characters 34-46:
-- Warning 48: implicit elimination of optional argument ?loc
 - Ocamlc   src/mlw/dexpr.mli
 - Ocamlopt src/mlw/dexpr.ml
 - Ocamlopt src/parser/ptree.ml
 - Ocamlc   src/parser/glob.mli
 - Ocamlopt src/parser/glob.ml
+- File "src/mlw/expr.ml", line 440, characters 34-46:
+- Warning 48: implicit elimination of optional argument ?loc
 - Ocamlc   src/parser/parser.mli
 - Ocamlopt src/parser/parser.ml
 - Ocamlc   src/parser/typing.mli
@@ -1775,9 +1775,6 @@ The following actions will be performed:
 - Ocamlopt src/printer/smtv2.ml
 - Ocamlc   src/printer/coq.mli
 - Ocamlopt src/printer/coq.ml
-- File "src/printer/coq.ml", line 481, characters 14-27:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - Ocamlopt src/printer/pvs.ml
 - Ocamlopt src/printer/isabelle.ml
 - Ocamlc   src/printer/simplify.mli
@@ -1786,6 +1783,9 @@ The following actions will be performed:
 - Ocamlopt src/printer/gappa.ml
 - Ocamlc   src/printer/cvc3.mli
 - Ocamlopt src/printer/cvc3.ml
+- File "src/printer/coq.ml", line 481, characters 14-27:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - Ocamlopt src/printer/yices.ml
 - Ocamlopt src/printer/mathematica.ml
 - Ocamlc   src/whyml/mlw_ty.mli
@@ -1822,6 +1822,11 @@ The following actions will be performed:
 - Ocamlopt src/session/termcode.ml
 - Ocamlc   src/session/session.mli
 - Ocamlopt src/session/session.ml
+- File "src/session/session.ml", line 1517, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "src/session/session.ml", line 1546, characters 16-27:
+- Warning 3: deprecated: String.copy
 - Ocamlc   src/session/session_tools.mli
 - Ocamlopt src/session/session_tools.ml
 - Ocamlc   src/session/strategy.mli
@@ -1829,11 +1834,6 @@ The following actions will be performed:
 - Ocamlc   src/session/strategy_parser.mli
 - Ocamlopt src/session/strategy_parser.ml
 - Ocamlc   src/session/session_scheduler.mli
-- File "src/session/session.ml", line 1517, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "src/session/session.ml", line 1546, characters 16-27:
-- Warning 3: deprecated: String.copy
 - Ocamlopt src/session/session_scheduler.ml
 - Linking  lib/why3/why3.cmx
 - Ocamlopt plugins/parser/genequlin.ml
@@ -1869,11 +1869,11 @@ The following actions will be performed:
 - Linking  bin/why3wc.opt
 - Ocamlc   src/why3session/why3session_lib.mli
 - Ocamlopt src/why3session/why3session_lib.ml
+- Ocamlopt src/why3session/why3session_copy.ml
+- Ocamlopt src/why3session/why3session_info.ml
 - File "src/why3session/why3session_lib.ml", line 252, characters 10-23:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- Ocamlopt src/why3session/why3session_copy.ml
-- Ocamlopt src/why3session/why3session_info.ml
 - Ocamlopt src/why3session/why3session_latex.ml
 - Ocamlopt src/why3session/why3session_html.ml
 - Ocamlopt src/why3session/why3session_rm.ml
@@ -1920,6 +1920,12 @@ The following actions will be performed:
 - Ocamlc   src/util/exthtbl.ml
 - Ocamlc   src/util/weakhtbl.ml
 - Ocamlc   src/util/hashcons.ml
+- File "src/util/strings.ml", line 36, characters 12-25:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "src/util/strings.ml", line 38, characters 4-15:
+- Warning 3: deprecated: String.fill
+- Use Bytes.fill instead.
 - Ocamlc   src/util/stdlib.ml
 - Ocamlc   src/util/exn_printer.ml
 - Ocamlc   src/util/pp.ml
@@ -1931,12 +1937,14 @@ The following actions will be performed:
 - Ocamlc   src/util/warning.ml
 - Ocamlc   src/util/sysutil.ml
 - Ocamlc   src/util/rc.ml
-- File "src/util/strings.ml", line 36, characters 12-25:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "src/util/strings.ml", line 38, characters 4-15:
-- Warning 3: deprecated: String.fill
-- Use Bytes.fill instead.
+- Ocamlc   src/util/plugin.ml
+- Ocamlc   src/util/number.ml
+- Ocamlc   src/util/pqueue.ml
+- Ocamlc   src/core/ident.ml
+- Ocamlc   src/core/ty.ml
+- Ocamlc   src/core/term.ml
+- Ocamlc   src/core/pattern.ml
+- Ocamlc   src/core/decl.ml
 - File "src/util/lexlib.mll", line 101, characters 14-27:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
@@ -1956,22 +1964,14 @@ The following actions will be performed:
 - Warning 3: deprecated: String.unsafe_set
 - File "src/util/rc.mll", line 76, characters 6-23:
 - Warning 3: deprecated: String.unsafe_set
-- Ocamlc   src/util/plugin.ml
-- Ocamlc   src/util/number.ml
-- Ocamlc   src/util/pqueue.ml
-- Ocamlc   src/core/ident.ml
-- Ocamlc   src/core/ty.ml
-- Ocamlc   src/core/term.ml
-- Ocamlc   src/core/pattern.ml
-- Ocamlc   src/core/decl.ml
-- Ocamlc   src/core/theory.ml
-- Ocamlc   src/core/task.ml
-- Ocamlc   src/core/pretty.ml
 - File "src/util/number.ml", line 161, characters 14-25:
 - Warning 3: deprecated: String.copy
 - File "src/util/number.ml", line 161, characters 31-44:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
+- Ocamlc   src/core/theory.ml
+- Ocamlc   src/core/task.ml
+- Ocamlc   src/core/pretty.ml
 - Ocamlc   src/core/dterm.ml
 - Ocamlc   src/core/env.ml
 - Ocamlc   src/core/trans.ml
@@ -1988,11 +1988,11 @@ The following actions will be performed:
 - Ocamlc   src/mlw/ity.ml
 - Ocamlc   src/mlw/expr.ml
 - Ocamlc   src/mlw/dexpr.ml
+- File "src/mlw/expr.ml", line 440, characters 34-46:
+- Warning 48: implicit elimination of optional argument ?loc
 - Ocamlc   src/parser/ptree.ml
 - Ocamlc   src/parser/glob.ml
 - Ocamlc   src/parser/parser.ml
-- File "src/mlw/expr.ml", line 440, characters 34-46:
-- Warning 48: implicit elimination of optional argument ?loc
 - Ocamlc   src/parser/typing.ml
 - Ocamlc   src/parser/lexer.ml
 - Ocamlc   src/transform/simplify_formula.ml
@@ -2036,13 +2036,13 @@ The following actions will be performed:
 - Ocamlc   src/printer/smtv2.ml
 - Ocamlc   src/printer/coq.ml
 - Ocamlc   src/printer/pvs.ml
+- File "src/printer/coq.ml", line 481, characters 14-27:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
 - Ocamlc   src/printer/isabelle.ml
 - Ocamlc   src/printer/simplify.ml
 - Ocamlc   src/printer/gappa.ml
 - Ocamlc   src/printer/cvc3.ml
-- File "src/printer/coq.ml", line 481, characters 14-27:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
 - Ocamlc   src/printer/yices.ml
 - Ocamlc   src/printer/mathematica.ml
 - Ocamlc   src/whyml/mlw_ty.ml
@@ -2062,16 +2062,16 @@ The following actions will be performed:
 - Ocamlc   src/session/xml.ml
 - Ocamlc   src/session/termcode.ml
 - Ocamlc   src/session/session.ml
-- File "src/session/session.ml", line 1517, characters 10-23:
-- Warning 3: deprecated: String.create
-- Use Bytes.create instead.
-- File "src/session/session.ml", line 1546, characters 16-27:
-- Warning 3: deprecated: String.copy
 - Ocamlc   src/session/session_tools.ml
 - Ocamlc   src/session/strategy.ml
 - Ocamlc   src/session/strategy_parser.ml
 - Ocamlc   src/session/session_scheduler.ml
 - Linking  lib/why3/why3.cmo
+- File "src/session/session.ml", line 1517, characters 10-23:
+- Warning 3: deprecated: String.create
+- Use Bytes.create instead.
+- File "src/session/session.ml", line 1546, characters 16-27:
+- Warning 3: deprecated: String.copy
 - Linking  lib/why3/why3.cma
 - Ocamlc   src/tools/main.ml
 - Linking  bin/why3.byte
@@ -2093,11 +2093,11 @@ The following actions will be performed:
 - Ocamlc   src/why3session/why3session_copy.ml
 - Ocamlc   src/why3session/why3session_info.ml
 - Ocamlc   src/why3session/why3session_latex.ml
-- Ocamlc   src/why3session/why3session_html.ml
-- Ocamlc   src/why3session/why3session_rm.ml
 - File "src/why3session/why3session_lib.ml", line 252, characters 10-23:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- Ocamlc   src/why3session/why3session_html.ml
+- Ocamlc   src/why3session/why3session_rm.ml
 - Ocamlc   src/why3session/why3session_output.ml
 - Ocamlc   src/why3session/why3session_run.ml
 - Ocamlc   src/why3session/why3session_csv.ml
