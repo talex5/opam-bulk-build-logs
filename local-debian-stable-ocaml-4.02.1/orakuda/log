@@ -2,40 +2,40 @@
 # Detecting depexts using flags: x86_64 linux debian
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=orakuda
++ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=orakuda
 # The following system packages are needed:
 #  - libpcre3-dev
 #  - m4
 #  - pkg-config
-+ opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=orakuda
 + dpkg-query -W -f '${Package} ${Status}\n' libpcre3-dev m4 pkg-config 2>/dev/null
++ sudo apt-get update
 # The following new OS packages need to be installed: libpcre3-dev
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
-Hit http://security.debian.org stable/updates InRelease
+Get:1 http://security.debian.org stable/updates InRelease [63.1 kB]
 Ign http://download.opensuse.org  InRelease
+Hit http://httpredir.debian.org stable InRelease
+Get:2 http://httpredir.debian.org stable-updates InRelease [133 kB]
 Hit http://download.opensuse.org  Release.gpg
 Hit http://download.opensuse.org  Release
-Get:1 http://security.debian.org stable/updates/main amd64 Packages [132 kB]
-Get:2 http://download.opensuse.org  Packages [5783 B]
-Hit http://httpredir.debian.org stable InRelease
-Get:3 http://httpredir.debian.org stable-updates InRelease [133 kB]
+Get:3 http://security.debian.org stable/updates/main amd64 Packages [132 kB]
 Get:4 http://httpredir.debian.org stable/main amd64 Packages [9038 kB]
-Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3616 B]
-Fetched 9312 kB in 3s (2433 kB/s)
+Get:5 http://download.opensuse.org  Packages [5783 B]
+Get:6 http://httpredir.debian.org stable-updates/main amd64 Packages [3616 B]
+Fetched 9375 kB in 5s (1866 kB/s)
 Reading package lists...
-# OS package update successful
 + sudo apt-get install -qq -yy libpcre3-dev
+# OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libpcre3-dev
 debconf: unable to initialize frontend: Dialog
-Selecting previously unselected package libpcrecpp0:amd64.
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
 debconf: unable to initialize frontend: Readline
 debconf: (This frontend requires a controlling tty.)
 debconf: falling back to frontend: Teletype
 dpkg-preconfigure: unable to re-open stdin: 
+Selecting previously unselected package libpcrecpp0:amd64.
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 22820 files and directories currently installed.)
 Preparing to unpack .../libpcrecpp0_2%3a8.35-3.3_amd64.deb ...
 Unpacking libpcrecpp0:amd64 (2:8.35-3.3) ...
@@ -65,17 +65,17 @@ The following actions will be performed:
 [omake: from default] Command started
 [orakuda: from default] Command started
 [orakuda: from default] Command started
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/orakuda.2.0.0+opam.tar.gz downloaded
 [pcre: from default] Command started
-[ocamlfind: from default] Command started
+[omake: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [ppx_test: from default] Command started
 [pcre: from default] Command started
-[omake: from default] Command started
-[default] http://opam-archive:8080/archives/pcre.7.1.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/omake.0.9.8.6-0.rc1+opam.tar.gz downloaded
 [ppx_tools: from default] Command started
 [ppx_test: from default] Command started
-[default] http://opam-archive:8080/archives/omake.0.9.8.6-0.rc1+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/pcre.7.1.5+opam.tar.gz downloaded
 [re: from default] Command started
 [default] http://opam-archive:8080/archives/ppx_test.1.1.0+opam.tar.gz downloaded
 [spotlib: from default] Command started
@@ -208,6 +208,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -253,12 +255,12 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
 - ocamlc -I +compiler-libs -g -c frontend.ml
+- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
+-            ocaml_args.cmo frontend.cmo
 - File "frontend.ml", line 32, characters 9-20:
 - Warning 3: deprecated: String.copy
 - File "frontend.ml", line 34, characters 24-36:
@@ -267,8 +269,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
--            ocaml_args.cmo frontend.cmo
 - if [ "true" = "true" ]; then                 \
 - 	cp topfind.ml.in topfind.ml;                             \
 - else                                                             \
@@ -1217,6 +1217,31 @@ The following actions will be performed:
 - ocamlc -g -c omake_exp_lex.mli
 - ocamlc -g -c omake_exp_lex.ml
 - ocamlc -g -c omake_ir_ast.ml
+- ocamlc -g -c omake_ir_semant.mli
+- ocamlc -g -c omake_ir_semant.ml
+- ocamlc -g -c omake_command_digest.mli
+- ocamlc -g -c omake_command_digest.ml
+- ocamlc -g  -a -o env.cma omake_env.cmo omake_exn_print.cmo omake_ast_parse.cmo omake_ast_lex.cmo omake_exp_parse.cmo omake_exp_lex.cmo omake_ir_ast.cmo omake_ir_semant.cmo omake_command_digest.cmo
+- ocamlc -g -c omake_exec_id.ml
+- ocamlc -g -c omake_exec_print.mli
+- ocamlc -g -c omake_exec_print.ml
+- ocamlc -g -c omake_exec_util.ml
+- ocamlc -g -c omake_exec_local.mli
+- ocamlc -g -c omake_exec_local.ml
+- ocamlc -g -c omake_exec_remote.ml
+- ocamlc -g -c omake_exec_notify.mli
+- ocamlc -g -c omake_exec_notify.ml
+- ocamlc -g -c omake_exec.ml
+- ocamlc -g  -a -o exec.cma omake_exec_id.cmo omake_exec_type.cmo omake_exec_print.cmo omake_exec_util.cmo omake_exec_local.cmo omake_exec_remote.cmo omake_exec_notify.cmo omake_exec.cmo
+- ocamlc -g -c omake_eval.ml
+- ocamlc -g -c omake_value.ml
+- ocamlc -g  -a -o eval.cma omake_eval.cmo omake_value.cmo
+- ocamlc -g -c omake_shell_parse.mli
+- ocamlc -g -c omake_shell_parse.ml
+- ocamlc -g -c omake_shell_lex.mli
+- ocamlc -g -c omake_shell_lex.ml
+- ocamlc -g -c omake_shell_sys.ml
+- ocamlc -g -c omake_shell_job.ml
 - File "lm_printf.ml", line 111, characters 6-43:
 - Warning 3: deprecated: pp_set_all_formatter_output_functions
 - Use Format.pp_set_formatter_out_functions instead.
@@ -1517,45 +1542,20 @@ The following actions will be performed:
 - File "omake_ast_lex.mll", line 1035, characters 12-30:
 - Warning 3: deprecated: String.set
 - Use Bytes.set instead.
-- ocamlc -g -c omake_ir_semant.mli
-- ocamlc -g -c omake_ir_semant.ml
-- ocamlc -g -c omake_command_digest.mli
-- ocamlc -g -c omake_command_digest.ml
-- ocamlc -g  -a -o env.cma omake_env.cmo omake_exn_print.cmo omake_ast_parse.cmo omake_ast_lex.cmo omake_exp_parse.cmo omake_exp_lex.cmo omake_ir_ast.cmo omake_ir_semant.cmo omake_command_digest.cmo
-- ocamlc -g -c omake_exec_id.ml
-- ocamlc -g -c omake_exec_print.mli
-- ocamlc -g -c omake_exec_print.ml
-- ocamlc -g -c omake_exec_util.ml
-- ocamlc -g -c omake_exec_local.mli
-- ocamlc -g -c omake_exec_local.ml
-- ocamlc -g -c omake_exec_remote.ml
-- ocamlc -g -c omake_exec_notify.mli
-- ocamlc -g -c omake_exec_notify.ml
-- ocamlc -g -c omake_exec.ml
 - File "omake_exec_local.ml", line 209, characters 33-46:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
 - File "omake_exec_local.ml", line 209, characters 53-66:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-- ocamlc -g  -a -o exec.cma omake_exec_id.cmo omake_exec_type.cmo omake_exec_print.cmo omake_exec_util.cmo omake_exec_local.cmo omake_exec_remote.cmo omake_exec_notify.cmo omake_exec.cmo
-- ocamlc -g -c omake_eval.ml
-- ocamlc -g -c omake_value.ml
-- ocamlc -g  -a -o eval.cma omake_eval.cmo omake_value.cmo
-- ocamlc -g -c omake_shell_parse.mli
-- ocamlc -g -c omake_shell_parse.ml
-- ocamlc -g -c omake_shell_lex.mli
-- ocamlc -g -c omake_shell_lex.ml
-- ocamlc -g -c omake_shell_sys.ml
-- ocamlc -g -c omake_shell_job.ml
 - ocamlc -g -c omake_shell_completion.ml
 - ocamlc -g  -a -o shell.cma omake_shell_parse.cmo omake_shell_lex.cmo omake_shell_sys_type.cmo omake_shell_sys.cmo omake_shell_job.cmo omake_shell_completion.cmo
 - ocamlc -g -c omake_rule.ml
-- ocamlc -g -c omake_build_util.mli
-- ocamlc -g -c omake_build_util.ml
 - File "omake_rule.ml", line 1279, characters 20-33:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
+- ocamlc -g -c omake_build_util.mli
+- ocamlc -g -c omake_build_util.ml
 - ocamlc -g -c omake_builtin_util.mli
 - ocamlc -g -c omake_builtin_util.ml
 - ocamlc -g -c omake_target.mli
@@ -1690,28 +1690,28 @@ The following actions will be performed:
 - --- Checking whether ocamlc understands the "z" warnings... (yes)
 - --- Checking for OCaml library location... (/home/opam/.opam/4.02.1/lib/ocaml)
 - --- Checking for ncurses... (found)
-- --- Checking for readline... 
+- --- Checking for readline... (NOT found)
+- --- Checking for FAM... 
 - Updating the .config file.
 - (NOT found)
-- --- Checking for FAM... (NOT found)
 - --- Checking for function snprintf... (found)
 - --- Checking for optimal filesystem case-sensitivity test... (Generic)
 - --- Checking if ocamldep understands -modules... (yes)
 - --- Checking for hevea... (FAILED - no hevea found)
 - --- Checking for date... (found /bin/date)
 - --- Checking for date... (found /bin/date)
-- *** omake: finished reading OMakefiles (3.09 sec)
+- *** omake: finished reading OMakefiles (2.99 sec)
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
 - *** omake: saved .omakedb
 - *** omake: saved .omakedb
-- *** omake: done (42.01 sec, 234/234 scans, 343/505 rules, 788/2320 digests)
+- *** omake: done (38.43 sec, 234/234 scans, 343/505 rules, 788/2321 digests)
 - OMAKEFLAGS= OMAKEPATH=lib src/main/omake --dotomake .omake --force-dotomake -j2 all
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.08 sec)
+- *** omake: finished reading OMakefiles (0.07 sec)
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
-- *** omake: done (8.19 sec, 219/235 scans, 27/534 rules, 39/1843 digests)
+- *** omake: done (7.84 sec, 219/235 scans, 27/534 rules, 39/1843 digests)
 [omake: make install] Command started
 + make "install" "PREFIX=/home/opam/.opam/4.02.1" (CWD=/home/opam/.opam/4.02.1/build/omake.0.9.8.6-0.rc1)
 - make[1]: Entering directory '/home/opam/.opam/4.02.1/build/omake.0.9.8.6-0.rc1/boot'
@@ -1723,22 +1723,20 @@ The following actions will be performed:
 - touch .config
 - OMAKEFLAGS= OMAKEPATH=lib ./omake-boot --dotomake .omake --force-dotomake -j2 main
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.41 sec)
+- *** omake: finished reading OMakefiles (0.42 sec)
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
-- *** omake: done (5.14 sec, 0/234 scans, 0/505 rules, 1/1762 digests)
+- *** omake: done (4.73 sec, 0/234 scans, 0/505 rules, 1/1762 digests)
 - OMAKEFLAGS= OMAKEPATH=lib src/main/omake --dotomake .omake --force-dotomake -j2 all
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.08 sec)
-- *** omake: done (0.75 sec, 0/235 scans, 0/534 rules, 0/1821 digests)
-- *** omake: warning: stdout is not a tty, disabling the progress bar
--    (use --progress to override).
+- *** omake: finished reading OMakefiles (0.06 sec)
+- *** omake: done (0.52 sec, 0/235 scans, 0/534 rules, 0/1821 digests)
 - OMAKEFLAGS= OMAKEPATH=lib src/main/omake --dotomake .omake --force-dotomake -j2 install
 - *** omake: reading OMakefiles
 - *** omake: finished reading OMakefiles (0.07 sec)
-- *** omake: done (0.67 sec, 0/235 scans, 2/536 rules, 0/1821 digests)
 - *** omake: warning: stdout is not a tty, disabling the progress bar
 -    (use --progress to override).
+- *** omake: done (0.66 sec, 0/235 scans, 2/536 rules, 0/1821 digests)
 -> installed omake.0.9.8.6-0.rc1
 [ppx_test: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-configure" "--prefix" "/home/opam/.opam/4.02.1" (CWD=/home/opam/.opam/4.02.1/build/ppx_test.1.1.0)
@@ -1802,7 +1800,7 @@ The following actions will be performed:
 - --- Checking for ocamlc.opt... (found /home/opam/.opam/4.02.1/bin/ocamlc.opt)
 - --- Checking for ocamlopt.opt... (found /home/opam/.opam/4.02.1/bin/ocamlopt.opt)
 - --- Checking whether ocamlc understands the "z" warnings... (yes)
-- *** omake: finished reading OMakefiles (0.16 sec)
+- *** omake: finished reading OMakefiles (0.21 sec)
 - --- Checking if ocamldep understands -modules... (yes)
 - - build ppx ppx_test.o
 - + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c ppx_test.ml
@@ -1832,23 +1830,23 @@ The following actions will be performed:
 - + ocamlfind ocamlopt -annot -bin-annot -package re,re.pcre -g -w A-3-4-9-40-42-44-45-48 -warn-error a -ppx '../ppx/ppx_test.opt -top-name Package.Top' -I . -I ../lib -c with_location.ml
 - - build test test.run
 - + ocamlfind ocamlc -package re,re.pcre -g -g -I . -I ../lib -o test.run ../lib/ppx_test.cmo pTest.cmo with_location.cmo module_path.cmo test.cmo -linkpkg -linkall
-- findlib: [WARNING] Interface test.cmi occurs in several directories: ../lib, .
-- findlib: [WARNING] Interface test.cmi occurs in several directories: ../lib, .
-- findlib: [WARNING] Interface test.cmi occurs in several directories: ../lib, .
-- findlib: [WARNING] Interface test.cmi occurs in several directories: ../lib, .
 - - build test test.opt
 - + ocamlfind ocamlopt -package re,re.pcre -g -I . -I ../lib -o test.opt ../lib/ppx_test.cmx pTest.cmx with_location.cmx module_path.cmx test.cmx -linkpkg -linkall
-- *** omake: done (2.82 sec, 11/11 scans, 24/43 rules, 68/207 digests)
+- *** omake: done (2.45 sec, 11/11 scans, 24/43 rules, 68/207 digests)
+- findlib: [WARNING] Interface test.cmi occurs in several directories: ../lib, .
+- findlib: [WARNING] Interface test.cmi occurs in several directories: ../lib, .
+- findlib: [WARNING] Interface test.cmi occurs in several directories: ../lib, .
+- findlib: [WARNING] Interface test.cmi occurs in several directories: ../lib, .
 - findlib: [WARNING] Interface test.cmi occurs in several directories: ../lib, .
 [ppx_test: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/4.02.1/build/ppx_test.1.1.0)
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.06 sec)
+- *** omake: finished reading OMakefiles (0.04 sec)
 - - build lib <install>
 - + ocamlfind remove ppx_test
 - - build lib <install>
 - + ocamlfind install ppx_test META test.mli location.mli longident.mli ppx_test.cmi ppx_test.cmo ppx_test.cmx ppx_test.cma ppx_test.cmxa ppx_test.cmxs ppx_test.o ppx_test.a ../ppx/ppx_test.run ../ppx/ppx_test.opt ../ppx/ppx_test ppx_test.cmt
-- *** omake: done (0.41 sec, 0/7 scans, 4/29 rules, 10/138 digests)
+- *** omake: done (0.40 sec, 0/7 scans, 4/29 rules, 12/138 digests)
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/4.02.1/lib/ppx_test
 - Installed /home/opam/.opam/4.02.1/lib/ppx_test/ppx_test.cmt
 - Installed /home/opam/.opam/4.02.1/lib/ppx_test/ppx_test
@@ -1929,7 +1927,7 @@ The following actions will be performed:
 - --- Checking for ocamlc.opt... (found /home/opam/.opam/4.02.1/bin/ocamlc.opt)
 - --- Checking for ocamlopt.opt... (found /home/opam/.opam/4.02.1/bin/ocamlopt.opt)
 - --- Checking whether ocamlc understands the "z" warnings... (yes)
-- *** omake: finished reading OMakefiles (0.14 sec)
+- *** omake: finished reading OMakefiles (0.07 sec)
 - --- Checking if ocamldep understands -modules... (yes)
 - File OMyMakefile: line 204, characters 3-26:
 -    Warning: old-style foreach expression.
@@ -1975,15 +1973,6 @@ The following actions will be performed:
 - + ocamlfind ocamlc -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c result.ml
 - - build lib option.cmo
 - + ocamlfind ocamlc -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c option.ml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
 - - build lib freem.cmi
 - + ocamlfind ocamlc -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c freem.mli
 - - build lib freem.cmo
@@ -1992,6 +1981,19 @@ The following actions will be performed:
 - + ocamlfind ocamlc -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c xunix.mli
 - - build lib xlist.cmi
 - + ocamlfind ocamlc -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c xlist.mli
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
 - - build lib monad.cmo
 - + ocamlfind ocamlc -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c monad.ml
 - - build lib xlazy.cmi
@@ -2002,15 +2004,6 @@ The following actions will be performed:
 - + ocamlfind ocamlc -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c xlazy.ml
 - - build lib shell.cmi
 - + ocamlfind ocamlc -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c shell.mli
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
 - - build lib shell.cmo
 - + ocamlfind ocamlc -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c shell.ml
 - - build lib pTest.o
@@ -2029,6 +2022,20 @@ The following actions will be performed:
 - + ocamlfind ocamlc -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c overload.ml
 - - build lib overload.cmi
 - + ocamlfind ocamlopt -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -I . -c overload.ml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
 - - build lib freem.cmx
 - + ocamlfind ocamlopt -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -I . -c freem.ml
 - - build lib xlazy.cmx
@@ -2037,19 +2044,6 @@ The following actions will be performed:
 - + ocamlfind ocamlopt -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -I . -c xformat.ml
 - - build lib xlist.cmo
 - + ocamlfind ocamlc -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c xlist.ml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
 - - build lib tuple.cmi
 - + ocamlfind ocamlc -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c tuple.mli
 - - build lib tuple.cmo
@@ -2077,6 +2071,10 @@ The following actions will be performed:
 - findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
 - findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
 - findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
 - - build lib xobj.cmo
 - + ocamlfind ocamlc -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c xobj.ml
 - - build lib once.cmi
@@ -2095,15 +2093,6 @@ The following actions will be performed:
 - + ocamlfind ocamlc -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c filepath.ml
 - - build lib xstring.cmo
 - + ocamlfind ocamlc -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c xstring.ml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
 - - build lib xset.o
 - + ocamlfind ocamlopt -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -I . -c xset.ml
 - - build lib xset.cmo
@@ -2116,6 +2105,21 @@ The following actions will be performed:
 - + ocamlfind ocamlc -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c xunix.ml
 - - build lib file.cmo
 - + ocamlfind ocamlc -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c file.ml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
 - - build lib base.cmo
 - + ocamlfind ocamlc -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c base.ml
 - - build lib xsys.cmo
@@ -2126,17 +2130,6 @@ The following actions will be performed:
 - + ocamlfind ocamlopt -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -I . -c base.ml
 - - build lib temporal.cmx
 - + ocamlfind ocamlopt -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -I . -c temporal.ml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
 - - build lib xstring.cmx
 - + ocamlfind ocamlopt -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -I . -c xstring.ml
 - - build lib filepath.cmx
@@ -2149,15 +2142,19 @@ The following actions will be performed:
 - + ocamlfind ocamlopt -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -I . -c comopt.ml
 - - build lib file.cmx
 - + ocamlfind ocamlopt -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -I . -c file.ml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
 - - build lib xunix.cmx
 - + ocamlfind ocamlopt -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -I . -c xunix.ml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
 - - build lib shell.cmx
 - + ocamlfind ocamlopt -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -I . -c shell.ml
 - - build lib xsys.cmx
@@ -2180,20 +2177,20 @@ The following actions will be performed:
 - + ocamlfind ocamlopt -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -I . -c xgc.ml
 - - build lib spot.cmo
 - + ocamlfind ocamlc -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c spot.ml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
 - - build lib spot.cmo
 - + ocamlfind ocamlopt -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -I . -c spot.ml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
 - - build lib at.cmi
 - + ocamlfind ocamlc -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c at.mli
 - - build lib at.o
@@ -2206,14 +2203,18 @@ The following actions will be performed:
 - + ocamlfind ocamlc -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c at.ml
 - - build lib spotlib.cmt
 - + ocamlfind ocamlc -package unix,str,ppx_test -g -g -pack -annot -bin-annot -o spotlib.cmo pTest.cmo exn.cmo base.cmo monad_intf.cmo xlist.cmo monad.cmo mtypes.cmo result.cmo option.cmo xlazy.cmo stream.cmo temporal_lexer.cmo xint64.cmo overload.cmo temporal.cmo xarray.cmo xhashtbl.cmo xset.cmo xstring.cmo xformat.cmo xfilename.cmo command.cmo file.cmo xunix.cmo xobj.cmo xprintf.cmo xsys.cmo xprintexc.cmo weaktbl.cmo hashset.cmo comopt.cmo at.cmo dllist.cmo tuple.cmo URL.cmo xgc.cmo uniqueID.cmo once.cmo backref.cmo shell.cmo copiedfilename.cmo filepath.cmo xlexing.cmo spot.cmo freem.cmo
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
 - - build lib spotlib.cmxs
 - + <if ... then ... [else ...]>
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
 - - build lib test.o
 - + ocamlfind ocamlc -annot -bin-annot -for-pack Spotlib -package unix,str,ppx_test -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -I . -c test.ml
 - - build lib test.o
@@ -2222,10 +2223,7 @@ The following actions will be performed:
 - + ocamlfind ocamlopt -package unix,str,ppx_test -g -I . -o test.opt spotlib.cmxa test.cmx -linkpkg -linkall
 - - build lib test.run
 - + ocamlfind ocamlc -package unix,str,ppx_test -g -g -I . -o test.run spotlib.cma test.cmo -linkpkg -linkall
-- *** omake: done (14.35 sec, 82/82 scans, 127/198 rules, 291/716 digests)
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
-- findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
+- *** omake: done (11.21 sec, 82/82 scans, 127/198 rules, 291/716 digests)
 - findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
 - findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
 - findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
@@ -2233,7 +2231,7 @@ The following actions will be performed:
 [spotlib: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/4.02.1/build/spotlib.2.5.3)
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.08 sec)
+- *** omake: finished reading OMakefiles (0.04 sec)
 - - build lib spotlib.cmi
 - + ocamlfind ocamlopt -package unix,str,ppx_test -g -pack -o spotlib.cmx pTest.cmx exn.cmx base.cmx monad_intf.cmx xlist.cmx monad.cmx mtypes.cmx result.cmx option.cmx xlazy.cmx stream.cmx temporal_lexer.cmx xint64.cmx overload.cmx temporal.cmx xarray.cmx xhashtbl.cmx xset.cmx xstring.cmx xformat.cmx xfilename.cmx command.cmx file.cmx xunix.cmx xobj.cmx xprintf.cmx xsys.cmx xprintexc.cmx weaktbl.cmx hashset.cmx comopt.cmx at.cmx dllist.cmx tuple.cmx URL.cmx xgc.cmx uniqueID.cmx once.cmx backref.cmx shell.cmx copiedfilename.cmx filepath.cmx xlexing.cmx spot.cmx freem.cmx
 - - build lib spotlib.cmx
@@ -2242,7 +2240,7 @@ The following actions will be performed:
 - + ocamlfind remove spotlib
 - - build lib <install>
 - + ocamlfind install spotlib META at.mli xgc.mli URL.mli exn.mli xset.mli xsys.mli once.mli xobj.mli base.mli file.mli tuple.mli shell.mli xlazy.mli xlist.mli xunix.mli freem.mli monad.mli dllist.mli xarray.mli comopt.mli option.mli stream.mli result.mli xprintf.mli xstring.mli channel.mli xformat.mli command.mli backref.mli xlexing.mli hashset.mli xhashtbl.mli temporal.mli filepath.mli uniqueID.mli xprintexc.mli xfilename.mli spotlib.cmi spotlib.cmo spotlib.cmx spotlib.cma spotlib.cmxa spotlib.cmxs spotlib.o spotlib.a spotlib.cmt
-- *** omake: done (0.53 sec, 0/81 scans, 3/191 rules, 7/513 digests)
+- *** omake: done (0.45 sec, 0/81 scans, 3/191 rules, 7/513 digests)
 - findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
 - findlib: [WARNING] Interface stream.cmi occurs in several directories: ., /home/opam/.opam/4.02.1/lib/ocaml
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/4.02.1/lib/spotlib
@@ -2356,7 +2354,7 @@ The following actions will be performed:
 - --- Checking for ocamlc.opt... (found /home/opam/.opam/4.02.1/bin/ocamlc.opt)
 - --- Checking for ocamlopt.opt... (found /home/opam/.opam/4.02.1/bin/ocamlopt.opt)
 - --- Checking whether ocamlc understands the "z" warnings... (yes)
-- *** omake: finished reading OMakefiles (0.14 sec)
+- *** omake: finished reading OMakefiles (0.15 sec)
 - --- Checking if ocamldep understands -modules... (yes)
 - File OMyMakefile: line 204, characters 3-26:
 -    Warning: old-style foreach expression.
@@ -2386,12 +2384,13 @@ The following actions will be performed:
 - + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common,pcre,spotlib,ppx_tools -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -ppx /home/opam/.opam/4.02.1/lib/ppx_tools/ppx_metaquot -I . -c lexrex.ml
 - - build ppx ppxx.o
 - + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common,pcre,spotlib,ppx_tools -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -ppx /home/opam/.opam/4.02.1/lib/ppx_tools/ppx_metaquot -I . -c ppxx.ml
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - - build ppx ppxx.o
 - + ocamlfind ocamlopt -annot -bin-annot -package compiler-libs.common,pcre,spotlib,ppx_tools -g -w A-3-4-9-40-42-44-45-48 -warn-error a -ppx /home/opam/.opam/4.02.1/lib/ppx_tools/ppx_metaquot -I . -c ppxx.ml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - - build ppx p_format.cmo
 - + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common,pcre,spotlib,ppx_tools -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -ppx /home/opam/.opam/4.02.1/lib/ppx_tools/ppx_metaquot -I . -c p_format.ml
 - - build ppx p_format.cmx
@@ -2406,18 +2405,19 @@ The following actions will be performed:
 - + ocamlfind ocamlopt -annot -bin-annot -package compiler-libs.common,pcre,spotlib,ppx_tools -g -w A-3-4-9-40-42-44-45-48 -warn-error a -ppx /home/opam/.opam/4.02.1/lib/ppx_tools/ppx_metaquot -I . -c p_cformat.ml
 - - build ppx p_command.cmo
 - + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common,pcre,spotlib,ppx_tools -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -ppx /home/opam/.opam/4.02.1/lib/ppx_tools/ppx_metaquot -I . -c p_command.ml
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - - build ppx p_command.cmo
 - + ocamlfind ocamlopt -annot -bin-annot -package compiler-libs.common,pcre,spotlib,ppx_tools -g -w A-3-4-9-40-42-44-45-48 -warn-error a -ppx /home/opam/.opam/4.02.1/lib/ppx_tools/ppx_metaquot -I . -c p_command.ml
 - - build ppx p_regexp.cmx
 - + ocamlfind ocamlc -annot -bin-annot -package compiler-libs.common,pcre,spotlib,ppx_tools -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -ppx /home/opam/.opam/4.02.1/lib/ppx_tools/ppx_metaquot -I . -c p_regexp.ml
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
+- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - - build ppx p_regexp.cmx
 - + ocamlfind ocamlopt -annot -bin-annot -package compiler-libs.common,pcre,spotlib,ppx_tools -g -w A-3-4-9-40-42-44-45-48 -warn-error a -ppx /home/opam/.opam/4.02.1/lib/ppx_tools/ppx_metaquot -I . -c p_regexp.ml
 - - build ppx p_sprintf.cmx
@@ -2439,26 +2439,24 @@ The following actions will be performed:
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
-- findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /home/opam/.opam/4.02.1/lib/ocaml, /home/opam/.opam/4.02.1/lib/ocaml/compiler-libs
 - - build tests test_regexp_case.cmx
 - + ocamlfind ocamlc -annot -bin-annot -package pcre,spotlib -g -w A-3-4-9-40-42-44-45-48 -warn-error a -g -ppx ../ppx/ppx_orakuda -I ../lib -I . -c test_regexp_case.ml
-- - build tests test_regexp_case.cmx
-- + ocamlfind ocamlopt -annot -bin-annot -package pcre,spotlib -g -w A-3-4-9-40-42-44-45-48 -warn-error a -ppx ../ppx/ppx_orakuda -I ../lib -I . -c test_regexp_case.ml
-- *** omake: done (9.29 sec, 26/26 scans, 60/112 rules, 153/396 digests)
 - File "test_regexp_case.ml", line 8, characters 0-17:
 - Warning 33: unused open Spotlib.Spot.
+- - build tests test_regexp_case.cmx
+- + ocamlfind ocamlopt -annot -bin-annot -package pcre,spotlib -g -w A-3-4-9-40-42-44-45-48 -warn-error a -ppx ../ppx/ppx_orakuda -I ../lib -I . -c test_regexp_case.ml
+- *** omake: done (9.02 sec, 26/26 scans, 60/112 rules, 153/396 digests)
 - File "test_regexp_case.ml", line 8, characters 0-17:
 - Warning 33: unused open Spotlib.Spot.
 [orakuda: ocaml setup.ml] Command started
 + ocaml "setup.ml" "-install" (CWD=/home/opam/.opam/4.02.1/build/orakuda.2.0.0)
 - *** omake: reading OMakefiles
-- *** omake: finished reading OMakefiles (0.07 sec)
+- *** omake: finished reading OMakefiles (0.05 sec)
 - - build lib <install>
 - + ocamlfind remove ppx_orakuda
 - - build lib <install>
 - + ocamlfind install ppx_orakuda META qx.mli regexp.mli cformat.mli ppx_orakuda.cmi ppx_orakuda.cmo ppx_orakuda.cmx ppx_orakuda.cma ppx_orakuda.cmxa ppx_orakuda.cmxs ppx_orakuda.o ppx_orakuda.a ../ppx/ppx_orakuda.run ../ppx/ppx_orakuda.opt ../ppx/ppx_orakuda ppx_orakuda.cmt
-- *** omake: done (0.29 sec, 0/20 scans, 4/72 rules, 6/235 digests)
+- *** omake: done (0.29 sec, 0/20 scans, 4/72 rules, 7/235 digests)
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/4.02.1/lib/ppx_orakuda
 - Installed /home/opam/.opam/4.02.1/lib/ppx_orakuda/ppx_orakuda.cmt
 - Installed /home/opam/.opam/4.02.1/lib/ppx_orakuda/ppx_orakuda
