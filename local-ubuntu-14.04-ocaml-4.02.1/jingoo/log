@@ -1,15 +1,15 @@
 + uname -m
-# Detecting depexts using flags: x86_64 linux ubuntu
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=jingoo
+# Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=jingoo
 # The following system packages are needed:
 #  - libpcre3-dev
 #  - m4
 #  - pkg-config
 + dpkg-query -W -f '${Package} ${Status}\n' libpcre3-dev m4 pkg-config 2>/dev/null
-# The following new OS packages need to be installed: libpcre3-dev
 + sudo apt-get update
+# The following new OS packages need to be installed: libpcre3-dev
 Not running as root, the following command will be run through "sudo":
     apt-get update
 Ign http://download.opensuse.org  InRelease
@@ -43,13 +43,12 @@ Get:13 http://archive.ubuntu.com trusty-security/universe Sources [32.0 kB]
 Get:14 http://archive.ubuntu.com trusty-security/main amd64 Packages [382 kB]
 Get:15 http://archive.ubuntu.com trusty-security/restricted amd64 Packages [14.8 kB]
 Get:16 http://archive.ubuntu.com trusty-security/universe amd64 Packages [143 kB]
-Fetched 2350 kB in 6s (349 kB/s)
+Fetched 2350 kB in 6s (379 kB/s)
 Reading package lists...
-W: Size of file /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages.gz is not what the server reported 713904 713906
++ sudo apt-get install -qq -yy libpcre3-dev
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libpcre3-dev
-+ sudo apt-get install -qq -yy libpcre3-dev
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
@@ -88,10 +87,10 @@ The following actions will be performed:
 [ounit: from default] Command started
 [batteries: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/batteries.2.3.1+opam.tar.gz downloaded
 [pcre: from default] Command started
 [ounit: from default] Command started
-[default] http://opam-archive:8080/archives/batteries.2.3.1+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/ounit.2.0.0+opam.tar.gz downloaded
 [pcre: from default] Command started
 [default] http://opam-archive:8080/archives/pcre.7.1.5+opam.tar.gz downloaded
@@ -238,6 +237,8 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_topo.ml
 - ocamlc -I +compiler-libs -c fl_package_base.mli
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
+- ocamlc -I +compiler-libs -c findlib.mli
+- ocamlc -I +compiler-libs -g -c findlib.ml
 - Makefile:160: depend: No such file or directory
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
@@ -283,8 +284,6 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
-- ocamlc -I +compiler-libs -c findlib.mli
-- ocamlc -I +compiler-libs -g -c findlib.ml
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
@@ -350,7 +349,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_metatoken.ml
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
-- ocamlopt -I +compiler-libs -c fl_topo.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -395,6 +393,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_topo.ml
 - ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
@@ -1575,6 +1574,7 @@ The following actions will be performed:
 - File "src/batUTF8.ml", line 209, characters 2-13:
 - Warning 3: deprecated: String.copy
 - ocamlfind ocamlc -c -g -annot -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batText.cmo src/batText.ml
+- ocamlfind: Package `bisect' not found
 - + ocamlfind ocamlc -c -g -annot -package bigarray,num,str -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batText.cmo src/batText.ml
 - File "src/batText.ml", line 46, characters 10-23:
 - Warning 3: deprecated: String.create
@@ -1607,7 +1607,6 @@ The following actions will be performed:
 - ocamlfind ocamldep -package bigarray,num,str -package bytes -modules src/batteriesThread.ml > src/batteriesThread.ml.depends
 - ocamlfind ocamlc -c -g -annot -package bigarray,num,str -thread -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batMutex.cmo src/batMutex.ml
 - ocamlfind ocamlc -c -g -annot -package bigarray,num,str -thread -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batRMutex.cmo src/batRMutex.ml
-- ocamlfind: Package `bisect' not found
 - ocamlfind ocamlc -c -g -annot -package bigarray,num,str -thread -package bytes -I src -I testsuite -I qtest -I build -I benchsuite -o src/batteriesThread.cmo src/batteriesThread.ml
 - ocamlfind ocamlc -a -package bigarray,num,str -thread -package bytes src/batMutex.cmo src/batRMutex.cmo src/batteriesThread.cmo -o src/batteriesThread.cma
 - ocamlrun build/mkconf.byte META.in META
@@ -1973,10 +1972,10 @@ The following actions will be performed:
 - ocamlbuild -no-links -use-ocamlfind src/batteries.cma src/batteriesHelp.cmo src/batteriesThread.cma META src/batteries.cmxs src/batteriesThread.cmxs
 - File "_tags", line 2, characters 32-42:
 - Warning: the tag "warn_Ae-29" is not used in any flag declaration, so it will have no effect; it may be a typo. Otherwise use `mark_tag_used` in your myocamlbuild.ml to disable this warning.
-- ocamlfind: Package `bisect' not found
 - ocamlfind remove batteries
 - ocamlfind install batteries _build/META _build/src/*.cma battop.ml _build/src/*.cmi _build/src/*.mli _build/src/batteriesHelp.cmo _build/src/batteriesConfig.cmo _build/src/batteriesPrint.cmo ocamlinit build/ocaml \
 - 		-optional _build/src/*.cmx _build/src/*.a _build/src/*.cmxa _build/src/*.cmxs _build/src/*.lib
+- ocamlfind: Package `bisect' not found
 - ocamlfind: [WARNING] No such directory: /home/opam/.opam/system/lib/batteries
 - Installed /home/opam/.opam/system/lib/batteries/batteriesThread.cmxs
 - Installed /home/opam/.opam/system/lib/batteries/batteries.cmxs
