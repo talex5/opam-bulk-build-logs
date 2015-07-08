@@ -1,18 +1,18 @@
 + uname -m
+# Detecting depexts using flags: x86_64 linux ubuntu
 + uname -s
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=xen-block-driver
-# Detecting depexts using flags: x86_64 linux ubuntu
++ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=xen-block-driver
 # The following system packages are needed:
 #  - libxen-dev
 #  - m4
 #  - time
 #  - uuid-dev
-+ opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=xen-block-driver
 + dpkg-query -W -f '${Package} ${Status}\n' libxen-dev m4 time uuid-dev 2>/dev/null
 # The following new OS packages need to be installed: libxen-dev time uuid-dev
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
 Ign http://archive.ubuntu.com trusty InRelease
 Ign http://archive.ubuntu.com trusty-updates InRelease
 Ign http://archive.ubuntu.com trusty-security InRelease
@@ -40,7 +40,7 @@ Hit http://archive.ubuntu.com trusty-security/universe Sources
 Hit http://archive.ubuntu.com trusty-security/main amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/restricted amd64 Packages
 Hit http://archive.ubuntu.com trusty-security/universe amd64 Packages
-Fetched 1603 kB in 4s (330 kB/s)
+Fetched 1603 kB in 4s (390 kB/s)
 Reading package lists...
 + sudo apt-get install -qq -yy libxen-dev time uuid-dev
 # OS package update successful
@@ -102,23 +102,23 @@ The following actions will be performed:
 [cstruct: from default] Command started
 [lwt: from default] Command started
 [cppo: from default] Command started
-[lwt: from default] Command started
 [cstruct: from default] Command started
 [default] http://opam-archive:8080/archives/cppo.1.1.2+opam.tar.gz downloaded
 [mirage: from default] Command started
-[default] http://opam-archive:8080/archives/lwt.2.4.8+opam.tar.gz downloaded
-[mirage-xen: from default] Command started
+[lwt: from default] Command started
 [default] http://opam-archive:8080/archives/cstruct.0.7.1+opam.tar.gz downloaded
+[mirage-xen: from default] Command started
+[default] http://opam-archive:8080/archives/lwt.2.4.8+opam.tar.gz downloaded
 [ocamlfind: from default] Command started
 [mirage: from default] Command started
 [default] http://opam-archive:8080/archives/mirage.0.9.4+opam.tar.gz downloaded
 [ocplib-endian: from default] Command started
-[ocamlfind: from default] Command started
 [mirage-xen: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
+[default] http://opam-archive:8080/archives/mirage-xen.0.9.4+opam.tar.gz downloaded
 [ounit: from default] Command started
 [ocplib-endian: from default] Command started
-[default] http://opam-archive:8080/archives/mirage-xen.0.9.4+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 [shared-memory-ring: from default] Command started
 [default] http://opam-archive:8080/archives/ocplib-endian.0.8+opam.tar.gz downloaded
 [xen-block-driver: from default] Command started
@@ -126,10 +126,10 @@ The following actions will be performed:
 [default] http://opam-archive:8080/archives/ounit.2.0.0+opam.tar.gz downloaded
 [xenstore: from default] Command started
 [shared-memory-ring: from default] Command started
-[default] http://opam-archive:8080/archives/shared-memory-ring.0.4.1+opam.tar.gz downloaded
 [xen-block-driver: from default] Command started
-[xenstore: from default] Command started
+[default] http://opam-archive:8080/archives/shared-memory-ring.0.4.1+opam.tar.gz downloaded
 [default] http://opam-archive:8080/archives/xen-block-driver.0.2.2+opam.tar.gz downloaded
+[xenstore: from default] Command started
 [default] http://opam-archive:8080/archives/xenstore.1.2.2+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -1169,7 +1169,6 @@ The following actions will be performed:
 - + /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I src/core -I src/logger -I src/unix -package unix -package compiler-libs.common -package bytes -package bigarray -I src/simple_top -I src/core -I src/unix -o src/simple_top/lwt_simple_top.cmo src/simple_top/lwt_simple_top.ml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -a src/simple_top/lwt_simple_top.cmo -o src/simple_top/lwt-simple-top.cma
-- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I src/core -I src/logger -I src/unix -package unix -package compiler-libs.common -package bytes -package bigarray -I src/simple_top -I src/core -I src/unix -o src/simple_top/lwt_simple_top.cmx src/simple_top/lwt_simple_top.ml
 - + /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I src/core -I src/logger -I src/unix -package unix -package compiler-libs.common -package bytes -package bigarray -I src/simple_top -I src/core -I src/unix -o src/simple_top/lwt_simple_top.cmx src/simple_top/lwt_simple_top.ml
 - findlib: [WARNING] Interface topdirs.cmi occurs in several directories: /usr/lib/ocaml/compiler-libs, /usr/lib/ocaml
@@ -1179,6 +1178,7 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I src/core -I src/logger -I src/unix -thread -package unix -package bytes -package bigarray -package threads -I src/preemptive -I src/core -I src/unix -o src/preemptive/lwt_preemptive.cmi src/preemptive/lwt_preemptive.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package unix -package bytes -package bigarray -package threads -modules src/preemptive/lwt_preemptive.ml > src/preemptive/lwt_preemptive.ml.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I src/core -I src/logger -I src/unix -thread -package unix -package bytes -package bigarray -package threads -I src/preemptive -I src/core -I src/unix -o src/preemptive/lwt_preemptive.cmo src/preemptive/lwt_preemptive.ml
+- ocamlfind: Package `wikidoc' not found
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -a src/preemptive/lwt_preemptive.cmo -o src/preemptive/lwt-preemptive.cma
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -c -g -annot -bin-annot -I src/core -I src/logger -I src/unix -thread -package unix -package bytes -package bigarray -package threads -I src/preemptive -I src/core -I src/unix -o src/preemptive/lwt_preemptive.cmx src/preemptive/lwt_preemptive.ml
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -a src/preemptive/lwt_preemptive.cmx -o src/preemptive/lwt-preemptive.cmxa
@@ -3936,6 +3936,7 @@ The following actions will be performed:
 + make  (CWD=/home/opam/.opam/system/build/xen-block-driver.0.2.2)
 - ocamlfind ocamlopt -package "cmdliner,findlib" -linkpkg configure.ml -o configure
 - ./configure
+- Makefile:7: config.mk: No such file or directory
 - 
 - Configuration: 
 - ocamlfind: ........................................... /home/opam/.opam/system/bin/ocamlfind
@@ -4003,7 +4004,6 @@ The following actions will be performed:
 - pkg_xenctrl: ......................................... /home/opam/.opam/system/lib/xenctrl
 - 
 - /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
-- Makefile:7: config.mk: No such file or directory
 - ocamlfind ocamldep -package xenctrl -package shared-memory-ring.lwt -package shared-memory-ring -package mirage -package lwt.syntax -package lwt -package cstruct.syntax -package cstruct -syntax camlp4o -modules lib/blkproto.ml > lib/blkproto.ml.depends
 - ocamlfind ocamldep -package xenctrl -package shared-memory-ring.lwt -package shared-memory-ring -package mirage -package lwt.syntax -package lwt -package cstruct.syntax -package cstruct -syntax camlp4o -modules lib/device_number.mli > lib/device_number.mli.depends
 - ocamlfind ocamlc -c -g -I lib -package xenctrl -package shared-memory-ring.lwt -package shared-memory-ring -package mirage -package lwt.syntax -package lwt -package cstruct.syntax -package cstruct -syntax camlp4o -I lib -o lib/device_number.cmi lib/device_number.mli
