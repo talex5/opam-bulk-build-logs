@@ -1,28 +1,28 @@
 + uname -m
-+ uname -s
 # Detecting depexts using flags: x86_64 linux debian
++ uname -s
 + opam list --safe --recursive --external=x86_64,linux,debian --required-by=flac
 # The following system packages are needed:
 #  - libogg-dev
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,debian --required-by=flac
-# The following new OS packages need to be installed: libogg-dev
 + dpkg-query -W -f '${Package} ${Status}\n' libogg-dev m4 2>/dev/null
+# The following new OS packages need to be installed: libogg-dev
++ sudo apt-get update
 Not running as root, the following command will be run through "sudo":
     apt-get update
-+ sudo apt-get update
 Get:1 http://security.debian.org stable/updates InRelease [63.1 kB]
 Hit http://httpredir.debian.org stable InRelease
 Get:2 http://httpredir.debian.org stable-updates InRelease [133 kB]
 Get:3 http://security.debian.org stable/updates/main amd64 Packages [133 kB]
 Get:4 http://httpredir.debian.org stable/main amd64 Packages [9038 kB]
 Get:5 http://httpredir.debian.org stable-updates/main amd64 Packages [3616 B]
-Fetched 9370 kB in 3s (2818 kB/s)
+Fetched 9370 kB in 4s (2196 kB/s)
 Reading package lists...
++ sudo apt-get install -qq -yy libogg-dev
 # OS package update successful
 Not running as root, the following command will be run through "sudo":
     apt-get install -qq -yy libogg-dev
-+ sudo apt-get install -qq -yy libogg-dev
 debconf: unable to initialize frontend: Dialog
 debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
 debconf: falling back to frontend: Readline
@@ -51,12 +51,12 @@ The following actions will be performed:
 [flac: from default] Command started
 [ocamlfind: from default] Command started
 [ogg: from default] Command started
-[flac: from default] Command started
-[ogg: from default] Command started
 [ocamlfind: from default] Command started
-[default] http://opam-archive:8080/archives/flac.0.1.1+opam.tar.gz downloaded
-[default] http://opam-archive:8080/archives/ogg.0.4.3+opam.tar.gz downloaded
+[ogg: from default] Command started
+[flac: from default] Command started
 [default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ogg.0.4.3+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/flac.0.1.1+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [ocamlfind: ./configure] Command started
@@ -141,10 +141,10 @@ The following actions will be performed:
 - ocamlc -I +compiler-libs -g -c fl_package_base.ml
 - ocamlc -I +compiler-libs -c findlib.mli
 - ocamlc -I +compiler-libs -g -c findlib.ml
+- Makefile:160: depend: No such file or directory
 - ocamlc -I +compiler-libs -g -c fl_args.ml
 - ocamlc -I +compiler-libs -a -o findlib.cma findlib_config.cmo fl_split.cmo fl_metatoken.cmo fl_meta.cmo fl_metascanner.cmo fl_topo.cmo fl_package_base.cmo findlib.cmo fl_args.cmo
 - ocamlc -I +compiler-libs -g -c ocaml_args.ml
-- Makefile:160: depend: No such file or directory
 - ocamlc -I +compiler-libs -g -c frontend.ml
 - ocamlc -I +compiler-libs -custom -o ocamlfind -g findlib.cma unix.cma \
 -            ocaml_args.cmo frontend.cmo
@@ -275,6 +275,8 @@ The following actions will be performed:
 - cp doc/ref-man/ocamlfind.1 /home/opam/.opam/4.01.0/man/man1
 - cp doc/ref-man/META.5 doc/ref-man/site-lib.5 doc/ref-man/findlib.conf.5 /home/opam/.opam/4.01.0/man/man5
 - make[1]: Leaving directory '/home/opam/.opam/4.01.0/build/ocamlfind.1.5.5'
+[ERROR] The compilation of flac failed at "./configure --prefix
+        /home/opam/.opam/4.01.0/lib --mandir /home/opam/.opam/4.01.0/man".
 -> installed ocamlfind.1.5.5
 [ogg: ./configure] Command started
 + ./configure "--prefix" "/home/opam/.opam/4.01.0/lib" "--mandir" "/home/opam/.opam/4.01.0/man" (CWD=/home/opam/.opam/4.01.0/build/ogg.0.4.3)
@@ -364,8 +366,6 @@ The following actions will be performed:
 - ocamlopt.opt -a        -ccopt -L/home/opam/.opam/4.01.0/lib/lib  -ccopt -L/home/opam/.opam/4.01.0/lib/lib   -cclib -logg_stubs -cclib -logg   -o ogg.cmxa ogg.cmx ogg_demuxer.cmx
 - make[2]: Leaving directory '/home/opam/.opam/4.01.0/build/ogg.0.4.3/src'
 - make[1]: Leaving directory '/home/opam/.opam/4.01.0/build/ogg.0.4.3/src'
-[ERROR] The compilation of flac failed at "./configure --prefix
-        /home/opam/.opam/4.01.0/lib --mandir /home/opam/.opam/4.01.0/man".
 [ogg: make install] Command started
 + make "install" (CWD=/home/opam/.opam/4.01.0/build/ogg.0.4.3)
 - make -C src install
@@ -446,8 +446,7 @@ The following actions will be performed:
 - checking for camlp4r... camlp4r
 - checking for camlp4rf... camlp4rf
 - checking for ocamlfind... ocamlfind
-- checking for caml/threads.h... 
-- yes
+- checking for caml/threads.h... yes
 - checking for gcc option to produce PIC... -fPIC
 - checking for pkg-config... /usr/bin/pkg-config
 - checking pkg-config is at least version 0.9.0... yes
@@ -489,5 +488,5 @@ The following changes have been performed
 
 
 The former state can be restored with:
-    opam switch import "~/.opam/4.01.0/backup/state-20150605070424.export"
+    opam switch import "~/.opam/4.01.0/backup/state-20150605180307.export"
 'opam install flac' failed.
