@@ -1,10 +1,11 @@
 + uname -m
 + uname -s
-# Detecting depexts using flags: x86_64 linux ubuntu
 + opam list --safe --recursive --external=x86_64,linux,ubuntu --required-by=hardcaml
+# Detecting depexts using flags: x86_64 linux ubuntu
 # The following system packages are needed:
 #  - m4
 + opam list --safe --recursive --external=source,x86_64,linux,ubuntu --required-by=hardcaml
++ dpkg-query -W -f '${Package} ${Status}\n' m4 2>/dev/null
 # All required OS packages found.
 The following actions will be performed:
   - install ocamlfind  1.5.5                                    [required by hardcaml]
@@ -16,10 +17,10 @@ The following actions will be performed:
 =-=- Gathering sources =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [hardcaml: from default] Command started
 [ocamlfind: from default] Command started
-[ocamlfind: from default] Command started
 [hardcaml: from default] Command started
-[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
+[ocamlfind: from default] Command started
 [default] http://opam-archive:8080/archives/hardcaml.1.1.1+opam.tar.gz downloaded
+[default] http://opam-archive:8080/archives/ocamlfind.1.5.5+opam.tar.gz downloaded
 
 =-=- Processing actions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [camlp4: sh] Command started
@@ -168,7 +169,6 @@ The following actions will be performed:
 - File "frontend.ml", line 1769, characters 16-29:
 - Warning 3: deprecated: String.create
 - Use Bytes.create instead.
-+ dpkg-query -W -f '${Package} ${Status}\n' m4 2>/dev/null
 - if [ "true" = "true" ]; then                 \
 - 		cp topfind.ml.in topfind.ml;                             \
 - 	else                                                             \
@@ -221,7 +221,6 @@ The following actions will be performed:
 - ocamlopt -I +compiler-libs -c fl_meta.ml
 - ocamlopt -I +compiler-libs -c fl_metascanner.ml
 - ocamlopt -I +compiler-libs -c fl_topo.ml
-- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - File "fl_split.ml", line 114, characters 10-21:
 - Warning 3: deprecated: String.copy
 - File "fl_split.ml", line 118, characters 43-62:
@@ -266,6 +265,7 @@ The following actions will be performed:
 - File "fl_metascanner.ml", line 372, characters 20-29:
 - Warning 3: deprecated: Sort.list
 - Use List.sort instead.
+- ocamlopt -I +compiler-libs -c fl_package_base.ml
 - ocamlopt -I +compiler-libs -c findlib.ml
 - ocamlopt -I +compiler-libs -c fl_args.ml
 - ocamlopt -I +compiler-libs -a -o findlib.cmxa findlib_config.cmx fl_split.cmx fl_metatoken.cmx fl_meta.cmx fl_metascanner.cmx fl_topo.cmx fl_package_base.cmx findlib.cmx fl_args.cmx
@@ -395,8 +395,6 @@ The following actions will be performed:
 - pkg_camlp4: .......................................... /usr/lib/ocaml/camlp4
 - 
 - ocaml setup.ml -build
-- W: Cannot find source file matching module 'HardCamlDynlink' in library HardCamlDynlink
-- W: Cannot find source file matching module 'HardCaml' in library HardCaml
 - /usr/bin/ocamlopt.opt unix.cmxa -I /usr/lib/ocaml/ocamlbuild /usr/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa myocamlbuild.ml /usr/lib/ocaml/ocamlbuild/ocamlbuild.cmx -o myocamlbuild
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bigarray -package bytes -package camlp4 -package dynlink -package num -modules src/utils.mli > src/utils.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I src -package bigarray -package bytes -package camlp4 -package dynlink -package num -I src -o src/utils.cmi src/utils.mli
@@ -413,6 +411,8 @@ The following actions will be performed:
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bigarray -package bytes -package camlp4 -package dynlink -package num -modules src/bits_ext.mli > src/bits_ext.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I src -package bigarray -package bytes -package camlp4 -package dynlink -package num -I src -o src/bits_ext.cmi src/bits_ext.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bigarray -package bytes -package camlp4 -package dynlink -package num -modules src/bits_ext.ml > src/bits_ext.ml.depends
+- W: Cannot find source file matching module 'HardCamlDynlink' in library HardCamlDynlink
+- W: Cannot find source file matching module 'HardCaml' in library HardCaml
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bigarray -package bytes -package camlp4 -package dynlink -package num -modules src/signal.mli > src/signal.mli.depends
 - /home/opam/.opam/system/bin/ocamlfind ocamlc -c -g -annot -bin-annot -I src -package bigarray -package bytes -package camlp4 -package dynlink -package num -I src -o src/signal.cmi src/signal.mli
 - /home/opam/.opam/system/bin/ocamlfind ocamldep -package bigarray -package bytes -package camlp4 -package dynlink -package num -modules src/signal.ml > src/signal.ml.depends
@@ -544,9 +544,9 @@ The following actions will be performed:
 - ocaml setup.ml -build
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared src/HardCaml.cmxa src/HardCaml.cmx -o src/HardCaml.cmxs
 - /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared src/HardCamlDynlink.cmxa src/HardCamlDynlink.cmx -o src/HardCamlDynlink.cmxs
-- /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared src/pa_hardcaml.cmxa src/pa_hardcaml.cmx -o src/pa_hardcaml.cmxs
 - W: Cannot find source file matching module 'HardCamlDynlink' in library HardCamlDynlink
 - W: Cannot find source file matching module 'HardCaml' in library HardCaml
+- /home/opam/.opam/system/bin/ocamlfind ocamlopt -shared src/pa_hardcaml.cmxa src/pa_hardcaml.cmx -o src/pa_hardcaml.cmxs
 - ocaml setup.ml -install
 - Installed /home/opam/.opam/system/lib/hardcaml/utils.mli
 - Installed /home/opam/.opam/system/lib/hardcaml/comb.mli
